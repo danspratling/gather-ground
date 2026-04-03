@@ -66,7 +66,7 @@ Architecture decision log for the Gather Ground website. Read this before changi
 
 ## ADR-007: Design tokens are the single source of visual truth
 
-**Decision:** All colours, type scale, spacing, border radius, and shadow values are defined as tokens in `tailwind.config.ts` and CSS custom properties. These were extracted from Figma variables in M2.
+**Decision:** All colours, type scale, spacing, border radius, and shadow values are defined as CSS custom properties in `src/styles/global.css` (via the `@theme` block). These were extracted from Figma variables in M2.
 
 **Reasoning:** Prevents visual drift between the design file and the codebase. When Figma changes, only the token file needs updating — every component inherits the change automatically.
 
@@ -111,6 +111,26 @@ Architecture decision log for the Gather Ground website. Read this before changi
 **Reasoning:** All interactive components in this project are React islands (shadcn/ui, client-side UI). There is no production-quality Storybook Astro framework. React Vite gives us full React story support, which is all we need.
 
 **Consequence:** `.astro` files cannot be imported into stories directly. Stories describe the React `.tsx` components only. Astro page-level concerns are covered by Playwright, not Storybook.
+
+---
+
+## ADR-012: Static UI components use .astro; interactive islands use .tsx
+
+**Decision:** Static UI components are written as `.astro` files. Components that require client-side interactivity (state, event handlers) are written as `.tsx` React islands. Pages and layouts are always `.astro`.
+
+**Reasoning:** `.astro` components ship zero JavaScript by default and are the natural format for purely static markup. `.tsx` is only introduced when React features (`useState`, `useEffect`, event handlers) are genuinely needed. This avoids hydrating the page with JS for components that don't need it.
+
+**Consequence:** Before writing any component, ask: does this need JavaScript? If no → `.astro`. If yes → `.tsx`, with `client:visible` (or `client:load` if above the fold) applied at the usage site in the parent `.astro` file. `use client` is an RSC/Next.js directive — it has no effect in Astro and must not be used.
+
+---
+
+## ADR-013: Storybook uses @storybook-astro/framework on Storybook 10+
+
+**Decision:** Storybook is configured with `@storybook-astro/framework` instead of `@storybook/react-vite`, running on Storybook 10+.
+
+**Reasoning:** `@storybook/react-vite` cannot render `.astro` files, which would force all components into `.tsx` to get Storybook coverage — contradicting ADR-012 and causing unnecessary hydration. `@storybook-astro/framework` renders `.astro` components natively in Storybook dev mode and supports mixed Astro + React stories in one Storybook instance. Storybook 10 is required by this framework and is the current stable release.
+
+**Consequence:** Both `.astro` and `.tsx` components are directly story-able with no workarounds. `@storybook-astro/framework` is community-maintained — if it falls significantly behind Storybook releases, reconsider. Controls in pre-built static Storybook are limited for `.astro` components (pre-rendered with default args only); dev mode (`storybook dev`) works fully for documentation and interaction testing. ADR-011 is superseded by this decision.
 
 ---
 
