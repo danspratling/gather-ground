@@ -1,0 +1,5 @@
+dist/
+.astro/
+storybook-static/
+node_modules/
+public/
