@@ -6,6 +6,7 @@ const meta = {
   component: Button,
   parameters: {
     layout: 'centered',
+    renderer: '@storybook/react',
   },
   tags: ['autodocs'],
   argTypes: {
