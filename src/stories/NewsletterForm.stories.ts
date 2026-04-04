@@ -6,6 +6,7 @@ import NewsletterForm from '@/components/NewsletterForm';
 const meta = {
   title: 'Components/NewsletterForm',
   component: NewsletterForm,
+  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
     renderer: '@storybook/react',

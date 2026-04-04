@@ -1,0 +1,34 @@
+---
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import type { ButtonProps } from '@/types/button';
+
+type Props = ButtonProps;
+
+const {
+  label,
+  href,
+  variant = 'default',
+  size = 'default',
+  disabled = false,
+  class: className,
+} = Astro.props;
+
+const classes = cn(
+  buttonVariants({ variant, size }),
+  'rounded-full',
+  className
+);
+---
+
+{
+  href ? (
+    <a href={href} class={classes} aria-disabled={disabled || undefined}>
+      {label}
+    </a>
+  ) : (
+    <button class={classes} disabled={disabled}>
+      {label}
+    </button>
+  )
+}

@@ -1,45 +1,121 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from '@/components/ui/button';
+// @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
+// See: https://storybook-astro.org/writing-stories/
+import { expect, within } from 'storybook/test';
+
+// @ts-expect-error — .astro files have no TypeScript declarations
+import Button from '@/components/Button.astro';
 
 const meta = {
-  title: 'UI/Button',
+  title: 'Components/Button',
   component: Button,
+  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
-    renderer: '@storybook/react',
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=3287-427074',
+    },
   },
-  tags: ['autodocs'],
   argTypes: {
     variant: {
       control: 'select',
-      options: [
-        'default',
-        'destructive',
-        'outline',
-        'secondary',
-        'ghost',
-        'link',
-      ],
+      options: ['default', 'outline', 'ghost', 'link'],
     },
     size: {
       control: 'select',
-      options: ['default', 'sm', 'lg', 'icon'],
+      options: ['sm', 'default', 'lg'],
     },
-  },
-} satisfies Meta<typeof Button>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {
-  args: {
-    children: 'Button',
+    disabled: {
+      control: 'boolean',
+    },
   },
 };
 
-export const Outline: Story = {
+export default meta;
+
+export const Primary = {
   args: {
-    variant: 'outline',
-    children: 'Outline',
+    label: 'Button CTA',
+    variant: 'default' as const,
+    size: 'default' as const,
+    disabled: false,
+  },
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', { name: 'Button CTA' });
+
+    await expect(button).toBeInTheDocument();
+    await expect(button).not.toBeDisabled();
+
+    await button.focus();
+    await expect(button).toHaveFocus();
+  },
+};
+
+export const Outline = {
+  args: {
+    label: 'Button CTA',
+    variant: 'outline' as const,
+    size: 'default' as const,
+  },
+};
+
+export const Ghost = {
+  args: {
+    label: 'Button CTA',
+    variant: 'ghost' as const,
+    size: 'default' as const,
+  },
+};
+
+export const Link = {
+  args: {
+    label: 'Button CTA',
+    variant: 'link' as const,
+    size: 'default' as const,
+  },
+};
+
+export const SizeSm = {
+  args: {
+    label: 'Button CTA',
+    variant: 'default' as const,
+    size: 'sm' as const,
+  },
+};
+
+export const SizeLg = {
+  args: {
+    label: 'Button CTA',
+    variant: 'default' as const,
+    size: 'lg' as const,
+  },
+};
+
+export const Disabled = {
+  args: {
+    label: 'Button CTA',
+    variant: 'default' as const,
+    disabled: true,
+  },
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', { name: 'Button CTA' });
+
+    await expect(button).toBeDisabled();
+  },
+};
+
+export const AsLink = {
+  args: {
+    label: 'Button CTA',
+    href: '#',
+    variant: 'default' as const,
+  },
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('link', { name: 'Button CTA' })
+    ).toBeInTheDocument();
   },
 };
