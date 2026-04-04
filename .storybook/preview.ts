@@ -3,6 +3,26 @@ import '../src/styles/global.css';
 
 const preview: Preview = {
   parameters: {
+    viewport: {
+      viewports: {
+        mobile: {
+          name: 'Mobile (375px)',
+          styles: { width: '375px', height: '812px' },
+          type: 'mobile',
+        },
+        tablet: {
+          name: 'Tablet (768px)',
+          styles: { width: '768px', height: '1024px' },
+          type: 'tablet',
+        },
+        desktop: {
+          name: 'Desktop (1440px)',
+          styles: { width: '1440px', height: '900px' },
+          type: 'desktop',
+        },
+      },
+      defaultViewport: 'desktop',
+    },
     backgrounds: {
       default: 'white',
       values: [

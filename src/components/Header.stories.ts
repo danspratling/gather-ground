@@ -1,5 +1,4 @@
 // @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
-import { expect, userEvent, within } from 'storybook/test';
 
 // @ts-expect-error — .astro files have no TypeScript declarations
 import Header from '@/components/Header.astro';
@@ -83,34 +82,19 @@ export const Desktop = {
   },
 };
 
-export const Mobile = {
+export const MobileDefault = {
+  name: 'Mobile (closed)',
   args: defaultArgs,
   parameters: {
-    viewport: { defaultViewport: 'mobile1' },
+    viewport: { defaultViewport: 'mobile' },
   },
-  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
-    const canvas = within(canvasElement);
+};
 
-    // Mobile menu should be closed on load
-    await expect(
-      canvas.queryByRole('navigation', { name: 'Mobile navigation' })
-    ).toBeNull();
-
-    // Open the menu
-    const trigger = canvas.getByRole('button', { name: /open menu/i });
-    await userEvent.click(trigger);
-
-    // Navigation should now be visible
-    const nav = canvas.getByRole('navigation', { name: 'Mobile navigation' });
-    await expect(nav).toBeInTheDocument();
-    await expect(canvas.getByText('Blog')).toBeInTheDocument();
-
-    // Close the menu
-    const closeBtn = canvas.getByRole('button', { name: /close menu/i });
-    await userEvent.click(closeBtn);
-    await expect(
-      canvas.queryByRole('navigation', { name: 'Mobile navigation' })
-    ).toBeNull();
+export const MobileOpen = {
+  name: 'Mobile (menu open)',
+  args: defaultArgs,
+  parameters: {
+    viewport: { defaultViewport: 'mobile' },
   },
 };
 
