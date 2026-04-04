@@ -211,6 +211,16 @@ export const Default = meta.story({ args: { children: 'Button' } });
 
 ---
 
+## ADR-017: Figma Code Connect files are co-located with their components
+
+**Decision:** Figma Code Connect files (e.g. `Button.figma.tsx`) live in `src/components/` alongside the component they document, not in a separate `src/figma/` directory.
+
+**Reasoning:** Keeping related files together (component, stories, Code Connect) reduces context-switching and makes it obvious which Figma snippet corresponds to which component. The `figma connect publish` CLI discovers `.figma.*` files project-wide regardless of directory, so co-location has no functional downside.
+
+**Consequence:** Every `.figma.tsx` file in `src/components/` must include `export default null` at the end of the file. This is required because `@storybook-astro/framework`'s build server plugin (`vitePluginAstroBuildServer`) hardcodes `src/components/` as its scan root and generates a `virtual:astro-component-module` wrapper (which re-exports `default`) for every `.ts/.tsx/.js/.jsx/.vue/.svelte` file it finds. Only `.stories.*`, `.spec.*`, and `.test.*` files are excluded by the scanner — `.figma.*` files are not. Without a `default` export the Storybook build fails. The `export default null` is inert at runtime and has no effect on Figma Code Connect publishing.
+
+---
+
 ## Adding a new entry
 
 When you make a decision that future-you (or Claude Code) might question, add it here immediately:
