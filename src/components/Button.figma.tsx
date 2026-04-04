@@ -19,7 +19,7 @@ figma.connect(
       }),
       size: figma.enum('Size', {
         sm: 'sm',
-        md: 'default',
+        md: 'md',
         lg: 'lg',
       }),
       disabled: figma.enum('State', {
@@ -29,9 +29,16 @@ figma.connect(
         Disabled: true,
         Loading: false,
       }),
+      loading: figma.enum('State', {
+        Default: false,
+        Hover: false,
+        Focused: false,
+        Disabled: false,
+        Loading: true,
+      }),
     },
-    example: ({ variant, size, disabled }) =>
-      `<Button label="Button CTA" variant="${variant}" size="${size}"${disabled ? ' disabled' : ''} />`,
+    example: ({ variant, size, disabled, loading }) =>
+      `<Button label="Button CTA" variant="${variant}" size="${size}"${disabled ? ' disabled' : ''}${loading ? ' loading' : ''} />`,
   }
 );
 
