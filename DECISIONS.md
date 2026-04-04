@@ -134,6 +134,83 @@ Architecture decision log for the Gather Ground website. Read this before changi
 
 ---
 
+## ADR-014: Icons use @untitledui-pro/icons; brand/platform icons use inline SVG
+
+**Decision:** All UI icons are sourced from `@untitledui-pro/icons`. Import from the appropriate style sub-path and render as a React component:
+
+```tsx
+import { Mail01 } from '@untitledui-pro/icons/line';
+<Mail01 className="size-6" />;
+```
+
+Brand/platform icons (Instagram, Facebook, TikTok, X/Twitter, LinkedIn, etc.) are **not** in the Untitled UI library and must live in `src/components/Icons/` as individual `.astro` files.
+
+**Reasoning:** Untitled UI pro provides 1100+ consistent, well-crafted UI icons that match the project's design language. Using a single source prevents visual inconsistency from mixing icon sets. The pro package includes line, solid, duotone, and duocolor variants — default to `line` unless Figma specifies otherwise. Social brand icons are absent from the library for licensing reasons; these are handled as standalone `.astro` components instead of being inlined as SVG strings.
+
+**Consequence:** Never use Lucide, Heroicons, or other icon libraries for UI icons — always check Untitled UI first. For brand icons not in the library, create a new `.astro` file in `src/components/Icons/` (e.g. `InstagramIcon.astro`). Each icon component accepts a `class` prop for sizing/colour overrides and includes `aria-hidden="true"` on the SVG — the caller is responsible for providing accessible text via `aria-label` on the surrounding element. Never inline SVG strings directly in a component template.
+
+---
+
+## ADR-015: Migrate React stories to CSF Factories when Storybook 11 ships
+
+**Decision (deferred):** Do not migrate to CSF Factories yet. Migrate all React stories (`.tsx` components) when Storybook 11 is released and CSF Factories move from "Preview" to stable.
+
+**Reasoning:** CSF Factories remove `satisfies Meta<typeof Component>` boilerplate and improve type inference, but they are React-only and labelled "Preview" in Storybook 10 — meaning the API could still change. Migrating prematurely risks churn. Astro stories remain unaffected (they are untyped by design — `@storybook-astro/framework` does not export `Meta`/`StoryObj`).
+
+**When to act:** Storybook 11 release (expected Spring 2026). Run the official codemod: `npx storybook@latest migrate csf-factories`.
+
+---
+
+## ADR-016: Chromatic for visual regression; addon-a11y for accessibility; addon-docs for MDX
+
+**Decision:** Three Storybook addons are installed and registered in `.storybook/main.ts`:
+
+- `@chromatic-com/storybook` — visual regression testing via Chromatic
+- `@storybook/addon-a11y` — WCAG accessibility audit panel per story
+- `@storybook/addon-docs` — MDX documentation pages and `autodocs` support
+
+**Reasoning:**
+
+- _Visual regression:_ Chromatic is the first-party Storybook service for snapshot diffing. It integrates natively with the Storybook build step and requires no extra CI configuration beyond a `CHROMATIC_PROJECT_TOKEN` secret and a `chromatic` CLI invocation. Alternative (Playwright screenshot diffing) requires significantly more infrastructure and maintenance.
+- _Accessibility:_ The `addon-a11y` panel runs `axe-core` against each rendered story inline. This catches WCAG issues (colour contrast, missing ARIA roles, focus order) at the component level, where they are cheapest to fix — before Playwright or manual review.
+- _Docs:_ `addon-docs` enables MDX story files (`.mdx` under `src/stories/`) and powers `autodocs` auto-generated API docs for React components that opt in via `tags: ['autodocs']`.
+
+**Consequences:**
+
+- The `addon-a11y` panel must be checked for every new component story before marking a PR ready for review. Fix violations; do not suppress them without a documented reason.
+- Chromatic visual regression is _not yet wired into CI_. To activate it, add `CHROMATIC_PROJECT_TOKEN` to the GitHub repository secrets and add a Chromatic publish step to `.github/workflows/ci.yml`. Do this when visual regression coverage is needed (recommended when page sections are complete and stable).
+- MDX docs pages live in `src/stories/` alongside story files (covered by the existing glob). See `src/stories/Introduction.mdx` as the reference example.
+
+**What changes:** Replace the `satisfies Meta<typeof Button>` + `StoryObj` pattern:
+
+```ts
+// Before (CSF 3)
+import type { Meta, StoryObj } from '@storybook/react';
+const meta = { component: Button } satisfies Meta<typeof Button>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Default: Story = { args: { children: 'Button' } };
+
+// After (CSF Factories)
+import preview from '../.storybook/preview';
+const meta = preview.meta({ component: Button });
+export const Default = meta.story({ args: { children: 'Button' } });
+```
+
+---
+
+## ADR-016: Use sb.mock for API mocking in stories once real endpoints exist
+
+**Decision (deferred):** When `NewsletterForm` (and any future component) is wired to a real API, replace the current `setTimeout` stub with Storybook 10's `sb.mock` module mocking.
+
+**Reasoning:** The current `NewsletterForm` fakes its submit with a hardcoded `await new Promise(resolve => setTimeout(resolve, 500))`. This is fine during development but will need replacing once a real newsletter endpoint exists. `sb.mock` (inspired by `vi.mock`) works with both Vite and Webpack builders and is available in dev and static builds — making it the correct tool for mocking fetch calls, API clients, or server actions inside stories.
+
+**When to act:** When a real newsletter/API integration is added to `NewsletterForm.tsx`.
+
+**What changes:** Import `sb.mock` in the story file and mock the fetch/API module, then restore defaults in `afterEach`. No changes to the component itself.
+
+---
+
 ## Adding a new entry
 
 When you make a decision that future-you (or Claude Code) might question, add it here immediately:

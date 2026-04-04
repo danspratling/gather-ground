@@ -1,43 +1,56 @@
-# Astro Starter Kit: Minimal
+# Gather Ground
+
+Marketing website for Gather Ground — a heritage-breed family farm in rural Iowa.
+
+Built with Astro, Tailwind CSS v4, shadcn/ui, and Storyblok.
+
+## First-time setup
+
+**1. Use the correct Node version**
 
 ```sh
-npm create astro@latest -- --template minimal
+nvm use
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+**2. Authenticate with the Untitled UI private registry**
 
-## 🚀 Project Structure
+Run this once. It writes to your global `~/.npmrc` and is never committed.
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```sh
+npm config set //pkg.untitledui.com/:_authToken=YOUR_TOKEN_HERE
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Get your token from the Untitled UI dashboard.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+**3. Install dependencies**
 
-Any static assets, like images, can be placed in the `public/` directory.
+```sh
+npm install
+```
 
-## 🧞 Commands
+**4. Set up environment variables**
 
-All commands are run from the root of the project, from a terminal:
+```sh
+cp .env.example .env
+```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Fill in the values — see `.env.example` for descriptions.
 
-## 👀 Want to learn more?
+## Commands
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Command             | Action                                                |
+| :------------------ | :---------------------------------------------------- |
+| `npm run dev`       | Start local dev server at `localhost:4321`            |
+| `npm run build`     | Build production site to `./dist/`                    |
+| `npm run storybook` | Start Storybook component library at `localhost:6006` |
+| `npm run typecheck` | TypeScript type check                                 |
+| `npm run lint`      | ESLint                                                |
+| `npm run format`    | Prettier (auto-fix)                                   |
+| `npm run test`      | Playwright e2e tests                                  |
+
+## Further reading
+
+- [CLAUDE.md](.claude/CLAUDE.md) — full project context and conventions
+- [DECISIONS.md](DECISIONS.md) — architecture decision log
+- [CONTRIBUTING.md](CONTIBUTING.md) — PR checklist and component guide
+- [TOKENS.md](TOKENS.md) — design token reference

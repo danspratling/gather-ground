@@ -1,0 +1,114 @@
+{/* Introduction.mdx */}
+import { Meta, Title, Subtitle, Description } from '@storybook/addon-docs/blocks';
+
+<Meta title="Introduction" />
+
+<Title>Gather Ground — Component Library</Title>
+
+<Subtitle>
+  Marketing website for a heritage-breed family farm in rural Iowa.
+</Subtitle>
+
+<Description>
+  This Storybook documents every UI component used on the Gather Ground website.
+  Each story is linked to its Figma source, includes a live accessibility audit,
+  and has interaction tests you can run in-browser.
+</Description>
+
+---
+
+## Stack
+
+| Layer      | Tool                                |
+| ---------- | ----------------------------------- |
+| Framework  | Astro (static) + React islands      |
+| Styling    | Tailwind CSS v4 + design tokens     |
+| Primitives | shadcn/ui                           |
+| CMS        | Storyblok                           |
+| Testing    | Storybook interactions + Playwright |
+
+---
+
+## Panels
+
+Every story exposes three panels at the bottom of the canvas:
+
+- **Controls** — adjust props live without touching code
+- **Accessibility** — WCAG audit for the rendered story; fix any violations before merging
+- **Design** — side-by-side Figma frame linked to the exact component spec
+
+---
+
+## Component categories
+
+### UI
+
+Primitive building blocks sourced from **shadcn/ui** and extended with Gather Ground tokens. These are framework-agnostic — use them inside both `.astro` and `.tsx` files.
+
+- `UI/Button` — primary, secondary, outline, ghost, and link variants
+
+### Components
+
+Assembled page sections built in Astro (server-rendered, zero client JS unless noted).
+
+- `Components/Footer` — full-width footer with logo, nav link groups, social icons, newsletter form, and legal bar
+
+---
+
+## Design tokens quick reference
+
+All tokens live in `src/styles/global.css` and are exposed as Tailwind utility classes. Never hardcode hex values.
+
+### Colour
+
+| Purpose          | Token          | Class             |
+| ---------------- | -------------- | ----------------- |
+| Page background  | `off-white`    | `bg-off-white`    |
+| Primary text     | `brand-900`    | `text-brand-900`  |
+| Section headings | `gray-900`     | `text-gray-900`   |
+| Muted / captions | `gray-600`     | `text-gray-600`   |
+| Primary button   | `brand-700`    | `bg-brand-700`    |
+| Footer bg        | `gray-950`     | `bg-gray-950`     |
+| Card background  | `secondary-50` | `bg-secondary-50` |
+
+### Typography
+
+Font: **DM Sans** (variable). All sizes use standard Tailwind text utilities.
+
+| Scale           | Class                                               |
+| --------------- | --------------------------------------------------- |
+| Body default    | `text-base font-normal`                             |
+| Body semibold   | `text-base font-semibold`                           |
+| Section heading | `text-display-md font-semibold tracking-display-md` |
+| Hero heading    | `text-display-xl font-medium tracking-display-xl`   |
+
+See [`TOKENS.md`](../../TOKENS.md) for the full token reference.
+
+---
+
+## Conventions
+
+- Write `.astro` components for static output; use `.tsx` React islands only when client interactivity is required
+- Pass `client:visible` (not `client:load`) unless immediate mount interactivity is needed
+- Fetch data in Astro page frontmatter — never inside a component
+- No inline styles; no hardcoded colours or spacing values
+- Define the TypeScript interface in `src/types/` **before** writing any component markup
+- Run `npm run format` before every commit; CI will reject unformatted files
+
+---
+
+## Running locally
+
+```sh
+# Component library
+npm run storybook
+
+# Full site dev server
+npm run dev
+
+# Type safety
+npm run typecheck
+
+# E2E tests
+npx playwright test --ui
+```
