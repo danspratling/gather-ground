@@ -21,9 +21,9 @@ export default function NavMenu({
         <NavigationMenuItem>
           <NavigationMenuTrigger
             className={cn(
-              'h-auto bg-transparent px-2 py-0.5 text-sm font-medium text-brand-700 rounded-[6px]',
-              'hover:bg-transparent hover:text-brand-900',
-              'data-popup-open:bg-transparent data-open:bg-transparent'
+              'h-auto bg-transparent px-1.5 py-1 text-base font-semibold text-brand-800 rounded-lg',
+              'hover:bg-brand-25 hover:text-brand-900',
+              'data-popup-open:bg-brand-25 data-open:bg-brand-25'
             )}
           >
             {label}

@@ -1,5 +1,6 @@
 ---
 import Footer from '@/components/Footer.astro';
+import Header from '@/components/Header.astro';
 import '@/styles/global.css';
 
 interface Props {
@@ -71,6 +72,65 @@ const footerProps = {
     <title>{title}</title>
   </head>
   <body>
+    <Header
+      logoSrc="/favicon.svg"
+      logoAlt="Gather Ground"
+      navLinks={[
+        {
+          label: 'Shop',
+          menu: [
+            {
+              label: 'Beef',
+              href: '/shop/beef',
+              description: 'Angus and Hereford, dry-aged.',
+            },
+            {
+              label: 'Pork',
+              href: '/shop/pork',
+              description: 'Berkshire and Duroc, pasture-raised.',
+            },
+            {
+              label: 'Chicken',
+              href: '/shop/chicken',
+              description: 'Freedom Ranger, slow-grown.',
+            },
+            { label: 'View all products', href: '/shop', iconTrailing: true },
+          ],
+        },
+        {
+          label: 'About us',
+          menu: [
+            {
+              label: 'Our story',
+              href: '/about',
+              description: 'How Gather Ground began.',
+            },
+            {
+              label: 'The farm',
+              href: '/about/farm',
+              description: 'Our land and animals.',
+            },
+            { label: 'Sustainability', href: '/about/sustainability' },
+          ],
+        },
+        { label: 'Blog', href: '/blog' },
+        { label: 'Contact', href: '/contact' },
+      ]}
+      ctaLabel="Sign up"
+      ctaHref="/signup"
+      loginLabel="Log in"
+      loginHref="/login"
+      accountHref="/account"
+      basketHref="/cart"
+      footerLinks={[
+        { label: 'About us', href: '/about' },
+        { label: 'Blog', href: '/blog' },
+        { label: 'Privacy', href: '/privacy' },
+        { label: 'Terms', href: '/terms' },
+        { label: 'Contact', href: '/contact' },
+        { label: 'Cookies', href: '/cookies' },
+      ]}
+    />
     <slot />
     <Footer {...footerProps} />
   </body>
