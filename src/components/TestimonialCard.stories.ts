@@ -32,7 +32,7 @@ const defaultAuthor = {
 export const Default = {
   args: {
     quote:
-      'The beef shortribs were absolutely incredible. Best I've ever had — and that's coming from someone who grew up on a cattle farm.',
+      'The beef shortribs were absolutely incredible. Best I have ever had — coming from someone who grew up on a cattle farm.',
     author: defaultAuthor,
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
@@ -67,7 +67,7 @@ export const WithPlatform = {
 export const WithDate = {
   args: {
     quote:
-      'We've been ordering monthly for over a year. The quality never dips and the animals are clearly raised with care.',
+      'Ordering monthly for over a year now. The quality never dips and the animals are clearly raised with care.',
     author: {
       src: 'https://i.pravatar.cc/150?img=12',
       alt: 'Emily T.',
