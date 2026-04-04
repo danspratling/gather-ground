@@ -30,7 +30,8 @@ export default meta;
 export const CategoryVariant = {
   args: {
     variant: 'category' as const,
-    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&q=80',
+    image:
+      'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&q=80',
     imageAlt: 'Heritage beef cuts on a wooden board',
     title: 'Beef',
     description:
@@ -41,7 +42,9 @@ export const CategoryVariant = {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('Beef')).toBeInTheDocument();
     await expect(
-      canvas.getByText('Angus and Hereford cattle raised on pasture. Dry-aged for flavour.')
+      canvas.getByText(
+        'Angus and Hereford cattle raised on pasture. Dry-aged for flavour.'
+      )
     ).toBeInTheDocument();
     await expect(
       canvas.getByRole('link', { name: 'Beef' })
@@ -52,7 +55,8 @@ export const CategoryVariant = {
 export const ImageLinkVariant = {
   args: {
     variant: 'image-link' as const,
-    image: 'https://images.unsplash.com/photo-1558030006-450675393462?w=600&q=80',
+    image:
+      'https://images.unsplash.com/photo-1558030006-450675393462?w=600&q=80',
     imageAlt: 'Heritage pork from Gather Ground',
     title: 'Pork',
     href: '/products/pork',
@@ -69,7 +73,8 @@ export const ImageLinkVariant = {
 export const CategoryNoDescription = {
   args: {
     variant: 'category' as const,
-    image: 'https://images.unsplash.com/photo-1569486546858-b068b7c3ecf3?w=600&q=80',
+    image:
+      'https://images.unsplash.com/photo-1569486546858-b068b7c3ecf3?w=600&q=80',
     imageAlt: 'Free-range eggs',
     title: 'Eggs',
     href: '/products/eggs',

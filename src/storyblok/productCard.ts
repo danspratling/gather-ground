@@ -17,7 +17,10 @@ export const productCardSchema = {
       default_value: 'category',
       options: [
         { value: 'category', name: 'Category (image + title + description)' },
-        { value: 'image-link', name: 'Image link (large image + title overlay)' },
+        {
+          value: 'image-link',
+          name: 'Image link (large image + title overlay)',
+        },
       ],
     },
     image: {

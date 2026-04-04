@@ -8,8 +8,10 @@ type Props = ProductCardProps;
 const { variant, ...rest } = Astro.props;
 ---
 
-{variant === 'category' ? (
-  <ProductCardCategory {...rest} />
-) : (
-  <ProductCardImageLink {...rest} />
-)}
+{
+  variant === 'category' ? (
+    <ProductCardCategory {...rest} />
+  ) : (
+    <ProductCardImageLink {...rest} />
+  )
+}

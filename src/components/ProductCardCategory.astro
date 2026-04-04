@@ -4,7 +4,14 @@ import type { ProductCardProps } from '@/types/productCard';
 
 type Props = Omit<ProductCardProps, 'variant'>;
 
-const { image, imageAlt, title, description, href, class: className } = Astro.props;
+const {
+  image,
+  imageAlt,
+  title,
+  description,
+  href,
+  class: className,
+} = Astro.props;
 ---
 
 <article class={cn('rounded-xl bg-secondary-50 overflow-hidden', className)}>
@@ -17,12 +24,16 @@ const { image, imageAlt, title, description, href, class: className } = Astro.pr
       />
     </div>
     <div class="flex flex-col gap-2 p-6 pt-0">
-      <h3 class="text-lg font-semibold text-gray-900 group-hover:underline group-focus:underline">
+      <h3
+        class="text-lg font-semibold text-gray-900 group-hover:underline group-focus:underline"
+      >
         {title}
       </h3>
-      {description && (
-        <p class="text-sm font-normal text-gray-600">{description}</p>
-      )}
+      {
+        description && (
+          <p class="text-sm font-normal text-gray-600">{description}</p>
+        )
+      }
     </div>
   </a>
 </article>
