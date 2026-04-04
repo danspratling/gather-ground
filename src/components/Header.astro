@@ -31,7 +31,7 @@ const {
         {
           navLinks.map((link) =>
             link.menu ? (
-              <NavMenu client:visible label={link.label} items={link.menu} />
+              <NavMenu client:load label={link.label} items={link.menu} />
             ) : (
               <a
                 href={link.href}
@@ -81,7 +81,7 @@ const {
       </div>
       <div class="md:hidden">
         <MobileMenu
-          client:visible
+          client:load
           logoSrc={logoSrc}
           logoAlt={logoAlt}
           navLinks={navLinks}
