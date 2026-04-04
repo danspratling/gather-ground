@@ -1,5 +1,6 @@
 dist/
 .astro/
 storybook-static/
+storybook-server/
 node_modules/
 public/
