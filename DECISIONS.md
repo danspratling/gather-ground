@@ -24,13 +24,9 @@ Architecture decision log for the Gather Ground website. Read this before changi
 
 ---
 
-## ADR-003: Stories in src/stories/, not colocated with components
+## ADR-003: ~~Stories in src/stories/, not colocated with components~~
 
-**Decision:** Storybook story files live in `src/stories/`, not alongside the component they describe.
-
-**Reasoning:** Astro's build pipeline can accidentally pick up `.stories.ts` files if colocated, causing build warnings or errors. Separating them also keeps `src/components/` clean and the Storybook glob config simple.
-
-**Consequence:** When creating a component at `src/components/HeroSection.astro`, the story goes in `src/stories/HeroSection.stories.ts`, not in `src/components/`.
+> **Superseded by ADR-017.** Co-location is now the preferred pattern. See ADR-017.
 
 ---
 
@@ -208,6 +204,28 @@ export const Default = meta.story({ args: { children: 'Button' } });
 **When to act:** When a real newsletter/API integration is added to `NewsletterForm.tsx`.
 
 **What changes:** Import `sb.mock` in the story file and mock the fetch/API module, then restore defaults in `afterEach`. No changes to the component itself.
+
+---
+
+## ADR-017: Keep all related files co-located with their component
+
+**Decision:** All files that relate to a component — stories, Figma Code Connect files, tests, and any other per-component artefacts — live in `src/components/` alongside the component itself. There are no separate top-level `src/stories/`, `src/figma/`, or `src/tests/` directories for component-level files.
+
+```
+src/components/
+  Button/
+    Button.astro          ← component
+    Button.tsx            ← React island (if interactive)
+    Button.stories.ts     ← Storybook story
+    Button.figma.tsx      ← Figma Code Connect
+    Button.test.ts        ← unit / interaction tests
+```
+
+**Reasoning:** Keeping related files together reduces context-switching: when working on a component you can see and edit every artefact without hunting across the repo. Separating stories, figma files, or tests into their own trees creates distance between the code and its documentation/tests and makes it easy to forget to update them when the component changes.
+
+**Consequence:** This supersedes ADR-003. Existing story files in `src/stories/` should be migrated to `src/components/` over time; new stories must always be co-located.
+
+One technical side-effect to be aware of: `@storybook-astro/framework`'s build server plugin scans `src/components/` and generates a `virtual:astro-component-module` wrapper (which re-exports `default`) for every `.ts/.tsx/.js/.jsx/.vue/.svelte` file it finds. Only `.stories.*`, `.spec.*`, and `.test.*` files are excluded — `.figma.*` files are not. Any co-located file that is **not** a standard component, story, spec, or test (e.g. a Figma Code Connect file) **must** include `export default null` at the end of the file to satisfy the wrapper and keep the Storybook build green. The `export default null` is inert at runtime.
 
 ---
 

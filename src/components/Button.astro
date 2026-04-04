@@ -1,0 +1,77 @@
+---
+import { cn } from '@/lib/utils';
+import type { ButtonProps } from '@/types/button';
+
+type Props = ButtonProps;
+
+const {
+  label,
+  href,
+  variant = 'default',
+  size = 'md',
+  disabled = false,
+  loading = false,
+  class: className,
+} = Astro.props;
+
+const isDisabled = disabled || loading;
+
+const variantClasses = {
+  default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+  outline: 'bg-background border border-border text-foreground hover:bg-muted',
+  ghost: 'bg-transparent text-foreground hover:bg-muted',
+  link: 'text-foreground underline-offset-4 hover:underline',
+};
+
+const sizeClasses = {
+  sm: 'px-3 py-2 text-sm',
+  md: 'px-3.5 py-2.5 text-sm',
+  lg: 'px-[18px] py-3 text-base',
+  xl: 'px-5 py-3 text-base',
+};
+
+const classes = cn(
+  'inline-flex items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition-colors',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring',
+  'disabled:pointer-events-none disabled:opacity-50',
+  variantClasses[variant],
+  sizeClasses[size],
+  className
+);
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class={classes}
+      aria-disabled={isDisabled || undefined}
+      aria-busy={loading || undefined}
+    >
+      {loading && (
+        <span
+          class="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+          aria-hidden="true"
+        />
+      )}
+      {label}
+      {loading && <span class="sr-only">Loading</span>}
+    </a>
+  ) : (
+    <button
+      type="button"
+      class={classes}
+      disabled={isDisabled}
+      aria-busy={loading || undefined}
+    >
+      {loading && (
+        <span
+          class="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+          aria-hidden="true"
+        />
+      )}
+      {label}
+      {loading && <span class="sr-only">Loading</span>}
+    </button>
+  )
+}
