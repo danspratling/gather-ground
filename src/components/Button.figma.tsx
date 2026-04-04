@@ -34,3 +34,7 @@ figma.connect(
       `<Button label="Button CTA" variant="${variant}" size="${size}"${disabled ? ' disabled' : ''} />`,
   }
 );
+
+// Required by @storybook-astro/framework: the build server scans src/components/ and
+// generates a virtual module wrapper that re-exports `default` from every source file.
+export default undefined;

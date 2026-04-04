@@ -20,7 +20,7 @@ const config: StorybookConfig = {
   framework: {
     name: '@storybook-astro/framework',
     options: {
-      integrations: [react({ include: ['**/components/**/!(*.figma).*'] })],
+      integrations: [react({ include: ['**/components/**'] })],
     },
   },
   viteFinal: async (config) => {
