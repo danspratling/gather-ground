@@ -221,7 +221,13 @@ src/components/
 
 **Consequence:** This supersedes ADR-003. Existing story files in `src/stories/` should be migrated to `src/components/` over time; new stories must always be co-located.
 
-One technical side-effect to be aware of: `@storybook-astro/framework`'s build server plugin scans `src/components/` and generates a `virtual:astro-component-module` wrapper (which re-exports `default`) for every `.ts/.tsx/.js/.jsx/.vue/.svelte` file it finds. Only `.stories.*`, `.spec.*`, and `.test.*` files are excluded — `.figma.*` files are not. Any co-located file that is **not** a standard component, story, spec, or test (e.g. a Figma Code Connect file) **must** include `export default null` at the end of the file to satisfy the wrapper and keep the Storybook build green. The `export default null` is inert at runtime.
+One technical side-effect to be aware of: `@storybook-astro/framework`'s build server plugin scans `src/components/` and generates a `virtual:astro-component-module` wrapper (which re-exports `default`) for every `.ts/.tsx/.js/.jsx/.vue/.svelte` file it finds. Only `.stories.*`, `.spec.*`, and `.test.*` files are excluded — `.figma.*` and `.types.*` files are not. Any co-located file that is **not** a standard component, story, spec, or test **must** include `export default null` at the end of the file to satisfy the wrapper and keep the Storybook build green. This applies to:
+
+- `*.figma.tsx` — Figma Code Connect files
+- `*.types.ts` — co-located type files
+- `src/components/ui/*.tsx` — shadcn primitives installed via `npx shadcn add`
+
+The `export default null` is inert at runtime. Always add it when creating any of the above file types.
 
 ---
 

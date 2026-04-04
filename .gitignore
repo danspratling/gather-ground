@@ -25,6 +25,7 @@ pnpm-debug.log*
 
 *storybook.log
 storybook-static/
+storybook-server/
 
 # Playwright
 /test-results/
