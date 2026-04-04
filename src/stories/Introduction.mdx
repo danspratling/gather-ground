@@ -5,22 +5,26 @@ import { Meta, Title, Subtitle, Description } from '@storybook/addon-docs/blocks
 
 <Title>Gather Ground — Component Library</Title>
 
-<Subtitle>Marketing website for a heritage-breed family farm in rural Iowa.</Subtitle>
+<Subtitle>
+  Marketing website for a heritage-breed family farm in rural Iowa.
+</Subtitle>
 
 <Description>
-  This Storybook documents every UI component used on the Gather Ground website. Each story is linked to its Figma source, includes a live accessibility audit, and has interaction tests you can run in-browser.
+  This Storybook documents every UI component used on the Gather Ground website.
+  Each story is linked to its Figma source, includes a live accessibility audit,
+  and has interaction tests you can run in-browser.
 </Description>
 
 ---
 
 ## Stack
 
-| Layer      | Tool                              |
-| ---------- | --------------------------------- |
-| Framework  | Astro (static) + React islands    |
-| Styling    | Tailwind CSS v4 + design tokens   |
-| Primitives | shadcn/ui                         |
-| CMS        | Storyblok                         |
+| Layer      | Tool                                |
+| ---------- | ----------------------------------- |
+| Framework  | Astro (static) + React islands      |
+| Styling    | Tailwind CSS v4 + design tokens     |
+| Primitives | shadcn/ui                           |
+| CMS        | Storyblok                           |
 | Testing    | Storybook interactions + Playwright |
 
 ---
@@ -57,26 +61,26 @@ All tokens live in `src/styles/global.css` and are exposed as Tailwind utility c
 
 ### Colour
 
-| Purpose          | Token        | Class                |
-| ---------------- | ------------ | -------------------- |
-| Page background  | `off-white`  | `bg-off-white`       |
-| Primary text     | `brand-900`  | `text-brand-900`     |
-| Section headings | `gray-900`   | `text-gray-900`      |
-| Muted / captions | `gray-600`   | `text-gray-600`      |
-| Primary button   | `brand-700`  | `bg-brand-700`       |
-| Footer bg        | `gray-950`   | `bg-gray-950`        |
-| Card background  | `secondary-50` | `bg-secondary-50`  |
+| Purpose          | Token          | Class             |
+| ---------------- | -------------- | ----------------- |
+| Page background  | `off-white`    | `bg-off-white`    |
+| Primary text     | `brand-900`    | `text-brand-900`  |
+| Section headings | `gray-900`     | `text-gray-900`   |
+| Muted / captions | `gray-600`     | `text-gray-600`   |
+| Primary button   | `brand-700`    | `bg-brand-700`    |
+| Footer bg        | `gray-950`     | `bg-gray-950`     |
+| Card background  | `secondary-50` | `bg-secondary-50` |
 
 ### Typography
 
 Font: **DM Sans** (variable). All sizes use standard Tailwind text utilities.
 
-| Scale        | Class                                               |
-| ------------ | --------------------------------------------------- |
-| Body default | `text-base font-normal`                             |
-| Body semibold | `text-base font-semibold`                          |
+| Scale           | Class                                               |
+| --------------- | --------------------------------------------------- |
+| Body default    | `text-base font-normal`                             |
+| Body semibold   | `text-base font-semibold`                           |
 | Section heading | `text-display-md font-semibold tracking-display-md` |
-| Hero heading | `text-display-xl font-medium tracking-display-xl`   |
+| Hero heading    | `text-display-xl font-medium tracking-display-xl`   |
 
 See [`TOKENS.md`](../../TOKENS.md) for the full token reference.
 

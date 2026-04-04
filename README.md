@@ -38,15 +38,15 @@ Fill in the values — see `.env.example` for descriptions.
 
 ## Commands
 
-| Command | Action |
-| :--- | :--- |
-| `npm run dev` | Start local dev server at `localhost:4321` |
-| `npm run build` | Build production site to `./dist/` |
+| Command             | Action                                                |
+| :------------------ | :---------------------------------------------------- |
+| `npm run dev`       | Start local dev server at `localhost:4321`            |
+| `npm run build`     | Build production site to `./dist/`                    |
 | `npm run storybook` | Start Storybook component library at `localhost:6006` |
-| `npm run typecheck` | TypeScript type check |
-| `npm run lint` | ESLint |
-| `npm run format` | Prettier (auto-fix) |
-| `npm run test` | Playwright e2e tests |
+| `npm run typecheck` | TypeScript type check                                 |
+| `npm run lint`      | ESLint                                                |
+| `npm run format`    | Prettier (auto-fix)                                   |
+| `npm run test`      | Playwright e2e tests                                  |
 
 ## Further reading
 
