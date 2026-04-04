@@ -17,6 +17,9 @@ pnpm-debug.log*
 .env
 .env.production
 
+# private registry credentials
+.npmrc
+
 # macOS-specific files
 .DS_Store
 

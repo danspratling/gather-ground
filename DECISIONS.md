@@ -134,6 +134,61 @@ Architecture decision log for the Gather Ground website. Read this before changi
 
 ---
 
+## ADR-014: Icons use @untitledui-pro/icons; brand/platform icons use inline SVG
+
+**Decision:** All UI icons are sourced from `@untitledui-pro/icons`. Import from the appropriate style sub-path and render as a React component:
+
+```tsx
+import { Mail01 } from '@untitledui-pro/icons/line';
+<Mail01 className="size-6" />;
+```
+
+Brand/platform icons (Instagram, Facebook, TikTok, X/Twitter, LinkedIn, etc.) are **not** in the Untitled UI library and must be inlined as SVG strings or imported as SVG assets.
+
+**Reasoning:** Untitled UI pro provides 1100+ consistent, well-crafted UI icons that match the project's design language. Using a single source prevents visual inconsistency from mixing icon sets. The pro package includes line, solid, duotone, and duocolor variants — default to `line` unless Figma specifies otherwise. Social brand icons are absent from the library for licensing reasons; these are handled separately as inline SVG.
+
+**Consequence:** Never use Lucide, Heroicons, or other icon libraries for UI icons — always check Untitled UI first. For brand icons not in the library, inline the SVG directly in the component where it's used (as with the social links in `Footer.astro`).
+
+---
+
+## ADR-015: Migrate React stories to CSF Factories when Storybook 11 ships
+
+**Decision (deferred):** Do not migrate to CSF Factories yet. Migrate all React stories (`.tsx` components) when Storybook 11 is released and CSF Factories move from "Preview" to stable.
+
+**Reasoning:** CSF Factories remove `satisfies Meta<typeof Component>` boilerplate and improve type inference, but they are React-only and labelled "Preview" in Storybook 10 — meaning the API could still change. Migrating prematurely risks churn. Astro stories remain unaffected (they are untyped by design — `@storybook-astro/framework` does not export `Meta`/`StoryObj`).
+
+**When to act:** Storybook 11 release (expected Spring 2026). Run the official codemod: `npx storybook@latest migrate csf-factories`.
+
+**What changes:** Replace the `satisfies Meta<typeof Button>` + `StoryObj` pattern:
+
+```ts
+// Before (CSF 3)
+import type { Meta, StoryObj } from '@storybook/react';
+const meta = { component: Button } satisfies Meta<typeof Button>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Default: Story = { args: { children: 'Button' } };
+
+// After (CSF Factories)
+import preview from '../.storybook/preview';
+const meta = preview.meta({ component: Button });
+export const Default = meta.story({ args: { children: 'Button' } });
+```
+
+---
+
+## ADR-016: Use sb.mock for API mocking in stories once real endpoints exist
+
+**Decision (deferred):** When `NewsletterForm` (and any future component) is wired to a real API, replace the current `setTimeout` stub with Storybook 10's `sb.mock` module mocking.
+
+**Reasoning:** The current `NewsletterForm` fakes its submit with a hardcoded `await new Promise(resolve => setTimeout(resolve, 500))`. This is fine during development but will need replacing once a real newsletter endpoint exists. `sb.mock` (inspired by `vi.mock`) works with both Vite and Webpack builders and is available in dev and static builds — making it the correct tool for mocking fetch calls, API clients, or server actions inside stories.
+
+**When to act:** When a real newsletter/API integration is added to `NewsletterForm.tsx`.
+
+**What changes:** Import `sb.mock` in the story file and mock the fetch/API module, then restore defaults in `afterEach`. No changes to the component itself.
+
+---
+
 ## Adding a new entry
 
 When you make a decision that future-you (or Claude Code) might question, add it here immediately:
