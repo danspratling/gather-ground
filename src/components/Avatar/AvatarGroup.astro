@@ -1,0 +1,22 @@
+---
+import { cn } from '@/lib/utils';
+import type { AvatarGroupProps } from '@/types/avatar';
+import Avatar from './Avatar.astro';
+
+type Props = AvatarGroupProps;
+
+const { avatars, size = 'xl', class: className } = Astro.props;
+---
+
+<div class={cn('flex items-center', className)}>
+  {
+    avatars.map((avatar, i) => (
+      <Avatar
+        src={avatar.src}
+        alt={avatar.alt}
+        size={size}
+        class={cn('border-[1.5px] border-off-white', i > 0 && '-ml-3')}
+      />
+    ))
+  }
+</div>

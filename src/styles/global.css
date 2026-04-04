@@ -20,6 +20,7 @@
 
   /* Gray palette */
   --color-gray-200: #e5e5e5;
+  --color-gray-300: #dbdbdb;
   --color-gray-400: #d1d1d1;
   --color-gray-500: #bfbfbf;
   --color-gray-600: #a5a5a5;
@@ -31,6 +32,47 @@
   /* Secondary palette */
   --color-secondary-50: #faf7ef;
   --color-secondary-200: #f6f2e3;
+
+  /* Semantic status palette — used by Badge and status indicators */
+  --color-error-50: #fef3f2;
+  --color-error-200: #fecdca;
+  --color-error-700: #b42318;
+
+  --color-warning-50: #fffaeb;
+  --color-warning-200: #fedf89;
+  --color-warning-700: #b54708;
+
+  --color-success-50: #ecfdf3;
+  --color-success-200: #abefc6;
+  --color-success-700: #067647;
+
+  --color-blue-light-50: #f0f9ff;
+  --color-blue-light-200: #b9e6fe;
+  --color-blue-light-700: #026aa2;
+
+  --color-blue-50: #eff8ff;
+  --color-blue-200: #b2ddff;
+  --color-blue-700: #175cd3;
+
+  --color-indigo-50: #eef4ff;
+  --color-indigo-200: #c7d7fe;
+  --color-indigo-700: #3538cd;
+
+  --color-purple-50: #f4f3ff;
+  --color-purple-200: #d9d6fe;
+  --color-purple-700: #5925dc;
+
+  --color-pink-50: #fdf2fa;
+  --color-pink-200: #fcceee;
+  --color-pink-700: #c11574;
+
+  --color-orange-50: #fef6ee;
+  --color-orange-200: #f9dbaf;
+  --color-orange-700: #b93815;
+
+  --color-gray-blue-50: #f8f9fc;
+  --color-gray-blue-200: #d5d9eb;
+  --color-gray-blue-700: #363f72;
 
   /* Typography — DM Sans */
   --font-sans: 'DM Sans Variable', sans-serif;
