@@ -4,7 +4,7 @@ import { expect, within } from 'storybook/test';
 import Badge from '@/components/Badge.astro';
 
 const meta = {
-  title: 'Components/Badge',
+  title: 'Core/Badge',
   component: Badge,
   tags: ['autodocs'],
   parameters: {

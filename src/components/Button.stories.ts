@@ -6,7 +6,7 @@ import { expect, within } from 'storybook/test';
 import Button from '@/components/Button.astro';
 
 const meta = {
-  title: 'Components/Button',
+  title: 'Core/Button',
   component: Button,
   tags: ['autodocs'],
   parameters: {
