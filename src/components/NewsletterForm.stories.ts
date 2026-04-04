@@ -4,12 +4,12 @@ import { expect, userEvent, within } from 'storybook/test';
 import NewsletterForm from '@/components/NewsletterForm';
 
 const meta = {
-  title: 'Components/NewsletterForm',
+  title: 'Core/Newsletter Form',
   component: NewsletterForm,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
-    renderer: '@storybook/react',
+    renderer: 'react',
     backgrounds: {
       default: 'dark',
       values: [{ name: 'dark', value: '#171717' }],

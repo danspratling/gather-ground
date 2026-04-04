@@ -6,7 +6,7 @@ import Avatar from './Avatar.astro';
 const PLACEHOLDER = 'https://i.pravatar.cc/150?img=1';
 
 export default {
-  title: 'Components/Avatar',
+  title: 'Core/Avatar',
   component: Avatar,
   tags: ['autodocs'],
   parameters: {

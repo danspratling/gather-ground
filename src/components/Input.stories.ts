@@ -4,7 +4,7 @@ import { expect, within } from 'storybook/test';
 import Input from '@/components/Input.astro';
 
 const meta = {
-  title: 'Components/Input',
+  title: 'Core/Input',
   component: Input,
   tags: ['autodocs'],
   parameters: {
