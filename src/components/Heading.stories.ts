@@ -4,7 +4,7 @@ import { expect, within } from 'storybook/test';
 import Heading from '@/components/Heading.astro';
 
 const meta = {
-  title: 'Components/Typography/Heading',
+  title: 'Core/Typography/Heading',
   component: Heading,
   tags: ['autodocs'],
   parameters: {

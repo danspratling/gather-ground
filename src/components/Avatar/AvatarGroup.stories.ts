@@ -8,7 +8,7 @@ const PLACEHOLDER_2 = 'https://i.pravatar.cc/150?img=2';
 const PLACEHOLDER_3 = 'https://i.pravatar.cc/150?img=3';
 
 export default {
-  title: 'Components/AvatarGroup',
+  title: 'Core/Avatar Group',
   component: AvatarGroup,
   tags: ['autodocs'],
   parameters: {

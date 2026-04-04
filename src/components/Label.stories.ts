@@ -4,7 +4,7 @@ import { expect, within } from 'storybook/test';
 import Label from '@/components/Label.astro';
 
 const meta = {
-  title: 'Components/Typography/Label',
+  title: 'Core/Typography/Label',
   component: Label,
   tags: ['autodocs'],
   parameters: {

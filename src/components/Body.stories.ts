@@ -4,7 +4,7 @@ import { expect, within } from 'storybook/test';
 import Body from '@/components/Body.astro';
 
 const meta = {
-  title: 'Components/Typography/Body',
+  title: 'Core/Typography/Body',
   component: Body,
   tags: ['autodocs'],
   parameters: {

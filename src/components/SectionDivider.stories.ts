@@ -6,7 +6,7 @@ import { expect, within } from 'storybook/test';
 import SectionDivider from '@/components/SectionDivider.astro';
 
 const meta = {
-  title: 'Components/SectionDivider',
+  title: 'Sections/Section Divider',
   component: SectionDivider,
   tags: ['autodocs'],
   parameters: {

@@ -6,7 +6,7 @@ import AvatarLabelGroup from './AvatarLabelGroup.astro';
 const PLACEHOLDER = 'https://i.pravatar.cc/150?img=1';
 
 export default {
-  title: 'Components/AvatarLabelGroup',
+  title: 'Core/Avatar Label Group',
   component: AvatarLabelGroup,
   tags: ['autodocs'],
   parameters: {

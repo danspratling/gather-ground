@@ -6,7 +6,7 @@ import { expect, within } from 'storybook/test';
 import Footer from '@/components/Footer.astro';
 
 const meta = {
-  title: 'Components/Footer',
+  title: 'Layout/Footer',
   component: Footer,
   tags: ['autodocs'],
   parameters: {
