@@ -5,9 +5,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Gather Ground design tokens — complete colour palette extracted from Figma.
-   Rule: if any stop from a scale is used, the full scale (25–950) is defined.
-   Reference: GG-54, Figma node 5225:371288 (Foundation › Colors).          */
+/* Gather Ground design tokens — literal values */
 @theme {
   /* ── Base ── */
   --color-base-off-white: #fffff8;
