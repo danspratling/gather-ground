@@ -46,8 +46,18 @@ const defaultArgs = {
     { label: 'Blog', href: '/blog' },
     { label: 'Contact', href: '/contact' },
   ],
-  ctaLabel: 'Order now',
+  ctaLabel: 'Shop now',
   ctaHref: '/shop',
+  loginLabel: 'Log in',
+  loginHref: '/login',
+  footerLinks: [
+    { label: 'About us', href: '/about' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'Privacy', href: '/privacy' },
+    { label: 'Terms', href: '/terms' },
+    { label: 'Contact', href: '/contact' },
+    { label: 'Cookies', href: '/cookies' },
+  ],
 };
 
 const meta = {

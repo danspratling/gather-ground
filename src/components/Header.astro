@@ -1,4 +1,5 @@
 ---
+import { User03, SearchMd, ShoppingBag02 } from '@untitledui-pro/icons/line';
 import NavMenu from '@/components/NavMenu';
 import MobileMenu from '@/components/MobileMenu';
 import type { HeaderProps } from '@/components/Header.types';
@@ -9,49 +10,86 @@ const {
   logoSrc,
   logoAlt,
   navLinks,
-  ctaLabel = 'Order now',
+  ctaLabel = 'Shop now',
   ctaHref = '/shop',
+  loginLabel = 'Log in',
+  loginHref = '/login',
+  footerLinks = [],
 } = Astro.props;
 ---
 
-<header class="sticky top-0 z-40 w-full border-b border-gray-100 bg-off-white">
+<header class="sticky top-0 z-40 w-full border-b border-gray-400 bg-off-white">
   <div
-    class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8"
+    class="mx-auto flex h-20 max-w-[1280px] items-center justify-between px-8"
   >
-    <a href="/" class="shrink-0" aria-label="Gather Ground home">
+    <!-- Left zone: desktop nav / mobile logo -->
+    <div class="flex flex-[1_0_0] items-center gap-0.5">
+      <nav
+        class="hidden items-center gap-0.5 md:flex"
+        aria-label="Main navigation"
+      >
+        {
+          navLinks.map((link) =>
+            link.menu ? (
+              <NavMenu client:visible label={link.label} items={link.menu} />
+            ) : (
+              <a
+                href={link.href}
+                class="rounded-lg px-1.5 py-1 text-base font-semibold text-gray-700 hover:bg-brand-25 hover:text-brand-900"
+              >
+                {link.label}
+              </a>
+            )
+          )
+        }
+      </nav>
+      <!-- Mobile: logo sits left -->
+      <a href="/" class="shrink-0 md:hidden" aria-label={logoAlt}>
+        <img src={logoSrc} alt={logoAlt} class="h-8 w-auto" />
+      </a>
+    </div>
+
+    <!-- Center: logo (desktop only) -->
+    <a href="/" class="hidden shrink-0 md:flex" aria-label={logoAlt}>
       <img src={logoSrc} alt={logoAlt} class="h-8 w-auto" />
     </a>
 
-    <nav class="hidden items-center gap-1 md:flex" aria-label="Main navigation">
-      {
-        navLinks.map((link) =>
-          link.menu ? (
-            <NavMenu client:visible label={link.label} items={link.menu} />
-          ) : (
-            <a
-              href={link.href}
-              class="rounded-[6px] px-2 py-0.5 text-sm font-medium text-brand-700 hover:text-brand-900"
-            >
-              {link.label}
-            </a>
-          )
-        )
-      }
-    </nav>
-
-    <div class="flex items-center gap-3">
-      <a
-        href={ctaHref}
-        class="hidden rounded-lg bg-brand-800 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-900 md:inline-flex"
-      >
-        {ctaLabel}
-      </a>
+    <!-- Right zone: desktop icon actions / mobile hamburger -->
+    <div class="flex flex-[1_0_0] items-center justify-end">
+      <div class="hidden items-center md:flex">
+        <a
+          href="/account"
+          aria-label="Account"
+          class="rounded-full p-3 text-gray-700 hover:bg-brand-25"
+        >
+          <User03 className="size-5" aria-hidden="true" />
+        </a>
+        <a
+          href="/search"
+          aria-label="Search"
+          class="rounded-full p-3 text-gray-700 hover:bg-brand-25"
+        >
+          <SearchMd className="size-5" aria-hidden="true" />
+        </a>
+        <a
+          href={ctaHref}
+          aria-label="Shop"
+          class="rounded-full p-3 text-gray-700 hover:bg-brand-25"
+        >
+          <ShoppingBag02 className="size-5" aria-hidden="true" />
+        </a>
+      </div>
       <div class="md:hidden">
         <MobileMenu
           client:visible
+          logoSrc={logoSrc}
+          logoAlt={logoAlt}
           navLinks={navLinks}
           ctaLabel={ctaLabel}
           ctaHref={ctaHref}
+          loginLabel={loginLabel}
+          loginHref={loginHref}
+          footerLinks={footerLinks}
         />
       </div>
     </div>
