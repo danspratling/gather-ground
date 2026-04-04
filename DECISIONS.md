@@ -159,6 +159,28 @@ Brand/platform icons (Instagram, Facebook, TikTok, X/Twitter, LinkedIn, etc.) ar
 
 **When to act:** Storybook 11 release (expected Spring 2026). Run the official codemod: `npx storybook@latest migrate csf-factories`.
 
+---
+
+## ADR-016: Chromatic for visual regression; addon-a11y for accessibility; addon-docs for MDX
+
+**Decision:** Three Storybook addons are installed and registered in `.storybook/main.ts`:
+
+- `@chromatic-com/storybook` — visual regression testing via Chromatic
+- `@storybook/addon-a11y` — WCAG accessibility audit panel per story
+- `@storybook/addon-docs` — MDX documentation pages and `autodocs` support
+
+**Reasoning:**
+
+- *Visual regression:* Chromatic is the first-party Storybook service for snapshot diffing. It integrates natively with the Storybook build step and requires no extra CI configuration beyond a `CHROMATIC_PROJECT_TOKEN` secret and a `chromatic` CLI invocation. Alternative (Playwright screenshot diffing) requires significantly more infrastructure and maintenance.
+- *Accessibility:* The `addon-a11y` panel runs `axe-core` against each rendered story inline. This catches WCAG issues (colour contrast, missing ARIA roles, focus order) at the component level, where they are cheapest to fix — before Playwright or manual review.
+- *Docs:* `addon-docs` enables MDX story files (`.mdx` under `src/stories/`) and powers `autodocs` auto-generated API docs for React components that opt in via `tags: ['autodocs']`.
+
+**Consequences:**
+
+- The `addon-a11y` panel must be checked for every new component story before marking a PR ready for review. Fix violations; do not suppress them without a documented reason.
+- Chromatic visual regression is *not yet wired into CI*. To activate it, add `CHROMATIC_PROJECT_TOKEN` to the GitHub repository secrets and add a Chromatic publish step to `.github/workflows/ci.yml`. Do this when visual regression coverage is needed (recommended when page sections are complete and stable).
+- MDX docs pages live in `src/stories/` alongside story files (covered by the existing glob). See `src/stories/Introduction.mdx` as the reference example.
+
 **What changes:** Replace the `satisfies Meta<typeof Button>` + `StoryObj` pattern:
 
 ```ts

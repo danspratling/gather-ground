@@ -87,16 +87,15 @@ npm run typecheck     # tsc --noEmit — TypeScript check
 
 ## CI pipeline
 
-Every PR runs `.github/workflows/ci.yml` automatically:
+Every PR runs `.github/workflows/ci.yml` automatically as 5 parallel jobs:
 
-| Step                   | Command                                             |
-| ---------------------- | --------------------------------------------------- |
-| Lint                   | `npm run lint`                                      |
-| Format check           | `npm run format:check`                              |
-| Typecheck              | `npm run typecheck`                                 |
-| Astro build            | `npm run build`                                     |
-| Storybook build + test | `npm run build-storybook && npm run test-storybook` |
-| Playwright             | `npx playwright test`                               |
+| Job                          | Commands                                          |
+| ---------------------------- | ------------------------------------------------- |
+| Lint & Format                | `npm run lint`, `npm run format:check`            |
+| Typecheck                    | `npm run typecheck`                               |
+| Build                        | `npm run build`                                   |
+| E2E Tests (Playwright)       | `npx playwright install && npm run test`          |
+| Component Tests (Storybook)  | `npm run build-storybook`                         |
 
 Fix CI failures locally before pushing:
 

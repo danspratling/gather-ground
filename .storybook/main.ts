@@ -11,7 +11,12 @@ const config: StorybookConfig = {
     '../src/stories/**/*.mdx',
     '../src/stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
-  addons: ['@storybook/addon-designs'],
+  addons: [
+    '@storybook/addon-docs',
+    '@storybook/addon-a11y',
+    '@storybook/addon-designs',
+    '@chromatic-com/storybook',
+  ],
   framework: {
     name: '@storybook-astro/framework',
     options: {
