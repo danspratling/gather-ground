@@ -35,6 +35,7 @@ figma.connect(
   }
 );
 
-// Required by @storybook-astro/framework: the build server scans src/components/ and
-// generates a virtual module wrapper that re-exports `default` from every source file.
-export default undefined;
+// @storybook-astro/framework's build server scans src/components/ and generates a
+// virtual:astro-component-module wrapper that re-exports `default` for every source file.
+// This export satisfies that requirement; it has no effect on Figma Code Connect publishing.
+export default null;
