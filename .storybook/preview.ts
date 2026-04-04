@@ -3,6 +3,14 @@ import '../src/styles/global.css';
 
 const preview: Preview = {
   parameters: {
+    backgrounds: {
+      default: 'white',
+      values: [
+        { name: 'white', value: '#ffffff' },
+        { name: 'off-white (site)', value: '#fffff8' },
+        { name: 'dark', value: '#171717' },
+      ],
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,
