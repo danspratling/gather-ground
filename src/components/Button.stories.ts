@@ -11,6 +11,7 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
+    a11y: { disable: false },
     design: {
       type: 'figma',
       url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=3287-427074',
@@ -23,9 +24,12 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['sm', 'default', 'lg'],
+      options: ['sm', 'md', 'lg', 'xl'],
     },
     disabled: {
+      control: 'boolean',
+    },
+    loading: {
       control: 'boolean',
     },
   },
@@ -37,8 +41,9 @@ export const Primary = {
   args: {
     label: 'Button CTA',
     variant: 'default' as const,
-    size: 'default' as const,
+    size: 'md' as const,
     disabled: false,
+    loading: false,
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
@@ -56,7 +61,7 @@ export const Outline = {
   args: {
     label: 'Button CTA',
     variant: 'outline' as const,
-    size: 'default' as const,
+    size: 'md' as const,
   },
 };
 
@@ -64,7 +69,7 @@ export const Ghost = {
   args: {
     label: 'Button CTA',
     variant: 'ghost' as const,
-    size: 'default' as const,
+    size: 'md' as const,
   },
 };
 
@@ -72,7 +77,7 @@ export const Link = {
   args: {
     label: 'Button CTA',
     variant: 'link' as const,
-    size: 'default' as const,
+    size: 'md' as const,
   },
 };
 
@@ -103,6 +108,21 @@ export const Disabled = {
     const button = canvas.getByRole('button', { name: 'Button CTA' });
 
     await expect(button).toBeDisabled();
+  },
+};
+
+export const Loading = {
+  args: {
+    label: 'Button CTA',
+    variant: 'default' as const,
+    loading: true,
+  },
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', { name: /Button CTA/ });
+
+    await expect(button).toBeDisabled();
+    await expect(button).toHaveAttribute('aria-busy', 'true');
   },
 };
 

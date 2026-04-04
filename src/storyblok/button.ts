@@ -40,17 +40,24 @@ export const buttonSchema = {
     size: {
       type: 'option',
       display_name: 'Size',
-      default_value: 'default',
+      default_value: 'md',
       options: [
         { value: 'sm', name: 'Small' },
-        { value: 'default', name: 'Medium' },
+        { value: 'md', name: 'Medium' },
         { value: 'lg', name: 'Large' },
+        { value: 'xl', name: 'Extra Large' },
       ],
     },
     disabled: {
       type: 'boolean',
       display_name: 'Disabled',
       default_value: false,
+    },
+    loading: {
+      type: 'boolean',
+      display_name: 'Loading',
+      default_value: false,
+      description: 'Shows a spinner and disables the button while loading.',
     },
   },
 };
