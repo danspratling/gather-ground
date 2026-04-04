@@ -1,12 +1,12 @@
 /**
- * Storyblok component schema for CtaBlock.
+ * Storyblok component schema for CallToAction.
  *
  * Push to Storyblok via the CLI:
  *   npx storyblok push-components --space 289911665285843
  */
-export const ctaBlockSchema = {
+export const callToActionSchema = {
   name: 'cta_block',
-  display_name: 'CTA Block',
+  display_name: 'Call To Action',
   is_root: false,
   is_nestable: true,
   schema: {

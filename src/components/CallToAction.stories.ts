@@ -3,11 +3,11 @@
 import { expect, within } from 'storybook/test';
 
 // @ts-expect-error — .astro files have no TypeScript declarations
-import CtaBlock from '@/components/CtaBlock.astro';
+import CallToAction from '@/components/CallToAction.astro';
 
 const meta = {
-  title: 'Sections/CTA Block',
-  component: CtaBlock,
+  title: 'Sections/Call To Action',
+  component: CallToAction,
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',
