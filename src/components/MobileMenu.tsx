@@ -8,7 +8,6 @@ interface MobileMenuProps {
   logoAlt: string;
   navLinks: HeaderNavLink[];
   accountHref: string;
-  basketHref: string;
   footerLinks: { label: string; href: string }[];
 }
 
@@ -17,7 +16,6 @@ export default function MobileMenu({
   logoAlt,
   navLinks,
   accountHref,
-  basketHref,
   footerLinks,
 }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
@@ -188,19 +186,12 @@ export default function MobileMenu({
             )}
           </nav>
 
-          {/* Bottom CTAs */}
+          {/* Bottom: account link */}
           <div className="shrink-0 border-t border-gray-200 px-4 py-4">
-            <a
-              href={basketHref}
-              onClick={closeAll}
-              className="block w-full rounded-full bg-brand-900 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-brand-700"
-            >
-              Basket
-            </a>
             <a
               href={accountHref}
               onClick={closeAll}
-              className="mt-3 block w-full rounded-full border border-gray-400 px-4 py-3 text-center text-sm font-semibold text-gray-900 hover:bg-brand-25"
+              className="block w-full rounded-full border border-gray-400 px-4 py-3 text-center text-sm font-semibold text-gray-900 hover:bg-brand-25"
             >
               Account
             </a>

@@ -25,7 +25,7 @@ const {
   <div
     class="mx-auto flex h-20 max-w-[1280px] items-center justify-between px-8"
   >
-    <!-- Left zone: desktop nav / mobile logo -->
+    <!-- Left zone: desktop nav / mobile hamburger -->
     <div class="flex flex-[1_0_0] items-center gap-0.5">
       <nav
         class="hidden items-center gap-0.5 md:flex"
@@ -46,18 +46,24 @@ const {
           )
         }
       </nav>
-      <!-- Mobile: logo sits left -->
-      <a href="/" class="shrink-0 md:hidden" aria-label={logoAlt}>
-        <img src={logoSrc} alt={logoAlt} class="h-8 w-auto" />
-      </a>
+      <div class="md:hidden">
+        <MobileMenu
+          client:load
+          logoSrc={logoSrc}
+          logoAlt={logoAlt}
+          navLinks={navLinks}
+          accountHref={accountHref}
+          footerLinks={footerLinks}
+        />
+      </div>
     </div>
 
-    <!-- Center: logo (desktop only) -->
-    <a href="/" class="hidden shrink-0 md:flex" aria-label={logoAlt}>
+    <!-- Center: logo (always) -->
+    <a href="/" class="shrink-0" aria-label={logoAlt}>
       <img src={logoSrc} alt={logoAlt} class="h-8 w-auto" />
     </a>
 
-    <!-- Right zone: desktop actions / mobile hamburger -->
+    <!-- Right zone: desktop actions / mobile basket icon -->
     <div class="flex flex-[1_0_0] items-center justify-end">
       {
         actions === 'icons' ? (
@@ -94,17 +100,14 @@ const {
           </div>
         )
       }
-      <div class="md:hidden">
-        <MobileMenu
-          client:load
-          logoSrc={logoSrc}
-          logoAlt={logoAlt}
-          navLinks={navLinks}
-          accountHref={accountHref}
-          basketHref={basketHref}
-          footerLinks={footerLinks}
-        />
-      </div>
+      <!-- Mobile: basket icon only -->
+      <a
+        href={basketHref}
+        aria-label="Basket"
+        class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900 md:hidden"
+      >
+        <ShoppingBag02 className="size-5" aria-hidden="true" />
+      </a>
     </div>
   </div>
 </header>

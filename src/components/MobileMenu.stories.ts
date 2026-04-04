@@ -40,7 +40,6 @@ const base = {
   logoSrc: '/favicon.svg',
   logoAlt: 'Gather Ground',
   accountHref: '/account',
-  basketHref: '/cart',
   footerLinks: [
     { label: 'About us', href: '/about' },
     { label: 'Blog', href: '/blog' },
