@@ -10,6 +10,7 @@ const {
   logoSrc,
   logoAlt,
   navLinks,
+  actions = 'icons',
   ctaLabel = 'Shop now',
   ctaHref = '/shop',
   loginLabel = 'Log in',
@@ -35,7 +36,7 @@ const {
             ) : (
               <a
                 href={link.href}
-                class="rounded-lg px-1.5 py-1 text-base font-semibold text-gray-700 hover:bg-brand-25 hover:text-brand-900"
+                class="rounded-lg px-1.5 py-1 text-base font-semibold text-brand-800 hover:bg-brand-25 hover:text-brand-900"
               >
                 {link.label}
               </a>
@@ -54,31 +55,50 @@ const {
       <img src={logoSrc} alt={logoAlt} class="h-8 w-auto" />
     </a>
 
-    <!-- Right zone: desktop icon actions / mobile hamburger -->
+    <!-- Right zone: desktop actions / mobile hamburger -->
     <div class="flex flex-[1_0_0] items-center justify-end">
-      <div class="hidden items-center md:flex">
-        <a
-          href="/account"
-          aria-label="Account"
-          class="rounded-full p-3 text-gray-700 hover:bg-brand-25"
-        >
-          <User03 className="size-5" aria-hidden="true" />
-        </a>
-        <a
-          href="/search"
-          aria-label="Search"
-          class="rounded-full p-3 text-gray-700 hover:bg-brand-25"
-        >
-          <SearchMd className="size-5" aria-hidden="true" />
-        </a>
-        <a
-          href={ctaHref}
-          aria-label="Shop"
-          class="rounded-full p-3 text-gray-700 hover:bg-brand-25"
-        >
-          <ShoppingBag02 className="size-5" aria-hidden="true" />
-        </a>
-      </div>
+      {
+        actions === 'icons' ? (
+          <div class="hidden items-center md:flex">
+            <a
+              href="/account"
+              aria-label="Account"
+              class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900"
+            >
+              <User03 className="size-5" aria-hidden="true" />
+            </a>
+            <a
+              href="/search"
+              aria-label="Search"
+              class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900"
+            >
+              <SearchMd className="size-5" aria-hidden="true" />
+            </a>
+            <a
+              href={ctaHref}
+              aria-label="Shop"
+              class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900"
+            >
+              <ShoppingBag02 className="size-5" aria-hidden="true" />
+            </a>
+          </div>
+        ) : (
+          <div class="hidden items-center gap-3 md:flex">
+            <a
+              href={ctaHref}
+              class="rounded-full border border-gray-400 px-4 py-2 text-sm font-semibold text-brand-900 hover:bg-brand-25"
+            >
+              {ctaLabel}
+            </a>
+            <a
+              href={loginHref}
+              class="rounded-full bg-brand-900 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+            >
+              {loginLabel}
+            </a>
+          </div>
+        )
+      }
       <div class="md:hidden">
         <MobileMenu
           client:load

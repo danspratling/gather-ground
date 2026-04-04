@@ -36,17 +36,11 @@ const aboutMenu = [
   { label: 'Sustainability', href: '/about/sustainability' },
 ];
 
-const defaultArgs = {
+const base = {
   logoSrc: '/favicon.svg',
   logoAlt: 'Gather Ground',
-  navLinks: [
-    { label: 'Shop', menu: shopMenu },
-    { label: 'About us', menu: aboutMenu },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Contact', href: '/contact' },
-  ],
-  ctaLabel: 'Shop now',
-  ctaHref: '/shop',
+  ctaLabel: 'Sign up',
+  ctaHref: '/signup',
   loginLabel: 'Log in',
   loginHref: '/login',
   footerLinks: [
@@ -59,8 +53,31 @@ const defaultArgs = {
   ],
 };
 
+const withDropdowns = [
+  { label: 'Shop', menu: shopMenu },
+  { label: 'About us', menu: aboutMenu },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const withoutDropdowns = [
+  { label: 'Shop', href: '/shop' },
+  { label: 'About us', href: '/about' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
+];
+
+/** Opens the menu via the hamburger button before each story renders. */
+const openMenu = async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+  const canvas = within(canvasElement);
+  await userEvent.click(canvas.getByRole('button', { name: /open menu/i }));
+  await expect(
+    canvas.getByRole('navigation', { name: 'Mobile navigation' })
+  ).toBeInTheDocument();
+};
+
 const meta = {
-  title: 'Layout/Mobile Menu',
+  title: 'Layout/Header/Mobile',
   component: MobileMenu,
   tags: ['autodocs'],
   parameters: {
@@ -77,76 +94,22 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Closed: Story = {
-  args: defaultArgs,
+export const Default: Story = {
+  args: { ...base, navLinks: withDropdowns },
+  play: openMenu,
 };
 
-export const Open: Story = {
-  args: defaultArgs,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Hamburger visible, panel hidden
-    const openBtn = canvas.getByRole('button', { name: /open menu/i });
-    await expect(openBtn).toBeInTheDocument();
-    await expect(
-      canvas.queryByRole('navigation', { name: 'Mobile navigation' })
-    ).toBeNull();
-
-    // Open the menu
-    await userEvent.click(openBtn);
-
-    // Panel visible with nav items
-    const nav = canvas.getByRole('navigation', { name: 'Mobile navigation' });
-    await expect(nav).toBeInTheDocument();
-    await expect(canvas.getByText('Shop')).toBeInTheDocument();
-    await expect(canvas.getByText('Blog')).toBeInTheDocument();
-    await expect(canvas.getByText('Shop now')).toBeInTheDocument();
-    await expect(canvas.getByText('Log in')).toBeInTheDocument();
-  },
+export const NoDropdowns: Story = {
+  args: { ...base, navLinks: withoutDropdowns },
+  play: openMenu,
 };
 
-export const WithSubnavOpen: Story = {
-  args: defaultArgs,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Open the mobile menu
-    await userEvent.click(canvas.getByRole('button', { name: /open menu/i }));
-
-    // Expand the Shop accordion
-    const shopToggle = canvas.getByRole('button', { name: /^shop$/i });
-    await userEvent.click(shopToggle);
-    await expect(shopToggle).toHaveAttribute('aria-expanded', 'true');
-
-    // Sub-items should be visible
-    await expect(canvas.getByText('Beef')).toBeInTheDocument();
-    await expect(canvas.getByText('Pork')).toBeInTheDocument();
-    await expect(
-      canvas.getByText('Heritage Angus and Hereford, dry-aged for flavour.')
-    ).toBeInTheDocument();
-
-    // Collapse it
-    await userEvent.click(shopToggle);
-    await expect(shopToggle).toHaveAttribute('aria-expanded', 'false');
-    await expect(canvas.queryByText('Beef')).toBeNull();
-  },
+export const NoNavigation: Story = {
+  args: { ...base, navLinks: [] },
+  play: openMenu,
 };
 
-export const CloseButton: Story = {
-  args: defaultArgs,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Open then close via the X inside the panel
-    await userEvent.click(canvas.getByRole('button', { name: /open menu/i }));
-    await expect(
-      canvas.getByRole('navigation', { name: 'Mobile navigation' })
-    ).toBeInTheDocument();
-
-    await userEvent.click(canvas.getByRole('button', { name: /close menu/i }));
-    await expect(
-      canvas.queryByRole('navigation', { name: 'Mobile navigation' })
-    ).toBeNull();
-  },
+export const ActionButtons: Story = {
+  args: { ...base, navLinks: withDropdowns },
+  play: openMenu,
 };

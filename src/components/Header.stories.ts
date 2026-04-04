@@ -36,17 +36,11 @@ const aboutMenu = [
   { label: 'Sustainability', href: '/about/sustainability' },
 ];
 
-const defaultArgs = {
+const base = {
   logoSrc: '/favicon.svg',
   logoAlt: 'Gather Ground',
-  navLinks: [
-    { label: 'Shop', menu: shopMenu },
-    { label: 'About us', menu: aboutMenu },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Contact', href: '/contact' },
-  ],
-  ctaLabel: 'Shop now',
-  ctaHref: '/shop',
+  ctaLabel: 'Sign up',
+  ctaHref: '/signup',
   loginLabel: 'Log in',
   loginHref: '/login',
   footerLinks: [
@@ -59,8 +53,22 @@ const defaultArgs = {
   ],
 };
 
+const withDropdowns = [
+  { label: 'Shop', menu: shopMenu },
+  { label: 'About us', menu: aboutMenu },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const withoutDropdowns = [
+  { label: 'Shop', href: '/shop' },
+  { label: 'About us', href: '/about' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
+];
+
 const meta = {
-  title: 'Layout/Header',
+  title: 'Layout/Header/Desktop',
   component: Header,
   tags: ['autodocs'],
   parameters: {
@@ -68,35 +76,38 @@ const meta = {
     a11y: { disable: false },
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1647-376189',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=683-17952',
     },
   },
 };
 
 export default meta;
 
-export const Desktop = {
-  args: defaultArgs,
-};
-
-export const MobileDefault = {
-  name: 'Mobile (closed)',
-  args: defaultArgs,
-};
-
-export const MobileOpen = {
-  name: 'Mobile (menu open)',
-  args: defaultArgs,
-};
-
-export const NoMenuItems = {
+export const Default = {
   args: {
-    ...defaultArgs,
-    navLinks: [
-      { label: 'Shop', href: '/shop' },
-      { label: 'About', href: '/about' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Contact', href: '/contact' },
-    ],
+    ...base,
+    navLinks: withDropdowns,
+  },
+};
+
+export const NoDropdowns = {
+  args: {
+    ...base,
+    navLinks: withoutDropdowns,
+  },
+};
+
+export const NoNavigation = {
+  args: {
+    ...base,
+    navLinks: [],
+  },
+};
+
+export const ActionButtons = {
+  args: {
+    ...base,
+    navLinks: withDropdowns,
+    actions: 'buttons' as const,
   },
 };
