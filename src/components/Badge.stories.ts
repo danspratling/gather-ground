@@ -36,6 +36,8 @@ const meta = {
       ],
     },
     dot: { control: 'boolean' },
+    iconLeading: { control: 'boolean' },
+    iconTrailing: { control: 'boolean' },
   },
 };
 
@@ -54,21 +56,6 @@ export const Default = {
     await expect(canvas.getByText('Label')).toBeInTheDocument();
     await expect(canvas.queryByRole('button')).toBeNull();
     await expect(canvas.queryByRole('link')).toBeNull();
-  },
-};
-
-// All 12 pill colours at sm size
-export const AllColors = {
-  render: () => ({
-    Component: Badge,
-    // Rendered via story decorators — individual stories below cover each color
-  }),
-  parameters: {
-    docs: {
-      description: {
-        story: 'All 12 pill colour variants at sm size.',
-      },
-    },
   },
 };
 
@@ -208,6 +195,27 @@ export const WithDot = {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('Live')).toBeInTheDocument();
     await expect(canvas.queryByRole('button')).toBeNull();
+  },
+};
+
+// Icon variants
+export const WithLeadingIcon = {
+  args: {
+    label: 'Label',
+    type: 'pill' as const,
+    size: 'sm' as const,
+    color: 'gray' as const,
+    iconLeading: true,
+  },
+};
+
+export const WithTrailingIcon = {
+  args: {
+    label: 'Label',
+    type: 'pill' as const,
+    size: 'sm' as const,
+    color: 'gray' as const,
+    iconTrailing: true,
   },
 };
 

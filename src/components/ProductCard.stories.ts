@@ -73,8 +73,7 @@ export const ImageLinkVariant = {
 export const CategoryNoDescription = {
   args: {
     variant: 'category' as const,
-    image:
-      'https://images.unsplash.com/photo-1569486546858-b068b7c3ecf3?w=600&q=80',
+    image: 'https://picsum.photos/seed/eggs/600/400',
     imageAlt: 'Free-range eggs',
     title: 'Eggs',
     href: '/products/eggs',

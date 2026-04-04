@@ -8,6 +8,7 @@ const meta = {
   component: Accordion,
   tags: ['autodocs'],
   parameters: {
+    renderer: 'react',
     layout: 'padded',
     a11y: { disable: false },
     design: {

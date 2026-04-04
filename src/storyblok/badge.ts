@@ -58,5 +58,15 @@ export const badgeSchema = {
       display_name: 'Show dot',
       default_value: false,
     },
+    icon_leading: {
+      type: 'boolean',
+      display_name: 'Icon leading',
+      default_value: false,
+    },
+    icon_trailing: {
+      type: 'boolean',
+      display_name: 'Icon trailing',
+      default_value: false,
+    },
   },
 } as const;
