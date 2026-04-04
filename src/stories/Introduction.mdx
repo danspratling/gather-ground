@@ -41,17 +41,14 @@ Every story exposes three panels at the bottom of the canvas:
 
 ## Component categories
 
-### UI
-
-Primitive building blocks sourced from **shadcn/ui** and extended with Gather Ground tokens. These are framework-agnostic — use them inside both `.astro` and `.tsx` files.
-
-- `UI/Button` — primary, secondary, outline, ghost, and link variants
-
 ### Components
 
-Assembled page sections built in Astro (server-rendered, zero client JS unless noted).
+Built in Astro (server-rendered, zero client JS unless noted) using shadcn/ui primitives and Gather Ground tokens.
 
+- `Components/Button` — primary, outline, ghost, and link variants; renders as `<button>` or `<a>` depending on `href`
 - `Components/Footer` — full-width footer with logo, nav link groups, social icons, newsletter form, and legal bar
+- `Components/NewsletterForm` — email subscribe input with success state (React island)
+- `Components/SectionDivider` — 1 px horizontal rule between page sections; `sm`, `md`, and `lg` spacing variants
 
 ---
 
