@@ -1,5 +1,4 @@
 // @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
-import { INITIAL_VIEWPORTS } from 'storybook/viewport';
 
 // @ts-expect-error — .astro files have no TypeScript declarations
 import Header from '@/components/Header.astro';
@@ -78,31 +77,16 @@ export default meta;
 
 export const Desktop = {
   args: defaultArgs,
-  parameters: {
-    viewport: { defaultViewport: 'desktop' },
-  },
 };
 
 export const MobileDefault = {
   name: 'Mobile (closed)',
   args: defaultArgs,
-  parameters: {
-    viewport: {
-      options: INITIAL_VIEWPORTS,
-      defaultViewport: 'iphone13',
-    },
-  },
 };
 
 export const MobileOpen = {
   name: 'Mobile (menu open)',
   args: defaultArgs,
-  parameters: {
-    viewport: {
-      options: INITIAL_VIEWPORTS,
-      defaultViewport: 'iphone13',
-    },
-  },
 };
 
 export const NoMenuItems = {

@@ -1,7 +1,6 @@
 // @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
 // See: https://storybook-astro.org/writing-stories/
 import { expect, within } from 'storybook/test';
-import { INITIAL_VIEWPORTS } from 'storybook/viewport';
 
 // @ts-expect-error — .astro files have no TypeScript declarations
 import Footer from '@/components/Footer.astro';
@@ -62,9 +61,6 @@ const defaultArgs = {
 
 export const Default = {
   args: defaultArgs,
-  parameters: {
-    viewport: { defaultViewport: 'desktop' },
-  },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
 
@@ -97,10 +93,4 @@ export const MinimalLinks = {
 
 export const Mobile = {
   args: defaultArgs,
-  parameters: {
-    viewport: {
-      options: INITIAL_VIEWPORTS,
-      defaultViewport: 'iphone13',
-    },
-  },
 };

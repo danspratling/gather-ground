@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, userEvent, within } from 'storybook/test';
-import { INITIAL_VIEWPORTS } from 'storybook/viewport';
 
 import MobileMenu from '@/components/MobileMenu';
 
@@ -67,10 +66,6 @@ const meta = {
   parameters: {
     renderer: 'react',
     layout: 'fullscreen',
-    viewport: {
-      options: INITIAL_VIEWPORTS,
-      defaultViewport: 'iphone13',
-    },
     a11y: { disable: false },
     design: {
       type: 'figma',
