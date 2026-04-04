@@ -28,7 +28,8 @@ const meta = {
 export default meta;
 
 const defaultArgs = {
-  image: 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=600&q=80',
+  image:
+    'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=600&q=80',
   imageAlt: 'Rolling pasture at dawn',
   title: 'Why heritage breeds taste different — and why it matters',
   excerpt:
@@ -48,7 +49,9 @@ export const HomepageCard = {
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByText('Why heritage breeds taste different — and why it matters')
+      canvas.getByText(
+        'Why heritage breeds taste different — and why it matters'
+      )
     ).toBeInTheDocument();
     await expect(canvas.getByText('Dan Spratling')).toBeInTheDocument();
     await expect(canvas.getByText('28 Mar 2026')).toBeInTheDocument();
@@ -68,7 +71,9 @@ export const IndexCard = {
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByText('Why heritage breeds taste different — and why it matters')
+      canvas.getByText(
+        'Why heritage breeds taste different — and why it matters'
+      )
     ).toBeInTheDocument();
   },
 };
