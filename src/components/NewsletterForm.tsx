@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { NewsletterFormProps } from '@/types/newsletterForm';
+import type { NewsletterFormProps } from '@/components/NewsletterForm.types';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 

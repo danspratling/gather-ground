@@ -7,3 +7,5 @@ export interface AccordionProps {
   items: AccordionItem[];
   class?: string;
 }
+
+export default null;

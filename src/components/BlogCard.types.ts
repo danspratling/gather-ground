@@ -13,3 +13,5 @@ export interface BlogCardProps {
   href: string;
   class?: string;
 }
+
+export default null;

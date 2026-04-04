@@ -10,3 +10,5 @@ export interface ButtonProps {
   loading?: boolean;
   class?: string;
 }
+
+export default null;

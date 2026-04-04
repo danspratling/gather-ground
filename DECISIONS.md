@@ -100,13 +100,9 @@ Architecture decision log for the Gather Ground website. Read this before changi
 
 ---
 
-## ADR-011: Storybook uses @storybook/react-vite, not a native Astro framework
+## ADR-011: ~~Storybook uses @storybook/react-vite, not a native Astro framework~~
 
-**Decision:** Storybook is configured with the `@storybook/react-vite` framework, not an Astro-specific one.
-
-**Reasoning:** All interactive components in this project are React islands (shadcn/ui, client-side UI). There is no production-quality Storybook Astro framework. React Vite gives us full React story support, which is all we need.
-
-**Consequence:** `.astro` files cannot be imported into stories directly. Stories describe the React `.tsx` components only. Astro page-level concerns are covered by Playwright, not Storybook.
+> **Superseded by ADR-013.** `@storybook-astro/framework` renders both `.astro` and `.tsx` natively. See ADR-013.
 
 ---
 
@@ -155,6 +151,22 @@ Brand/platform icons (Instagram, Facebook, TikTok, X/Twitter, LinkedIn, etc.) ar
 
 **When to act:** Storybook 11 release (expected Spring 2026). Run the official codemod: `npx storybook@latest migrate csf-factories`.
 
+**What changes:** Replace the `satisfies Meta<typeof Button>` + `StoryObj` pattern:
+
+```ts
+// Before (CSF 3)
+import type { Meta, StoryObj } from '@storybook/react';
+const meta = { component: Button } satisfies Meta<typeof Button>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Default: Story = { args: { children: 'Button' } };
+
+// After (CSF Factories)
+import preview from '../.storybook/preview';
+const meta = preview.meta({ component: Button });
+export const Default = meta.story({ args: { children: 'Button' } });
+```
+
 ---
 
 ## ADR-016: Chromatic for visual regression; addon-a11y for accessibility; addon-docs for MDX
@@ -177,25 +189,9 @@ Brand/platform icons (Instagram, Facebook, TikTok, X/Twitter, LinkedIn, etc.) ar
 - Chromatic visual regression is _not yet wired into CI_. To activate it, add `CHROMATIC_PROJECT_TOKEN` to the GitHub repository secrets and add a Chromatic publish step to `.github/workflows/ci.yml`. Do this when visual regression coverage is needed (recommended when page sections are complete and stable).
 - MDX docs pages live in `src/stories/` alongside story files (covered by the existing glob). See `src/stories/Introduction.mdx` as the reference example.
 
-**What changes:** Replace the `satisfies Meta<typeof Button>` + `StoryObj` pattern:
-
-```ts
-// Before (CSF 3)
-import type { Meta, StoryObj } from '@storybook/react';
-const meta = { component: Button } satisfies Meta<typeof Button>;
-export default meta;
-type Story = StoryObj<typeof meta>;
-export const Default: Story = { args: { children: 'Button' } };
-
-// After (CSF Factories)
-import preview from '../.storybook/preview';
-const meta = preview.meta({ component: Button });
-export const Default = meta.story({ args: { children: 'Button' } });
-```
-
 ---
 
-## ADR-016: Use sb.mock for API mocking in stories once real endpoints exist
+## ADR-018: Use sb.mock for API mocking in stories once real endpoints exist
 
 **Decision (deferred):** When `NewsletterForm` (and any future component) is wired to a real API, replace the current `setTimeout` stub with Storybook 10's `sb.mock` module mocking.
 

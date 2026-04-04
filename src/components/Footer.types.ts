@@ -37,3 +37,5 @@ export interface FooterProps {
   copyrightText: string;
   legalLinks: LegalLink[];
 }
+
+export default null;

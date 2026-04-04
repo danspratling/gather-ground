@@ -14,3 +14,5 @@ export interface InputProps {
   iconLeading?: boolean;
   class?: string;
 }
+
+export default null;

@@ -1,7 +1,7 @@
 import { Accordion as AccordionPrimitive } from '@base-ui/react/accordion';
 import { MinusCircle, PlusCircle } from '@untitledui-pro/icons/line';
 import { cn } from '@/lib/utils';
-import type { AccordionProps } from '@/types/accordion';
+import type { AccordionProps } from '@/components/Accordion.types';
 import {
   Accordion as AccordionRoot,
   AccordionContent,

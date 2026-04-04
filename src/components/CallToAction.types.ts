@@ -1,5 +1,5 @@
-import type { ButtonProps } from '@/types/button';
-import type { AvatarGroupProps } from '@/types/avatar';
+import type { ButtonProps } from '@/components/Button.types';
+import type { AvatarGroupProps } from '@/components/Avatar/Avatar.types';
 
 export interface CallToActionProps {
   heading: string;
@@ -9,3 +9,5 @@ export interface CallToActionProps {
   avatarGroup?: AvatarGroupProps;
   class?: string;
 }
+
+export default null;

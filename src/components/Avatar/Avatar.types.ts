@@ -22,3 +22,5 @@ export interface AvatarGroupProps {
   size?: 'xl';
   class?: string;
 }
+
+export default null;
