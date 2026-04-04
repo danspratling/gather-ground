@@ -1,0 +1,141 @@
+---
+import { cn } from '@/lib/utils';
+import type { BadgeProps } from '@/types/badge';
+
+type Props = BadgeProps;
+
+const {
+  label,
+  type = 'pill',
+  size = 'sm',
+  color = 'gray',
+  dot = false,
+  class: className,
+} = Astro.props;
+
+// Pill colour palette — mapped to design tokens in global.css.
+// gray/brand use existing brand/gray token aliases; all others use the
+// semantic status palette added in M3.
+const pillColors = {
+  gray: {
+    bg: 'bg-brand-25',
+    border: 'border-gray-200',
+    text: 'text-gray-700',
+    dot: 'bg-gray-700',
+  },
+  brand: {
+    bg: 'bg-brand-50',
+    border: 'border-brand-200',
+    text: 'text-brand-700',
+    dot: 'bg-brand-700',
+  },
+  error: {
+    bg: 'bg-error-50',
+    border: 'border-error-200',
+    text: 'text-error-700',
+    dot: 'bg-error-700',
+  },
+  warning: {
+    bg: 'bg-warning-50',
+    border: 'border-warning-200',
+    text: 'text-warning-700',
+    dot: 'bg-warning-700',
+  },
+  success: {
+    bg: 'bg-success-50',
+    border: 'border-success-200',
+    text: 'text-success-700',
+    dot: 'bg-success-700',
+  },
+  'blue-light': {
+    bg: 'bg-blue-light-50',
+    border: 'border-blue-light-200',
+    text: 'text-blue-light-700',
+    dot: 'bg-blue-light-700',
+  },
+  blue: {
+    bg: 'bg-blue-50',
+    border: 'border-blue-200',
+    text: 'text-blue-700',
+    dot: 'bg-blue-700',
+  },
+  indigo: {
+    bg: 'bg-indigo-50',
+    border: 'border-indigo-200',
+    text: 'text-indigo-700',
+    dot: 'bg-indigo-700',
+  },
+  purple: {
+    bg: 'bg-purple-50',
+    border: 'border-purple-200',
+    text: 'text-purple-700',
+    dot: 'bg-purple-700',
+  },
+  pink: {
+    bg: 'bg-pink-50',
+    border: 'border-pink-200',
+    text: 'text-pink-700',
+    dot: 'bg-pink-700',
+  },
+  orange: {
+    bg: 'bg-orange-50',
+    border: 'border-orange-200',
+    text: 'text-orange-700',
+    dot: 'bg-orange-700',
+  },
+  'gray-blue': {
+    bg: 'bg-gray-blue-50',
+    border: 'border-gray-blue-200',
+    text: 'text-gray-blue-700',
+    dot: 'bg-gray-blue-700',
+  },
+} as const;
+
+// Pill size scale
+// px-2=8px py-0.5=2px | px-2.5=10px | px-3=12px py-1=4px
+const pillSizes = {
+  sm: { outer: 'px-2 py-0.5 text-xs', gap: 'gap-1.5', dot: 'size-1.5' },
+  md: { outer: 'px-2.5 py-0.5 text-sm', gap: 'gap-1.5', dot: 'size-1.5' },
+  lg: { outer: 'px-3 py-1 text-sm', gap: 'gap-2', dot: 'size-2' },
+} as const;
+
+// px-1.5=6px | px-2=8px | px-2.5=10px
+const modernSizes = {
+  sm: 'px-1.5 py-0.5 text-xs',
+  md: 'px-2 py-0.5 text-sm',
+  lg: 'px-2.5 py-1 text-sm',
+} as const;
+
+const isBadgeModern = type === 'badge-modern';
+const c = pillColors[color];
+const s = pillSizes[size];
+
+const classes = isBadgeModern
+  ? cn(
+      'inline-flex items-center font-medium',
+      'bg-off-white border border-gray-300 rounded-[6px] shadow-xs text-gray-700',
+      modernSizes[size],
+      className
+    )
+  : cn(
+      'inline-flex items-center border font-medium rounded-full',
+      c.bg,
+      c.border,
+      c.text,
+      s.outer,
+      dot && s.gap,
+      className
+    );
+---
+
+<span class={classes}>
+  {
+    !isBadgeModern && dot && (
+      <span
+        class={cn('shrink-0 rounded-full', s.dot, c.dot)}
+        aria-hidden="true"
+      />
+    )
+  }
+  {label}
+</span>
