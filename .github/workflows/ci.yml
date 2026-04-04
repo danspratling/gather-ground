@@ -20,6 +20,9 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      - name: Set up private registry
+        run: echo "//pkg.untitledui.com/:_authToken=${{ secrets.UNTITLEDUI_TOKEN }}" >> .npmrc
+
       - name: Install dependencies
         run: npm ci
 
@@ -42,6 +45,9 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      - name: Set up private registry
+        run: echo "//pkg.untitledui.com/:_authToken=${{ secrets.UNTITLEDUI_TOKEN }}" >> .npmrc
+
       - name: Install dependencies
         run: npm ci
 
@@ -61,6 +67,9 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      - name: Set up private registry
+        run: echo "//pkg.untitledui.com/:_authToken=${{ secrets.UNTITLEDUI_TOKEN }}" >> .npmrc
+
       - name: Install dependencies
         run: npm ci
 
@@ -79,6 +88,9 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+
+      - name: Set up private registry
+        run: echo "//pkg.untitledui.com/:_authToken=${{ secrets.UNTITLEDUI_TOKEN }}" >> .npmrc
 
       - name: Install dependencies
         run: npm ci
@@ -101,6 +113,9 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+
+      - name: Set up private registry
+        run: echo "//pkg.untitledui.com/:_authToken=${{ secrets.UNTITLEDUI_TOKEN }}" >> .npmrc
 
       - name: Install dependencies
         run: npm ci
