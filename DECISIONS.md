@@ -143,11 +143,11 @@ import { Mail01 } from '@untitledui-pro/icons/line';
 <Mail01 className="size-6" />;
 ```
 
-Brand/platform icons (Instagram, Facebook, TikTok, X/Twitter, LinkedIn, etc.) are **not** in the Untitled UI library and must be inlined as SVG strings or imported as SVG assets.
+Brand/platform icons (Instagram, Facebook, TikTok, X/Twitter, LinkedIn, etc.) are **not** in the Untitled UI library and must live in `src/components/Icons/` as individual `.astro` files.
 
-**Reasoning:** Untitled UI pro provides 1100+ consistent, well-crafted UI icons that match the project's design language. Using a single source prevents visual inconsistency from mixing icon sets. The pro package includes line, solid, duotone, and duocolor variants — default to `line` unless Figma specifies otherwise. Social brand icons are absent from the library for licensing reasons; these are handled separately as inline SVG.
+**Reasoning:** Untitled UI pro provides 1100+ consistent, well-crafted UI icons that match the project's design language. Using a single source prevents visual inconsistency from mixing icon sets. The pro package includes line, solid, duotone, and duocolor variants — default to `line` unless Figma specifies otherwise. Social brand icons are absent from the library for licensing reasons; these are handled as standalone `.astro` components instead of being inlined as SVG strings.
 
-**Consequence:** Never use Lucide, Heroicons, or other icon libraries for UI icons — always check Untitled UI first. For brand icons not in the library, inline the SVG directly in the component where it's used (as with the social links in `Footer.astro`).
+**Consequence:** Never use Lucide, Heroicons, or other icon libraries for UI icons — always check Untitled UI first. For brand icons not in the library, create a new `.astro` file in `src/components/Icons/` (e.g. `InstagramIcon.astro`). Each icon component accepts a `class` prop for sizing/colour overrides and includes `aria-hidden="true"` on the SVG — the caller is responsible for providing accessible text via `aria-label` on the surrounding element. Never inline SVG strings directly in a component template.
 
 ---
 
