@@ -6,3 +6,5 @@ export interface LabelProps {
   text?: string;
   class?: string;
 }
+
+export default null;

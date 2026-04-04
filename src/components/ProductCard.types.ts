@@ -9,3 +9,5 @@ export interface ProductCardProps {
   href: string;
   class?: string;
 }
+
+export default null;

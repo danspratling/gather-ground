@@ -106,6 +106,22 @@ npm run build-storybook && npm run test-storybook   # storybook
 npx playwright test --ui                            # playwright interactive
 ```
 
+## Pre-PR validation (required for AI agents)
+
+Before pushing a branch or creating a PR, **always run the full local pipeline** in order and confirm every step exits cleanly:
+
+```bash
+npm run format          # 1. Auto-fix formatting
+npm run lint            # 2. ESLint — must be zero errors
+npm run typecheck       # 3. TypeScript — must be zero errors
+npm run build           # 4. Astro build — must complete
+npm run build-storybook # 5. Storybook build — must complete
+npx playwright test     # 6. E2E tests — must all pass
+```
+
+Do not push if any step fails. Fix the failure first, then re-run from step 1.
+As the codebase grows, validate at minimum the steps that cover changed files — but when in doubt, run all six.
+
 ---
 
 ## Coding conventions
@@ -115,7 +131,7 @@ npx playwright test --ui                            # playwright interactive
 - Use `.astro` for static/server-rendered output. Use `.tsx` React islands only when client-side interactivity is required.
 - Prefer `client:visible` over `client:load` unless the component must be interactive on immediate mount.
 - Never fetch data inside a component — fetch in Astro page frontmatter, pass as props.
-- All props interfaces live in `src/types/[name].ts` and are exported. The component imports its own type from there.
+- All props interfaces live in `src/components/ComponentName.types.ts`, co-located with the component (ADR-017). The component imports its own type from there.
 
 ### Naming
 

@@ -10,3 +10,5 @@ export interface HeadingProps {
   text?: string;
   class?: string;
 }
+
+export default null;

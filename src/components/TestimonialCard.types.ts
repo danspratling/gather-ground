@@ -1,4 +1,4 @@
-import type { AvatarLabelGroupProps } from '@/types/avatar';
+import type { AvatarLabelGroupProps } from '@/components/Avatar/Avatar.types';
 
 export interface TestimonialCardProps {
   quote: string;
@@ -6,3 +6,5 @@ export interface TestimonialCardProps {
   author: AvatarLabelGroupProps;
   class?: string;
 }
+
+export default null;

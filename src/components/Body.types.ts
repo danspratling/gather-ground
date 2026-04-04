@@ -10,3 +10,5 @@ export interface BodyProps {
   text?: string;
   class?: string;
 }
+
+export default null;

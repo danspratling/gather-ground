@@ -24,3 +24,5 @@ export interface BadgeProps {
   iconTrailing?: boolean;
   class?: string;
 }
+
+export default null;
