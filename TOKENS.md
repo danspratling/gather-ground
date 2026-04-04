@@ -25,6 +25,7 @@ All tokens are sourced from Figma and defined in `src/styles/global.css`. Use th
 | Token      | Hex       | Tailwind class                  | Usage                     |
 | ---------- | --------- | ------------------------------- | ------------------------- |
 | `gray-200` | `#E5E5E5` | `bg-gray-200` / `text-gray-200` | Dividers                  |
+| `gray-300` | `#DBDBDB` | `bg-gray-300` / `text-gray-300` | badge-modern border       |
 | `gray-400` | `#D1D1D1` | `bg-gray-400` / `text-gray-400` | —                         |
 | `gray-500` | `#BFBFBF` | `bg-gray-500` / `text-gray-500` | —                         |
 | `gray-600` | `#A5A5A5` | `bg-gray-600` / `text-gray-600` | Supporting / caption text |
@@ -32,6 +33,23 @@ All tokens are sourced from Figma and defined in `src/styles/global.css`. Use th
 | `gray-800` | `#575757` | `bg-gray-800` / `text-gray-800` | Footer divider            |
 | `gray-900` | `#232323` | `bg-gray-900` / `text-gray-900` | Headings                  |
 | `gray-950` | `#171717` | `bg-gray-950` / `text-gray-950` | Footer background         |
+
+### Semantic status palette (Badge colours)
+
+Each status has three stops: `-50` (background), `-200` (border), `-700` (text/dot).
+
+| Token prefix | bg-50     | border-200 | text-700  |
+| ------------ | --------- | ---------- | --------- |
+| `error`      | `#FEF3F2` | `#FECDCA`  | `#B42318` |
+| `warning`    | `#FFFAEB` | `#FEDF89`  | `#B54708` |
+| `success`    | `#ECFDF3` | `#ABEFC6`  | `#067647` |
+| `blue-light` | `#F0F9FF` | `#B9E6FE`  | `#026AA2` |
+| `blue`       | `#EFF8FF` | `#B2DDFF`  | `#175CD3` |
+| `indigo`     | `#EEF4FF` | `#C7D7FE`  | `#3538CD` |
+| `purple`     | `#F4F3FF` | `#D9D6FE`  | `#5925DC` |
+| `pink`       | `#FDF2FA` | `#FCCEEE`  | `#C11574` |
+| `orange`     | `#FEF6EE` | `#F9DBAF`  | `#B93815` |
+| `gray-blue`  | `#F8F9FC` | `#D5D9EB`  | `#363F72` |
 
 ### Secondary palette
 
