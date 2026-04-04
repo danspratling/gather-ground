@@ -13,6 +13,8 @@ export interface HeaderProps {
   logoAlt: string;
   navLinks: HeaderNavLink[];
   actions?: 'icons' | 'buttons';
+  accountHref?: string;
+  basketHref?: string;
   ctaLabel?: string;
   ctaHref?: string;
   loginLabel?: string;

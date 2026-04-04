@@ -7,10 +7,8 @@ interface MobileMenuProps {
   logoSrc: string;
   logoAlt: string;
   navLinks: HeaderNavLink[];
-  ctaLabel: string;
-  ctaHref: string;
-  loginLabel: string;
-  loginHref: string;
+  accountHref: string;
+  basketHref: string;
   footerLinks: { label: string; href: string }[];
 }
 
@@ -18,10 +16,8 @@ export default function MobileMenu({
   logoSrc,
   logoAlt,
   navLinks,
-  ctaLabel,
-  ctaHref,
-  loginLabel,
-  loginHref,
+  accountHref,
+  basketHref,
   footerLinks,
 }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
@@ -195,18 +191,18 @@ export default function MobileMenu({
           {/* Bottom CTAs */}
           <div className="shrink-0 border-t border-gray-200 px-4 py-4">
             <a
-              href={ctaHref}
+              href={basketHref}
               onClick={closeAll}
               className="block w-full rounded-full bg-brand-900 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-brand-700"
             >
-              {ctaLabel}
+              Basket
             </a>
             <a
-              href={loginHref}
+              href={accountHref}
               onClick={closeAll}
               className="mt-3 block w-full rounded-full border border-gray-400 px-4 py-3 text-center text-sm font-semibold text-gray-900 hover:bg-brand-25"
             >
-              {loginLabel}
+              Account
             </a>
           </div>
         </div>

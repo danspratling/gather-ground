@@ -1,5 +1,5 @@
 ---
-import { User03, SearchMd, ShoppingBag02 } from '@untitledui-pro/icons/line';
+import { User03, ShoppingBag02 } from '@untitledui-pro/icons/line';
 import NavMenu from '@/components/NavMenu';
 import MobileMenu from '@/components/MobileMenu';
 import type { HeaderProps } from '@/components/Header.types';
@@ -11,8 +11,10 @@ const {
   logoAlt,
   navLinks,
   actions = 'icons',
-  ctaLabel = 'Shop now',
-  ctaHref = '/shop',
+  accountHref = '/account',
+  basketHref = '/cart',
+  ctaLabel = 'Sign up',
+  ctaHref = '/signup',
   loginLabel = 'Log in',
   loginHref = '/login',
   footerLinks = [],
@@ -61,22 +63,15 @@ const {
         actions === 'icons' ? (
           <div class="hidden items-center md:flex">
             <a
-              href="/account"
+              href={accountHref}
               aria-label="Account"
               class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900"
             >
               <User03 className="size-5" aria-hidden="true" />
             </a>
             <a
-              href="/search"
-              aria-label="Search"
-              class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900"
-            >
-              <SearchMd className="size-5" aria-hidden="true" />
-            </a>
-            <a
-              href={ctaHref}
-              aria-label="Shop"
+              href={basketHref}
+              aria-label="Basket"
               class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900"
             >
               <ShoppingBag02 className="size-5" aria-hidden="true" />
@@ -105,10 +100,8 @@ const {
           logoSrc={logoSrc}
           logoAlt={logoAlt}
           navLinks={navLinks}
-          ctaLabel={ctaLabel}
-          ctaHref={ctaHref}
-          loginLabel={loginLabel}
-          loginHref={loginHref}
+          accountHref={accountHref}
+          basketHref={basketHref}
           footerLinks={footerLinks}
         />
       </div>

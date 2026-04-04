@@ -39,6 +39,8 @@ const aboutMenu = [
 const base = {
   logoSrc: '/favicon.svg',
   logoAlt: 'Gather Ground',
+  accountHref: '/account',
+  basketHref: '/cart',
   ctaLabel: 'Sign up',
   ctaHref: '/signup',
   loginLabel: 'Log in',
