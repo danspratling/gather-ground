@@ -8,6 +8,7 @@ import Footer from '@/components/Footer.astro';
 const meta = {
   title: 'Components/Footer',
   component: Footer,
+  tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
     design: {

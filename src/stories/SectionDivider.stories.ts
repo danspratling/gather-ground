@@ -8,6 +8,7 @@ import SectionDivider from '@/components/SectionDivider.astro';
 const meta = {
   title: 'Components/SectionDivider',
   component: SectionDivider,
+  tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
     design: {

@@ -8,6 +8,7 @@ import Button from '@/components/Button.astro';
 const meta = {
   title: 'Components/Button',
   component: Button,
+  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
     design: {
