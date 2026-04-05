@@ -17,12 +17,12 @@ const sizeClasses = {
 } as const;
 
 const borderClasses = {
-  xs: 'border-[0.5px]',
-  sm: 'border-[0.5px]',
+  xs: 'border-0.5',
+  sm: 'border-0.5',
   md: 'border',
   lg: 'border',
-  xl: 'border-[1.5px]',
-  '2xl': 'border-[1.5px]',
+  xl: 'border-1.5',
+  '2xl': 'border-1.5',
 } as const;
 ---
 
@@ -30,7 +30,7 @@ const borderClasses = {
   src={src}
   alt={alt}
   class={cn(
-    'rounded-full object-cover border-[rgba(0,0,0,0.08)] shrink-0',
+    'rounded-full object-cover border-black/8 shrink-0',
     sizeClasses[size],
     borderClasses[size],
     className

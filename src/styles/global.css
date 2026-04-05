@@ -134,6 +134,21 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Centered content container — max 1280px, responsive horizontal padding */
+@utility container {
+  margin-inline: auto;
+  max-width: 80rem; /* 1280px */
+  padding-inline: 1rem; /* 16px — mobile */
+
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem; /* 24px — sm */
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: 2rem; /* 32px — lg */
+  }
+}
+
 :root {
   --background: #fffff8;
   --foreground: #202020;

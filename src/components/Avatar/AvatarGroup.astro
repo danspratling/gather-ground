@@ -15,7 +15,7 @@ const { avatars, size = 'xl', class: className } = Astro.props;
         src={avatar.src}
         alt={avatar.alt}
         size={size}
-        class={cn('border-[1.5px] border-off-white', i > 0 && '-ml-3')}
+        class={cn('border-1.5 border-off-white', i > 0 && '-ml-3')}
       />
     ))
   }

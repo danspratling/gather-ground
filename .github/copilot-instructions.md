@@ -31,6 +31,7 @@ Component groups: `Layout/` (Header, Footer), `Typography/` (Body, Heading, Labe
 ## Conventions
 
 **Components**
+
 - `.astro` for static; `.tsx` for interactive (state, events)
 - `client:visible` at the usage site unless above-the-fold → use `client:load`
 - Never fetch data inside a component
@@ -38,17 +39,20 @@ Component groups: `Layout/` (Header, Footer), `Typography/` (Body, Heading, Labe
 - No `any`, no `@ts-ignore` without explanation, strict mode enabled
 
 **Styling**
+
 - All values from tokens in `src/styles/global.css` — see `TOKENS.md`
 - No hardcoded hex values, no inline styles, no arbitrary Tailwind values
 - Mobile-first: base = mobile, `md:` = tablet, `lg:` = desktop
 
 **Naming**
+
 - Component files: `PascalCase`
 - Type files: `[ComponentName].types.ts` — co-located
 - Story files: `[ComponentName].stories.ts` — co-located
 - Storyblok schemas: `camelCase` in `src/storyblok/`
 
 **Storybook**
+
 - Stories co-located in component folder — not in `src/stories/` (that's for global docs only)
 - Use `@storybook/test` play functions for interaction tests — never Playwright inside stories
 - Every story includes `parameters.design` with the Figma frame URL
@@ -56,10 +60,12 @@ Component groups: `Layout/` (Header, Footer), `Typography/` (Body, Heading, Labe
 - Non-story `.ts/.tsx` files in `src/components/` must include `export default null`
 
 **Storyblok**
+
 - Schema field names: `snake_case`; TypeScript props: `camelCase`
 - Never edit schemas in the dashboard — always via `src/storyblok/[name].ts` + CLI push
 
 **Git**
+
 - Branch names from Linear; commit format: `feat(name): description — Closes GG-XX`
 - Never commit directly to `main`
 
