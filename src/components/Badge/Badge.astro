@@ -7,9 +7,9 @@ type Props = BadgeProps;
 const {
   label,
   type = 'pill',
-  size = 'sm',
-  color = 'gray',
-  dot = false,
+  size: sizeKey = 'sm',
+  color: colorKey = 'gray',
+  dot,
   class: className,
 } = Astro.props;
 
@@ -110,36 +110,41 @@ const modernSizes = {
 } as const;
 
 const isBadgeModern = type === 'badge-modern';
-const c = pillColors[color];
-const s = pillSizes[size];
+const showDot = dot ?? isBadgeModern;
+const color = pillColors[colorKey];
+const size = pillSizes[sizeKey];
 
 const classes = isBadgeModern
   ? cn(
       'inline-flex items-center font-medium',
       'bg-off-white border border-gray-300 rounded-sm shadow-xs text-gray-700',
-      modernSizes[size],
-      (hasIconLeading || hasIconTrailing) && s.gap,
+      modernSizes[sizeKey],
+      size.gap,
       className
     )
   : cn(
       'inline-flex items-center border font-medium rounded-full',
-      c.bg,
-      c.border,
-      c.text,
-      s.outer,
-      (dot || hasIconLeading || hasIconTrailing) && s.gap,
+      color.bg,
+      color.border,
+      color.text,
+      size.outer,
+      size.gap,
       className
     );
 ---
 
 <span class={classes}>
   {
-    !isBadgeModern && dot && (
+    showDot && !hasIconLeading && !hasIconTrailing ? (
       <span
-        class={cn('shrink-0 rounded-full', s.dot, c.dot)}
+        class={cn(
+          'shrink-0 rounded-full',
+          size.dot,
+          isBadgeModern ? 'bg-gray-700' : color.dot
+        )}
         aria-hidden="true"
       />
-    )
+    ) : null
   }
   <slot name="icon-leading" />
   {label}
