@@ -28,7 +28,7 @@ jobs:
           UNTITLEDUI_TOKEN: ${{ secrets.UNTITLEDUI_TOKEN }}
 
       - name: Publish to Chromatic
-        uses: chromatic-com/action@v3
+        uses: chromaui/action@latest
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           buildScriptName: build-storybook
