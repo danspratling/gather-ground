@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   composeStories,
