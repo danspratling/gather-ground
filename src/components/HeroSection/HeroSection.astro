@@ -1,0 +1,42 @@
+---
+import type { HeroSectionProps } from './HeroSection.types';
+import Button from '@/components/Forms/Button/Button.astro';
+
+type Props = HeroSectionProps;
+
+const { headline, subCopy, primaryCta, secondaryCta, image } = Astro.props;
+---
+
+<section class="py-12 lg:py-24">
+  <div class="container flex flex-col gap-16">
+    <div class="flex flex-col gap-12">
+      <div class="flex flex-col gap-6">
+        <h1
+          class="text-display-xl font-medium tracking-display-xl text-brand-900 max-w-[1024px]"
+        >
+          {headline}
+        </h1>
+        <p class="text-base text-gray-600 max-w-[640px]">
+          {subCopy}
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <Button label={primaryCta.label} href={primaryCta.href} size="lg" />
+        <Button
+          label={secondaryCta.label}
+          href={secondaryCta.href}
+          size="lg"
+          variant="outline"
+        />
+      </div>
+    </div>
+    <div class="w-full">
+      <img
+        src={image.src}
+        alt={image.alt}
+        class="w-full aspect-[1216/516] object-cover"
+        loading="eager"
+      />
+    </div>
+  </div>
+</section>
