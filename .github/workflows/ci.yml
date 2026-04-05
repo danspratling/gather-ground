@@ -117,6 +117,8 @@ jobs:
 
       - name: Storybook build
         run: npm run build-storybook
+        env:
+          IS_STORYBOOK_BUILD: 'true'
 
       - name: Astro component + a11y tests (happy-dom)
         run: npm run test-storybook:astro

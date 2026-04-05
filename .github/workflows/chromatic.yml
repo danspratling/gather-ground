@@ -31,4 +31,5 @@ jobs:
         run: npx chromatic --build-script-name build-storybook
         env:
           CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          IS_STORYBOOK_BUILD: 'true'
         continue-on-error: false
