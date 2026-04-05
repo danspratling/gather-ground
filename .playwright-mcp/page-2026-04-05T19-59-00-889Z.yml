@@ -1,0 +1,109 @@
+- generic [active] [ref=e1]:
+    - banner [ref=e2]:
+        - generic [ref=e3]:
+            - button "Open menu" [ref=e7]:
+                - img [ref=e8]
+            - link "Gather Ground" [ref=e10] [cursor=pointer]:
+                - /url: /
+                - img "Gather Ground" [ref=e11]
+            - link "Basket" [ref=e13] [cursor=pointer]:
+                - /url: /cart
+                - img [ref=e14]
+    - main [ref=e16]:
+        - generic [ref=e18]:
+            - generic [ref=e19]:
+                - generic [ref=e20]:
+                    - heading "We are Gather Ground lorem ipsum dolor sit amet" [level=1] [ref=e21]
+                    - paragraph [ref=e22]: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
+                - generic [ref=e23]:
+                    - link "Our Products" [ref=e24] [cursor=pointer]:
+                        - /url: /products
+                    - link "Get in touch" [ref=e25] [cursor=pointer]:
+                        - /url: /contact
+            - img "Gather Ground — a person in a creative workspace" [ref=e27]
+    - contentinfo [ref=e28]:
+        - generic [ref=e30]:
+            - generic [ref=e31]:
+                - link "Gather Ground home" [ref=e32] [cursor=pointer]:
+                    - /url: /
+                    - img "Gather Ground" [ref=e33]
+                - paragraph [ref=e34]: Family farm in rural Iowa. We raise heritage breed animals on pasture year-round.
+                - generic "Social media links" [ref=e35]:
+                    - link "Instagram" [ref=e36] [cursor=pointer]:
+                        - /url: https://instagram.com
+                        - img [ref=e37]
+                    - link "Facebook" [ref=e39] [cursor=pointer]:
+                        - /url: https://facebook.com
+                        - img [ref=e40]
+                    - link "TikTok" [ref=e42] [cursor=pointer]:
+                        - /url: https://tiktok.com
+                        - img [ref=e43]
+            - generic [ref=e45]:
+                - generic [ref=e46]:
+                    - generic [ref=e47]:
+                        - paragraph [ref=e48]: Company
+                        - list [ref=e49]:
+                            - listitem [ref=e50]:
+                                - link "About" [ref=e51] [cursor=pointer]:
+                                    - /url: /about
+                            - listitem [ref=e52]:
+                                - link "News" [ref=e53] [cursor=pointer]:
+                                    - /url: /news
+                            - listitem [ref=e54]:
+                                - link "Shop" [ref=e55] [cursor=pointer]:
+                                    - /url: /shop
+                                - generic [ref=e56]: New
+                            - listitem [ref=e57]:
+                                - link "Contact" [ref=e58] [cursor=pointer]:
+                                    - /url: /contact
+                    - generic [ref=e59]:
+                        - paragraph [ref=e60]: Products
+                        - list [ref=e61]:
+                            - listitem [ref=e62]:
+                                - link "Beef" [ref=e63] [cursor=pointer]:
+                                    - /url: /products/beef
+                            - listitem [ref=e64]:
+                                - link "Pork" [ref=e65] [cursor=pointer]:
+                                    - /url: /products/pork
+                            - listitem [ref=e66]:
+                                - link "Chicken" [ref=e67] [cursor=pointer]:
+                                    - /url: /products/chicken
+                            - listitem [ref=e68]:
+                                - link "Turkey" [ref=e69] [cursor=pointer]:
+                                    - /url: /products/turkey
+                            - listitem [ref=e70]:
+                                - link "Eggs" [ref=e71] [cursor=pointer]:
+                                    - /url: /products/eggs
+                - generic [ref=e74]:
+                    - paragraph [ref=e75]: Stay up to date
+                    - generic [ref=e76]:
+                        - textbox "Email address" [ref=e77]:
+                            - /placeholder: Enter your email
+                        - button "Subscribe" [ref=e78] [cursor=pointer]
+        - generic [ref=e80]:
+            - paragraph [ref=e81]: © 2026 Gather Ground
+            - list [ref=e82]:
+                - listitem [ref=e83]:
+                    - link "Terms" [ref=e84] [cursor=pointer]:
+                        - /url: /terms
+                - listitem [ref=e85]:
+                    - link "Privacy" [ref=e86] [cursor=pointer]:
+                        - /url: /privacy
+                - listitem [ref=e87]:
+                    - link "Cookies" [ref=e88] [cursor=pointer]:
+                        - /url: /cookies
+    - generic [ref=e91]:
+        - button "Menu" [ref=e92]:
+            - img [ref=e94]
+            - generic: Menu
+        - button "Inspect" [ref=e98]:
+            - img [ref=e100]
+            - generic: Inspect
+        - button "Audit" [ref=e102]:
+            - generic [ref=e103]:
+                - img [ref=e104]
+                - img [ref=e107]
+            - generic: Audit
+        - button "Settings" [ref=e110]:
+            - img [ref=e112]
+            - generic: Settings

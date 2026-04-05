@@ -309,6 +309,7 @@ Structural and behavioral tests catch real regressions (sections not rendering, 
 - When building any section component, use Figma MCP first to read the frame before writing markup
 - Validate at both 375px and 1440px with Playwright MCP before opening a PR
 - Document the Figma frame URL in the Linear issue and in the story's `parameters.design` field
+- Every page section story must include `chromatic: { viewports: [375, 1440] }` in `parameters` — Chromatic is the ongoing visual record at both breakpoints
 - AI agents building sections must follow this workflow (see `CLAUDE.md`)
 
 ---

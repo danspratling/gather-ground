@@ -1,11 +1,21 @@
 ---
 import Layout from '@/layouts/Layout.astro';
+import HeroSection from '@/components/HeroSection/HeroSection.astro';
 import ProductsSectionA from '@/components/ProductsSectionA/ProductsSectionA.astro';
 ---
 
 <Layout title="Gather Ground">
   <main>
-    <h1 class="sr-only">Gather Ground</h1>
+    <HeroSection
+      headline="We are Gather Ground lorem ipsum dolor sit amet"
+      subCopy="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod."
+      primaryCta={{ label: 'Our Products', href: '/products' }}
+      secondaryCta={{ label: 'Get in touch', href: '/contact' }}
+      image={{
+        src: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=1216&h=516&fit=crop',
+        alt: 'Gather Ground — a person in a creative workspace',
+      }}
+    />
     <ProductsSectionA
       eyebrow="Products"
       heading="What are you looking for?"

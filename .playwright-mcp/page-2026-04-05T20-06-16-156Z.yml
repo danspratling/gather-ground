@@ -1,0 +1,113 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - navigation "Main navigation" [ref=e5]:
+        - navigation "Shop" [ref=e7]:
+          - list [ref=e8]:
+            - listitem [ref=e9]:
+              - button "Shop" [ref=e10]:
+                - text: Shop
+                - img [ref=e11]
+        - navigation "About us" [ref=e14]:
+          - list [ref=e15]:
+            - listitem [ref=e16]:
+              - button "About us" [ref=e17]:
+                - text: About us
+                - img [ref=e18]
+        - link "Blog" [ref=e20] [cursor=pointer]:
+          - /url: /blog
+        - link "Contact" [ref=e21] [cursor=pointer]:
+          - /url: /contact
+      - link "Gather Ground" [ref=e22] [cursor=pointer]:
+        - /url: /
+        - img "Gather Ground" [ref=e23]
+      - generic [ref=e25]:
+        - link "Account" [ref=e26] [cursor=pointer]:
+          - /url: /account
+          - img [ref=e27]
+        - link "Basket" [ref=e29] [cursor=pointer]:
+          - /url: /cart
+          - img [ref=e30]
+  - main [ref=e32]:
+    - generic [ref=e34]:
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - heading "We are Gather Ground lorem ipsum dolor sit amet" [level=1] [ref=e37]
+          - paragraph [ref=e38]: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
+        - generic [ref=e39]:
+          - link "Our Products" [ref=e40] [cursor=pointer]:
+            - /url: /products
+          - link "Get in touch" [ref=e41] [cursor=pointer]:
+            - /url: /contact
+      - img "Gather Ground — a person in a creative workspace" [ref=e43]
+  - contentinfo [ref=e44]:
+    - generic [ref=e46]:
+      - generic [ref=e47]:
+        - link "Gather Ground home" [ref=e48] [cursor=pointer]:
+          - /url: /
+          - img "Gather Ground" [ref=e49]
+        - paragraph [ref=e50]: Family farm in rural Iowa. We raise heritage breed animals on pasture year-round.
+        - generic "Social media links" [ref=e51]:
+          - link "Instagram" [ref=e52] [cursor=pointer]:
+            - /url: https://instagram.com
+            - img [ref=e53]
+          - link "Facebook" [ref=e55] [cursor=pointer]:
+            - /url: https://facebook.com
+            - img [ref=e56]
+          - link "TikTok" [ref=e58] [cursor=pointer]:
+            - /url: https://tiktok.com
+            - img [ref=e59]
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - paragraph [ref=e64]: Company
+            - list [ref=e65]:
+              - listitem [ref=e66]:
+                - link "About" [ref=e67] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e68]:
+                - link "News" [ref=e69] [cursor=pointer]:
+                  - /url: /news
+              - listitem [ref=e70]:
+                - link "Shop" [ref=e71] [cursor=pointer]:
+                  - /url: /shop
+                - generic [ref=e72]: New
+              - listitem [ref=e73]:
+                - link "Contact" [ref=e74] [cursor=pointer]:
+                  - /url: /contact
+          - generic [ref=e75]:
+            - paragraph [ref=e76]: Products
+            - list [ref=e77]:
+              - listitem [ref=e78]:
+                - link "Beef" [ref=e79] [cursor=pointer]:
+                  - /url: /products/beef
+              - listitem [ref=e80]:
+                - link "Pork" [ref=e81] [cursor=pointer]:
+                  - /url: /products/pork
+              - listitem [ref=e82]:
+                - link "Chicken" [ref=e83] [cursor=pointer]:
+                  - /url: /products/chicken
+              - listitem [ref=e84]:
+                - link "Turkey" [ref=e85] [cursor=pointer]:
+                  - /url: /products/turkey
+              - listitem [ref=e86]:
+                - link "Eggs" [ref=e87] [cursor=pointer]:
+                  - /url: /products/eggs
+        - generic [ref=e90]:
+          - paragraph [ref=e91]: Stay up to date
+          - generic [ref=e92]:
+            - textbox "Email address" [ref=e93]:
+              - /placeholder: Enter your email
+            - button "Subscribe" [ref=e94] [cursor=pointer]
+    - generic [ref=e96]:
+      - paragraph [ref=e97]: © 2026 Gather Ground
+      - list [ref=e98]:
+        - listitem [ref=e99]:
+          - link "Terms" [ref=e100] [cursor=pointer]:
+            - /url: /terms
+        - listitem [ref=e101]:
+          - link "Privacy" [ref=e102] [cursor=pointer]:
+            - /url: /privacy
+        - listitem [ref=e103]:
+          - link "Cookies" [ref=e104] [cursor=pointer]:
+            - /url: /cookies

@@ -56,6 +56,7 @@ Component groups: `Layout/` (Header, Footer), `Typography/` (Body, Heading, Labe
 - Stories co-located in component folder — not in `src/stories/` (that's for global docs only)
 - Use `@storybook/test` play functions for interaction tests — never Playwright inside stories
 - Every story includes `parameters.design` with the Figma frame URL
+- Page section stories must include `chromatic: { viewports: [375, 1440] }` in `parameters` to capture both mobile and desktop snapshots
 - React island stories use `.tsx` extension and `renderer: 'react'` in parameters
 - Non-story `.ts/.tsx` files in `src/components/` must include `export default null`
 

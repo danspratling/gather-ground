@@ -1,0 +1,31 @@
+[    1365ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:4323/node_modules/.vite/deps/chunk-5SVDBPQA.js?v=16a59126:20102
+[    1757ms] [ERROR] %cAstro background: linear-gradient(66.77deg, #D83333 0%, #F041FF 100%); color: white; padding-inline: 4px; border-radius: 2px; font-family: monospace; Error while running audit's match function: TypeError: Failed to fetch @ http://localhost:4323/node_modules/.vite/deps/chunk-LEX3GG7N.js?v=54307e6c:22
+[    1893ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:4323/node_modules/.vite/deps/chunk-5SVDBPQA.js?v=54307e6c:20102
+[   14476ms] [ERROR] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  <NewsletterForm heading="Stay up to...">
+    <div className="flex flex-...">
+      <p>
+      <form onSubmit={function handleSubmit} className="flex flex-..." noValidate={true}>
+        <input
+          type="email"
+          value=""
+          onChange={function onChange}
+          placeholder="Enter your email"
+          required={true}
+          aria-label="Email address"
+          className="min-w-0 flex-1 rounded-lg border border-brand-100 bg-off-white px-3.5 py-2.5 text-base text-gray-..."
+-         style={{}}
+        >
+        ...
+ @ http://localhost:4323/node_modules/.vite/deps/chunk-5SVDBPQA.js?v=54307e6c:4072
