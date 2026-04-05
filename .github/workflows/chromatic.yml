@@ -2,9 +2,8 @@ name: Chromatic
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - '**'
 
 jobs:
   chromatic:
@@ -38,5 +37,9 @@ jobs:
           # Don't block CI waiting for snapshot results on PRs — Chromatic
           # reports status asynchronously via the GitHub check.
           exitOnceUploaded: true
+          # Only snapshot stories affected by git changes since the last build.
+          # Not compatible with pull_request triggers (uses ephemeral merge commit);
+          # running on push for all branches avoids that issue.
+          onlyChanged: true
         env:
           IS_STORYBOOK_BUILD: 'true'
