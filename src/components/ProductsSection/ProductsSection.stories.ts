@@ -2,11 +2,11 @@
 // See: https://storybook-astro.org/writing-stories/
 
 // @ts-expect-error — .astro files have no TypeScript declarations
-import ProductsSectionA from '@/components/ProductsSectionA/ProductsSectionA.astro';
+import ProductsSection from '@/components/ProductsSection/ProductsSection.astro';
 
 const meta = {
-  title: 'Sections/Products Section A',
-  component: ProductsSectionA,
+  title: 'Sections/Products Section',
+  component: ProductsSection,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
@@ -21,7 +21,7 @@ const meta = {
 
 export default meta;
 
-const mockProducts = [
+const mockCategoryProducts = [
   {
     image:
       'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=384&h=256&fit=crop',
@@ -60,12 +60,63 @@ const mockProducts = [
   },
 ];
 
-export const Default = {
+const mockImageProducts = [
+  {
+    image:
+      'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=576&h=512&fit=crop',
+    imageAlt: 'Beef topside roasting joint',
+    title: 'Beef topside roasting joint',
+    href: '/products/beef-topside',
+  },
+  {
+    image:
+      'https://images.unsplash.com/photo-1588347818036-4b8c0a6f7a22?w=576&h=512&fit=crop',
+    imageAlt: 'Beef mince',
+    title: 'Beef Mince 15% lean',
+    href: '/products/beef-mince',
+  },
+  {
+    image:
+      'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=576&h=512&fit=crop',
+    imageAlt: 'Pork belly',
+    title: 'Pork belly',
+    href: '/products/pork-belly',
+  },
+  {
+    image:
+      'https://images.unsplash.com/photo-1448453297814-e8f69038e4b9?w=576&h=512&fit=crop',
+    imageAlt: 'Whole chicken',
+    title: 'Whole Chicken',
+    href: '/products/whole-chicken',
+  },
+  {
+    image:
+      'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=576&h=512&fit=crop',
+    imageAlt: 'Free range eggs',
+    title: 'Free Range Eggs',
+    href: '/products/eggs',
+  },
+];
+
+export const Cards = {
   args: {
+    variant: 'cards',
     eyebrow: 'Products',
     heading: 'What are you looking for?',
     subCopy:
       'Local, pasture-raised, higher welfare meat that tastes better too',
-    products: mockProducts,
+    products: mockCategoryProducts,
+  },
+};
+
+export const CarouselVariant = {
+  name: 'Carousel',
+  args: {
+    variant: 'carousel',
+    eyebrow: 'Products',
+    heading: 'What are you looking for?',
+    subCopy:
+      'Local, pasture-raised, higher welfare meat that tastes better too',
+    products: mockImageProducts,
   },
 };
