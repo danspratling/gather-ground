@@ -12,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0 # Required for Chromatic to detect changed stories
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -28,8 +28,15 @@ jobs:
           UNTITLEDUI_TOKEN: ${{ secrets.UNTITLEDUI_TOKEN }}
 
       - name: Publish to Chromatic
-        run: npx chromatic --build-script-name build-storybook
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          buildScriptName: build-storybook
+          # Auto-accept changes on main so baseline is always kept up to date.
+          # PRs still require review/approval via the Chromatic UI.
+          autoAcceptChanges: main
+          # Don't block CI waiting for snapshot results on PRs — Chromatic
+          # reports status asynchronously via the GitHub check.
+          exitOnceUploaded: true
         env:
-          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           IS_STORYBOOK_BUILD: 'true'
-        continue-on-error: false
