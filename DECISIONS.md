@@ -4,25 +4,27 @@ Architecture decision log for the Gather Ground website. Read this before changi
 
 ## Quick reference
 
-| ADR     | Title                                     | Category     |
-| ------- | ----------------------------------------- | ------------ |
-| ADR-001 | Astro over Next.js                        | Stack        |
-| ADR-002 | shadcn/ui as a primitive layer            | Components   |
-| ADR-004 | Storyblok schemas in code                 | Storyblok    |
-| ADR-005 | No client-side Storyblok fetching         | Storyblok    |
-| ADR-006 | Play functions vs Playwright              | Testing      |
-| ADR-007 | Design tokens as visual source of truth   | Styling      |
-| ADR-008 | Tailwind v4 via @tailwindcss/vite         | Stack        |
-| ADR-009 | shadcn/ui uses Base UI, not Radix         | Components   |
-| ADR-010 | Node ≥22.12.0                             | Stack        |
-| ADR-012 | .astro for static, .tsx for islands       | Components   |
-| ADR-013 | Storybook uses @storybook-astro/framework | Storybook    |
-| ADR-014 | Icons: @untitledui-pro + brand SVGs       | Components   |
-| ADR-015 | CSF Factories migration (deferred)        | Storybook    |
-| ADR-016 | Chromatic + a11y + docs addons            | Storybook    |
-| ADR-017 | Co-locate all component files             | Organisation |
-| ADR-018 | sb.mock for API mocking (deferred)        | Storybook    |
-| ADR-019 | Chromatic replaces browser-mode CI tests  | Testing      |
+| ADR     | Title                                            | Category     |
+| ------- | ------------------------------------------------ | ------------ |
+| ADR-001 | Astro over Next.js                               | Stack        |
+| ADR-002 | shadcn/ui as a primitive layer                   | Components   |
+| ADR-004 | Storyblok schemas in code                        | Storyblok    |
+| ADR-005 | No client-side Storyblok fetching                | Storyblok    |
+| ADR-006 | Play functions vs Playwright                     | Testing      |
+| ADR-007 | Design tokens as visual source of truth          | Styling      |
+| ADR-008 | Tailwind v4 via @tailwindcss/vite                | Stack        |
+| ADR-009 | shadcn/ui uses Base UI, not Radix                | Components   |
+| ADR-010 | Node ≥22.12.0                                    | Stack        |
+| ADR-012 | .astro for static, .tsx for islands              | Components   |
+| ADR-013 | Storybook uses @storybook-astro/framework        | Storybook    |
+| ADR-014 | Icons: @untitledui-pro + brand SVGs              | Components   |
+| ADR-015 | CSF Factories migration (deferred)               | Storybook    |
+| ADR-016 | Chromatic + a11y + docs addons                   | Storybook    |
+| ADR-017 | Co-locate all component files                    | Organisation |
+| ADR-018 | sb.mock for API mocking (deferred)               | Storybook    |
+| ADR-019 | Chromatic replaces browser-mode CI tests         | Testing      |
+| ADR-020 | Playwright page testing: structural + behavioral | Testing      |
+| ADR-021 | MCP-aided development workflow                   | Process      |
 
 ---
 
@@ -254,6 +256,60 @@ The `export default null` is inert at runtime. Always add it when creating any o
 - `npm run test-storybook:react` is available locally to run browser tests before pushing.
 - The `storybook` Vitest project remains in `vitest.config.ts` to power the Storybook UI testing widget locally.
 - CI does not install Playwright browsers — Chromatic handles cross-browser coverage.
+
+---
+
+## ADR-020: Playwright page tests are structural and behavioral — never content-based
+
+**Decision:** Playwright tests for pages are divided into two layers:
+
+- **Layer 1 — Structural:** Assert on the presence and shape of the page, not its content. Every page must have exactly one `<h1>`, a `<main>` landmark, a `<nav>`, all `<img>` elements must have non-empty `alt` attributes, and there must be no console errors on load.
+- **Layer 2 — Behavioral:** Test how interactive elements work, not what they say. The mobile nav must open and close. Accordions must expand and collapse. Forms must validate on empty submit. Interactive elements must be keyboard-reachable.
+
+Content assertions (checking specific heading text, paragraph copy, image `src` values, etc.) are explicitly prohibited in Playwright tests.
+
+**Reasoning:** Page content comes from Storyblok — it will be edited by non-engineers without a code deployment. Content-based assertions become stale the moment an editor updates copy, causing CI failures that have nothing to do with the code. Storyblok API calls happen server-side in Astro frontmatter (ADR-005), making browser-level `page.route()` mocking ineffective — there is no viable intercept point for a CMS mock at the page level without adding test-awareness to production code.
+
+Structural and behavioral tests catch real regressions (sections not rendering, interactive features breaking, accessibility violations) while remaining stable across CMS updates. Visual regressions are covered by Chromatic at the component level (ADR-016, ADR-019) — Playwright does not do screenshot diffing.
+
+**Consequence:**
+
+- Tests live in `tests/pages/[pageName].spec.ts`
+- Every page spec must include: one `<h1>` assertion, landmark presence, `<img alt>` check, no console errors
+- Interactive features on that page (nav, accordion, forms) must have a behavioral test
+- Never use `getByText('specific copy')` for assertions — use roles, labels, and attributes
+- `tests/pages/homepage.spec.ts` is the canonical reference example
+
+---
+
+## ADR-021: MCP-aided development for page sections
+
+**Decision:** When building page sections (HeroSection, FeaturesSection, CtaSection, etc.), use Figma MCP and Playwright MCP as a closed-loop design validation cycle during implementation. This is a development aid — it is not part of CI.
+
+**The workflow:**
+
+1. Read the Figma frame URL from the Linear issue
+2. Use Figma MCP to extract the frame: layout structure, token usage, responsive breakpoints, component composition
+3. Build the section component (types → markup → tokens)
+4. Use Playwright MCP to navigate to `localhost:4321`, screenshot at 375px (mobile) and 1440px (desktop)
+5. Compare screenshots against the Figma frame — review spacing, alignment, token application, and responsive behaviour
+6. Iterate until the implementation matches
+7. Once approved: the next Chromatic run on the PR establishes this state as the visual regression baseline
+
+**Reasoning:** Page sections are the primary visual output of the project and are the hardest to review purely in code. The MCP loop eliminates manual browser/Figma switching during development and closes the feedback loop inside the AI conversation. This means implementation deviations from Figma are caught before the PR is opened rather than during review. Playwright MCP can also run keyboard navigation and basic accessibility checks during development, identifying issues before the automated suite runs.
+
+**Scope boundary:** The MCP loop is a development-time aid only. It does not replace:
+
+- Chromatic, which owns visual regression testing ongoing (ADR-016)
+- Playwright tests, which own structural and behavioral verification (ADR-020)
+- Storybook play functions, which own component interaction tests (ADR-006)
+
+**Consequence:**
+
+- When building any section component, use Figma MCP first to read the frame before writing markup
+- Validate at both 375px and 1440px with Playwright MCP before opening a PR
+- Document the Figma frame URL in the Linear issue and in the story's `parameters.design` field
+- AI agents building sections must follow this workflow (see `CLAUDE.md`)
 
 ---
 

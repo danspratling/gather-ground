@@ -4,6 +4,17 @@ How to contribute to the Gather Ground website codebase. Read this before openin
 
 ---
 
+## Component PRs vs page section PRs
+
+This project has two kinds of contribution with different checklists:
+
+- **UI components** — primitive building blocks (`Button`, `Badge`, `Carousel`, etc.) that live in `src/components/` and appear in Storybook
+- **Page sections** — composed sections that assemble UI components into full-width layouts (`HeroSection`, `FeaturesSection`, `CtaSection`, etc.) driven by Storyblok content
+
+Read the relevant section below for the one you're working on.
+
+---
+
 ## Every component PR must include all of the following
 
 These are non-negotiable. A PR missing any item will not be merged.
@@ -33,7 +44,78 @@ These are non-negotiable. A PR missing any item will not be merged.
 
 ---
 
-## Definition of done
+## Every page section PR must include all of the following
+
+Page sections compose existing UI components into CMS-driven layouts. The workflow and deliverables differ from UI components.
+
+| #   | Deliverable                | Location                                                       |
+| --- | -------------------------- | -------------------------------------------------------------- |
+| 1   | Section component file     | `src/components/[Name]/[Name].astro` (always `.astro`)         |
+| 2   | TypeScript props interface | `src/components/[Name]/[Name].types.ts` (co-located, exported) |
+| 3   | Storyblok schema           | `src/storyblok/[name].ts`                                      |
+| 4   | Page integration           | Section rendered in `src/pages/index.astro` (or relevant page) |
+| 5   | Playwright tests           | `tests/pages/[pageName].spec.ts` — structural + behavioral     |
+
+Note: page sections do **not** require a Storybook story or play function. They compose existing components that are already independently tested.
+
+### Notes on each
+
+**Section component:** Always `.astro` — sections are static server-rendered layouts. Only introduce a co-located React island (`.tsx`) if the section contains interactive behaviour that cannot be handled by an existing UI component.
+
+**TypeScript interface:** Write this first. Props map 1:1 to Storyblok schema fields (using `camelCase` in TypeScript, `snake_case` in the schema). Data is received as props from the Astro page frontmatter — never fetched inside the section.
+
+**Storyblok schema:** Field names must be `snake_case`. Push via CLI, never via the Storyblok dashboard.
+
+**Page integration:** The section must be rendered in the real page (`index.astro`) receiving live Storyblok data. Verify it renders correctly in the Vercel preview on the PR.
+
+**Playwright tests:** Add structural and behavioral tests for the section to the relevant page spec. See the testing rules below and `tests/pages/homepage.spec.ts` for examples. Never assert on CMS content — assert on structure and behavior only (ADR-020).
+
+### Step by step — adding a page section
+
+1. **Read the Linear issue** — note the Figma frame URL and the section dimensions
+2. **Read the Figma frame** using Figma MCP — extract the layout structure, token usage, and responsive breakpoints before writing any markup
+3. **Create the branch** using Linear's generated branch name
+4. **Write the TypeScript interface first** — `src/components/[Name]/[Name].types.ts` (add `export default null` at the end)
+5. **Build the section component** — `src/components/[Name]/[Name].astro`, using only design tokens and existing UI components
+6. **Write the Storyblok schema** — `src/storyblok/[name].ts`, matching the TypeScript interface
+7. **Integrate into the page** — import and render the section in `index.astro`, wired to Storyblok data
+8. **Validate with Playwright MCP** — screenshot at 375px and 1440px, compare against the Figma frame, fix discrepancies (ADR-021)
+9. **Write Playwright tests** — structural and behavioral assertions in `tests/pages/[pageName].spec.ts`
+10. **Run the full local check** (see Definition of done below)
+11. **Commit and push** — CI will run automatically, Vercel generates a preview URL
+12. **Open the PR** — include the Figma frame URL and the Linear issue number in the description
+
+---
+
+## Playwright testing rules for pages
+
+These apply to all tests in `tests/pages/`.
+
+**Assert on structure, not content.** Page content comes from Storyblok and is edited by non-engineers — content assertions will break on routine CMS updates.
+
+| Do                                          | Don’t                                   |
+| ------------------------------------------- | --------------------------------------- |
+| `getByRole('heading', { level: 1 })` exists | `getByText('Welcome to Gather Ground')` |
+| `getByRole('navigation')` has links         | `getByText('Shop Now')`                 |
+| `locator('img')` all have non-empty `alt`   | `getByAltText('Hero background image')` |
+| `getByRole('button')` is focusable          | `getByText('Subscribe')`                |
+
+**Every page spec must include:**
+
+- Exactly one `<h1>` on the page
+- `<main>` and `<nav>` landmarks present
+- All images have non-empty `alt` attributes
+- No console errors on load
+
+**Each interactive section must add:**
+
+- The relevant behavioral test (nav opens/closes, accordion expands/collapses, form validates)
+
+**No visual assertions** — Chromatic owns visual regression at the component level (ADR-016, ADR-019).
+
+See `tests/pages/homepage.spec.ts` for a reference implementation and `DECISIONS.md` ADR-020 for the full rationale.
+
+---
 
 Before opening a PR, confirm all of these pass locally:
 
