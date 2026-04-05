@@ -1,0 +1,12 @@
+---
+import type { ProductsSectionProps } from './ProductsSection.types';
+import ProductsSectionCards from './ProductsSectionCards.astro';
+import ProductsSectionCarousel from './ProductsSectionCarousel';
+
+type Props = ProductsSectionProps;
+
+const { variant, ...rest } = Astro.props;
+---
+
+{variant === 'cards' && <ProductsSectionCards {...rest} />}
+{variant === 'carousel' && <ProductsSectionCarousel client:visible {...rest} />}

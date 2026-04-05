@@ -1,11 +1,11 @@
 ---
-import type { ProductsSectionAProps } from './ProductsSectionA.types';
+import type { ProductsSectionProps } from './ProductsSection.types';
 import Label from '@/components/Typography/Label/Label.astro';
 import Heading from '@/components/Typography/Heading/Heading.astro';
 import Body from '@/components/Typography/Body/Body.astro';
 import ProductCardCategory from '@/components/ProductCard/ProductCardCategory.astro';
 
-type Props = ProductsSectionAProps;
+type Props = Omit<ProductsSectionProps, 'variant'>;
 
 const { eyebrow, heading, subCopy, products } = Astro.props;
 ---
