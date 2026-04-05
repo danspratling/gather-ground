@@ -1,0 +1,41 @@
+---
+import type { ProductsSectionAProps } from './ProductsSectionA.types';
+import Label from '@/components/Typography/Label/Label.astro';
+import Heading from '@/components/Typography/Heading/Heading.astro';
+import Body from '@/components/Typography/Body/Body.astro';
+import ProductCardCategory from '@/components/ProductCard/ProductCardCategory.astro';
+
+type Props = ProductsSectionAProps;
+
+const { eyebrow, heading, subCopy, products } = Astro.props;
+---
+
+<section class="py-12 lg:py-24">
+  <div class="container flex flex-col gap-16">
+    <div class="flex flex-col items-center gap-5 text-center">
+      <div class="flex flex-col gap-3 max-w-[768px] w-full">
+        <Label size="sm" class="text-brand-700">{eyebrow}</Label>
+        <Heading size="display-md" weight="semibold" class="text-gray-900">
+          {heading}
+        </Heading>
+      </div>
+      <Body size="xl" class="max-w-[768px] text-gray-600">{subCopy}</Body>
+    </div>
+    <ul class="grid grid-cols-2 gap-6 lg:grid-cols-4" role="list">
+      {
+        products.map((product) => (
+          <li>
+            <ProductCardCategory
+              image={product.image}
+              imageAlt={product.imageAlt}
+              title={product.title}
+              description={product.description}
+              href={product.href}
+              class="h-full"
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
