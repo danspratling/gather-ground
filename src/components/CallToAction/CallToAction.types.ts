@@ -7,6 +7,7 @@ export interface CallToActionProps {
   primaryButton: ButtonProps;
   secondaryButton?: ButtonProps;
   avatarGroup?: AvatarGroupProps;
+  centered?: boolean;
   class?: string;
 }
 
