@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, screen, userEvent, waitFor, within } from 'storybook/test';
 
 import NavMenu from '@/components/Layout/Header/NavMenu';
 
@@ -66,21 +66,22 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Panel should not be visible on load
-    expect(canvas.queryByRole('list')).toBeNull();
+    // Dropdown links should not be visible on load (portaled to document.body)
+    expect(screen.queryByRole('link', { name: /beef/i })).toBeNull();
 
     // Click trigger to open
     const trigger = canvas.getByRole('button', { name: /shop/i });
     await userEvent.click(trigger);
 
     // Panel and first item should be visible
-    const list = canvas.getByRole('list');
-    await expect(list).toBeInTheDocument();
-    await expect(within(list).getByText('Beef')).toBeInTheDocument();
+    const beefLink = await screen.findByRole('link', { name: /beef/i });
+    await expect(beefLink).toBeInTheDocument();
 
     // Press Escape to close
     await userEvent.keyboard('{Escape}');
-    await expect(canvas.queryByRole('list')).toBeNull();
+    await waitFor(() =>
+      expect(screen.queryByRole('link', { name: /beef/i })).toBeNull()
+    );
   },
 };
 

@@ -17,6 +17,7 @@ const config: StorybookConfig = {
     '@storybook/addon-a11y',
     '@storybook/addon-designs',
     '@chromatic-com/storybook',
+    '@storybook/addon-vitest',
   ],
   framework: {
     name: '@storybook-astro/framework',

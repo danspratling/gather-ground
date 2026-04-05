@@ -47,7 +47,7 @@ export const CategoryVariant = {
       )
     ).toBeInTheDocument();
     await expect(
-      canvas.getByRole('link', { name: 'Beef' })
+      canvas.getByRole('link', { name: /Beef/i })
     ).toBeInTheDocument();
   },
 };

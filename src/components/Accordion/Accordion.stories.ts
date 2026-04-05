@@ -50,11 +50,12 @@ export const Default: Story = {
     const firstQuestion = canvas.getByText('Where is Gather Ground located?');
     await expect(firstQuestion).toBeInTheDocument();
 
-    // Answer should be hidden initially
-    const firstAnswer = canvas.getByText(
-      'We are a family farm based in rural Iowa. Our heritage breed animals are raised on pasture year-round with room to roam.'
-    );
-    await expect(firstAnswer).not.toBeVisible();
+    // Answer should be hidden initially (Base UI removes content from DOM when closed)
+    await expect(
+      canvas.queryByText(
+        'We are a family farm based in rural Iowa. Our heritage breed animals are raised on pasture year-round with room to roam.'
+      )
+    ).toBeFalsy();
 
     // Click the first trigger to open it
     const trigger = canvas.getByRole('button', {
@@ -63,7 +64,11 @@ export const Default: Story = {
     await userEvent.click(trigger);
 
     // Answer should now be visible
-    await expect(firstAnswer).toBeVisible();
+    await expect(
+      canvas.getByText(
+        'We are a family farm based in rural Iowa. Our heritage breed animals are raised on pasture year-round with room to roam.'
+      )
+    ).toBeVisible();
   },
 };
 

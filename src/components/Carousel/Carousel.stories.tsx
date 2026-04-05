@@ -56,6 +56,13 @@ type Story = StoryObj<typeof meta>;
 
 export const WithButtons: Story = {
   args: {},
+  decorators: [
+    (Story) => (
+      <div style={{ maxWidth: '520px' }}>
+        <Story />
+      </div>
+    ),
+  ],
   parameters: {
     design: {
       type: 'figma',
@@ -92,9 +99,9 @@ export const WithButtons: Story = {
     const prevBtn = canvas.getByRole('button', { name: 'Previous slide' });
     const nextBtn = canvas.getByRole('button', { name: 'Next slide' });
 
-    // Previous should be disabled at the start
-    await expect(prevBtn).toBeDisabled();
-    await expect(nextBtn).not.toBeDisabled();
+    // Previous should be disabled at the start; wait for Embla to mount
+    await waitFor(() => expect(prevBtn).toBeDisabled());
+    await waitFor(() => expect(nextBtn).not.toBeDisabled());
 
     // Advance one slide
     await userEvent.click(nextBtn);
@@ -110,6 +117,13 @@ export const WithButtons: Story = {
 
 export const WithDots: Story = {
   args: {},
+  decorators: [
+    (Story) => (
+      <div style={{ maxWidth: '420px' }}>
+        <Story />
+      </div>
+    ),
+  ],
   parameters: {
     design: {
       type: 'figma',
