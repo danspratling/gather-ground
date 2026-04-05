@@ -18,17 +18,17 @@ Marketing website for Gather Ground. Astro framework, Tailwind CSS + shadcn/ui f
 
 ## Stack at a glance
 
-| Layer          | Tool                               | Notes                                                                          |
-| -------------- | ---------------------------------- | ------------------------------------------------------------------------------ |
-| Framework      | Astro (latest)                     | `.astro` for static, React islands for interactive                             |
-| Styling        | Tailwind CSS v4                    | CSS custom properties in `src/styles/global.css`                               |
-| Primitives     | shadcn/ui                          | Via Astro + React integration                                                  |
-| CMS            | `@storyblok/astro`                 | Space ID `289911665285843`                                                     |
-| Component docs | Storybook v10                      | `@storybook-astro/framework`; addon-a11y, addon-designs, addon-docs, Chromatic |
-| Testing        | `@storybook/test` + Playwright     | Stories for interactions; Playwright for full pages                            |
-| Linting        | ESLint (`eslint-config-astro`)     | `eslint.config.js`                                                             |
-| Formatting     | Prettier + `prettier-plugin-astro` | `.prettierrc`                                                                  |
-| CI             | GitHub Actions                     | `.github/workflows/ci.yml`                                                     |
+| Layer          | Tool                               | Notes                                                                                      |
+| -------------- | ---------------------------------- | ------------------------------------------------------------------------------------------ |
+| Framework      | Astro (latest)                     | `.astro` for static, React islands for interactive                                         |
+| Styling        | Tailwind CSS v4                    | CSS custom properties in `src/styles/global.css`                                           |
+| Primitives     | shadcn/ui                          | Via Astro + React integration                                                              |
+| CMS            | `@storyblok/astro`                 | Space ID `289911665285843`                                                                 |
+| Component docs | Storybook v10                      | `@storybook-astro/framework`; addon-a11y, addon-designs, addon-docs, Chromatic             |
+| Testing        | `@storybook/test` + Playwright     | Stories for component interactions; Playwright for full-page structural + behavioral tests |
+| Linting        | ESLint (`eslint-config-astro`)     | `eslint.config.js`                                                                         |
+| Formatting     | Prettier + `prettier-plugin-astro` | `.prettierrc`                                                                              |
+| CI             | GitHub Actions                     | `.github/workflows/ci.yml`                                                                 |
 
 ---
 
@@ -167,7 +167,7 @@ As the codebase grows, validate at minimum the steps that cover changed files �
 ### Git
 
 - Branch name: use Linear's generated branch name shown on each issue
-- Commit format: `feat(name): description — Closes DAN-XX`
+- Commit format: `feat(name): description — Closes GG-XX`
 - Never commit directly to `main` — always via PR with CI passing
 
 ---
@@ -186,6 +186,8 @@ Copy `.env.example` to `.env`. Never commit `.env`.
 
 ## Homepage sections (Figma order)
 
+These are **page sections** — composed layouts driven by Storyblok content. Each one is a separate component in `src/components/` and is rendered in `src/pages/index.astro`. Follow the page section workflow in `CONTRIBUTING.md` when building or updating these.
+
 1. Header — in `Layout.astro`
 2. `HeroSection.astro` — 1440×1140
 3. `ProductsSection.astro` — 1440×752
@@ -196,6 +198,30 @@ Copy `.env.example` to `.env`. Never commit `.env`.
 8. Footer — in `Layout.astro`
 
 `SectionDivider.astro` appears between sections where shown in Figma.
+
+---
+
+## MCP-aided development workflow (for page sections)
+
+When building a page section, use Figma MCP and Playwright MCP as a closed-loop design validation cycle. This is required before opening a PR for any section component (ADR-021).
+
+**Step by step:**
+
+1. **Get the Figma frame URL** from the Linear issue for the section being built
+2. **Read the frame with Figma MCP** — extract: layout structure, which design tokens apply, spacing, responsive behaviour at 375px and 1440px, which existing UI components are used
+3. **Build the section** — types interface first, then markup using only design tokens and existing components (no new primitives unless the component checklist is followed)
+4. **Write the Storybook story** — hardcoded mock props, `Default` story + any meaningful variants; no live Storyblok data in stories
+5. **Validate with Playwright MCP**:
+   - Navigate to `http://localhost:4321` (dev server must be running)
+   - Screenshot at viewport width 375px (mobile)
+   - Screenshot at viewport width 1440px (desktop)
+   - Compare each screenshot against the Figma frame
+   - List specific discrepancies: spacing gaps, misaligned elements, wrong token values, missing responsive behaviour
+6. **Iterate** — fix discrepancies and re-validate until both breakpoints match
+7. **Write structural + behavioral Playwright tests** for the section in `tests/pages/[pageName].spec.ts` (ADR-020)
+8. **Run the full pre-PR check** before pushing
+
+**Scope:** The MCP validation loop is a development-time aid only. It does not replace Chromatic (visual regression baseline), play functions (component interaction tests), or Playwright tests (structural/behavioral).
 
 ---
 
@@ -220,3 +246,6 @@ Copy `.env.example` to `.env`. Never commit `.env`.
 - Do not skip writing the TypeScript interface before the component
 - Do not push without `npm run format`, `npm run typecheck`, and both test suites passing
 - Do not commit to `main` directly
+- Do not assert on CMS content in Playwright tests — only structure and behavior (ADR-020)
+- Do not skip the Figma MCP + Playwright MCP validation loop when building page sections (ADR-021)
+- Do not add visual regression assertions to Playwright tests — Chromatic owns that (ADR-016)
