@@ -48,3 +48,9 @@ declare module '@vitejs/plugin-vue-jsx' {
   }
   export default function vueJsx(options?: Options): unknown;
 }
+
+interface ImportMetaEnv {
+  readonly STORYBLOK_TOKEN: string;
+  readonly STORYBLOK_SPACE_ID: string;
+  readonly PUBLIC_STORYBLOK_TOKEN: string;
+}
