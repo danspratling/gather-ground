@@ -187,6 +187,7 @@ Copy `.env.example` to `.env`. Never commit `.env`.
 ## Homepage sections (Figma order)
 
 These are **page sections** — composed layouts driven by Storyblok content. Each one is a separate component in `src/components/` and is rendered in `src/pages/index.astro`. Follow the page section workflow in `CONTRIBUTING.md` when building or updating these.
+
 1. Header — in `Layout.astro`
 2. `HeroSection.astro` — 1440×1140
 3. `ProductsSection.astro` — 1440×752

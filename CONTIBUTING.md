@@ -52,10 +52,10 @@ Page sections compose existing UI components into CMS-driven layouts. The workfl
 | --- | -------------------------- | -------------------------------------------------------------- |
 | 1   | Section component file     | `src/components/[Name]/[Name].astro` (always `.astro`)         |
 | 2   | TypeScript props interface | `src/components/[Name]/[Name].types.ts` (co-located, exported) |
-| 3   | Storybook story            | `src/components/[Name]/[Name].stories.ts` (co-located)            |
-| 4   | Storyblok schema           | `src/storyblok/[name].ts`                                         |
-| 5   | Page integration           | Section rendered in `src/pages/index.astro` (or relevant page)   |
-| 6   | Playwright tests           | `tests/pages/[pageName].spec.ts` — structural + behavioral        |
+| 3   | Storybook story            | `src/components/[Name]/[Name].stories.ts` (co-located)         |
+| 4   | Storyblok schema           | `src/storyblok/[name].ts`                                      |
+| 5   | Page integration           | Section rendered in `src/pages/index.astro` (or relevant page) |
+| 6   | Playwright tests           | `tests/pages/[pageName].spec.ts` — structural + behavioral     |
 
 Note: page sections rarely need a play function — the composed UI components carry their own. Add one only if the section introduces interaction that isn't tested by any sub-component (e.g. a section-level animation trigger, or a layout-level keyboard behaviour).
 
