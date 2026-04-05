@@ -10,10 +10,11 @@ const {
   size = 'sm',
   color = 'gray',
   dot = false,
-  iconLeading = false,
-  iconTrailing = false,
   class: className,
 } = Astro.props;
+
+const hasIconLeading = Astro.slots.has('icon-leading');
+const hasIconTrailing = Astro.slots.has('icon-trailing');
 
 // Pill colour palette — mapped to design tokens in global.css.
 // gray/brand use existing brand/gray token aliases; all others use the
@@ -125,7 +126,7 @@ const classes = isBadgeModern
       c.border,
       c.text,
       s.outer,
-      (dot || iconLeading || iconTrailing) && s.gap,
+      (dot || hasIconLeading || hasIconTrailing) && s.gap,
       className
     );
 ---
@@ -139,39 +140,7 @@ const classes = isBadgeModern
       />
     )
   }
-  {
-    !isBadgeModern && iconLeading && (
-      <svg
-        width="10"
-        height="10"
-        viewBox="0 0 10 10"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        aria-hidden="true"
-        class="shrink-0"
-      >
-        <path d="M5 8V2M2 5l3-3 3 3" />
-      </svg>
-    )
-  }
+  {!isBadgeModern && hasIconLeading && <slot name="icon-leading" />}
   {label}
-  {
-    !isBadgeModern && iconTrailing && (
-      <svg
-        width="10"
-        height="10"
-        viewBox="0 0 10 10"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        aria-hidden="true"
-        class="shrink-0"
-      >
-        <path d="M2 5h6M5 2l3 3-3 3" />
-      </svg>
-    )
-  }
+  {!isBadgeModern && hasIconTrailing && <slot name="icon-trailing" />}
 </span>

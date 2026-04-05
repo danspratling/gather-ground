@@ -20,8 +20,6 @@ export interface BadgeProps {
   size?: BadgeSize;
   color?: BadgeColor;
   dot?: boolean;
-  iconLeading?: boolean;
-  iconTrailing?: boolean;
   class?: string;
 }
 

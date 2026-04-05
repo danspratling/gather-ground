@@ -36,8 +36,6 @@ const meta = {
       ],
     },
     dot: { control: 'boolean' },
-    iconLeading: { control: 'boolean' },
-    iconTrailing: { control: 'boolean' },
   },
 };
 
@@ -205,8 +203,15 @@ export const WithLeadingIcon = {
     type: 'pill' as const,
     size: 'sm' as const,
     color: 'gray' as const,
-    iconLeading: true,
   },
+  render: (args: Record<string, unknown>) => ({
+    Component: Badge,
+    props: args,
+    slots: {
+      'icon-leading':
+        '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" class="shrink-0"><path d="M5 8V2M2 5l3-3 3 3" /></svg>',
+    },
+  }),
 };
 
 export const WithTrailingIcon = {
@@ -215,8 +220,15 @@ export const WithTrailingIcon = {
     type: 'pill' as const,
     size: 'sm' as const,
     color: 'gray' as const,
-    iconTrailing: true,
   },
+  render: (args: Record<string, unknown>) => ({
+    Component: Badge,
+    props: args,
+    slots: {
+      'icon-trailing':
+        '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" class="shrink-0"><path d="M2 5h6M5 2l3 3-3 3" /></svg>',
+    },
+  }),
 };
 
 // badge-modern
