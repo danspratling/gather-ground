@@ -1,0 +1,60 @@
+---
+import type { BlogSectionProps } from '@/components/BlogSection/BlogSection.types';
+import BlogCard from '@/components/BlogCard/BlogCard.astro';
+import Button from '@/components/Forms/Button/Button.astro';
+
+type Props = BlogSectionProps;
+
+const {
+  eyebrow,
+  heading,
+  subCopy,
+  viewAllHref,
+  viewAllLabel = 'View all updates',
+  posts,
+} = Astro.props;
+---
+
+<section class="py-12 lg:py-24">
+  <div class="container flex flex-col gap-12">
+    <div
+      class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
+    >
+      <div class="flex flex-col gap-3">
+        <p class="text-sm font-semibold text-brand-700">{eyebrow}</p>
+        <h2
+          class="text-display-md font-semibold tracking-display-md text-gray-900"
+        >
+          {heading}
+        </h2>
+        <p class="text-base text-gray-600">{subCopy}</p>
+      </div>
+      <div class="shrink-0">
+        <Button
+          label={viewAllLabel}
+          href={viewAllHref}
+          variant="default"
+          size="md"
+        />
+      </div>
+    </div>
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {
+        posts.map((post) => (
+          <BlogCard
+            variant="homepage"
+            image={post.image}
+            imageAlt={post.imageAlt}
+            title={post.title}
+            excerpt={post.excerpt}
+            date={post.date}
+            authorName={post.authorName}
+            authorImage={post.authorImage}
+            authorImageAlt={post.authorImageAlt}
+            href={post.href}
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>
