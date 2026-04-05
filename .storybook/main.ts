@@ -22,6 +22,43 @@ const config: StorybookConfig = {
     name: '@storybook-astro/framework',
     options: {
       integrations: [react({ include: ['**/components/**'] })],
+      sanitization: {
+        sanitizeHtml: {
+          allowedTags: [
+            'svg',
+            'path',
+            'circle',
+            'rect',
+            'line',
+            'polyline',
+            'polygon',
+          ],
+          allowedAttributes: {
+            svg: [
+              'width',
+              'height',
+              'viewBox',
+              'fill',
+              'stroke',
+              'stroke-width',
+              'stroke-linecap',
+              'stroke-linejoin',
+              'aria-hidden',
+              'class',
+              'color',
+            ],
+            path: [
+              'd',
+              'stroke',
+              'stroke-width',
+              'stroke-linecap',
+              'stroke-linejoin',
+              'fill',
+            ],
+            '*': ['class', 'aria-hidden'],
+          },
+        },
+      },
     },
   },
   viteFinal: async (config) => {
