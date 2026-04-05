@@ -135,8 +135,10 @@ export const WithDots: Story = {
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
 
-    // Dots should be rendered with correct aria-labels
-    const slide1Dot = canvas.getByRole('button', { name: 'Go to slide 1' });
+    // Dots initialise after Embla mounts — wait for them
+    const slide1Dot = await canvas.findByRole('button', {
+      name: 'Go to slide 1',
+    });
     await expect(slide1Dot).toBeInTheDocument();
 
     await waitFor(() =>
