@@ -118,6 +118,7 @@ const classes = isBadgeModern
       'inline-flex items-center font-medium',
       'bg-off-white border border-gray-300 rounded-sm shadow-xs text-gray-700',
       modernSizes[size],
+      (hasIconLeading || hasIconTrailing) && s.gap,
       className
     )
   : cn(
@@ -140,7 +141,7 @@ const classes = isBadgeModern
       />
     )
   }
-  {!isBadgeModern && <slot name="icon-leading" />}
+  <slot name="icon-leading" />
   {label}
-  {!isBadgeModern && <slot name="icon-trailing" />}
+  <slot name="icon-trailing" />
 </span>
