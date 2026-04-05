@@ -117,3 +117,6 @@ jobs:
 
       - name: Storybook build
         run: npm run build-storybook
+
+      - name: Storybook component + a11y tests
+        run: npm run test-storybook

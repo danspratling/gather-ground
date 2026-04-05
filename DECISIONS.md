@@ -2,6 +2,27 @@
 
 Architecture decision log for the Gather Ground website. Read this before changing any established pattern. Add a new entry whenever you make a decision that future contributors might question.
 
+## Quick reference
+
+| ADR     | Title                                     | Category     |
+| ------- | ----------------------------------------- | ------------ |
+| ADR-001 | Astro over Next.js                        | Stack        |
+| ADR-002 | shadcn/ui as a primitive layer            | Components   |
+| ADR-004 | Storyblok schemas in code                 | Storyblok    |
+| ADR-005 | No client-side Storyblok fetching         | Storyblok    |
+| ADR-006 | Play functions vs Playwright              | Testing      |
+| ADR-007 | Design tokens as visual source of truth   | Styling      |
+| ADR-008 | Tailwind v4 via @tailwindcss/vite         | Stack        |
+| ADR-009 | shadcn/ui uses Base UI, not Radix         | Components   |
+| ADR-010 | Node ≥22.12.0                             | Stack        |
+| ADR-012 | .astro for static, .tsx for islands       | Components   |
+| ADR-013 | Storybook uses @storybook-astro/framework | Storybook    |
+| ADR-014 | Icons: @untitledui-pro + brand SVGs       | Components   |
+| ADR-015 | CSF Factories migration (deferred)        | Storybook    |
+| ADR-016 | Chromatic + a11y + docs addons            | Storybook    |
+| ADR-017 | Co-locate all component files             | Organisation |
+| ADR-018 | sb.mock for API mocking (deferred)        | Storybook    |
+
 ---
 
 ## ADR-001: Astro over Next.js
@@ -21,12 +42,6 @@ Architecture decision log for the Gather Ground website. Read this before changi
 **Reasoning:** shadcn gives us well-tested, accessible components without locking us into a visual style we'd fight against. Our design tokens (from Figma, via Tailwind) drive all visual decisions — not shadcn's defaults.
 
 **Consequence:** When adding any interactive component, check for a shadcn primitive first before building from scratch. Always restyle with project tokens — do not use shadcn's default colour classes directly.
-
----
-
-## ADR-003: ~~Stories in src/stories/, not colocated with components~~
-
-> **Superseded by ADR-017.** Co-location is now the preferred pattern. See ADR-017.
 
 ---
 
@@ -100,12 +115,6 @@ Architecture decision log for the Gather Ground website. Read this before changi
 
 ---
 
-## ADR-011: ~~Storybook uses @storybook/react-vite, not a native Astro framework~~
-
-> **Superseded by ADR-013.** `@storybook-astro/framework` renders both `.astro` and `.tsx` natively. See ADR-013.
-
----
-
 ## ADR-012: Static UI components use .astro; interactive islands use .tsx
 
 **Decision:** Static UI components are written as `.astro` files. Components that require client-side interactivity (state, event handlers) are written as `.tsx` React islands. Pages and layouts are always `.astro`.
@@ -122,7 +131,7 @@ Architecture decision log for the Gather Ground website. Read this before changi
 
 **Reasoning:** `@storybook/react-vite` cannot render `.astro` files, which would force all components into `.tsx` to get Storybook coverage — contradicting ADR-012 and causing unnecessary hydration. `@storybook-astro/framework` renders `.astro` components natively in Storybook dev mode and supports mixed Astro + React stories in one Storybook instance. Storybook 10 is required by this framework and is the current stable release.
 
-**Consequence:** Both `.astro` and `.tsx` components are directly story-able with no workarounds. `@storybook-astro/framework` is community-maintained — if it falls significantly behind Storybook releases, reconsider. Controls in pre-built static Storybook are limited for `.astro` components (pre-rendered with default args only); dev mode (`storybook dev`) works fully for documentation and interaction testing. ADR-011 is superseded by this decision.
+**Consequence:** Both `.astro` and `.tsx` components are directly story-able with no workarounds. `@storybook-astro/framework` is community-maintained — if it falls significantly behind Storybook releases, reconsider. Controls in pre-built static Storybook are limited for `.astro` components (pre-rendered with default args only); dev mode (`storybook dev`) works fully for documentation and interaction testing.
 
 ---
 
@@ -181,25 +190,13 @@ export const Default = meta.story({ args: { children: 'Button' } });
 
 - _Visual regression:_ Chromatic is the first-party Storybook service for snapshot diffing. It integrates natively with the Storybook build step and requires no extra CI configuration beyond a `CHROMATIC_PROJECT_TOKEN` secret and a `chromatic` CLI invocation. Alternative (Playwright screenshot diffing) requires significantly more infrastructure and maintenance.
 - _Accessibility:_ The `addon-a11y` panel runs `axe-core` against each rendered story inline. This catches WCAG issues (colour contrast, missing ARIA roles, focus order) at the component level, where they are cheapest to fix — before Playwright or manual review.
-- _Docs:_ `addon-docs` enables MDX story files (`.mdx` under `src/stories/`) and powers `autodocs` auto-generated API docs for React components that opt in via `tags: ['autodocs']`.
+- _Docs:_ `addon-docs` enables MDX documentation pages and powers `autodocs` auto-generated API docs for React components that opt in via `tags: ['autodocs']`.
 
 **Consequences:**
 
 - The `addon-a11y` panel must be checked for every new component story before marking a PR ready for review. Fix violations; do not suppress them without a documented reason.
 - Chromatic visual regression is _not yet wired into CI_. To activate it, add `CHROMATIC_PROJECT_TOKEN` to the GitHub repository secrets and add a Chromatic publish step to `.github/workflows/ci.yml`. Do this when visual regression coverage is needed (recommended when page sections are complete and stable).
-- MDX docs pages live in `src/stories/` alongside story files (covered by the existing glob). See `src/stories/Introduction.mdx` as the reference example.
-
----
-
-## ADR-018: Use sb.mock for API mocking in stories once real endpoints exist
-
-**Decision (deferred):** When `NewsletterForm` (and any future component) is wired to a real API, replace the current `setTimeout` stub with Storybook 10's `sb.mock` module mocking.
-
-**Reasoning:** The current `NewsletterForm` fakes its submit with a hardcoded `await new Promise(resolve => setTimeout(resolve, 500))`. This is fine during development but will need replacing once a real newsletter endpoint exists. `sb.mock` (inspired by `vi.mock`) works with both Vite and Webpack builders and is available in dev and static builds — making it the correct tool for mocking fetch calls, API clients, or server actions inside stories.
-
-**When to act:** When a real newsletter/API integration is added to `NewsletterForm.tsx`.
-
-**What changes:** Import `sb.mock` in the story file and mock the fetch/API module, then restore defaults in `afterEach`. No changes to the component itself.
+- Global MDX documentation pages (e.g. `src/stories/Introduction.mdx`) live in `src/stories/`. Component-level stories are co-located with their component — see ADR-017.
 
 ---
 
@@ -219,7 +216,7 @@ src/components/
 
 **Reasoning:** Keeping related files together reduces context-switching: when working on a component you can see and edit every artefact without hunting across the repo. Separating stories, figma files, or tests into their own trees creates distance between the code and its documentation/tests and makes it easy to forget to update them when the component changes.
 
-**Consequence:** This supersedes ADR-003. Existing story files in `src/stories/` should be migrated to `src/components/` over time; new stories must always be co-located.
+**Consequence:** Co-location is the established pattern — all new component files, stories, and types must live in `src/components/[Name]/`. The only exception is `src/stories/` which holds global Storybook documentation pages (e.g. `Introduction.mdx`) — not component stories.
 
 One technical side-effect to be aware of: `@storybook-astro/framework`'s build server plugin scans `src/components/` and generates a `virtual:astro-component-module` wrapper (which re-exports `default`) for every `.ts/.tsx/.js/.jsx/.vue/.svelte` file it finds. Only `.stories.*`, `.spec.*`, and `.test.*` files are excluded — `.figma.*` and `.types.*` files are not. Any co-located file that is **not** a standard component, story, spec, or test **must** include `export default null` at the end of the file to satisfy the wrapper and keep the Storybook build green. This applies to:
 
@@ -228,6 +225,18 @@ One technical side-effect to be aware of: `@storybook-astro/framework`'s build s
 - `src/components/ui/*.tsx` — shadcn primitives installed via `npx shadcn add`
 
 The `export default null` is inert at runtime. Always add it when creating any of the above file types.
+
+---
+
+## ADR-018: Use sb.mock for API mocking in stories once real endpoints exist
+
+**Decision (deferred):** When `NewsletterForm` (and any future component) is wired to a real API, replace the current `setTimeout` stub with Storybook 10's `sb.mock` module mocking.
+
+**Reasoning:** The current `NewsletterForm` fakes its submit with a hardcoded `await new Promise(resolve => setTimeout(resolve, 500))`. This is fine during development but will need replacing once a real newsletter endpoint exists. `sb.mock` (inspired by `vi.mock`) works with both Vite and Webpack builders and is available in dev and static builds — making it the correct tool for mocking fetch calls, API clients, or server actions inside stories.
+
+**When to act:** When a real newsletter/API integration is added to `NewsletterForm.tsx`.
+
+**What changes:** Import `sb.mock` in the story file and mock the fetch/API module, then restore defaults in `afterEach`. No changes to the component itself.
 
 ---
 

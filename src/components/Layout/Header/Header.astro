@@ -1,0 +1,111 @@
+---
+import { User03, ShoppingBag02 } from '@untitledui-pro/icons/line';
+import NavMenu from '@/components/Layout/Header/NavMenu';
+import MobileMenu from '@/components/Layout/Header/MobileMenu';
+import type { HeaderProps } from '@/components/Layout/Header/Header.types';
+
+type Props = HeaderProps;
+
+const {
+  logoSrc,
+  logoAlt,
+  navLinks,
+  actions = 'icons',
+  accountHref = '/account',
+  basketHref = '/cart',
+  ctaLabel = 'Sign up',
+  ctaHref = '/signup',
+  loginLabel = 'Log in',
+  loginHref = '/login',
+  footerLinks = [],
+} = Astro.props;
+---
+
+<header class="sticky top-0 z-40 w-full border-b border-gray-400 bg-off-white">
+  <div class="container flex h-20 items-center justify-between">
+    <!-- Left zone: desktop nav / mobile hamburger -->
+    <div class="flex grow shrink-0 basis-0 items-center gap-0.5">
+      <nav
+        class="hidden items-center gap-0.5 md:flex"
+        aria-label="Main navigation"
+      >
+        {
+          navLinks.map((link) =>
+            link.menu ? (
+              <NavMenu client:load label={link.label} items={link.menu} />
+            ) : (
+              <a
+                href={link.href}
+                class="rounded-lg px-1.5 py-1 text-base font-semibold text-brand-800 hover:bg-brand-25 hover:text-brand-900"
+              >
+                {link.label}
+              </a>
+            )
+          )
+        }
+      </nav>
+      <div class="md:hidden">
+        <MobileMenu
+          client:load
+          logoSrc={logoSrc}
+          logoAlt={logoAlt}
+          navLinks={navLinks}
+          accountHref={accountHref}
+          footerLinks={footerLinks}
+        />
+      </div>
+    </div>
+
+    <!-- Center: logo (always) -->
+    <a href="/" class="shrink-0" aria-label={logoAlt}>
+      <img src={logoSrc} alt={logoAlt} class="h-8 w-auto" />
+    </a>
+
+    <!-- Right zone: desktop actions / mobile basket icon -->
+    <div class="flex grow shrink-0 basis-0 items-center justify-end">
+      {
+        actions === 'icons' ? (
+          <div class="hidden items-center md:flex">
+            <a
+              href={accountHref}
+              aria-label="Account"
+              class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900"
+            >
+              <User03 className="size-5" aria-hidden="true" />
+            </a>
+            <a
+              href={basketHref}
+              aria-label="Basket"
+              class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900"
+            >
+              <ShoppingBag02 className="size-5" aria-hidden="true" />
+            </a>
+          </div>
+        ) : (
+          <div class="hidden items-center gap-3 md:flex">
+            <a
+              href={ctaHref}
+              class="rounded-full border border-gray-400 px-4 py-2 text-sm font-semibold text-brand-900 hover:bg-brand-25"
+            >
+              {ctaLabel}
+            </a>
+            <a
+              href={loginHref}
+              class="rounded-full bg-brand-900 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+            >
+              {loginLabel}
+            </a>
+          </div>
+        )
+      }
+      <!-- Mobile: basket icon only -->
+      <a
+        href={basketHref}
+        aria-label="Basket"
+        class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900 md:hidden"
+      >
+        <ShoppingBag02 className="size-5" aria-hidden="true" />
+      </a>
+    </div>
+  </div>
+</header>
