@@ -195,7 +195,7 @@ export const Default = meta.story({ args: { children: 'Button' } });
 **Consequences:**
 
 - The `addon-a11y` panel must be checked for every new component story before marking a PR ready for review. Fix violations; do not suppress them without a documented reason.
-- Chromatic visual regression is _not yet wired into CI_. To activate it, add `CHROMATIC_PROJECT_TOKEN` to the GitHub repository secrets and add a Chromatic publish step to `.github/workflows/ci.yml`. Do this when visual regression coverage is needed (recommended when page sections are complete and stable).
+- Chromatic visual regression is wired into CI via `.github/workflows/chromatic.yml`. It runs on every PR against `main`. The `CHROMATIC_PROJECT_TOKEN` secret must be set in GitHub repository settings. Initial baselines are established by accepting all snapshots on the first Chromatic run.
 - Global MDX documentation pages (e.g. `src/stories/Introduction.mdx`) live in `src/stories/`. Component-level stories are co-located with their component — see ADR-017.
 
 ---

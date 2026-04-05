@@ -110,3 +110,26 @@ Full conventions are in `CLAUDE.md`. Short version:
 GitHub Actions runs the full check suite on every PR automatically. The PR cannot be merged until all checks pass. Fix failures locally — don't push again and wait for CI to tell you what's wrong.
 
 Vercel generates a preview deployment URL on every PR automatically — no action needed.
+
+---
+
+## Chromatic visual review
+
+Every PR triggers a Chromatic build that captures snapshots of all Storybook stories and diffs them against the accepted baseline.
+
+**Reviewing changes:**
+
+1. Open the Chromatic link in the PR checks
+2. Review each changed snapshot — approve if intentional, deny if a regression
+3. Once all changes are reviewed, the Chromatic check turns green
+
+**Accepting a new baseline** (first run, or after intentional visual changes):
+
+- Accept all snapshots in the Chromatic UI to establish/update the baseline
+- Chromatic remembers the baseline per branch and then per `main` once merged
+
+**When to expect Chromatic diffs:**
+
+- Any change to a component's markup, Tailwind classes, or tokens will produce a diff
+- New stories produce new snapshots (auto-accepted on first appearance)
+- Unrelated snapshots should show no change — investigate unexpected diffs before merging
