@@ -11,6 +11,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
     a11y: { disable: false },
+    chromatic: { viewports: [375, 1440] },
     design: {
       type: 'figma',
       url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=18580-6378',
