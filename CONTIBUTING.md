@@ -52,17 +52,20 @@ Page sections compose existing UI components into CMS-driven layouts. The workfl
 | --- | -------------------------- | -------------------------------------------------------------- |
 | 1   | Section component file     | `src/components/[Name]/[Name].astro` (always `.astro`)         |
 | 2   | TypeScript props interface | `src/components/[Name]/[Name].types.ts` (co-located, exported) |
-| 3   | Storyblok schema           | `src/storyblok/[name].ts`                                      |
-| 4   | Page integration           | Section rendered in `src/pages/index.astro` (or relevant page) |
-| 5   | Playwright tests           | `tests/pages/[pageName].spec.ts` — structural + behavioral     |
+| 3   | Storybook story            | `src/components/[Name]/[Name].stories.ts` (co-located)            |
+| 4   | Storyblok schema           | `src/storyblok/[name].ts`                                         |
+| 5   | Page integration           | Section rendered in `src/pages/index.astro` (or relevant page)   |
+| 6   | Playwright tests           | `tests/pages/[pageName].spec.ts` — structural + behavioral        |
 
-Note: page sections do **not** require a Storybook story or play function. They compose existing components that are already independently tested.
+Note: page sections rarely need a play function — the composed UI components carry their own. Add one only if the section introduces interaction that isn't tested by any sub-component (e.g. a section-level animation trigger, or a layout-level keyboard behaviour).
 
 ### Notes on each
 
 **Section component:** Always `.astro` — sections are static server-rendered layouts. Only introduce a co-located React island (`.tsx`) if the section contains interactive behaviour that cannot be handled by an existing UI component.
 
 **TypeScript interface:** Write this first. Props map 1:1 to Storyblok schema fields (using `camelCase` in TypeScript, `snake_case` in the schema). Data is received as props from the Astro page frontmatter — never fetched inside the section.
+
+**Storybook story:** Provide realistic hardcoded mock data as story args — do not fetch from Storyblok inside stories. The story's purpose is visual documentation and Chromatic snapshot coverage. A `Default` story with representative content is sufficient; add variants for meaningful layout differences (e.g. with/without an optional `badge` field, short vs long copy). Play functions are not required but are welcome if the section introduces interaction that isn't already tested by a sub-component — do not duplicate a play function that exists on a composed component.
 
 **Storyblok schema:** Field names must be `snake_case`. Push via CLI, never via the Storyblok dashboard.
 
@@ -77,13 +80,14 @@ Note: page sections do **not** require a Storybook story or play function. They 
 3. **Create the branch** using Linear's generated branch name
 4. **Write the TypeScript interface first** — `src/components/[Name]/[Name].types.ts` (add `export default null` at the end)
 5. **Build the section component** — `src/components/[Name]/[Name].astro`, using only design tokens and existing UI components
-6. **Write the Storyblok schema** — `src/storyblok/[name].ts`, matching the TypeScript interface
-7. **Integrate into the page** — import and render the section in `index.astro`, wired to Storyblok data
-8. **Validate with Playwright MCP** — screenshot at 375px and 1440px, compare against the Figma frame, fix discrepancies (ADR-021)
-9. **Write Playwright tests** — structural and behavioral assertions in `tests/pages/[pageName].spec.ts`
-10. **Run the full local check** (see Definition of done below)
-11. **Commit and push** — CI will run automatically, Vercel generates a preview URL
-12. **Open the PR** — include the Figma frame URL and the Linear issue number in the description
+6. **Write the Storybook story** — `src/components/[Name]/[Name].stories.ts` with hardcoded mock props; no live Storyblok data
+7. **Write the Storyblok schema** — `src/storyblok/[name].ts`, matching the TypeScript interface
+8. **Integrate into the page** — import and render the section in `index.astro`, wired to Storyblok data
+9. **Validate with Playwright MCP** — screenshot at 375px and 1440px, compare against the Figma frame, fix discrepancies (ADR-021)
+10. **Write Playwright tests** — structural and behavioral assertions in `tests/pages/[pageName].spec.ts`
+11. **Run the full local check** (see Definition of done below)
+12. **Commit and push** — CI will run automatically, Vercel generates a preview URL
+13. **Open the PR** — include the Figma frame URL and the Linear issue number in the description
 
 ---
 
@@ -151,7 +155,7 @@ Before opening a PR, confirm all of these pass locally:
 Use the branch name Linear generates on each issue. It follows the pattern:
 
 ```
-dan/dan-16-component-button
+feature/gg-16-component-button
 ```
 
 Do not invent your own branch names — Linear's format keeps issues and branches linked automatically.
@@ -161,7 +165,7 @@ Do not invent your own branch names — Linear's format keeps issues and branche
 ## Commit message format
 
 ```
-feat(button): add Button component, story, and Storyblok schema — Closes DAN-16
+feat(button): add Button component, story, and Storyblok schema — Closes GG-16
 ```
 
 Prefixes:
