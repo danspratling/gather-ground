@@ -15,13 +15,36 @@ and has interaction tests you can run in-browser.
 
 ## Stack
 
-| Layer      | Tool                                |
-| ---------- | ----------------------------------- |
-| Framework  | Astro (static) + React islands      |
-| Styling    | Tailwind CSS v4 + design tokens     |
-| Primitives | shadcn/ui                           |
-| CMS        | Storyblok                           |
-| Testing    | Storybook interactions + Playwright |
+<table>
+  <thead>
+    <tr>
+      <th>Layer</th>
+      <th>Tool</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Framework</td>
+      <td>Astro (static) + React islands</td>
+    </tr>
+    <tr>
+      <td>Styling</td>
+      <td>Tailwind CSS v4 + design tokens</td>
+    </tr>
+    <tr>
+      <td>Primitives</td>
+      <td>shadcn/ui</td>
+    </tr>
+    <tr>
+      <td>CMS</td>
+      <td>Storyblok</td>
+    </tr>
+    <tr>
+      <td>Testing</td>
+      <td>Storybook interactions + Playwright</td>
+    </tr>
+  </tbody>
+</table>
 
 ---
 
@@ -54,26 +77,119 @@ All tokens live in `src/styles/global.css` and are exposed as Tailwind utility c
 
 ### Colour
 
-| Purpose          | Token          | Class             |
-| ---------------- | -------------- | ----------------- |
-| Page background  | `off-white`    | `bg-off-white`    |
-| Primary text     | `brand-900`    | `text-brand-900`  |
-| Section headings | `gray-900`     | `text-gray-900`   |
-| Muted / captions | `gray-600`     | `text-gray-600`   |
-| Primary button   | `brand-700`    | `bg-brand-700`    |
-| Footer bg        | `gray-950`     | `bg-gray-950`     |
-| Card background  | `secondary-50` | `bg-secondary-50` |
+<table>
+  <thead>
+    <tr>
+      <th>Purpose</th>
+      <th>Token</th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Page background</td>
+      <td>
+        <code>off-white</code>
+      </td>
+      <td>
+        <code>bg-off-white</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Primary text</td>
+      <td>
+        <code>brand-900</code>
+      </td>
+      <td>
+        <code>text-brand-900</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Section headings</td>
+      <td>
+        <code>gray-900</code>
+      </td>
+      <td>
+        <code>text-gray-900</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Muted / captions</td>
+      <td>
+        <code>gray-600</code>
+      </td>
+      <td>
+        <code>text-gray-600</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Primary button</td>
+      <td>
+        <code>brand-700</code>
+      </td>
+      <td>
+        <code>bg-brand-700</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Footer bg</td>
+      <td>
+        <code>gray-950</code>
+      </td>
+      <td>
+        <code>bg-gray-950</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Card background</td>
+      <td>
+        <code>secondary-50</code>
+      </td>
+      <td>
+        <code>bg-secondary-50</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ### Typography
 
 Font: **DM Sans** (variable). All sizes use standard Tailwind text utilities.
 
-| Scale           | Class                                               |
-| --------------- | --------------------------------------------------- |
-| Body default    | `text-base font-normal`                             |
-| Body semibold   | `text-base font-semibold`                           |
-| Section heading | `text-display-md font-semibold tracking-display-md` |
-| Hero heading    | `text-display-xl font-medium tracking-display-xl`   |
+<table>
+  <thead>
+    <tr>
+      <th>Scale</th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Body default</td>
+      <td>
+        <code>text-base font-normal</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Body semibold</td>
+      <td>
+        <code>text-base font-semibold</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Section heading</td>
+      <td>
+        <code>text-display-md font-semibold tracking-display-md</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Hero heading</td>
+      <td>
+        <code>text-display-xl font-medium tracking-display-xl</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 See [`TOKENS.md`](../../TOKENS.md) for the full token reference.
 

@@ -1,6 +1,23 @@
 import type { Preview } from '@storybook/react';
 import '../src/styles/global.css';
 
+// astro-island uses IntersectionObserver for client:visible hydration.
+// The observer callback fires a dynamic import() with the bare @/ alias path,
+// which the browser cannot resolve. Unlike client:load (which astro-island
+// wraps in try/catch), client:visible leaves rejected imports as unhandled
+// promise rejections. This causes Vitest to exit with code 1 even when all
+// tests pass. Calling preventDefault() marks them as handled so Vitest
+// (and Playwright) do not treat them as test failures.
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', (event) => {
+    const msg =
+      typeof event.reason?.message === 'string' ? event.reason.message : '';
+    if (msg.includes("Failed to resolve module specifier '@/")) {
+      event.preventDefault();
+    }
+  });
+}
+
 const preview: Preview = {
   parameters: {
     backgrounds: {
