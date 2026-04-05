@@ -122,9 +122,3 @@ jobs:
 
       - name: Astro component + a11y tests (happy-dom)
         run: npm run test-storybook:astro
-
-      - name: Install Playwright (for React island browser tests)
-        run: npx playwright install --with-deps chromium
-
-      - name: React island tests — play functions + a11y (browser mode)
-        run: npm run test-storybook:react

@@ -12,7 +12,7 @@
     "astro": "astro",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test-storybook": "vitest run",
+    "test-storybook": "vitest run --project storybook-astro",
     "test-storybook:astro": "vitest run --project storybook-astro",
     "test-storybook:react": "vitest run --project storybook",
     "test": "playwright test",

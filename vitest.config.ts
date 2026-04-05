@@ -6,14 +6,16 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Root Vitest config — two projects run together via `vitest run`:
+// Root Vitest config — two projects:
 //
-//  storybook-astro  Astro component stories via renderStory in happy-dom + axe-core
-//                   (src/stories.test.ts — see vitest.astro.config.ts)
+//  storybook-astro  Astro component stories via renderStory in happy-dom + axe-core.
+//                   Runs in CI. Fast — no browser required.
 //
 //  storybook        ALL stories in real Chromium via Playwright.
-//                   Play functions, a11y addon, and React island stories are
-//                   covered here. This project is what the Storybook UI uses.
+//                   Powers the Storybook UI testing widget locally.
+//                   NOT run in CI — Chromatic handles interaction + a11y
+//                   tests in its cloud (see ADR-019). Run locally with
+//                   `npm run test-storybook:react` for pre-push validation.
 export default defineConfig({
   test: {
     projects: [
@@ -40,7 +42,6 @@ export default defineConfig({
         },
         test: {
           name: 'storybook',
-          isolate: false,
           browser: {
             enabled: true,
             headless: true,

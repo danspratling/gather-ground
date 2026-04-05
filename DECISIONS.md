@@ -22,6 +22,7 @@ Architecture decision log for the Gather Ground website. Read this before changi
 | ADR-016 | Chromatic + a11y + docs addons            | Storybook    |
 | ADR-017 | Co-locate all component files             | Organisation |
 | ADR-018 | sb.mock for API mocking (deferred)        | Storybook    |
+| ADR-019 | Chromatic replaces browser-mode CI tests  | Testing      |
 
 ---
 
@@ -196,6 +197,7 @@ export const Default = meta.story({ args: { children: 'Button' } });
 
 - The `addon-a11y` panel must be checked for every new component story before marking a PR ready for review. Fix violations; do not suppress them without a documented reason.
 - Chromatic visual regression is wired into CI via `.github/workflows/chromatic.yml`. It runs on every PR against `main`. The `CHROMATIC_PROJECT_TOKEN` secret must be set in GitHub repository settings. Initial baselines are established by accepting all snapshots on the first Chromatic run.
+- Chromatic also runs interaction tests (play functions) and a11y checks in its cloud — see ADR-019.
 - Global MDX documentation pages (e.g. `src/stories/Introduction.mdx`) live in `src/stories/`. Component-level stories are co-located with their component — see ADR-017.
 
 ---
@@ -237,6 +239,21 @@ The `export default null` is inert at runtime. Always add it when creating any o
 **When to act:** When a real newsletter/API integration is added to `NewsletterForm.tsx`.
 
 **What changes:** Import `sb.mock` in the story file and mock the fetch/API module, then restore defaults in `afterEach`. No changes to the component itself.
+
+---
+
+## ADR-019: Chromatic replaces browser-mode Vitest tests in CI
+
+**Decision:** Browser-mode Vitest tests (the `storybook` project using Playwright/Chromium) are not run in CI. Chromatic runs all Storybook stories — including play functions and a11y checks — in its cloud on every PR. The `npm run test-storybook:react` script remains available for local pre-push validation.
+
+**Reasoning:** We evaluated browser-mode Vitest in CI but encountered a structural incompatibility: `@storybook/addon-vitest` requires either a live Storybook dev server (only auto-started in watch mode, not `vitest run`) or specific infrastructure to serve the virtual modules it needs. Reliably starting and waiting for the server in CI added complexity without benefit. Meanwhile, Chromatic already runs interaction tests (play functions) and a11y checks as part of its snapshot pipeline — making the browser Vitest step in CI redundant.
+
+**Consequences:**
+
+- `npm run test-storybook` in CI runs only the Astro happy-dom tests (fast, no browser).
+- `npm run test-storybook:react` is available locally to run browser tests before pushing.
+- The `storybook` Vitest project remains in `vitest.config.ts` to power the Storybook UI testing widget locally.
+- CI does not install Playwright browsers — Chromatic handles cross-browser coverage.
 
 ---
 
