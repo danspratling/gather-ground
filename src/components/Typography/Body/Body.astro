@@ -1,0 +1,35 @@
+---
+import { cn } from '@/lib/utils';
+import type { BodyProps } from '@/components/Typography/Body/Body.types';
+
+type Props = BodyProps;
+
+const {
+  as: Tag = 'p',
+  size = 'md',
+  weight = 'regular',
+  color,
+  text,
+  class: className,
+} = Astro.props;
+
+const sizeClasses = {
+  xl: 'text-xl',
+  lg: 'text-lg',
+  md: 'text-base',
+  sm: 'text-sm',
+  xs: 'text-xs',
+};
+
+const weightClasses = {
+  regular: 'font-normal',
+  medium: 'font-medium',
+  semibold: 'font-semibold',
+};
+
+const classes = cn(sizeClasses[size], weightClasses[weight], className);
+---
+
+<Tag class={classes} style={color ? `color: ${color}` : undefined}>
+  {text ?? <slot />}
+</Tag>

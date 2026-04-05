@@ -1,0 +1,17 @@
+---
+import type { SectionDividerProps } from '@/components/SectionDivider/SectionDivider.types';
+
+type Props = SectionDividerProps;
+
+const { spacing = 'md' } = Astro.props;
+
+const spacingClasses = {
+  sm: 'py-4',
+  md: 'py-8',
+  lg: 'py-12',
+};
+---
+
+<div class={`w-full ${spacingClasses[spacing]}`}>
+  <hr class="mx-auto h-px max-w-7xl border-none bg-gray-200" />
+</div>
