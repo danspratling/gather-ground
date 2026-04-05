@@ -12,6 +12,7 @@
     "astro": "astro",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "test-storybook": "vitest run",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "lint": "eslint .",
@@ -52,10 +53,13 @@
     "@storybook/react": "^10.3.4",
     "@types/node": "^25.5.2",
     "@typescript-eslint/parser": "^8.58.0",
+    "axe-core": "^4.11.2",
     "eslint": "^10.1.0",
     "eslint-plugin-astro": "^1.6.0",
+    "happy-dom": "^20.8.9",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
-    "storybook": "^10.3.4"
+    "storybook": "^10.3.4",
+    "vitest": "^4.1.2"
   }
 }

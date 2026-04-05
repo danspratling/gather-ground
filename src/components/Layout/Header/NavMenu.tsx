@@ -16,7 +16,7 @@ export default function NavMenu({
   class: className,
 }: NavMenuProps) {
   return (
-    <NavigationMenu className={cn(className)}>
+    <NavigationMenu aria-label={label} className={cn(className)}>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger
