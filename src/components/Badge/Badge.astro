@@ -140,7 +140,7 @@ const classes = isBadgeModern
       />
     )
   }
-  {!isBadgeModern && hasIconLeading && <slot name="icon-leading" />}
+  {!isBadgeModern && <slot name="icon-leading" />}
   {label}
-  {!isBadgeModern && hasIconTrailing && <slot name="icon-trailing" />}
+  {!isBadgeModern && <slot name="icon-trailing" />}
 </span>
