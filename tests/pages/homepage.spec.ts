@@ -29,7 +29,12 @@ test.describe('homepage structure', () => {
   });
 
   test('page has a navigation landmark', async ({ page }) => {
-    await expect(page.getByRole('navigation')).toBeVisible();
+    // Target the main nav by its aria-label (set in Header.astro, not from CMS).
+    // The page has multiple <nav> elements (shadcn NavigationMenu adds one per menu group),
+    // so a bare getByRole('navigation') would trigger Playwright's strict mode violation.
+    await expect(
+      page.getByRole('navigation', { name: 'Main navigation' })
+    ).toBeVisible();
   });
 
   test('all images have non-empty alt attributes', async ({ page }) => {
