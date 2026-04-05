@@ -1,6 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import HeroSection from '@/components/HeroSection/HeroSection.astro';
+import ProductsSectionA from '@/components/ProductsSectionA/ProductsSectionA.astro';
 ---
 
 <Layout title="Gather Ground">
@@ -14,6 +15,49 @@ import HeroSection from '@/components/HeroSection/HeroSection.astro';
         src: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=1216&h=516&fit=crop',
         alt: 'Gather Ground — a person in a creative workspace',
       }}
+    />
+    <ProductsSectionA
+      eyebrow="Products"
+      heading="What are you looking for?"
+      subCopy="Local, pasture-raised, higher welfare meat that tastes better too"
+      products={[
+        {
+          image:
+            'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=384&h=256&fit=crop',
+          imageAlt: 'A selection of beef cuts',
+          title: 'Beef',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.',
+          href: '/products/beef',
+        },
+        {
+          image:
+            'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=384&h=256&fit=crop',
+          imageAlt: 'Pork products',
+          title: 'Pork',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.',
+          href: '/products/pork',
+        },
+        {
+          image:
+            'https://images.unsplash.com/photo-1559703248-dcaaec9fab78?w=384&h=256&fit=crop',
+          imageAlt: 'Chicken and turkey',
+          title: 'Chicken & Turkey',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.',
+          href: '/products/poultry',
+        },
+        {
+          image:
+            'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=384&h=256&fit=crop',
+          imageAlt: 'Fresh eggs',
+          title: 'Eggs',
+          description:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.',
+          href: '/products/eggs',
+        },
+      ]}
     />
   </main>
 </Layout>
