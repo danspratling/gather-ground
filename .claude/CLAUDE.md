@@ -18,17 +18,17 @@ Marketing website for Gather Ground. Astro framework, Tailwind CSS + shadcn/ui f
 
 ## Stack at a glance
 
-| Layer          | Tool                               | Notes                                                  |
-| -------------- | ---------------------------------- | ------------------------------------------------------ |
-| Framework      | Astro (latest)                     | `.astro` for static, React islands for interactive     |
-| Styling        | Tailwind CSS v4                    | Tokens in `tailwind.config.ts` + CSS custom properties |
-| Primitives     | shadcn/ui                          | Via Astro + React integration                          |
-| CMS            | `@storyblok/astro`                 | Space ID `289911665285843`                             |
-| Component docs | Storybook v8                       | `@storybook/addon-designs` for Figma frame links       |
-| Testing        | `@storybook/test` + Playwright     | Stories for interactions; Playwright for full pages    |
-| Linting        | ESLint (`eslint-config-astro`)     | `eslint.config.js`                                     |
-| Formatting     | Prettier + `prettier-plugin-astro` | `.prettierrc`                                          |
-| CI             | GitHub Actions                     | `.github/workflows/ci.yml`                             |
+| Layer          | Tool                               | Notes                                                                          |
+| -------------- | ---------------------------------- | ------------------------------------------------------------------------------ |
+| Framework      | Astro (latest)                     | `.astro` for static, React islands for interactive                             |
+| Styling        | Tailwind CSS v4                    | CSS custom properties in `src/styles/global.css`                               |
+| Primitives     | shadcn/ui                          | Via Astro + React integration                                                  |
+| CMS            | `@storyblok/astro`                 | Space ID `289911665285843`                                                     |
+| Component docs | Storybook v10                      | `@storybook-astro/framework`; addon-a11y, addon-designs, addon-docs, Chromatic |
+| Testing        | `@storybook/test` + Playwright     | Stories for interactions; Playwright for full pages                            |
+| Linting        | ESLint (`eslint-config-astro`)     | `eslint.config.js`                                                             |
+| Formatting     | Prettier + `prettier-plugin-astro` | `.prettierrc`                                                                  |
+| CI             | GitHub Actions                     | `.github/workflows/ci.yml`                                                     |
 
 ---
 
@@ -41,15 +41,14 @@ Marketing website for Gather Ground. Astro framework, Tailwind CSS + shadcn/ui f
 │       ├── ci.yml            # Lint, format, typecheck, build, test — every PR
 │       └── deploy.yml        # Production deploy — merge to main
 ├── src/
-│   ├── components/           # UI components (.astro + .tsx React islands)
+│   ├── components/           # UI components — each in its own folder, co-located with stories and types
 │   ├── layouts/              # Base layouts (Layout.astro = Header + Footer wrapper)
 │   ├── pages/                # Astro pages (index.astro = homepage)
 │   ├── storyblok/            # Storyblok component schema definitions
-│   ├── stories/              # Storybook story files (.stories.ts)
-│   └── types/                # Shared TypeScript interfaces
+│   ├── stories/              # Global Storybook docs only (Introduction.mdx)
+│   └── styles/               # Global CSS + design tokens (global.css)
 ├── tests/                    # Playwright e2e and visual regression tests
 ├── .storybook/               # Storybook config
-├── tailwind.config.ts        # Design tokens from Figma
 ├── CLAUDE.md                 # This file
 ├── CONTRIBUTING.md           # PR checklist, branch conventions, component guide
 ├── DECISIONS.md              # Architecture decision log
@@ -136,14 +135,14 @@ As the codebase grows, validate at minimum the steps that cover changed files �
 ### Naming
 
 - Component files: `PascalCase` — `HeroSection.astro`, `FaqAccordion.tsx`
-- Type files: `camelCase` — `heroSection.ts`, `faqAccordion.ts`
-- Story files: `[ComponentName].stories.ts` in `src/stories/`
+- Type files: `[ComponentName].types.ts` — co-located in the component folder
+- Story files: `[ComponentName].stories.ts` (or `.tsx` for React islands) — co-located in the component folder
 - Storyblok schema files: `[componentName].ts` in `src/storyblok/`
 
 ### Styling
 
 - No inline styles. No hardcoded colour hex values, font sizes, or spacing values.
-- All visual values come from tokens in `tailwind.config.ts` — see `TOKENS.md`.
+- All visual values come from tokens in `src/styles/global.css` — see `TOKENS.md`.
 - No arbitrary Tailwind values like `w-[843px]` unless there is genuinely no token equivalent.
 - Responsive: mobile-first. Base = mobile, `md:` = tablet, `lg:` = desktop (design is 1440px wide).
 
@@ -161,9 +160,9 @@ As the codebase grows, validate at minimum the steps that cover changed files �
 
 ### Storybook
 
-- Stories live in `src/stories/` — not colocated with components (see `DECISIONS.md` ADR-003)
+- Stories are co-located in the component folder alongside the component file (see `DECISIONS.md` ADR-017)
 - Use `@storybook/test` play functions for interaction tests — not Playwright inside story files
-- Every story includes `parameters.design` with the Figma frame URL (added in M7)
+- Every story includes `parameters.design` with the Figma frame URL
 
 ### Git
 

@@ -8,18 +8,18 @@ How to contribute to the Gather Ground website codebase. Read this before openin
 
 These are non-negotiable. A PR missing any item will not be merged.
 
-| #   | Deliverable                | Location                                      |
-| --- | -------------------------- | --------------------------------------------- |
-| 1   | Component file             | `src/components/[Name].astro` or `[Name].tsx` |
-| 2   | TypeScript props interface | `src/types/[name].ts` (exported)              |
-| 3   | Storybook story            | `src/stories/[Name].stories.ts`               |
-| 4   | Story interaction test     | `play` function inside the story file         |
-| 5   | Storyblok schema           | `src/storyblok/[name].ts`                     |
-| 6   | Page integration           | Component rendered in a page or layout        |
+| #   | Deliverable                | Location                                                       |
+| --- | -------------------------- | -------------------------------------------------------------- |
+| 1   | Component file             | `src/components/[Name]/[Name].astro` or `[Name].tsx`           |
+| 2   | TypeScript props interface | `src/components/[Name]/[Name].types.ts` (co-located, exported) |
+| 3   | Storybook story            | `src/components/[Name]/[Name].stories.ts` (co-located)         |
+| 4   | Story interaction test     | `play` function inside the story file                          |
+| 5   | Storyblok schema           | `src/storyblok/[name].ts`                                      |
+| 6   | Page integration           | Component rendered in a page or layout                         |
 
 ### Notes on each
 
-**Component file:** Use `.astro` for static components, `.tsx` React island for anything requiring client-side interactivity. The component imports its props type from `src/types/`.
+**Component file:** Use `.astro` for static components, `.tsx` React island for anything requiring client-side interactivity. All three files — component, types, and story — live together in `src/components/[Name]/`. The component imports its props type from its co-located `[Name].types.ts`.
 
 **TypeScript interface:** Write this first, before the markup. It is the contract between the component, the story, and the Storyblok schema — all three must stay in sync.
 
@@ -53,9 +53,9 @@ Before opening a PR, confirm all of these pass locally:
 
 1. **Pick up the Linear issue** — read the spec and note the Figma frame dimensions
 2. **Create the branch** using Linear's generated branch name (shown on the issue)
-3. **Write the TypeScript interface first** — `src/types/[name].ts`
-4. **Build the component** — `src/components/[Name].astro` (or `.tsx` if interactive), using only design tokens for styling
-5. **Write the Storybook story** — `src/stories/[Name].stories.ts` with Default + variant stories and a play function
+3. **Write the TypeScript interface first** — `src/components/[Name]/[Name].types.ts` (add `export default null` at the end)
+4. **Build the component** — `src/components/[Name]/[Name].astro` (or `[Name].tsx` if interactive), using only design tokens for styling
+5. **Write the Storybook story** — `src/components/[Name]/[Name].stories.ts` with Default + variant stories and a play function
 6. **Write the Storyblok schema** — `src/storyblok/[name].ts`, matching the TypeScript interface field-for-field
 7. **Integrate into the page or layout**
 8. **Run the full local check** (see Definition of done above)
