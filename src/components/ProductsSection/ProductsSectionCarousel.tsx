@@ -13,12 +13,10 @@ type Props = Omit<ProductsSectionProps, 'variant'>;
 
 function ProductImageCard({
   image,
-  imageAlt,
   title,
   href,
 }: {
   image: string;
-  imageAlt: string;
   title: string;
   href: string;
 }) {
@@ -27,7 +25,7 @@ function ProductImageCard({
       <a href={href} className="group block">
         <img
           src={image}
-          alt={imageAlt}
+          alt=""
           className="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105 group-focus:scale-105"
         />
         <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent p-6">
@@ -110,7 +108,6 @@ export default function ProductsSectionCarousel({
               <CarouselItem key={i} className="basis-auto pl-6">
                 <ProductImageCard
                   image={product.image}
-                  imageAlt={product.imageAlt}
                   title={product.title}
                   href={product.href}
                 />
