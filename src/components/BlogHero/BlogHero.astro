@@ -1,0 +1,63 @@
+---
+import { cn } from '@/lib/utils';
+import type { BlogHeroProps } from '@/components/BlogHero/BlogHero.types';
+import Label from '@/components/Typography/Label/Label.astro';
+import Heading from '@/components/Typography/Heading/Heading.astro';
+import Body from '@/components/Typography/Body/Body.astro';
+import Input from '@/components/Forms/Input/Input.astro';
+import Button from '@/components/Forms/Button/Button.astro';
+
+type Props = BlogHeroProps;
+
+const {
+  eyebrow,
+  heading,
+  subCopy,
+  privacyPolicyHref,
+  class: className,
+} = Astro.props;
+---
+
+<section class={cn('bg-off-white py-24', className)}>
+  <div class="container">
+    <div class="flex flex-col gap-8 lg:max-w-[640px]">
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-3">
+          <Label size="sm" class="text-brand-700">{eyebrow}</Label>
+          <Heading as="h1" size="display-xl" class="text-brand-900">
+            {heading}
+          </Heading>
+        </div>
+        <Body size="xl" class="text-gray-600">{subCopy}</Body>
+      </div>
+      {
+        privacyPolicyHref !== undefined && (
+          <div class="flex flex-col gap-3">
+            <form
+              action="/api/newsletter"
+              method="POST"
+              class="flex flex-col gap-3 sm:flex-row sm:items-start"
+            >
+              <div class="flex-1">
+                <Input
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              <Button label="Get started" />
+            </form>
+            <Body size="sm" class="text-gray-400">
+              We care about your data in our{' '}
+              <a href={privacyPolicyHref} class="underline hover:text-gray-600">
+                privacy policy
+              </a>
+              .
+            </Body>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
