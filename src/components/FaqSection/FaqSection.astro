@@ -19,13 +19,17 @@ const { heading, subCopy, items, cta } = Astro.props;
       <p class="max-w-2xl text-xl text-gray-600">{subCopy}</p>
     </div>
     <Accordion client:visible items={items} />
-    <CallToAction
-      heading={cta.heading}
-      body={cta.body}
-      primaryButton={cta.primaryButton}
-      secondaryButton={cta.secondaryButton}
-      avatarGroup={cta.avatarGroup}
-      centered
-    />
+    {
+      cta && (
+        <CallToAction
+          heading={cta.heading}
+          body={cta.body}
+          primaryButton={cta.primaryButton}
+          secondaryButton={cta.secondaryButton}
+          avatarGroup={cta.avatarGroup}
+          centered
+        />
+      )
+    }
   </div>
 </section>

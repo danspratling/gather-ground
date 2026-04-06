@@ -5,7 +5,7 @@ export interface FaqSectionProps {
   heading: string;
   subCopy: string;
   items: AccordionItem[];
-  cta: CallToActionProps;
+  cta?: CallToActionProps;
 }
 
 export default null;

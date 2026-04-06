@@ -1,272 +1,163 @@
 ---
+import { getStoryblokApi } from '@storyblok/astro';
 import Layout from '@/layouts/Layout.astro';
 import HeroSection from '@/components/HeroSection/HeroSection.astro';
 import ProductsSection from '@/components/ProductsSection/ProductsSection.astro';
 import TestimonialsSection from '@/components/TestimonialsSection/TestimonialsSection';
 import FaqSection from '@/components/FaqSection/FaqSection.astro';
 import BlogSection from '@/components/BlogSection/BlogSection.astro';
+import type { CallToActionProps } from '@/components/CallToAction/CallToAction.types';
+
+const storyblokApi = getStoryblokApi();
+const { data } = await storyblokApi.get('cdn/stories/home', {
+  version: import.meta.env.DEV ? 'draft' : 'published',
+});
+
+// Storyblok blok fields are untyped at runtime — no generated schema types available.
+type SbBlok = Record<string, any>;
+
+const bloks: SbBlok[] = data?.story?.content?.body ?? [];
+
+function mapCta(ctaBloks: SbBlok[]): CallToActionProps | undefined {
+  const b: SbBlok | undefined = ctaBloks?.[0];
+  if (!b) return undefined;
+  const avatarBloks: SbBlok[] = b.avatars ?? [];
+  return {
+    heading: b.heading,
+    body: b.body,
+    primaryButton: {
+      label: b.primary_button_label,
+      href: b.primary_button_href,
+      variant: b.primary_button_variant ?? 'default',
+      size: 'md',
+    },
+    secondaryButton: b.secondary_button_label
+      ? {
+          label: b.secondary_button_label,
+          href: b.secondary_button_href,
+          variant: 'outline',
+          size: 'md',
+        }
+      : undefined,
+    avatarGroup:
+      avatarBloks.length > 0
+        ? {
+            avatars: avatarBloks.map((a: SbBlok) => ({
+              src: a.src?.filename ?? '',
+              alt: a.alt ?? '',
+            })),
+          }
+        : undefined,
+  };
+}
 ---
 
 <Layout title="Gather Ground">
   <main>
-    <HeroSection
-      headline="We are Gather Ground lorem ipsum dolor sit amet"
-      subCopy="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod."
-      primaryCta={{ label: 'Our Products', href: '/products' }}
-      secondaryCta={{ label: 'Get in touch', href: '/contact' }}
-      image={{
-        src: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=1216&h=516&fit=crop',
-        alt: 'Gather Ground — a person in a creative workspace',
-      }}
-    />
-    <ProductsSection
-      variant="cards"
-      eyebrow="Products"
-      heading="What are you looking for?"
-      subCopy="Local, pasture-raised, higher welfare meat that tastes better too"
-      products={[
-        {
-          image:
-            'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=384&h=256&fit=crop',
-          imageAlt: 'A selection of beef cuts',
-          title: 'Beef',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.',
-          href: '/products/beef',
-        },
-        {
-          image:
-            'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=384&h=256&fit=crop',
-          imageAlt: 'Pork products',
-          title: 'Pork',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.',
-          href: '/products/pork',
-        },
-        {
-          image:
-            'https://images.unsplash.com/photo-1559703248-dcaaec9fab78?w=384&h=256&fit=crop',
-          imageAlt: 'Chicken and turkey',
-          title: 'Chicken & Turkey',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.',
-          href: '/products/poultry',
-        },
-        {
-          image:
-            'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=384&h=256&fit=crop',
-          imageAlt: 'Fresh eggs',
-          title: 'Eggs',
-          description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.',
-          href: '/products/eggs',
-        },
-      ]}
-    />
-    <ProductsSection
-      variant="carousel"
-      eyebrow="Products"
-      heading="What are you looking for?"
-      subCopy="Local, pasture-raised, higher welfare meat that tastes better too"
-      products={[
-        {
-          image:
-            'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=576&h=512&fit=crop',
-          imageAlt: 'Beef topside roasting joint',
-          title: 'Beef topside roasting joint',
-          href: '/products/beef-topside',
-        },
-        {
-          image:
-            'https://images.unsplash.com/photo-1588347818036-4b8c0a6f7a22?w=576&h=512&fit=crop',
-          imageAlt: 'Beef mince',
-          title: 'Beef Mince 15% lean',
-          href: '/products/beef-mince',
-        },
-        {
-          image:
-            'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=576&h=512&fit=crop',
-          imageAlt: 'Pork belly',
-          title: 'Pork belly',
-          href: '/products/pork-belly',
-        },
-        {
-          image:
-            'https://images.unsplash.com/photo-1448453297814-e8f69038e4b9?w=576&h=512&fit=crop',
-          imageAlt: 'Whole chicken',
-          title: 'Whole Chicken',
-          href: '/products/whole-chicken',
-        },
-        {
-          image:
-            'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=576&h=512&fit=crop',
-          imageAlt: 'Free range eggs',
-          title: 'Free Range Eggs',
-          href: '/products/eggs',
-        },
-      ]}
-    />
-    <TestimonialsSection
-      client:visible
-      heading="Wall of love"
-      subCopy="Hear first-hand from our incredible community of customers."
-      testimonials={[
-        {
-          quote:
-            "We've been using Gather Ground to source our meat and can't imagine getting it anywhere else.",
-          rating: 5,
-          author: {
-            src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face',
-            alt: 'Sienna Hewitt',
-            name: 'Sienna Hewitt',
-            secondary: '@siennahewitt',
-            secondaryIsHandle: true,
-            size: 'md',
-          },
-        },
-        {
-          quote:
-            'From concept to completion, Gather Ground helps us deliver outstanding meals faster than ever.',
-          rating: 5,
-          author: {
-            src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face',
-            alt: 'Kari Rasmussen',
-            name: 'Kari Rasmussen',
-            secondary: '@itskari',
-            secondaryIsHandle: true,
-            size: 'md',
-          },
-        },
-        {
-          quote:
-            'Incredible quality meat delivered straight to our door. The whole family loves it.',
-          rating: 5,
-          author: {
-            src: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face',
-            alt: 'Lena Park',
-            name: 'Lena Park',
-            secondary: '@lenapark',
-            secondaryIsHandle: true,
-            size: 'md',
-          },
-        },
-      ]}
-    />
-    <FaqSection
-      heading="About Gather Ground"
-      subCopy="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-      items={[
-        {
-          question: 'Where can I find your products?',
-          answer:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-        },
-        {
-          question: 'Do you deliver?',
-          answer:
-            'We ship weekly to most of the continental US, and offer local pickup at the farm. Delivery is free on orders over $75.',
-        },
-        {
-          question: "Who's building Gather Ground?",
-          answer:
-            "Gather Ground is a family-run farm in rural Iowa. We've been raising heritage breed animals on pasture for over a decade.",
-        },
-        {
-          question: 'Are your animals grass-fed?',
-          answer:
-            'Yes — all our animals are raised on pasture year-round with supplemental feed as needed during winter months.',
-        },
-        {
-          question: 'Do you offer subscriptions?',
-          answer:
-            'We are working on a subscription box — sign up to our newsletter to be the first to know when it launches.',
-        },
-        {
-          question: 'What if I have a question not listed here?',
-          answer:
-            'Reach out via the contact form and our team will get back to you within one business day.',
-        },
-      ]}
-      cta={{
-        heading: 'Want to find out more?',
-        body: "If you have any questions about our products or how we tackle modern sustainable farming at Gather Ground reach out and we'll get back to you asap",
-        primaryButton: {
-          label: 'Get in touch',
-          href: '/contact',
-          variant: 'default',
-          size: 'md',
-        },
-        secondaryButton: {
-          label: 'About us',
-          href: '/about',
-          variant: 'outline',
-          size: 'md',
-        },
-        avatarGroup: {
-          avatars: [
-            {
-              src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face',
-              alt: 'Team member 1',
-            },
-            {
-              src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face',
-              alt: 'Team member 2',
-            },
-          ],
-          size: 'md',
-        },
-      }}
-    />
-    <BlogSection
-      eyebrow="News"
-      heading="What's new on the farm"
-      subCopy="Updates on everything we're doing and why, so you never miss out"
-      viewAllHref="/blog"
-      viewAllLabel="View all updates"
-      posts={[
-        {
-          image:
-            'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=600&q=80',
-          imageAlt: 'Rolling pasture at dawn',
-          title: "What we've been working on recently",
-          excerpt:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
-          date: '20 Jan 2025',
-          authorName: 'Claire',
-          authorImage:
-            'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face',
-          authorImageAlt: 'Claire',
-          href: '/blog/what-we-have-been-working-on',
-        },
-        {
-          image:
-            'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80',
-          imageAlt: 'Pork joints on a wooden board',
-          title: 'Pork joints are back!',
-          excerpt:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
-          date: '19 Jan 2025',
-          authorName: 'Kevin',
-          authorImage:
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face',
-          authorImageAlt: 'Kevin',
-          href: '/blog/pork-joints-are-back',
-        },
-        {
-          image:
-            'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=600&q=80',
-          imageAlt: 'Green regenerative farmland',
-          title: 'Moving to regenerative farming',
-          excerpt:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
-          date: '18 Jan 2025',
-          authorName: 'Kevin',
-          authorImage:
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face',
-          authorImageAlt: 'Kevin',
-          href: '/blog/moving-to-regenerative-farming',
-        },
-      ]}
-    />
+    {
+      bloks.map((blok) => {
+        if (blok.component === 'hero_section') {
+          return (
+            <HeroSection
+              headline={blok.headline}
+              subCopy={blok.sub_copy}
+              primaryCta={{
+                label: blok.primary_cta_label,
+                href: blok.primary_cta_href,
+              }}
+              secondaryCta={{
+                label: blok.secondary_cta_label,
+                href: blok.secondary_cta_href,
+              }}
+              image={{
+                src: blok.image?.filename ?? '',
+                alt: blok.image_alt ?? '',
+              }}
+            />
+          );
+        }
+        if (
+          blok.component === 'products_section_cards' ||
+          blok.component === 'products_section_carousel'
+        ) {
+          return (
+            <ProductsSection
+              variant={
+                blok.component === 'products_section_cards'
+                  ? 'cards'
+                  : 'carousel'
+              }
+              eyebrow={blok.eyebrow ?? ''}
+              heading={blok.heading}
+              subCopy={blok.sub_copy}
+              products={(blok.products ?? []).map((p: SbBlok) => ({
+                image: p.image?.filename ?? '',
+                imageAlt: p.image_alt ?? '',
+                title: p.title,
+                description: p.description,
+                href: p.href,
+              }))}
+            />
+          );
+        }
+        if (blok.component === 'testimonials_section') {
+          return (
+            <TestimonialsSection
+              client:visible
+              heading={blok.heading}
+              subCopy={blok.sub_copy}
+              testimonials={(blok.testimonials ?? []).map((t: SbBlok) => ({
+                quote: t.quote,
+                platform: t.platform || undefined,
+                author: {
+                  src: t.author_src?.filename ?? '',
+                  alt: t.author_alt ?? '',
+                  name: t.author_name,
+                  secondary: t.author_secondary || undefined,
+                  secondaryIsHandle: t.author_secondary_is_handle ?? false,
+                  size: 'md' as const,
+                },
+              }))}
+            />
+          );
+        }
+        if (blok.component === 'faq_section') {
+          return (
+            <FaqSection
+              heading={blok.heading}
+              subCopy={blok.sub_copy ?? ''}
+              items={(blok.items ?? []).map((item: SbBlok) => ({
+                question: item.question,
+                answer: item.answer,
+              }))}
+              cta={mapCta(blok.cta)}
+            />
+          );
+        }
+        if (blok.component === 'blog_section') {
+          return (
+            <BlogSection
+              eyebrow={blok.eyebrow ?? ''}
+              heading={blok.heading}
+              subCopy={blok.sub_copy ?? ''}
+              viewAllHref={blok.view_all_href}
+              viewAllLabel={blok.view_all_label}
+              posts={(blok.posts ?? []).map((p: SbBlok) => ({
+                image: p.image?.filename ?? '',
+                imageAlt: p.image_alt ?? '',
+                title: p.title,
+                excerpt: p.excerpt,
+                date: p.date,
+                authorName: p.author_name,
+                authorImage: p.author_image?.filename ?? '',
+                authorImageAlt: p.author_image_alt ?? '',
+                href: p.href,
+              }))}
+            />
+          );
+        }
+        return null;
+      })
+    }
   </main>
 </Layout>
