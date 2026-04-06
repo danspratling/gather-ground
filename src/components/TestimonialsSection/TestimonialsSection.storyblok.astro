@@ -1,5 +1,6 @@
 ---
 import type { SbBlokData } from '@storyblok/astro';
+import { storyblokEditable } from '@storyblok/astro';
 import TestimonialsSection from './TestimonialsSection';
 
 interface Props {
@@ -33,9 +34,11 @@ const testimonials = (blok.testimonials as ResolvedTestimonial[]).map((t) => ({
 }));
 ---
 
-<TestimonialsSection
-  client:visible
-  heading={blok.heading as string}
-  subCopy={blok.sub_copy as string}
-  testimonials={testimonials}
-/>
+<div {...storyblokEditable(blok)}>
+  <TestimonialsSection
+    client:visible
+    heading={blok.heading as string}
+    subCopy={blok.sub_copy as string}
+    testimonials={testimonials}
+  />
+</div>

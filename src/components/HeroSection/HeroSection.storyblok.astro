@@ -1,5 +1,6 @@
 ---
 import type { SbBlokData } from '@storyblok/astro';
+import { storyblokEditable } from '@storyblok/astro';
 import HeroSection from './HeroSection.astro';
 import { resolveLink } from '@/lib/utils';
 
@@ -12,20 +13,22 @@ const imageAsset = blok.image as { filename: string; alt: string } | undefined;
 const secondaryCtaLabel = blok.secondary_cta_label as string | undefined;
 ---
 
-<HeroSection
-  headline={blok.headline as string}
-  subCopy={blok.sub_copy as string}
-  primaryCta={{
-    label: blok.primary_cta_label as string,
-    href: resolveLink(blok.primary_cta_href),
-  }}
-  secondaryCta={secondaryCtaLabel
-    ? {
-        label: secondaryCtaLabel,
-        href: resolveLink(blok.secondary_cta_href),
-      }
-    : undefined}
-  image={imageAsset
-    ? { src: imageAsset.filename, alt: imageAsset.alt }
-    : undefined}
-/>
+<div {...storyblokEditable(blok)}>
+  <HeroSection
+    headline={blok.headline as string}
+    subCopy={blok.sub_copy as string}
+    primaryCta={{
+      label: blok.primary_cta_label as string,
+      href: resolveLink(blok.primary_cta_href),
+    }}
+    secondaryCta={secondaryCtaLabel
+      ? {
+          label: secondaryCtaLabel,
+          href: resolveLink(blok.secondary_cta_href),
+        }
+      : undefined}
+    image={imageAsset
+      ? { src: imageAsset.filename, alt: imageAsset.alt }
+      : undefined}
+  />
+</div>
