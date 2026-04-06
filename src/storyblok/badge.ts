@@ -59,14 +59,16 @@ export const badgeSchema = {
       default_value: false,
     },
     icon_leading: {
-      type: 'boolean',
+      type: 'text',
       display_name: 'Icon leading',
-      default_value: false,
+      description:
+        'Icon name from @untitledui-pro/icons/line (e.g. "Star"). Leave blank for no icon.',
     },
     icon_trailing: {
-      type: 'boolean',
+      type: 'text',
       display_name: 'Icon trailing',
-      default_value: false,
+      description:
+        'Icon name from @untitledui-pro/icons/line (e.g. "ChevronRight"). Leave blank for no icon.',
     },
   },
 } as const;

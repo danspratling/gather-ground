@@ -19,11 +19,6 @@ export const footerSchema = {
       display_name: 'Logo',
       description: 'Gather Ground logo image displayed in the footer.',
     },
-    logo_alt: {
-      type: 'text',
-      display_name: 'Logo alt text',
-      default_value: 'Gather Ground',
-    },
     description: {
       type: 'textarea',
       display_name: 'Description',
@@ -83,7 +78,7 @@ export const footerSocialLinkSchema = {
       ],
     },
     href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'URL',
     },
     label: {
@@ -126,7 +121,7 @@ export const footerLinkSchema = {
       display_name: 'Label',
     },
     href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'URL',
     },
     badge: {
@@ -150,7 +145,7 @@ export const footerLegalLinkSchema = {
       display_name: 'Label',
     },
     href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'URL',
     },
   },

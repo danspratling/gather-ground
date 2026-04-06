@@ -1,6 +1,10 @@
 import * as React from 'react';
 import type { UseEmblaCarouselType } from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight } from '@untitledui-pro/icons/line';
+import {
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+} from '@untitledui-pro/icons/line';
 import {
   Carousel as ShadcnCarousel,
   CarouselContent,
@@ -21,15 +25,23 @@ function ProductImageCard({
   href: string;
 }) {
   return (
-    <article className="relative w-72 overflow-hidden rounded-xl">
-      <a href={href} className="group block">
-        <img
-          src={image}
-          alt=""
-          className="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105 group-focus:scale-105"
-        />
-        <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent p-6">
-          <h3 className="text-xl font-semibold text-off-white">{title}</h3>
+    <article className="w-72 overflow-hidden rounded-xl">
+      <a href={href} className="group flex flex-col">
+        <div className="overflow-hidden rounded-xl">
+          <img
+            src={image}
+            alt=""
+            className="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105 group-focus:scale-105"
+          />
+        </div>
+        <div className="flex items-center justify-between gap-4 p-4">
+          <h3 className="text-base font-semibold text-gray-900 group-hover:underline group-focus:underline">
+            {title}
+          </h3>
+          <ArrowRight
+            className="size-5 shrink-0 text-gray-700"
+            aria-hidden="true"
+          />
         </div>
       </a>
     </article>
@@ -65,8 +77,8 @@ export default function ProductsSectionCarousel({
   }, [api]);
 
   return (
-    <section className="py-12 lg:py-24">
-      <div className="container flex flex-col gap-10 lg:gap-16">
+    <section className="overflow-hidden py-12 lg:py-24">
+      <div className="container mb-10 lg:mb-16">
         <div className="flex items-end justify-between gap-8">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-3">
@@ -98,6 +110,8 @@ export default function ProductsSectionCarousel({
             </button>
           </div>
         </div>
+      </div>
+      <div className="container overflow-visible">
         <ShadcnCarousel
           setApi={setApi}
           opts={{ align: 'start' }}

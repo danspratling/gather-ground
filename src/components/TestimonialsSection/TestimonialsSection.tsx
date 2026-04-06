@@ -72,7 +72,7 @@ export default function TestimonialsSection({
 
   return (
     <section className="py-12 lg:py-24">
-      <div className="container flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
+      <div className="container flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-16">
         <div className="flex flex-col gap-5 lg:w-2/5 lg:shrink-0">
           <h2 className="text-display-md font-semibold tracking-display-md text-gray-900">
             {heading}

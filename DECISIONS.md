@@ -4,27 +4,32 @@ Architecture decision log for the Gather Ground website. Read this before changi
 
 ## Quick reference
 
-| ADR     | Title                                            | Category     |
-| ------- | ------------------------------------------------ | ------------ |
-| ADR-001 | Astro over Next.js                               | Stack        |
-| ADR-002 | shadcn/ui as a primitive layer                   | Components   |
-| ADR-004 | Storyblok schemas in code                        | Storyblok    |
-| ADR-005 | No client-side Storyblok fetching                | Storyblok    |
-| ADR-006 | Play functions vs Playwright                     | Testing      |
-| ADR-007 | Design tokens as visual source of truth          | Styling      |
-| ADR-008 | Tailwind v4 via @tailwindcss/vite                | Stack        |
-| ADR-009 | shadcn/ui uses Base UI, not Radix                | Components   |
-| ADR-010 | Node ≥22.12.0                                    | Stack        |
-| ADR-012 | .astro for static, .tsx for islands              | Components   |
-| ADR-013 | Storybook uses @storybook-astro/framework        | Storybook    |
-| ADR-014 | Icons: @untitledui-pro + brand SVGs              | Components   |
-| ADR-015 | CSF Factories migration (deferred)               | Storybook    |
-| ADR-016 | Chromatic + a11y + docs addons                   | Storybook    |
-| ADR-017 | Co-locate all component files                    | Organisation |
-| ADR-018 | sb.mock for API mocking (deferred)               | Storybook    |
-| ADR-019 | Chromatic replaces browser-mode CI tests         | Testing      |
-| ADR-020 | Playwright page testing: structural + behavioral | Testing      |
-| ADR-021 | MCP-aided development workflow                   | Process      |
+| ADR     | Title                                             | Category     |
+| ------- | ------------------------------------------------- | ------------ | --- | ------- | ------------------------------------------------------------------ | ------- |
+| ADR-001 | Astro over Next.js                                | Stack        |
+| ADR-002 | shadcn/ui as a primitive layer                    | Components   |
+| ADR-004 | Storyblok schemas in code                         | Storyblok    |
+| ADR-005 | No client-side Storyblok fetching                 | Storyblok    |
+| ADR-006 | Play functions vs Playwright                      | Testing      |
+| ADR-007 | Design tokens as visual source of truth           | Styling      |
+| ADR-008 | Tailwind v4 via @tailwindcss/vite                 | Stack        |
+| ADR-009 | shadcn/ui uses Base UI, not Radix                 | Components   |
+| ADR-010 | Node ≥22.12.0                                     | Stack        |
+| ADR-012 | .astro for static, .tsx for islands               | Components   |
+| ADR-013 | Storybook uses @storybook-astro/framework         | Storybook    |
+| ADR-014 | Icons: @untitledui-pro + brand SVGs               | Components   |
+| ADR-015 | CSF Factories migration (deferred)                | Storybook    |
+| ADR-016 | Chromatic + a11y + docs addons                    | Storybook    |
+| ADR-017 | Co-locate all component files                     | Organisation |
+| ADR-018 | sb.mock for API mocking (deferred)                | Storybook    |
+| ADR-019 | Chromatic replaces browser-mode CI tests          | Testing      |
+| ADR-020 | Playwright page testing: structural + behavioral  | Testing      |
+| ADR-021 | MCP-aided development workflow                    | Process      |
+| ADR-022 | Storyblok component mapper via StoryblokComponent | Storyblok    |
+| ADR-023 | Co-located .storyblok.astro wrappers              | Storyblok    |
+| ADR-024 | src/templates/ for Storyblok page templates       | Organisation |
+| ADR-025 | [[...slug]].astro catch-all page router           | Routing      |
+| ADR-026 | enableFallbackComponent for unknown bloks         | Storyblok    |     | ADR-027 | Check official docs before implementing external platform features | Process |
 
 ---
 
@@ -311,6 +316,81 @@ Structural and behavioral tests catch real regressions (sections not rendering, 
 - Document the Figma frame URL in the Linear issue and in the story's `parameters.design` field
 - Every page section story must include `chromatic: { viewports: [375, 1440] }` in `parameters` — Chromatic is the ongoing visual record at both breakpoints
 - AI agents building sections must follow this workflow (see `CLAUDE.md`)
+
+---
+
+## ADR-022: Storyblok component rendering via StoryblokComponent, not an inline dispatcher
+
+**Decision:** Use `@storyblok/astro`'s built-in `StoryblokComponent.astro` to resolve and render Storyblok bloks. Do not write inline `if/else` or `switch` dispatchers in page files.
+
+**Reasoning:** The package ships a resolver that converts `blok.component` (snake_case) to camelCase, looks it up in a virtual registry built by Vite, and renders the matching component — the same pattern used in production Next.js/React Storyblok projects. An inline dispatcher in the page duplicates this logic, couples the page to every section name, and has to be manually updated every time a new component is added.
+
+**Consequence:** All Storyblok blok-to-component resolution goes through `<StoryblokComponent blok={blok} />`. New section types only require: (1) a `.storyblok.astro` wrapper, (2) an entry in the `components` map in `astro.config.mjs`. No changes to the page or router.
+
+---
+
+## ADR-023: Co-located .storyblok.astro wrappers with explicit registration
+
+**Decision:** Each section component has a co-located `[Name].storyblok.astro` wrapper in its component folder (e.g. `src/components/HeroSection/HeroSection.storyblok.astro`). All wrappers are explicitly registered in the `components` map in `astro.config.mjs`. Auto-discovery from `src/storyblok/` is not used.
+
+**Reasoning:** Co-location keeps the Storyblok field mapping (snake_case → camelCase) next to the component it maps to — consistent with how `.types.ts` and `.stories.ts` are co-located (ADR-017). Auto-discovery scans `src/[componentsDir]/storyblok/**/*.astro`, which conflicts with the schema `.ts` files already in `src/storyblok/` and forces wrappers out of their component folder. Explicit registration in `astro.config.mjs` gives a single, auditable list of all Storyblok-connected components.
+
+**What a wrapper does:** Receives `blok: SbBlokData`, casts each field to the correct type, maps snake_case names to camelCase props, and renders the static component. No data fetching, no business logic.
+
+**Consequence:** When adding a new Storyblok-connected section:
+
+1. Create `src/components/[Name]/[Name].storyblok.astro`
+2. Add an entry to the `components` map in `astro.config.mjs`
+   Path format is relative to `componentsDir` (default `'src'`) — e.g. `'components/HeroSection/HeroSection.storyblok.astro'`.
+
+---
+
+## ADR-024: src/templates/ for Storyblok page-level templates
+
+**Decision:** Storyblok page-level templates (components that correspond to a Storyblok content type rather than a UI section) live in `src/templates/`. The first is `Page.astro`, which iterates `blok.body` and delegates each section to `StoryblokComponent`.
+
+**Reasoning:** Page templates are not UI components — they have no static counterpart, no stories, and no types file. Placing them in `src/components/` would create a folder with a single `.storyblok.astro` file and nothing else, which is misleading. A dedicated `src/templates/` directory signals their purpose: they are Storyblok content type renderers, not reusable UI primitives.
+
+**Consequence:** New Storyblok content types (e.g. `BlogPost`, `AboutPage`) get a template in `src/templates/` and an entry in `astro.config.mjs`. UI sections always go in `src/components/`.
+
+---
+
+## ADR-025: [[...slug]].astro as the catch-all page router
+
+**Decision:** All Storyblok-driven pages are served by a single `src/pages/[[...slug]].astro` catch-all route. There is no `index.astro`. The empty slug (`/`) maps to the `'home'` Storyblok story.
+
+**Reasoning:** A dedicated `index.astro` would duplicate the fetch + render logic that `[[...slug]].astro` already handles. The catch-all means any new Storyblok page (about, contact, etc.) is automatically routed without adding a new Astro page file — it just needs a story in Storyblok and a template registered in `astro.config.mjs`.
+
+**`getStaticPaths`:** Fetches all `page` content-type stories from Storyblok at build time and returns them as static paths. The `home` story maps to `slug: undefined` (the root `/` route).
+
+**Consequence:** Never create a dedicated `src/pages/[name].astro` for a Storyblok-driven marketing page. Add the story in Storyblok, ensure its content type has a registered template, and `[[...slug]].astro` handles it automatically.
+
+---
+
+## ADR-026: enableFallbackComponent for graceful degradation on unknown bloks
+
+**Decision:** `enableFallbackComponent: true` is set in the `storyblok()` integration config. This causes `StoryblokComponent` to render nothing (and log a console warning) when it encounters a blok whose `component` name is not in the registry, rather than throwing and crashing the page.
+
+**Reasoning:** Without this, adding a new blok type to a Storyblok story before the corresponding wrapper is registered in `astro.config.mjs` crashes the entire page. With it, the unknown blok is silently skipped — all other sections render correctly. The console warning is sufficient signal for developers to notice the missing registration.
+
+**Consequence:** An unregistered blok is never a hard error at runtime. Developers should watch for console warnings of the form `Component [name] doesn't exist.` and add the missing registration. Never suppress these warnings.
+
+---
+
+## ADR-027: Check official docs before implementing external platform features
+
+**Decision:** Before implementing any feature that integrates with an external platform or tool (Storyblok, Vercel, GitHub Actions, etc.), read the official documentation for that platform first.
+
+**Reasoning:** External platforms often provide first-party tooling, CLI workflows, or configuration patterns that are better supported, simpler, and more idiomatic than a hand-rolled approach. Building without reading the docs risks duplicating existing functionality, using deprecated APIs, or missing a better developer experience — as happened with the Storyblok CLI schema push workflow, where an API-driven approach was initially designed before the official CLI pattern was identified.
+
+**Process:**
+
+1. Identify the external platform involved in the task
+2. Find the official docs page for the specific feature (CLI, SDK, API, integration guide)
+3. Read it before writing any code
+4. Follow the official pattern unless there is a documented reason not to (record that reason here as an ADR)
+
+**Consequence:** This adds a short research step to any task involving external integrations, but avoids rework and produces more maintainable implementations. If the official docs are unclear or incomplete, note it in the PR and in a comment in the relevant code.
 
 ---
 

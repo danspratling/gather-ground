@@ -19,12 +19,14 @@ export const faqSectionSchema = {
       type: 'textarea',
       display_name: 'Sub copy',
     },
-    items: {
-      type: 'bloks',
-      display_name: 'FAQ items',
-      required: true,
-      restrict_components: true,
-      component_whitelist: ['accordion_item'],
+    faqs: {
+      type: 'options',
+      display_name: 'FAQs',
+      source: 'internal_stories',
+      allow_target_types: ['story'],
+      filter_content_type: ['faq'],
+      entry_appearance: 'card',
+      allow_advanced_search: true,
     },
     cta: {
       type: 'bloks',

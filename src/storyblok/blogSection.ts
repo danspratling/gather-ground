@@ -24,7 +24,7 @@ export const blogSectionSchema = {
       display_name: 'Sub copy',
     },
     view_all_href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'View all URL',
       required: true,
     },
@@ -34,11 +34,13 @@ export const blogSectionSchema = {
       default_value: 'View all updates',
     },
     posts: {
-      type: 'bloks',
+      type: 'options',
       display_name: 'Blog posts',
-      required: true,
-      restrict_components: true,
-      component_whitelist: ['blog_card'],
+      source: 'internal_stories',
+      allow_target_types: ['story'],
+      filter_content_type: ['blog_post'],
+      entry_appearance: 'card',
+      allow_advanced_search: true,
     },
   },
 } as const;

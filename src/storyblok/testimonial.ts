@@ -1,14 +1,18 @@
 /**
- * Storyblok component schema for TestimonialCard.
+ * Storyblok content type schema for a single Testimonial.
+ *
+ * Stored as standalone stories (is_root: true) so they can be reused
+ * across multiple sections. Referenced via the References field on
+ * testimonials_section.
  *
  * Push to Storyblok via the CLI:
- *   npx storyblok push-components --space 289911665285843
+ *   npm run sync-schemas
  */
-export const testimonialCardSchema = {
-  name: 'testimonial_card',
-  display_name: 'Testimonial Card',
-  is_root: false,
-  is_nestable: true,
+export const testimonialSchema = {
+  name: 'testimonial',
+  display_name: 'Testimonial',
+  is_root: true,
+  is_nestable: false,
   schema: {
     quote: {
       type: 'textarea',
@@ -48,3 +52,5 @@ export const testimonialCardSchema = {
     },
   },
 } as const;
+
+export default null;

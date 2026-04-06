@@ -22,6 +22,17 @@ export default defineConfig({
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
       bridge: true,
+      enableFallbackComponent: true,
+      components: {
+        page: 'templates/Page.astro',
+        hero_section: 'components/HeroSection/HeroSection.storyblok.astro',
+        products_section:
+          'components/ProductsSection/ProductsSection.storyblok.astro',
+        testimonials_section:
+          'components/TestimonialsSection/TestimonialsSection.storyblok.astro',
+        faq_section: 'components/FaqSection/FaqSection.storyblok.astro',
+        blog_section: 'components/BlogSection/BlogSection.storyblok.astro',
+      },
     }),
   ],
 });

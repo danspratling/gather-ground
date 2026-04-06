@@ -1,0 +1,70 @@
+---
+import type { SbBlokData } from '@storyblok/astro';
+import FaqSection from './FaqSection.astro';
+import type { CallToActionProps } from '@/components/CallToAction/CallToAction.types';
+import { resolveLink } from '@/lib/utils';
+
+interface Props {
+  blok: SbBlokData;
+}
+
+const { blok } = Astro.props;
+
+interface ResolvedFaq {
+  content: { title: string; detail: string };
+}
+
+const items = (blok.faqs as ResolvedFaq[]).map((faq) => ({
+  title: faq.content.title,
+  detail: faq.content.detail,
+}));
+
+const ctaBloks = blok.cta as SbBlokData[] | undefined;
+const ctaBlok = ctaBloks?.[0];
+const avatarBloks = ctaBlok
+  ? ((ctaBlok.avatars as SbBlokData[] | undefined) ?? [])
+  : [];
+
+const cta: CallToActionProps | undefined = ctaBlok
+  ? {
+      heading: ctaBlok.heading as string,
+      body: ctaBlok.body as string,
+      primaryButton: {
+        label: ctaBlok.primary_button_label as string,
+        href: resolveLink(ctaBlok.primary_button_href),
+        variant:
+          (ctaBlok.primary_button_variant as
+            | 'default'
+            | 'outline'
+            | 'ghost'
+            | 'link') ?? 'default',
+        size: 'md',
+      },
+      secondaryButton: ctaBlok.secondary_button_label
+        ? {
+            label: ctaBlok.secondary_button_label as string,
+            href: resolveLink(ctaBlok.secondary_button_href),
+            variant: 'outline',
+            size: 'md',
+          }
+        : undefined,
+      avatarGroup:
+        avatarBloks.length > 0
+          ? {
+              avatars: avatarBloks.map((a) => ({
+                src:
+                  (a.src as { filename: string } | undefined)?.filename ?? '',
+                alt: (a.alt as string | undefined) ?? '',
+              })),
+            }
+          : undefined,
+    }
+  : undefined;
+---
+
+<FaqSection
+  heading={blok.heading as string}
+  subCopy={(blok.sub_copy as string | undefined) ?? ''}
+  items={items}
+  cta={cta}
+/>

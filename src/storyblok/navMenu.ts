@@ -36,7 +36,7 @@ export const navMenuItemSchema = {
       required: true,
     },
     href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'URL',
       required: true,
     },

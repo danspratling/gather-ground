@@ -10,22 +10,28 @@ const { heading, subCopy, items, cta } = Astro.props;
 
 <section class="py-12 lg:py-24">
   <div class="container flex flex-col gap-12">
-    <div class="flex flex-col items-center gap-5 text-center">
-      <h2
-        class="text-display-md font-semibold tracking-display-md text-gray-900 lg:text-display-lg"
-      >
-        {heading}
-      </h2>
-      <p class="max-w-2xl text-xl text-gray-600">{subCopy}</p>
+    <div class="mx-auto w-full max-w-[768px] flex flex-col gap-12">
+      <div class="flex flex-col items-center gap-5 text-center">
+        <h2
+          class="text-display-md font-semibold tracking-display-md text-gray-900 lg:text-display-lg"
+        >
+          {heading}
+        </h2>
+        <p class="text-xl text-gray-600">{subCopy}</p>
+      </div>
+      <Accordion client:visible items={items} />
     </div>
-    <Accordion client:visible items={items} />
-    <CallToAction
-      heading={cta.heading}
-      body={cta.body}
-      primaryButton={cta.primaryButton}
-      secondaryButton={cta.secondaryButton}
-      avatarGroup={cta.avatarGroup}
-      centered
-    />
+    {
+      cta && (
+        <CallToAction
+          heading={cta.heading}
+          body={cta.body}
+          primaryButton={cta.primaryButton}
+          secondaryButton={cta.secondaryButton}
+          avatarGroup={cta.avatarGroup}
+          centered
+        />
+      )
+    }
   </div>
 </section>
