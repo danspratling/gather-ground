@@ -1,5 +1,6 @@
 ---
 import type { SbBlokData } from '@storyblok/astro';
+import { storyblokEditable } from '@storyblok/astro';
 import BlogSection from './BlogSection.astro';
 import { resolveLink } from '@/lib/utils';
 
@@ -34,11 +35,13 @@ const posts = (blok.posts as ResolvedBlogPost[]).map((p) => ({
 }));
 ---
 
-<BlogSection
-  eyebrow={(blok.eyebrow as string | undefined) ?? ''}
-  heading={blok.heading as string}
-  subCopy={(blok.sub_copy as string | undefined) ?? ''}
-  viewAllHref={resolveLink(blok.view_all_href)}
-  viewAllLabel={blok.view_all_label as string | undefined}
-  posts={posts}
-/>
+<div {...storyblokEditable(blok)}>
+  <BlogSection
+    eyebrow={(blok.eyebrow as string | undefined) ?? ''}
+    heading={blok.heading as string}
+    subCopy={(blok.sub_copy as string | undefined) ?? ''}
+    viewAllHref={resolveLink(blok.view_all_href)}
+    viewAllLabel={blok.view_all_label as string | undefined}
+    posts={posts}
+  />
+</div>

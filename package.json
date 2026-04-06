@@ -71,6 +71,7 @@
     "storyblok": "^4.16.8",
     "storybook": "^10.3.4",
     "tsx": "^4.21.0",
+    "vite-plugin-mkcert": "^1.17.10",
     "vitest": "^4.1.2"
   }
 }

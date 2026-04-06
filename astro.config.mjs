@@ -4,13 +4,14 @@ import react from '@astrojs/react';
 import { storyblok } from '@storyblok/astro';
 import { loadEnv } from 'vite';
 import path from 'node:path';
+import mkcert from 'vite-plugin-mkcert';
 
 const env = loadEnv('', process.cwd(), 'STORYBLOK');
 
 // https://astro.build/config
 export default defineConfig({
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), mkcert()],
     resolve: {
       alias: {
         '@': path.resolve('./src'),
@@ -21,7 +22,13 @@ export default defineConfig({
     react(),
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
-      bridge: true,
+      bridge: {
+        resolveRelations: [
+          'testimonials_section.testimonials',
+          'faq_section.faqs',
+          'blog_section.posts',
+        ],
+      },
       enableFallbackComponent: true,
       components: {
         page: 'templates/Page.astro',

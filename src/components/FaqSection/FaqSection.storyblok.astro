@@ -1,5 +1,6 @@
 ---
 import type { SbBlokData } from '@storyblok/astro';
+import { storyblokEditable } from '@storyblok/astro';
 import FaqSection from './FaqSection.astro';
 import type { CallToActionProps } from '@/components/CallToAction/CallToAction.types';
 import { resolveLink } from '@/lib/utils';
@@ -62,9 +63,11 @@ const cta: CallToActionProps | undefined = ctaBlok
   : undefined;
 ---
 
-<FaqSection
-  heading={blok.heading as string}
-  subCopy={(blok.sub_copy as string | undefined) ?? ''}
-  items={items}
-  cta={cta}
-/>
+<div {...storyblokEditable(blok)}>
+  <FaqSection
+    heading={blok.heading as string}
+    subCopy={(blok.sub_copy as string | undefined) ?? ''}
+    items={items}
+    cta={cta}
+  />
+</div>

@@ -1,5 +1,6 @@
 ---
 import type { SbBlokData } from '@storyblok/astro';
+import { storyblokEditable } from '@storyblok/astro';
 import ProductsSection from './ProductsSection.astro';
 import { resolveLink } from '@/lib/utils';
 
@@ -21,10 +22,12 @@ const products = (blok.products as SbBlokData[]).map((p) => ({
 }));
 ---
 
-<ProductsSection
-  variant={variant}
-  eyebrow={blok.eyebrow as string}
-  heading={blok.heading as string}
-  subCopy={blok.sub_copy as string}
-  products={products}
-/>
+<div {...storyblokEditable(blok)}>
+  <ProductsSection
+    variant={variant}
+    eyebrow={blok.eyebrow as string}
+    heading={blok.heading as string}
+    subCopy={blok.sub_copy as string}
+    products={products}
+  />
+</div>
