@@ -15,11 +15,6 @@ export const headerSchema = {
       display_name: 'Logo',
       required: true,
     },
-    logo_alt: {
-      type: 'text',
-      display_name: 'Logo alt text',
-      required: true,
-    },
     nav_links: {
       type: 'bloks',
       display_name: 'Nav links',

@@ -34,24 +34,16 @@ export const heroSectionSchema = {
     secondary_cta_label: {
       type: 'text',
       display_name: 'Secondary CTA label',
-      required: true,
       default_value: 'Get in touch',
     },
     secondary_cta_href: {
       type: 'text',
       display_name: 'Secondary CTA URL',
-      required: true,
     },
     image: {
       type: 'asset',
       display_name: 'Hero image',
-      required: true,
       filetypes: ['images'],
-    },
-    image_alt: {
-      type: 'text',
-      display_name: 'Image alt text',
-      required: true,
     },
   },
 };

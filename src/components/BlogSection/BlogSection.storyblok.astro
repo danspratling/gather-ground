@@ -8,15 +8,20 @@ interface Props {
 
 const { blok } = Astro.props;
 const posts = (blok.posts as SbBlokData[]).map((p) => ({
-  image: (p.image as { filename: string } | undefined)?.filename ?? '',
-  imageAlt: (p.image_alt as string | undefined) ?? '',
+  image:
+    (p.image as { filename: string; alt: string } | undefined)?.filename ?? '',
+  imageAlt:
+    (p.image as { filename: string; alt: string } | undefined)?.alt ?? '',
   title: p.title as string,
   excerpt: p.excerpt as string,
   date: p.date as string,
   authorName: p.author_name as string,
   authorImage:
-    (p.author_image as { filename: string } | undefined)?.filename ?? '',
-  authorImageAlt: (p.author_image_alt as string | undefined) ?? '',
+    (p.author_image as { filename: string; alt: string } | undefined)
+      ?.filename ?? '',
+  authorImageAlt:
+    (p.author_image as { filename: string; alt: string } | undefined)?.alt ??
+    '',
   href: p.href as string,
 }));
 ---

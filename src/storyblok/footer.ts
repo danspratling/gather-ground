@@ -19,11 +19,6 @@ export const footerSchema = {
       display_name: 'Logo',
       description: 'Gather Ground logo image displayed in the footer.',
     },
-    logo_alt: {
-      type: 'text',
-      display_name: 'Logo alt text',
-      default_value: 'Gather Ground',
-    },
     description: {
       type: 'textarea',
       display_name: 'Description',

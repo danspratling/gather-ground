@@ -31,11 +31,6 @@ export const testimonialCardSchema = {
       display_name: 'Author image',
       required: true,
     },
-    author_alt: {
-      type: 'text',
-      display_name: 'Author image alt text',
-      required: true,
-    },
     author_name: {
       type: 'text',
       display_name: 'Author name',

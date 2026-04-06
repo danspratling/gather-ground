@@ -11,8 +11,12 @@ const testimonials = (blok.testimonials as SbBlokData[]).map((t) => ({
   quote: t.quote as string,
   platform: (t.platform as string | undefined) || undefined,
   author: {
-    src: (t.author_src as { filename: string } | undefined)?.filename ?? '',
-    alt: (t.author_alt as string | undefined) ?? '',
+    src:
+      (t.author_src as { filename: string; alt: string } | undefined)
+        ?.filename ?? '',
+    alt:
+      (t.author_src as { filename: string; alt: string } | undefined)?.alt ??
+      '',
     name: t.author_name as string,
     secondary: (t.author_secondary as string | undefined) || undefined,
     secondaryIsHandle:

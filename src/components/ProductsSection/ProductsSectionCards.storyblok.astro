@@ -8,8 +8,10 @@ interface Props {
 
 const { blok } = Astro.props;
 const products = (blok.products as SbBlokData[]).map((p) => ({
-  image: (p.image as { filename: string } | undefined)?.filename ?? '',
-  imageAlt: (p.image_alt as string | undefined) ?? '',
+  image:
+    (p.image as { filename: string; alt: string } | undefined)?.filename ?? '',
+  imageAlt:
+    (p.image as { filename: string; alt: string } | undefined)?.alt ?? '',
   title: p.title as string,
   description: p.description as string | undefined,
   href: p.href as string,

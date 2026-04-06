@@ -24,11 +24,6 @@ export const blogCardSchema = {
       display_name: 'Cover image',
       required: true,
     },
-    image_alt: {
-      type: 'text',
-      display_name: 'Image alt text',
-      required: true,
-    },
     title: {
       type: 'text',
       display_name: 'Title',
@@ -53,11 +48,6 @@ export const blogCardSchema = {
     author_image: {
       type: 'asset',
       display_name: 'Author photo',
-      required: true,
-    },
-    author_image_alt: {
-      type: 'text',
-      display_name: 'Author photo alt text',
       required: true,
     },
     href: {

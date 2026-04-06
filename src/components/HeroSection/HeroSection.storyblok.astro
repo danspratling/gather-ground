@@ -7,7 +7,8 @@ interface Props {
 }
 
 const { blok } = Astro.props;
-const image = blok.image as { filename: string } | undefined;
+const imageAsset = blok.image as { filename: string; alt: string } | undefined;
+const secondaryCtaLabel = blok.secondary_cta_label as string | undefined;
 ---
 
 <HeroSection
@@ -17,9 +18,13 @@ const image = blok.image as { filename: string } | undefined;
     label: blok.primary_cta_label as string,
     href: blok.primary_cta_href as string,
   }}
-  secondaryCta={{
-    label: blok.secondary_cta_label as string,
-    href: blok.secondary_cta_href as string,
-  }}
-  image={{ src: image?.filename ?? '', alt: blok.image_alt as string }}
+  secondaryCta={secondaryCtaLabel
+    ? {
+        label: secondaryCtaLabel,
+        href: blok.secondary_cta_href as string,
+      }
+    : undefined}
+  image={imageAsset
+    ? { src: imageAsset.filename, alt: imageAsset.alt }
+    : undefined}
 />

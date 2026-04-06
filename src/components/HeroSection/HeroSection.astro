@@ -27,22 +27,30 @@ const { headline, subCopy, primaryCta, secondaryCta, image } = Astro.props;
           size="lg"
           class="w-full sm:w-auto"
         />
-        <Button
-          label={secondaryCta.label}
-          href={secondaryCta.href}
-          size="lg"
-          variant="outline"
-          class="w-full sm:w-auto"
-        />
+        {
+          secondaryCta && (
+            <Button
+              label={secondaryCta.label}
+              href={secondaryCta.href}
+              size="lg"
+              variant="outline"
+              class="w-full sm:w-auto"
+            />
+          )
+        }
       </div>
     </div>
-    <div class="w-full">
-      <img
-        src={image.src}
-        alt={image.alt}
-        class="w-full aspect-[4/3] lg:aspect-[1216/516] object-cover"
-        loading="eager"
-      />
-    </div>
+    {
+      image && (
+        <div class="w-full">
+          <img
+            src={image.src}
+            alt={image.alt}
+            class="w-full aspect-[4/3] lg:aspect-[1216/516] object-cover"
+            loading="eager"
+          />
+        </div>
+      )
+    }
   </div>
 </section>

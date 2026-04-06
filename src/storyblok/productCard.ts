@@ -28,11 +28,6 @@ export const productCardSchema = {
       display_name: 'Image',
       required: true,
     },
-    image_alt: {
-      type: 'text',
-      display_name: 'Image alt text',
-      required: true,
-    },
     title: {
       type: 'text',
       display_name: 'Title',
