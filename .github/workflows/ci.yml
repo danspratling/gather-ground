@@ -72,6 +72,8 @@ jobs:
 
       - name: Astro build
         run: npm run build
+        env:
+          STORYBLOK_TOKEN: ${{ secrets.STORYBLOK_TOKEN }}
 
   e2e:
     name: E2E Tests (Playwright)
@@ -96,6 +98,8 @@ jobs:
 
       - name: Playwright tests
         run: npm run test -- --project=chromium
+        env:
+          STORYBLOK_TOKEN: ${{ secrets.STORYBLOK_TOKEN }}
 
   component-tests:
     name: Component Tests (Storybook)
