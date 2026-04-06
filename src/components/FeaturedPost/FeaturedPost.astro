@@ -1,0 +1,67 @@
+---
+import { cn } from '@/lib/utils';
+import type { FeaturedPostProps } from '@/components/FeaturedPost/FeaturedPost.types';
+import Badge from '@/components/Badge/Badge.astro';
+
+type Props = FeaturedPostProps;
+
+const {
+  image,
+  imageAlt,
+  categories,
+  title,
+  excerpt,
+  href,
+  authorName,
+  authorImage,
+  authorImageAlt,
+  date,
+  class: className,
+} = Astro.props;
+---
+
+<article class={cn('flex flex-col gap-8 lg:flex-row lg:gap-8', className)}>
+  <a
+    href={href}
+    class="block overflow-hidden rounded-2xl lg:flex-[3_0_0] lg:min-w-0"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <img
+      src={image}
+      alt={imageAlt}
+      class="h-64 w-full object-cover transition-transform duration-300 hover:scale-105 lg:h-full lg:aspect-[824/412]"
+      loading="eager"
+    />
+  </a>
+  <div class="flex flex-col gap-6 lg:flex-[2_0_0] lg:min-w-0 lg:max-w-[360px]">
+    <div class="flex flex-col gap-4">
+      {
+        categories.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <Badge label={cat} type="pill" size="sm" color="gray" />
+            ))}
+          </div>
+        )
+      }
+      <div class="flex flex-col gap-2">
+        <h2 class="text-2xl font-semibold text-gray-900">
+          <a href={href} class="hover:underline">{title}</a>
+        </h2>
+        <p class="text-base font-normal text-gray-600">{excerpt}</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <img
+        src={authorImage}
+        alt={authorImageAlt}
+        class="size-10 rounded-full object-cover border border-black/5"
+      />
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold text-brand-900">{authorName}</span>
+        <time class="text-sm font-normal text-brand-400">{date}</time>
+      </div>
+    </div>
+  </div>
+</article>
