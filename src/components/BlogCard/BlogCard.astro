@@ -1,6 +1,7 @@
 ---
 import { cn } from '@/lib/utils';
 import type { BlogCardProps } from '@/components/BlogCard/BlogCard.types';
+import Badge from '@/components/Badge/Badge.astro';
 
 type Props = BlogCardProps;
 
@@ -15,6 +16,7 @@ const {
   authorImage,
   authorImageAlt,
   href,
+  categories,
   class: className,
 } = Astro.props;
 ---
@@ -26,7 +28,7 @@ const {
       alt={imageAlt}
       class={cn(
         'w-full object-cover transition-transform duration-300 hover:scale-105',
-        variant === 'homepage' ? 'h-56' : 'h-40'
+        variant === 'homepage' ? 'h-56' : 'h-48'
       )}
     />
   </a>
@@ -51,5 +53,14 @@ const {
       <a href={href} class="hover:underline">{title}</a>
     </h3>
     <p class="text-sm font-normal text-gray-600 line-clamp-3">{excerpt}</p>
+    {
+      categories && categories.length > 0 && (
+        <div class="flex flex-wrap gap-2 pt-1">
+          {categories.map((cat) => (
+            <Badge label={cat} type="pill" size="sm" color="gray" />
+          ))}
+        </div>
+      )
+    }
   </div>
 </article>

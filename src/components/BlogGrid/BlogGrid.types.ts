@@ -1,7 +1,4 @@
-export type BlogCardVariant = 'homepage' | 'index';
-
-export interface BlogCardProps {
-  variant?: BlogCardVariant;
+export interface BlogGridPost {
   image: string;
   imageAlt: string;
   title: string;
@@ -11,8 +8,13 @@ export interface BlogCardProps {
   authorImage: string;
   authorImageAlt: string;
   href: string;
-  categories?: string[];
-  class?: string;
+  slug: string;
+  categories: string[];
+}
+
+export interface BlogGridProps {
+  posts: BlogGridPost[];
+  initialVisibleCount?: number;
 }
 
 export default null;
