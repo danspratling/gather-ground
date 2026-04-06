@@ -22,6 +22,7 @@ export default defineConfig({
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
       bridge: true,
+      enableFallbackComponent: true,
       components: {
         page: 'templates/Page.astro',
         hero_section: 'components/HeroSection/HeroSection.storyblok.astro',
