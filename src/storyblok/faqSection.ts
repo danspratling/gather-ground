@@ -19,7 +19,7 @@ export const faqSectionSchema = {
       type: 'textarea',
       display_name: 'Sub copy',
     },
-    items: {
+    faqs: {
       type: 'bloks',
       display_name: 'FAQ items',
       required: true,

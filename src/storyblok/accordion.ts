@@ -26,14 +26,14 @@ export const accordionItemSchema = {
   is_root: false,
   is_nestable: true,
   schema: {
-    question: {
+    title: {
       type: 'text',
-      display_name: 'Question',
+      display_name: 'Title',
       required: true,
     },
-    answer: {
+    detail: {
       type: 'textarea',
-      display_name: 'Answer',
+      display_name: 'Detail',
       required: true,
     },
   },

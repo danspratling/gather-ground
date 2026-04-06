@@ -1,6 +1,6 @@
 export interface AccordionItem {
-  question: string;
-  answer: string;
+  title: string;
+  detail: string;
 }
 
 export interface AccordionProps {

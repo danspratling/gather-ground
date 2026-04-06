@@ -24,33 +24,33 @@ export default meta;
 
 const defaultItems = [
   {
-    question: 'Where can I find your products?',
-    answer:
+    title: 'Where can I find your products?',
+    detail:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
   },
   {
-    question: 'Do you deliver?',
-    answer:
+    title: 'Do you deliver?',
+    detail:
       'We ship weekly to most of the continental US, and offer local pickup at the farm. Delivery is free on orders over $75.',
   },
   {
-    question: "Who's building Gather Ground?",
-    answer:
+    title: "Who's building Gather Ground?",
+    detail:
       "Gather Ground is a family-run farm in rural Iowa. We've been raising heritage breed animals on pasture for over a decade.",
   },
   {
-    question: 'Are your animals grass-fed?',
-    answer:
+    title: 'Are your animals grass-fed?',
+    detail:
       'Yes — all our animals are raised on pasture year-round with supplemental feed as needed during winter months.',
   },
   {
-    question: 'Do you offer subscriptions?',
-    answer:
+    title: 'Do you offer subscriptions?',
+    detail:
       'We are working on a subscription box — sign up to our newsletter to be the first to know when it launches.',
   },
   {
-    question: 'What if I have a question not listed here?',
-    answer:
+    title: 'What if I have a question not listed here?',
+    detail:
       'Reach out via the contact form and our team will get back to you within one business day.',
   },
 ];

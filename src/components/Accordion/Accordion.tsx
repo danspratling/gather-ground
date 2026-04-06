@@ -23,7 +23,7 @@ export default function Accordion({ items, class: className }: AccordionProps) {
           <AccordionPrimitive.Header className="flex">
             <AccordionPrimitive.Trigger className="group flex w-full cursor-pointer items-center justify-between gap-4 py-6 text-left outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-2">
               <span className="text-lg font-semibold text-gray-900">
-                {item.question}
+                {item.title}
               </span>
               <span className="shrink-0 text-brand-700" aria-hidden="true">
                 <PlusCircle className="size-6 group-aria-expanded:hidden" />
@@ -33,7 +33,7 @@ export default function Accordion({ items, class: className }: AccordionProps) {
           </AccordionPrimitive.Header>
           <AccordionContent>
             <p className="pb-6 text-base font-normal text-gray-600">
-              {item.answer}
+              {item.detail}
             </p>
           </AccordionContent>
         </AccordionItem>

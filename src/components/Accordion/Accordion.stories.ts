@@ -23,18 +23,18 @@ type Story = StoryObj<typeof meta>;
 
 const defaultItems = [
   {
-    question: 'Where is Gather Ground located?',
-    answer:
+    title: 'Where is Gather Ground located?',
+    detail:
       'We are a family farm based in rural Iowa. Our heritage breed animals are raised on pasture year-round with room to roam.',
   },
   {
-    question: 'How do I place an order?',
-    answer:
+    title: 'How do I place an order?',
+    detail:
       'You can browse and order through our online shop. We ship weekly to most of the continental US, and offer local pickup at the farm.',
   },
   {
-    question: 'What breeds do you raise?',
-    answer:
+    title: 'What breeds do you raise?',
+    detail:
       'We raise Angus and Hereford cattle, Berkshire and Duroc pigs, Freedom Ranger chickens, and Bourbon Red turkeys — all heritage breeds known for their flavour.',
   },
 ];
@@ -76,8 +76,8 @@ export const SingleItem: Story = {
   args: {
     items: [
       {
-        question: 'Is your farm certified organic?',
-        answer:
+        title: 'Is your farm certified organic?',
+        detail:
           'We are not USDA certified organic, but we follow regenerative farming practices — no pesticides, no synthetic fertilisers, and no added hormones or antibiotics.',
       },
     ],
