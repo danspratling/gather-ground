@@ -20,11 +20,13 @@ export const faqSectionSchema = {
       display_name: 'Sub copy',
     },
     faqs: {
-      type: 'bloks',
-      display_name: 'FAQ items',
-      required: true,
-      restrict_components: true,
-      component_whitelist: ['accordion_item'],
+      type: 'options',
+      display_name: 'FAQs',
+      source: 'internal_stories',
+      allow_target_types: ['story'],
+      filter_content_type: ['faq'],
+      entry_appearance: 'card',
+      allow_advanced_search: true,
     },
     cta: {
       type: 'bloks',

@@ -21,10 +21,13 @@ export const testimonialsSectionSchema = {
       required: true,
     },
     testimonials: {
-      type: 'multiasset',
+      type: 'options',
       display_name: 'Testimonials',
+      source: 'internal_stories',
       allow_target_types: ['story'],
       filter_content_type: ['testimonial'],
+      entry_appearance: 'card',
+      allow_advanced_search: true,
     },
   },
 };

@@ -10,9 +10,13 @@ interface Props {
 
 const { blok } = Astro.props;
 
-const items = (blok.faqs as SbBlokData[]).map((item) => ({
-  title: item.title as string,
-  detail: item.detail as string,
+interface ResolvedFaq {
+  content: { title: string; detail: string };
+}
+
+const items = (blok.faqs as ResolvedFaq[]).map((faq) => ({
+  title: faq.content.title,
+  detail: faq.content.detail,
 }));
 
 const ctaBloks = blok.cta as SbBlokData[] | undefined;

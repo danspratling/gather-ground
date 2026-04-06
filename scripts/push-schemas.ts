@@ -33,6 +33,7 @@ import { blogSectionSchema } from '../src/storyblok/blogSection.ts';
 import { bodySchema } from '../src/storyblok/body.ts';
 import { buttonSchema } from '../src/storyblok/button.ts';
 import { callToActionSchema } from '../src/storyblok/callToAction.ts';
+import { faqSchema } from '../src/storyblok/faq.ts';
 import { faqSectionSchema } from '../src/storyblok/faqSection.ts';
 import {
   footerSchema,
@@ -72,6 +73,7 @@ const schemas = [
   testimonialCardSchema,
   // Content types
   testimonialSchema,
+  faqSchema,
   // Sections
   heroSectionSchema,
   productsSectionSchema,
