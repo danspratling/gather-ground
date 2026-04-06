@@ -22,7 +22,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "sync-schemas": "tsx scripts/push-schemas.ts && storyblok login --token $STORYBLOK_PERSONAL_TOKEN && storyblok components push --from $STORYBLOK_SPACE_ID"
+    "sync-schemas": "tsx scripts/push-schemas.ts"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.2",

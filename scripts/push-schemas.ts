@@ -17,6 +17,7 @@
  */
 
 import { mkdir, writeFile } from 'node:fs/promises';
+import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { loadEnv } from 'vite';
 
@@ -113,11 +114,19 @@ const outputPath = path.join(outputDir, 'components.json');
 
 await mkdir(outputDir, { recursive: true });
 await writeFile(outputPath, JSON.stringify(schemas, null, 2), 'utf-8');
-
 console.log(`✓ Wrote ${schemas.length} schemas to ${outputPath}`);
-console.log(
-  '  Run: storyblok components push --space',
-  spaceId,
-  '--from',
-  spaceId
-);
+
+const personalToken = env.STORYBLOK_PERSONAL_TOKEN;
+if (!personalToken) {
+  console.error('Error: STORYBLOK_PERSONAL_TOKEN is not set in .env');
+  console.error(
+    'Get one from: app.storyblok.com → My Account → Personal Access Tokens'
+  );
+  process.exit(1);
+}
+
+console.log('  Authenticating with Storyblok...');
+execSync(`storyblok login --token ${personalToken}`, { stdio: 'inherit' });
+
+console.log('  Pushing schemas...');
+execSync(`storyblok components push --from ${spaceId}`, { stdio: 'inherit' });

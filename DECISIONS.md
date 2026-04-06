@@ -5,7 +5,7 @@ Architecture decision log for the Gather Ground website. Read this before changi
 ## Quick reference
 
 | ADR     | Title                                             | Category     |
-| ------- | ------------------------------------------------- | ------------ |
+| ------- | ------------------------------------------------- | ------------ | --- | ------- | ------------------------------------------------------------------ | ------- |
 | ADR-001 | Astro over Next.js                                | Stack        |
 | ADR-002 | shadcn/ui as a primitive layer                    | Components   |
 | ADR-004 | Storyblok schemas in code                         | Storyblok    |
@@ -29,7 +29,7 @@ Architecture decision log for the Gather Ground website. Read this before changi
 | ADR-023 | Co-located .storyblok.astro wrappers              | Storyblok    |
 | ADR-024 | src/templates/ for Storyblok page templates       | Organisation |
 | ADR-025 | [[...slug]].astro catch-all page router           | Routing      |
-| ADR-026 | enableFallbackComponent for unknown bloks         | Storyblok    |
+| ADR-026 | enableFallbackComponent for unknown bloks         | Storyblok    |     | ADR-027 | Check official docs before implementing external platform features | Process |
 
 ---
 
@@ -374,6 +374,23 @@ Structural and behavioral tests catch real regressions (sections not rendering, 
 **Reasoning:** Without this, adding a new blok type to a Storyblok story before the corresponding wrapper is registered in `astro.config.mjs` crashes the entire page. With it, the unknown blok is silently skipped — all other sections render correctly. The console warning is sufficient signal for developers to notice the missing registration.
 
 **Consequence:** An unregistered blok is never a hard error at runtime. Developers should watch for console warnings of the form `Component [name] doesn't exist.` and add the missing registration. Never suppress these warnings.
+
+---
+
+## ADR-027: Check official docs before implementing external platform features
+
+**Decision:** Before implementing any feature that integrates with an external platform or tool (Storyblok, Vercel, GitHub Actions, etc.), read the official documentation for that platform first.
+
+**Reasoning:** External platforms often provide first-party tooling, CLI workflows, or configuration patterns that are better supported, simpler, and more idiomatic than a hand-rolled approach. Building without reading the docs risks duplicating existing functionality, using deprecated APIs, or missing a better developer experience — as happened with the Storyblok CLI schema push workflow, where an API-driven approach was initially designed before the official CLI pattern was identified.
+
+**Process:**
+
+1. Identify the external platform involved in the task
+2. Find the official docs page for the specific feature (CLI, SDK, API, integration guide)
+3. Read it before writing any code
+4. Follow the official pattern unless there is a documented reason not to (record that reason here as an ADR)
+
+**Consequence:** This adds a short research step to any task involving external integrations, but avoids rework and produces more maintainable implementations. If the official docs are unclear or incomplete, note it in the PR and in a comment in the relevant code.
 
 ---
 
