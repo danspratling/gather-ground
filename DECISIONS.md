@@ -28,8 +28,11 @@ Architecture decision log for the Gather Ground website. Read this before changi
 | ADR-022 | Storyblok component mapper via StoryblokComponent | Storyblok    |
 | ADR-023 | Co-located .storyblok.astro wrappers              | Storyblok    |
 | ADR-024 | src/templates/ for Storyblok page templates       | Organisation |
-| ADR-025 | [[...slug]].astro catch-all page router           | Routing      |
+| ADR-025 | [..slug].astro catch-all page router              | Routing      |
 | ADR-026 | enableFallbackComponent for unknown bloks         | Storyblok    |     | ADR-027 | Check official docs before implementing external platform features | Process |
+| ADR-028 | multilink field type + resolveLink() helper       | Storyblok    |
+| ADR-029 | Reference content types for reusable CMS entries  | Storyblok    |
+| ADR-030 | storyblokEditable + mkcert for Visual Editor      | Storyblok    |
 
 ---
 
@@ -355,15 +358,17 @@ Structural and behavioral tests catch real regressions (sections not rendering, 
 
 ---
 
-## ADR-025: [[...slug]].astro as the catch-all page router
+## ADR-025: [...slug].astro as the catch-all page router
 
-**Decision:** All Storyblok-driven pages are served by a single `src/pages/[[...slug]].astro` catch-all route. There is no `index.astro`. The empty slug (`/`) maps to the `'home'` Storyblok story.
+**Decision:** All Storyblok-driven pages are served by a single `src/pages/[...slug].astro` catch-all route. There is no `index.astro`. The empty slug (`/`) maps to the `'home'` Storyblok story.
 
-**Reasoning:** A dedicated `index.astro` would duplicate the fetch + render logic that `[[...slug]].astro` already handles. The catch-all means any new Storyblok page (about, contact, etc.) is automatically routed without adding a new Astro page file — it just needs a story in Storyblok and a template registered in `astro.config.mjs`.
+**Reasoning:** A dedicated `index.astro` would duplicate the fetch + render logic that `[...slug].astro` already handles. The catch-all means any new Storyblok page (about, contact, etc.) is automatically routed without adding a new Astro page file — it just needs a story in Storyblok and a template registered in `astro.config.mjs`.
+
+Note: Astro 6 removed support for optional rest parameters (`[[...slug]]`). The `[...slug]` route is used instead, with `slug: undefined` returned from `getStaticPaths` for the home story, which Astro maps to the root `/` route.
 
 **`getStaticPaths`:** Fetches all `page` content-type stories from Storyblok at build time and returns them as static paths. The `home` story maps to `slug: undefined` (the root `/` route).
 
-**Consequence:** Never create a dedicated `src/pages/[name].astro` for a Storyblok-driven marketing page. Add the story in Storyblok, ensure its content type has a registered template, and `[[...slug]].astro` handles it automatically.
+**Consequence:** Never create a dedicated `src/pages/[name].astro` for a Storyblok-driven marketing page. Add the story in Storyblok, ensure its content type has a registered template, and `[...slug].astro` handles it automatically.
 
 ---
 
@@ -391,6 +396,61 @@ Structural and behavioral tests catch real regressions (sections not rendering, 
 4. Follow the official pattern unless there is a documented reason not to (record that reason here as an ADR)
 
 **Consequence:** This adds a short research step to any task involving external integrations, but avoids rework and produces more maintainable implementations. If the official docs are unclear or incomplete, note it in the PR and in a comment in the relevant code.
+
+---
+
+## ADR-028: multilink field type + resolveLink() helper for all href fields
+
+**Decision:** All link/URL fields in Storyblok schemas use `type: 'multilink'` (not `type: 'text'`). A `resolveLink()` helper in `src/lib/utils.ts` converts the multilink object to a plain string `href` before passing it to components.
+
+**Reasoning:** `multilink` gives editors a proper link picker in the Storyblok UI (internal story, external URL, email, asset) instead of a free-text field. Components only accept a `string` href — the mapping is the CMS wrapper's responsibility, keeping components CMS-agnostic.
+
+**Pattern:**
+```ts
+// schema
+{ name: 'href', display_name: 'Link', type: 'multilink' }
+
+// wrapper
+import { resolveLink } from '@/lib/utils';
+href: resolveLink(blok.href)
+```
+
+**Consequence:** Never use `type: 'text'` for a field that holds a URL. Always pipe it through `resolveLink()` in the `.storyblok.astro` wrapper.
+
+---
+
+## ADR-029: Reference content types for reusable CMS entries
+
+**Decision:** Reusable content items (testimonials, FAQs, blog posts) are defined as standalone Storyblok content types with `is_root: true, is_nestable: false`. Sections that display a list of them use a `type: 'options'` field with `source: 'internal_stories'` and `filter_content_type`. Stories are resolved at fetch time via `resolve_relations` in `[...slug].astro`.
+
+**Reasoning:** Embedding testimonials or FAQs as nested bloks inside a section would make them impossible to reuse across pages. Standalone stories allow editors to maintain a single source of truth per entry and pick them via a multi-select in any section. The `resolve_relations` API expands the referenced stories server-side so wrappers receive fully hydrated objects.
+
+**Pattern:**
+```ts
+// section schema field
+{ name: 'testimonials', type: 'options', source: 'internal_stories',
+  filter_content_type: ['testimonial'] }
+
+// [..slug].astro fetch
+resolve_relations: ['testimonials_section.testimonials']
+
+// wrapper reads resolved story content
+blok.testimonials.map((t) => t.content.quote)
+```
+
+**Consequence:** Any new reusable content type (team members, case studies, etc.) should follow this pattern — standalone content type + References field in section + `resolve_relations` in the router. Never embed duplicated content as inline bloks if it will be maintained independently.
+
+---
+
+## ADR-030: storyblokEditable + vite-plugin-mkcert for Visual Editor bridge
+
+**Decision:** All `.storyblok.astro` wrappers wrap their output in `<div {...storyblokEditable(blok)}>`. The dev server runs over HTTPS via `vite-plugin-mkcert`, which is required by the Storyblok Visual Editor iframe.
+
+**Reasoning:** `storyblokEditable` injects the data attributes that the Storyblok Bridge needs to link a rendered section to its block in the editor sidebar (click-to-edit). Without HTTPS, the Visual Editor refuses to load the local preview inside its iframe. `mkcert` generates a trusted local certificate automatically with no manual setup.
+
+**Bridge config:** `resolve_relations` in the bridge config mirrors the `resolve_relations` in the page fetch so the bridge correctly refreshes referenced stories (testimonials, FAQs, posts) on save.
+
+**Consequence:** Every new `.storyblok.astro` wrapper must wrap its root element with `{...storyblokEditable(blok)}`. When adding a new section with `resolve_relations`, add the same relation to `bridge.resolveRelations` in `astro.config.mjs`. The mkcert plugin is dev-only — it has no effect on production builds.
 
 ---
 
