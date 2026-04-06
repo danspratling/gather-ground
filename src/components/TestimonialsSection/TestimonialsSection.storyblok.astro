@@ -1,0 +1,30 @@
+---
+import type { SbBlokData } from '@storyblok/astro';
+import TestimonialsSection from './TestimonialsSection';
+
+interface Props {
+  blok: SbBlokData;
+}
+
+const { blok } = Astro.props;
+const testimonials = (blok.testimonials as SbBlokData[]).map((t) => ({
+  quote: t.quote as string,
+  platform: (t.platform as string | undefined) || undefined,
+  author: {
+    src: (t.author_src as { filename: string } | undefined)?.filename ?? '',
+    alt: (t.author_alt as string | undefined) ?? '',
+    name: t.author_name as string,
+    secondary: (t.author_secondary as string | undefined) || undefined,
+    secondaryIsHandle:
+      (t.author_secondary_is_handle as boolean | undefined) ?? false,
+    size: 'md' as const,
+  },
+}));
+---
+
+<TestimonialsSection
+  client:visible
+  heading={blok.heading as string}
+  subCopy={blok.sub_copy as string}
+  testimonials={testimonials}
+/>

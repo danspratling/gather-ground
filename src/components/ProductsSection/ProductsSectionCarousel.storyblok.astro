@@ -1,0 +1,24 @@
+---
+import type { SbBlokData } from '@storyblok/astro';
+import ProductsSection from './ProductsSection.astro';
+
+interface Props {
+  blok: SbBlokData;
+}
+
+const { blok } = Astro.props;
+const products = (blok.products as SbBlokData[]).map((p) => ({
+  image: (p.image as { filename: string } | undefined)?.filename ?? '',
+  imageAlt: (p.image_alt as string | undefined) ?? '',
+  title: p.title as string,
+  href: p.href as string,
+}));
+---
+
+<ProductsSection
+  variant="carousel"
+  eyebrow={blok.eyebrow as string}
+  heading={blok.heading as string}
+  subCopy={blok.sub_copy as string}
+  products={products}
+/>

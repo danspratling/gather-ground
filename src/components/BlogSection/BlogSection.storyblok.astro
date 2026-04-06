@@ -1,0 +1,31 @@
+---
+import type { SbBlokData } from '@storyblok/astro';
+import BlogSection from './BlogSection.astro';
+
+interface Props {
+  blok: SbBlokData;
+}
+
+const { blok } = Astro.props;
+const posts = (blok.posts as SbBlokData[]).map((p) => ({
+  image: (p.image as { filename: string } | undefined)?.filename ?? '',
+  imageAlt: (p.image_alt as string | undefined) ?? '',
+  title: p.title as string,
+  excerpt: p.excerpt as string,
+  date: p.date as string,
+  authorName: p.author_name as string,
+  authorImage:
+    (p.author_image as { filename: string } | undefined)?.filename ?? '',
+  authorImageAlt: (p.author_image_alt as string | undefined) ?? '',
+  href: p.href as string,
+}));
+---
+
+<BlogSection
+  eyebrow={(blok.eyebrow as string | undefined) ?? ''}
+  heading={blok.heading as string}
+  subCopy={(blok.sub_copy as string | undefined) ?? ''}
+  viewAllHref={blok.view_all_href as string}
+  viewAllLabel={blok.view_all_label as string | undefined}
+  posts={posts}
+/>
