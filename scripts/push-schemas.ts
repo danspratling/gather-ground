@@ -49,6 +49,7 @@ import { labelSchema } from '../src/storyblok/label.ts';
 import { navMenuSchema, navMenuItemSchema } from '../src/storyblok/navMenu.ts';
 import { productCardSchema } from '../src/storyblok/productCard.ts';
 import { productsSectionSchema } from '../src/storyblok/productsSection.ts';
+import { testimonialSchema } from '../src/storyblok/testimonial.ts';
 import { testimonialCardSchema } from '../src/storyblok/testimonialCard.ts';
 import { testimonialsSectionSchema } from '../src/storyblok/testimonialsSection.ts';
 import { heroSectionSchema } from '../src/storyblok/heroSection.ts';
@@ -69,6 +70,8 @@ const schemas = [
   blogCardSchema,
   productCardSchema,
   testimonialCardSchema,
+  // Content types
+  testimonialSchema,
   // Sections
   heroSectionSchema,
   productsSectionSchema,

@@ -21,10 +21,10 @@ export const testimonialsSectionSchema = {
       required: true,
     },
     testimonials: {
-      type: 'bloks',
+      type: 'multiasset',
       display_name: 'Testimonials',
-      restrict_components: true,
-      component_whitelist: ['testimonial_card'],
+      allow_target_types: ['story'],
+      filter_content_type: ['testimonial'],
     },
   },
 };
