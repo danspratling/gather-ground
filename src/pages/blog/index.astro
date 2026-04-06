@@ -1,0 +1,90 @@
+---
+import { useStoryblokApi } from '@storyblok/astro';
+import Layout from '@/layouts/Layout.astro';
+import BlogHero from '@/components/BlogHero/BlogHero.astro';
+import FeaturedPost from '@/components/FeaturedPost/FeaturedPost.astro';
+import BlogFilters from '@/components/BlogFilters/BlogFilters';
+import BlogGrid from '@/components/BlogGrid/BlogGrid';
+import SectionDivider from '@/components/SectionDivider/SectionDivider.astro';
+
+const storyblokApi = useStoryblokApi();
+
+const { data } = await storyblokApi.get('cdn/stories', {
+  version: import.meta.env.DEV ? 'draft' : 'published',
+  content_type: 'blog_post',
+  per_page: 100,
+  sort_by: 'content.date:desc',
+});
+
+const rawPosts = data.stories as Array<{
+  full_slug: string;
+  content: {
+    image: { filename: string; alt: string };
+    title: string;
+    excerpt: string;
+    date: string;
+    author_name: string;
+    author_image: { filename: string; alt: string };
+    categories?: string[];
+  };
+}>;
+
+const posts = rawPosts.map((story) => ({
+  image: story.content.image.filename,
+  imageAlt: story.content.image.alt || story.content.title,
+  title: story.content.title,
+  excerpt: story.content.excerpt,
+  date: story.content.date,
+  authorName: story.content.author_name,
+  authorImage: story.content.author_image.filename,
+  authorImageAlt: story.content.author_image.alt || story.content.author_name,
+  href: `/${story.full_slug}`,
+  slug: story.full_slug,
+  categories: story.content.categories ?? [],
+}));
+
+const [featuredPost, ...gridPosts] = posts;
+
+const allCategories = [...new Set(posts.flatMap((p) => p.categories))].filter(
+  Boolean
+);
+---
+
+<Layout title="Blog – Gather Ground">
+  <main>
+    <BlogHero
+      eyebrow="Blog"
+      heading="Resources and insights"
+      subCopy="Practical advice from our farm to your table — heritage breeds, seasonal produce, and sustainable farming."
+      privacyPolicyHref="/privacy"
+    />
+    <SectionDivider />
+    {
+      featuredPost && (
+        <section class="py-16 lg:py-24">
+          <div class="container">
+            <FeaturedPost
+              image={featuredPost.image}
+              imageAlt={featuredPost.imageAlt}
+              categories={featuredPost.categories}
+              title={featuredPost.title}
+              excerpt={featuredPost.excerpt}
+              href={featuredPost.href}
+              authorName={featuredPost.authorName}
+              authorImage={featuredPost.authorImage}
+              authorImageAlt={featuredPost.authorImageAlt}
+              date={featuredPost.date}
+            />
+          </div>
+        </section>
+      )
+    }
+    <SectionDivider />
+    <section class="py-16 lg:py-24">
+      <div class="container flex flex-col gap-10">
+        <BlogFilters categories={allCategories} client:load />
+        <BlogGrid posts={gridPosts} client:load />
+      </div>
+    </section>
+  </main>
+</Layout>
