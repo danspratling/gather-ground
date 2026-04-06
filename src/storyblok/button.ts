@@ -21,7 +21,7 @@ export const buttonSchema = {
       description: 'The visible text label of the button.',
     },
     href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'Link URL',
       description: 'Optional URL. When set, renders as an anchor element.',
     },

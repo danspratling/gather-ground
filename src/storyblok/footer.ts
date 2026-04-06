@@ -78,7 +78,7 @@ export const footerSocialLinkSchema = {
       ],
     },
     href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'URL',
     },
     label: {
@@ -121,7 +121,7 @@ export const footerLinkSchema = {
       display_name: 'Label',
     },
     href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'URL',
     },
     badge: {
@@ -145,7 +145,7 @@ export const footerLegalLinkSchema = {
       display_name: 'Label',
     },
     href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'URL',
     },
   },

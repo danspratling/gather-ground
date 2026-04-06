@@ -24,7 +24,7 @@ export const blogSectionSchema = {
       display_name: 'Sub copy',
     },
     view_all_href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'View all URL',
       required: true,
     },

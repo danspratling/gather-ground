@@ -1,6 +1,7 @@
 ---
 import type { SbBlokData } from '@storyblok/astro';
 import ProductsSection from './ProductsSection.astro';
+import { resolveLink } from '@/lib/utils';
 
 interface Props {
   blok: SbBlokData;
@@ -13,7 +14,7 @@ const products = (blok.products as SbBlokData[]).map((p) => ({
   imageAlt:
     (p.image as { filename: string; alt: string } | undefined)?.alt ?? '',
   title: p.title as string,
-  href: p.href as string,
+  href: resolveLink(p.href),
 }));
 ---
 

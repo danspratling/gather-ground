@@ -26,7 +26,7 @@ export const callToActionSchema = {
       required: true,
     },
     primary_button_href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'Primary button URL',
       required: true,
     },
@@ -47,7 +47,7 @@ export const callToActionSchema = {
       description: 'Leave blank to hide the secondary button.',
     },
     secondary_button_href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'Secondary button URL',
     },
     avatars: {

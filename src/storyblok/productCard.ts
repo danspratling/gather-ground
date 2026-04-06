@@ -39,7 +39,7 @@ export const productCardSchema = {
       description: 'Only shown in the category variant.',
     },
     href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'Link URL',
       required: true,
     },

@@ -27,9 +27,8 @@ export const headerSchema = {
       default_value: 'Order now',
     },
     cta_href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'CTA URL',
-      default_value: '/shop',
     },
   },
 } as const;
@@ -46,7 +45,7 @@ export const headerNavLinkSchema = {
       required: true,
     },
     href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'URL',
       description: 'Leave empty if this link opens a dropdown menu',
     },

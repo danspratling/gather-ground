@@ -1,6 +1,7 @@
 ---
 import type { SbBlokData } from '@storyblok/astro';
 import BlogSection from './BlogSection.astro';
+import { resolveLink } from '@/lib/utils';
 
 interface Props {
   blok: SbBlokData;
@@ -22,7 +23,7 @@ const posts = (blok.posts as SbBlokData[]).map((p) => ({
   authorImageAlt:
     (p.author_image as { filename: string; alt: string } | undefined)?.alt ??
     '',
-  href: p.href as string,
+  href: resolveLink(p.href),
 }));
 ---
 
@@ -30,7 +31,7 @@ const posts = (blok.posts as SbBlokData[]).map((p) => ({
   eyebrow={(blok.eyebrow as string | undefined) ?? ''}
   heading={blok.heading as string}
   subCopy={(blok.sub_copy as string | undefined) ?? ''}
-  viewAllHref={blok.view_all_href as string}
+  viewAllHref={resolveLink(blok.view_all_href)}
   viewAllLabel={blok.view_all_label as string | undefined}
   posts={posts}
 />

@@ -27,7 +27,7 @@ export const heroSectionSchema = {
       default_value: 'Our Products',
     },
     primary_cta_href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'Primary CTA URL',
       required: true,
     },
@@ -37,7 +37,7 @@ export const heroSectionSchema = {
       default_value: 'Get in touch',
     },
     secondary_cta_href: {
-      type: 'text',
+      type: 'multilink',
       display_name: 'Secondary CTA URL',
     },
     image: {
