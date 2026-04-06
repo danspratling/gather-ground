@@ -12,15 +12,15 @@ export async function getStaticPaths() {
     excluding_fields: 'content',
   });
 
-  return data.stories.map((story: { full_slug: string; name: string }) => ({
-    params: {
-      slug: story.full_slug === 'home' ? undefined : story.full_slug.split('/'),
-    },
-  }));
+  return data.stories
+    .filter((story: { full_slug: string }) => story.full_slug !== 'home')
+    .map((story: { full_slug: string }) => ({
+      params: { slug: story.full_slug },
+    }));
 }
 
 const { slug } = Astro.params;
-const storyPath = Array.isArray(slug) ? slug.join('/') : 'home';
+const storyPath = slug as string;
 
 const storyblokApi = getStoryblokApi();
 const { data } = await storyblokApi.get(`cdn/stories/${storyPath}`, {
