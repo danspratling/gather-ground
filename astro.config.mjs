@@ -26,10 +26,8 @@ export default defineConfig({
       components: {
         page: 'templates/Page.astro',
         hero_section: 'components/HeroSection/HeroSection.storyblok.astro',
-        products_section_cards:
-          'components/ProductsSection/ProductsSectionCards.storyblok.astro',
-        products_section_carousel:
-          'components/ProductsSection/ProductsSectionCarousel.storyblok.astro',
+        products_section:
+          'components/ProductsSection/ProductsSection.storyblok.astro',
         testimonials_section:
           'components/TestimonialsSection/TestimonialsSection.storyblok.astro',
         faq_section: 'components/FaqSection/FaqSection.storyblok.astro',

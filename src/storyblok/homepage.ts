@@ -20,8 +20,7 @@ export const pageSchema = {
       restrict_components: true,
       component_whitelist: [
         'hero_section',
-        'products_section_cards',
-        'products_section_carousel',
+        'products_section',
         'testimonials_section',
         'faq_section',
         'blog_section',

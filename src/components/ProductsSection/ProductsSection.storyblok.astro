@@ -8,19 +8,21 @@ interface Props {
 }
 
 const { blok } = Astro.props;
+const variant = (blok.variant as 'cards' | 'carousel') ?? 'cards';
 const products = (blok.products as SbBlokData[]).map((p) => ({
   image:
     (p.image as { filename: string; alt: string } | undefined)?.filename ?? '',
   imageAlt:
     (p.image as { filename: string; alt: string } | undefined)?.alt ?? '',
   title: p.title as string,
-  description: p.description as string | undefined,
+  description:
+    variant === 'cards' ? (p.description as string | undefined) : undefined,
   href: resolveLink(p.href),
 }));
 ---
 
 <ProductsSection
-  variant="cards"
+  variant={variant}
   eyebrow={blok.eyebrow as string}
   heading={blok.heading as string}
   subCopy={blok.sub_copy as string}
