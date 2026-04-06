@@ -406,6 +406,7 @@ Note: Astro 6 removed support for optional rest parameters (`[[...slug]]`). The 
 **Reasoning:** `multilink` gives editors a proper link picker in the Storyblok UI (internal story, external URL, email, asset) instead of a free-text field. Components only accept a `string` href — the mapping is the CMS wrapper's responsibility, keeping components CMS-agnostic.
 
 **Pattern:**
+
 ```ts
 // schema
 { name: 'href', display_name: 'Link', type: 'multilink' }
@@ -426,6 +427,7 @@ href: resolveLink(blok.href)
 **Reasoning:** Embedding testimonials or FAQs as nested bloks inside a section would make them impossible to reuse across pages. Standalone stories allow editors to maintain a single source of truth per entry and pick them via a multi-select in any section. The `resolve_relations` API expands the referenced stories server-side so wrappers receive fully hydrated objects.
 
 **Pattern:**
+
 ```ts
 // section schema field
 { name: 'testimonials', type: 'options', source: 'internal_stories',
