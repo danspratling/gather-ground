@@ -34,3 +34,6 @@ storybook-server/
 /playwright/.cache/
 /playwright/.auth/
 /.playwright-mcp/
+
+# Storyblok CLI generated output
+.storyblok/

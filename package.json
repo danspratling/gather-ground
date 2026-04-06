@@ -21,7 +21,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "sync-schemas": "tsx scripts/push-schemas.ts && storyblok login --token $STORYBLOK_PERSONAL_TOKEN && storyblok components push --from $STORYBLOK_SPACE_ID"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.2",
@@ -67,7 +68,9 @@
     "happy-dom": "^20.8.9",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
+    "storyblok": "^4.16.8",
     "storybook": "^10.3.4",
+    "tsx": "^4.21.0",
     "vitest": "^4.1.2"
   }
 }
