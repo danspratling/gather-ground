@@ -8,22 +8,29 @@ interface Props {
 }
 
 const { blok } = Astro.props;
-const posts = (blok.posts as SbBlokData[]).map((p) => ({
-  image:
-    (p.image as { filename: string; alt: string } | undefined)?.filename ?? '',
-  imageAlt:
-    (p.image as { filename: string; alt: string } | undefined)?.alt ?? '',
-  title: p.title as string,
-  excerpt: p.excerpt as string,
-  date: p.date as string,
-  authorName: p.author_name as string,
-  authorImage:
-    (p.author_image as { filename: string; alt: string } | undefined)
-      ?.filename ?? '',
-  authorImageAlt:
-    (p.author_image as { filename: string; alt: string } | undefined)?.alt ??
-    '',
-  href: resolveLink(p.href),
+
+interface ResolvedBlogPost {
+  full_slug: string;
+  content: {
+    image?: { filename: string; alt: string };
+    title: string;
+    excerpt: string;
+    date: string;
+    author_name: string;
+    author_image?: { filename: string; alt: string };
+  };
+}
+
+const posts = (blok.posts as ResolvedBlogPost[]).map((p) => ({
+  image: p.content.image?.filename ?? '',
+  imageAlt: p.content.image?.alt ?? '',
+  title: p.content.title,
+  excerpt: p.content.excerpt,
+  date: p.content.date,
+  authorName: p.content.author_name,
+  authorImage: p.content.author_image?.filename ?? '',
+  authorImageAlt: p.content.author_image?.alt ?? '',
+  href: `/${p.full_slug}`,
 }));
 ---
 

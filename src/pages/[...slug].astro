@@ -23,7 +23,11 @@ const storyPath = slug ?? 'home';
 const storyblokApi = useStoryblokApi();
 const { data } = await storyblokApi.get(`cdn/stories/${storyPath}`, {
   version: import.meta.env.DEV ? 'draft' : 'published',
-  resolve_relations: ['testimonials_section.testimonials', 'faq_section.faqs'],
+  resolve_relations: [
+    'testimonials_section.testimonials',
+    'faq_section.faqs',
+    'blog_section.posts',
+  ],
 });
 
 const story = data.story;

@@ -29,6 +29,7 @@ import {
 } from '../src/storyblok/accordion.ts';
 import { badgeSchema } from '../src/storyblok/badge.ts';
 import { blogCardSchema } from '../src/storyblok/blogCard.ts';
+import { blogPostSchema } from '../src/storyblok/blogPost.ts';
 import { blogSectionSchema } from '../src/storyblok/blogSection.ts';
 import { bodySchema } from '../src/storyblok/body.ts';
 import { buttonSchema } from '../src/storyblok/button.ts';
@@ -74,6 +75,7 @@ const schemas = [
   // Content types
   testimonialSchema,
   faqSchema,
+  blogPostSchema,
   // Sections
   heroSectionSchema,
   productsSectionSchema,
