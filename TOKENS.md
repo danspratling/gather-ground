@@ -101,6 +101,7 @@ All defined in `global.css`. Font weights 400/500/600 are standard Tailwind util
 | xl/regular  | 20px | 30px        | `text-xl font-normal`                               |
 | xl/semibold | 20px | 30px        | `text-xl font-semibold`                             |
 | display-md  | 36px | 44px        | `text-display-md font-semibold tracking-display-md` |
+| display-lg  | 48px | 60px        | `text-display-lg font-semibold tracking-display-lg` |
 | display-xl  | 60px | 72px        | `text-display-xl font-medium tracking-display-xl`   |
 
 ### Letter spacing
@@ -108,6 +109,7 @@ All defined in `global.css`. Font weights 400/500/600 are standard Tailwind util
 | Token                 | Value   | Tailwind class        | Usage         |
 | --------------------- | ------- | --------------------- | ------------- |
 | `tracking-display-md` | −0.72px | `tracking-display-md` | 36px headings |
+| `tracking-display-lg` | −0.96px | `tracking-display-lg` | 48px headings |
 | `tracking-display-xl` | −1.2px  | `tracking-display-xl` | 60px headings |
 
 ---

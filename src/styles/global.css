@@ -80,11 +80,14 @@
   /* Display text sizes (not in Tailwind defaults) */
   --text-display-md: 2.25rem; /* 36px */
   --text-display-md--line-height: 2.75rem; /* 44px */
+  --text-display-lg: 3rem; /* 48px */
+  --text-display-lg--line-height: 3.75rem; /* 60px */
   --text-display-xl: 3.75rem; /* 60px */
   --text-display-xl--line-height: 4.5rem; /* 72px */
 
   /* Letter spacing for display sizes */
   --tracking-display-md: -0.045rem; /* -0.72px */
+  --tracking-display-lg: -0.06rem; /* -0.96px */
   --tracking-display-xl: -0.075rem; /* -1.2px */
 
   /* Shadows */
