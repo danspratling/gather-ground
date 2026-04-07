@@ -1,5 +1,10 @@
 export type HeadingTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-export type HeadingSize = 'display-xl' | 'display-md' | 'text-xl' | 'text-lg';
+export type HeadingSize =
+  | 'display-xl'
+  | 'display-lg'
+  | 'display-md'
+  | 'text-xl'
+  | 'text-lg';
 export type HeadingWeight = 'medium' | 'semibold';
 
 export interface HeadingProps {

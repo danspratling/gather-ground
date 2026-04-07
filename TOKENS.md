@@ -17,6 +17,8 @@ All tokens are sourced from Figma and defined in `src/styles/global.css`. Use th
 | `brand-200` | `#B3B3B3` | `bg-brand-200` / `text-brand-200` | Footer link text                  |
 | `brand-300` | `#999999` | `bg-brand-300` / `text-brand-300` | —                                 |
 | `brand-400` | `#808080` | `bg-brand-400` / `text-brand-400` | Muted / badge borders             |
+| `brand-500` | `#666666` | `bg-brand-500` / `text-brand-500` | —                                 |
+| `brand-600` | `#4D4D4D` | `bg-brand-600` / `text-brand-600` | BadgeGroup gray text              |
 | `brand-700` | `#3B3B3B` | `bg-brand-700` / `text-brand-700` | Primary button bg, section labels |
 | `brand-900` | `#202020` | `bg-brand-900` / `text-brand-900` | Primary body text                 |
 
@@ -53,10 +55,20 @@ Each status has three stops: `-50` (background), `-200` (border), `-700` (text/d
 
 ### Secondary palette
 
-| Token           | Hex       | Tailwind class                            | Usage            |
-| --------------- | --------- | ----------------------------------------- | ---------------- |
-| `secondary-50`  | `#FAF7EF` | `bg-secondary-50` / `text-secondary-50`   | Card backgrounds |
-| `secondary-200` | `#F6F2E3` | `bg-secondary-200` / `text-secondary-200` | Accent fills     |
+| Token           | Hex       | Tailwind class                            | Usage                        |
+| --------------- | --------- | ----------------------------------------- | ---------------------------- |
+| `secondary-25`  | `#FCFBF7` | `bg-secondary-25` / `text-secondary-25`   | —                            |
+| `secondary-50`  | `#FAF7EF` | `bg-secondary-50` / `text-secondary-50`   | BadgeGroup gray bg           |
+| `secondary-100` | `#F7F3E7` | `bg-secondary-100` / `text-secondary-100` | BadgeGroup gray hover bg     |
+| `secondary-200` | `#F6F2E3` | `bg-secondary-200` / `text-secondary-200` | Accent fills                 |
+| `secondary-300` | `#F5F1E8` | `bg-secondary-300` / `text-secondary-300` | BadgeGroup gray border       |
+| `secondary-400` | `#E2D7C3` | `bg-secondary-400` / `text-secondary-400` | BadgeGroup gray hover border |
+| `secondary-500` | `#CDBFA7` | `bg-secondary-500` / `text-secondary-500` | —                            |
+| `secondary-600` | `#B7A88C` | `bg-secondary-600` / `text-secondary-600` | —                            |
+| `secondary-700` | `#A19171` | `bg-secondary-700` / `text-secondary-700` | —                            |
+| `secondary-800` | `#8B7A56` | `bg-secondary-800` / `text-secondary-800` | —                            |
+| `secondary-900` | `#75633B` | `bg-secondary-900` / `text-secondary-900` | —                            |
+| `secondary-950` | `#5F4C20` | `bg-secondary-950` / `text-secondary-950` | —                            |
 
 ### Shadcn semantic aliases
 
@@ -101,6 +113,7 @@ All defined in `global.css`. Font weights 400/500/600 are standard Tailwind util
 | xl/regular  | 20px | 30px        | `text-xl font-normal`                               |
 | xl/semibold | 20px | 30px        | `text-xl font-semibold`                             |
 | display-md  | 36px | 44px        | `text-display-md font-semibold tracking-display-md` |
+| display-lg  | 48px | 60px        | `text-display-lg font-semibold tracking-display-lg` |
 | display-xl  | 60px | 72px        | `text-display-xl font-medium tracking-display-xl`   |
 
 ### Letter spacing
@@ -108,6 +121,7 @@ All defined in `global.css`. Font weights 400/500/600 are standard Tailwind util
 | Token                 | Value   | Tailwind class        | Usage         |
 | --------------------- | ------- | --------------------- | ------------- |
 | `tracking-display-md` | −0.72px | `tracking-display-md` | 36px headings |
+| `tracking-display-lg` | −0.96px | `tracking-display-lg` | 48px headings |
 | `tracking-display-xl` | −1.2px  | `tracking-display-xl` | 60px headings |
 
 ---

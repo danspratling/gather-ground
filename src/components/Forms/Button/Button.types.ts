@@ -6,6 +6,7 @@ export interface ButtonProps {
   href?: string;
   variant?: ButtonVariant;
   size?: ButtonSize;
+  type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
   loading?: boolean;
   class?: string;
