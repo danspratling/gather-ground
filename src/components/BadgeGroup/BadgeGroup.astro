@@ -38,6 +38,7 @@ const innerBadgeColors = {
   class={cn(
     'inline-flex items-center gap-2 rounded-full border py-1 text-xs font-medium',
     isLeading ? 'pl-1 pr-3' : 'pl-3 pr-1',
+    href && 'pr-2',
     outerColors[color],
     href && [outerHoverColors[color], 'cursor-pointer transition-colors'],
     className
@@ -60,14 +61,13 @@ const innerBadgeColors = {
     !isLeading && (
       <span
         class={cn(
-          'inline-flex items-center gap-1 whitespace-nowrap rounded-full border bg-off-white pl-2 pr-1.5 py-0.5 text-xs font-medium',
+          'whitespace-nowrap rounded-full border bg-off-white px-2 py-0.5 text-xs font-medium',
           innerBadgeColors[color]
         )}
       >
         {badgeLabel}
-        <ArrowRight class="size-3 shrink-0" />
       </span>
     )
   }
-  {isLeading && href && <ArrowRight class="size-4 shrink-0" />}
+  {href && <ArrowRight class="size-4 shrink-0" />}
 </Tag>
