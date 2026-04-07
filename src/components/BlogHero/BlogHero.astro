@@ -36,13 +36,14 @@ const {
             <form
               action="/api/newsletter"
               method="POST"
-              class="flex flex-col gap-3 sm:flex-row sm:items-start"
+              class="flex flex-col gap-3 sm:flex-row sm:items-center sm:max-w-[430px]"
             >
               <div class="flex-1">
                 <Input
                   name="email"
                   type="email"
                   placeholder="Enter your email"
+                  iconTrailing={false}
                   required
                 />
               </div>
