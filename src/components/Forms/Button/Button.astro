@@ -9,6 +9,7 @@ const {
   href,
   variant = 'default',
   size = 'md',
+  type = 'button',
   disabled = false,
   loading = false,
   class: className,
@@ -59,7 +60,7 @@ const classes = cn(
     </a>
   ) : (
     <button
-      type="button"
+      type={type}
       class={classes}
       disabled={isDisabled}
       aria-busy={loading || undefined}
