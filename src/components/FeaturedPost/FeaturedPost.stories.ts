@@ -1,9 +1,10 @@
-import type { Meta } from '@storybook/types';
+// @ts-expect-error — .astro files have no TypeScript declarations
+import FeaturedPost from './FeaturedPost.astro';
 import type { FeaturedPostProps } from './FeaturedPost.types';
 
 export default {
   title: 'Components/FeaturedPost',
-  component: 'FeaturedPost',
+  component: FeaturedPost,
   parameters: {
     design: {
       type: 'figma',
@@ -11,7 +12,7 @@ export default {
     },
     chromatic: { viewports: [375, 1440] },
   },
-} satisfies Meta;
+} satisfies Record<string, unknown>;
 
 const mockPost: FeaturedPostProps = {
   image: 'https://placehold.co/824x412',
