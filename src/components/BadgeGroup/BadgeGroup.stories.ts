@@ -26,11 +26,29 @@ export const LeadingGray = {
   } satisfies BadgeGroupProps,
 };
 
+export const LeadingGrayAsLink = {
+  args: {
+    ...baseArgs,
+    color: 'gray',
+    badgePosition: 'leading',
+    href: '/blog',
+  } satisfies BadgeGroupProps,
+};
+
 export const LeadingBrand = {
   args: {
     ...baseArgs,
     color: 'brand',
     badgePosition: 'leading',
+  } satisfies BadgeGroupProps,
+};
+
+export const LeadingBrandAsLink = {
+  args: {
+    ...baseArgs,
+    color: 'brand',
+    badgePosition: 'leading',
+    href: '/blog',
   } satisfies BadgeGroupProps,
 };
 
@@ -43,6 +61,16 @@ export const TrailingGray = {
   } satisfies BadgeGroupProps,
 };
 
+export const TrailingGrayAsLink = {
+  args: {
+    ...baseArgs,
+    badgeLabel: 'Version 4.0',
+    color: 'gray',
+    badgePosition: 'trailing',
+    href: '/blog',
+  } satisfies BadgeGroupProps,
+};
+
 export const TrailingBrand = {
   args: {
     ...baseArgs,
@@ -52,11 +80,12 @@ export const TrailingBrand = {
   } satisfies BadgeGroupProps,
 };
 
-export const AsLink = {
+export const TrailingBrandAsLink = {
   args: {
     ...baseArgs,
+    badgeLabel: 'Version 4.0',
     color: 'brand',
-    badgePosition: 'leading',
+    badgePosition: 'trailing',
     href: '/blog',
   } satisfies BadgeGroupProps,
 };
