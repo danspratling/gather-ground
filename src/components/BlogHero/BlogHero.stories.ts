@@ -6,7 +6,7 @@ import type { BlogHeroProps } from './BlogHero.types';
 import BlogHero from '@/components/BlogHero/BlogHero.astro';
 
 export default {
-  title: 'Page Sections/BlogHero',
+  title: 'Sections (Unique)/BlogHero',
   component: BlogHero,
   tags: ['autodocs'],
   parameters: {

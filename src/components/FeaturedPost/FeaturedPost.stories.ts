@@ -3,7 +3,7 @@ import FeaturedPost from './FeaturedPost.astro';
 import type { FeaturedPostProps } from './FeaturedPost.types';
 
 export default {
-  title: 'Components/FeaturedPost',
+  title: 'Sections/FeaturedPost',
   component: FeaturedPost,
   parameters: {
     design: {
