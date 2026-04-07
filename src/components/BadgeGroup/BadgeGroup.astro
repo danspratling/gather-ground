@@ -1,0 +1,61 @@
+---
+import { cn } from '@/lib/utils';
+import type { BadgeGroupProps } from '@/components/BadgeGroup/BadgeGroup.types';
+import Badge from '@/components/Badge/Badge.astro';
+import { ArrowRight } from '@untitledui-pro/icons/line';
+
+type Props = BadgeGroupProps;
+
+const {
+  badgeLabel,
+  text,
+  badgePosition = 'leading',
+  color = 'gray',
+  href,
+  class: className,
+} = Astro.props;
+
+const Tag = href ? 'a' : 'span';
+const isLeading = badgePosition === 'leading';
+
+const outerColors = {
+  gray: 'bg-secondary-50 border-secondary-300 text-brand-600',
+  brand: 'bg-brand-25 border-brand-50 text-brand-700',
+};
+
+const outerHoverColors = {
+  gray: 'hover:bg-secondary-100 hover:border-secondary-400',
+  brand: 'hover:bg-brand-50 hover:border-brand-100',
+};
+
+const badgeColor = color === 'gray' ? 'gray' : 'brand';
+---
+
+<Tag
+  href={href}
+  class={cn(
+    'inline-flex items-center gap-2 rounded-full border py-1 text-xs font-medium',
+    isLeading ? 'pl-1 pr-3' : 'pl-3 pr-1',
+    href && isLeading && 'pr-2',
+    outerColors[color],
+    href && [outerHoverColors[color], 'cursor-pointer transition-colors'],
+    className
+  )}
+>
+  {
+    isLeading && (
+      <Badge label={badgeLabel} type="pill" size="sm" color={badgeColor} />
+    )
+  }
+  <span class="whitespace-nowrap">{text}</span>
+  {
+    !isLeading && (
+      <Badge label={badgeLabel} type="pill" size="sm" color={badgeColor}>
+        {href && (
+          <ArrowRight slot="icon-trailing" className="size-4 shrink-0" />
+        )}
+      </Badge>
+    )
+  }
+  {isLeading && href && <ArrowRight className="size-4 shrink-0" />}
+</Tag>

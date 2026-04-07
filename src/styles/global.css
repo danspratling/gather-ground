@@ -15,6 +15,8 @@
   --color-brand-200: #b3b3b3;
   --color-brand-300: #999999;
   --color-brand-400: #808080;
+  --color-brand-500: #666666;
+  --color-brand-600: #4d4d4d;
   --color-brand-700: #3b3b3b;
   --color-brand-900: #202020;
 
@@ -30,8 +32,18 @@
   --color-gray-950: #171717;
 
   /* Secondary palette */
+  --color-secondary-25: #fcfbf7;
   --color-secondary-50: #faf7ef;
+  --color-secondary-100: #f7f3e7;
   --color-secondary-200: #f6f2e3;
+  --color-secondary-300: #f5f1e8;
+  --color-secondary-400: #e2d7c3;
+  --color-secondary-500: #cdbfa7;
+  --color-secondary-600: #b7a88c;
+  --color-secondary-700: #a19171;
+  --color-secondary-800: #8b7a56;
+  --color-secondary-900: #75633b;
+  --color-secondary-950: #5f4c20;
 
   /* Semantic status palette — used by Badge and status indicators */
   --color-error-50: #fef3f2;
