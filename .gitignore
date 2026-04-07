@@ -37,3 +37,4 @@ storybook-server/
 
 # Storyblok CLI generated output
 .storyblok/
+*.png
