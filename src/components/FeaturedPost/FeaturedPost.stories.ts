@@ -15,7 +15,8 @@ export default {
 } satisfies Record<string, unknown>;
 
 const mockPost: FeaturedPostProps = {
-  image: 'https://placehold.co/824x412',
+  image:
+    'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=824&h=412&fit=crop',
   imageAlt: 'Abstract purple and blue art',
   categories: ['New feature', 'Design'],
   title: 'UX review presentations',
@@ -23,7 +24,8 @@ const mockPost: FeaturedPostProps = {
     'How do you create compelling presentations that wow your colleagues and impress your managers?',
   href: '/blog/ux-review-presentations',
   authorName: 'Olivia Rhye',
-  authorImage: 'https://placehold.co/40x40',
+  authorImage:
+    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face',
   authorImageAlt: 'Olivia Rhye',
   date: '20 Jan 2025',
 };
