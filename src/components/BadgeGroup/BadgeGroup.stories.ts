@@ -3,7 +3,7 @@ import BadgeGroup from './BadgeGroup.astro';
 import type { BadgeGroupProps } from './BadgeGroup.types';
 
 export default {
-  title: 'Components/BadgeGroup',
+  title: 'Core/BadgeGroup',
   component: BadgeGroup,
   parameters: {
     design: {

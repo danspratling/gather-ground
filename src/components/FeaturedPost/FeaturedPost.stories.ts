@@ -18,7 +18,7 @@ const mockPost: FeaturedPostProps = {
   image:
     'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=824&h=412&fit=crop',
   imageAlt: 'Abstract purple and blue art',
-  categories: ['New feature', 'Design'],
+  readTime: '8 min read',
   title: 'UX review presentations',
   excerpt:
     'How do you create compelling presentations that wow your colleagues and impress your managers?',

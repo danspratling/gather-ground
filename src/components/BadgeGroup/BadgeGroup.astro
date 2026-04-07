@@ -51,9 +51,11 @@ const badgeColor = color === 'gray' ? 'gray' : 'brand';
   {
     !isLeading && (
       <Badge label={badgeLabel} type="pill" size="sm" color={badgeColor}>
-        {href && <ArrowRight slot="icon-trailing" class="size-4 shrink-0" />}
+        {href && (
+          <ArrowRight slot="icon-trailing" className="size-4 shrink-0" />
+        )}
       </Badge>
     )
   }
-  {isLeading && href && <ArrowRight class="size-4 shrink-0" />}
+  {isLeading && href && <ArrowRight className="size-4 shrink-0" />}
 </Tag>

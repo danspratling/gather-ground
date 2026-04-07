@@ -1,7 +1,7 @@
 export interface FeaturedPostProps {
   image: string;
   imageAlt: string;
-  categories: string[];
+  readTime?: string;
   title: string;
   excerpt: string;
   href: string;
