@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search01 } from '@untitledui-pro/icons/line';
+import { SearchMd, XClose } from '@untitledui-pro/icons/line';
 import { cn } from '@/lib/utils';
 import type { BlogFiltersProps } from '@/components/BlogFilters/BlogFilters.types';
 
@@ -55,7 +55,7 @@ export default function BlogFilters({
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div
-        className="flex gap-2 overflow-x-auto pb-1 md:pb-0"
+        className="-mx-1 flex gap-2 overflow-x-auto px-1 py-1 md:py-0"
         role="group"
         aria-label="Filter by category"
       >
@@ -66,10 +66,9 @@ export default function BlogFilters({
             aria-pressed={activeCategory === value}
             onClick={() => handleCategoryClick(value)}
             className={cn(
-              'inline-flex shrink-0 items-center rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap transition-colors',
-              activeCategory === value
-                ? 'bg-brand-700 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              'inline-flex shrink-0 cursor-pointer items-center rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap transition-colors',
+              'text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring',
+              activeCategory === value ? 'bg-muted' : 'bg-transparent'
             )}
           >
             {label}
@@ -77,7 +76,7 @@ export default function BlogFilters({
         ))}
       </div>
       <div className="relative md:w-64">
-        <Search01
+        <SearchMd
           className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-gray-400"
           aria-hidden="true"
         />
@@ -87,8 +86,21 @@ export default function BlogFilters({
           onChange={handleSearchChange}
           placeholder="Search articles…"
           aria-label="Search articles"
-          className="w-full rounded-full border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+          className="w-full rounded-full border border-gray-300 bg-white py-2.5 pl-10 pr-8 text-sm text-gray-900 placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 [&::-webkit-search-cancel-button]:hidden"
         />
+        {searchTerm && (
+          <button
+            type="button"
+            aria-label="Clear search"
+            onClick={() => {
+              setSearchTerm('');
+              dispatch(activeCategory, '');
+            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full p-1 text-gray-400 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <XClose className="size-4" aria-hidden="true" />
+          </button>
+        )}
       </div>
     </div>
   );
