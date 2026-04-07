@@ -12,6 +12,7 @@ export interface InputProps {
   error?: string;
   disabled?: boolean;
   iconLeading?: boolean;
+  iconTrailing?: boolean;
   class?: string;
 }
 
