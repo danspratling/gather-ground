@@ -1,6 +1,7 @@
 ---
 import { cn } from '@/lib/utils';
 import type { BadgeGroupProps } from '@/components/BadgeGroup/BadgeGroup.types';
+import Badge from '@/components/Badge/Badge.astro';
 import { ArrowRight } from '@untitledui-pro/icons/line';
 
 type Props = BadgeGroupProps;
@@ -27,10 +28,7 @@ const outerHoverColors = {
   brand: 'hover:bg-brand-50 hover:border-brand-100',
 };
 
-const innerBadgeColors = {
-  gray: 'border-secondary-100 text-brand-400',
-  brand: 'border-brand-50 text-brand-700',
-};
+const badgeColor = color === 'gray' ? 'gray' : 'brand';
 ---
 
 <Tag
@@ -38,7 +36,7 @@ const innerBadgeColors = {
   class={cn(
     'inline-flex items-center gap-2 rounded-full border py-1 text-xs font-medium',
     isLeading ? 'pl-1 pr-3' : 'pl-3 pr-1',
-    href && 'pr-2',
+    href && isLeading && 'pr-2',
     outerColors[color],
     href && [outerHoverColors[color], 'cursor-pointer transition-colors'],
     className
@@ -46,28 +44,16 @@ const innerBadgeColors = {
 >
   {
     isLeading && (
-      <span
-        class={cn(
-          'whitespace-nowrap rounded-full border bg-off-white px-2 py-0.5 text-xs font-medium',
-          innerBadgeColors[color]
-        )}
-      >
-        {badgeLabel}
-      </span>
+      <Badge label={badgeLabel} type="pill" size="sm" color={badgeColor} />
     )
   }
   <span class="whitespace-nowrap">{text}</span>
   {
     !isLeading && (
-      <span
-        class={cn(
-          'whitespace-nowrap rounded-full border bg-off-white px-2 py-0.5 text-xs font-medium',
-          innerBadgeColors[color]
-        )}
-      >
-        {badgeLabel}
-      </span>
+      <Badge label={badgeLabel} type="pill" size="sm" color={badgeColor}>
+        {href && <ArrowRight slot="icon-trailing" class="size-4 shrink-0" />}
+      </Badge>
     )
   }
-  {href && <ArrowRight class="size-4 shrink-0" />}
+  {isLeading && href && <ArrowRight class="size-4 shrink-0" />}
 </Tag>
