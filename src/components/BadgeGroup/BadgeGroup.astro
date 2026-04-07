@@ -1,19 +1,73 @@
 ---
 import { cn } from '@/lib/utils';
 import type { BadgeGroupProps } from '@/components/BadgeGroup/BadgeGroup.types';
-import Badge from '@/components/Badge/Badge.astro';
+import { ArrowRight } from '@untitledui-pro/icons/line';
 
 type Props = BadgeGroupProps;
 
 const {
-  badges,
+  badgeLabel,
+  text,
+  badgePosition = 'leading',
   color = 'gray',
-  size = 'sm',
-  type = 'pill',
+  href,
   class: className,
 } = Astro.props;
+
+const Tag = href ? 'a' : 'span';
+const isLeading = badgePosition === 'leading';
+
+const outerColors = {
+  gray: 'bg-secondary-25 border-secondary-200 text-brand-400',
+  brand: 'bg-brand-25 border-brand-50 text-brand-700',
+};
+
+const outerHoverColors = {
+  gray: 'hover:bg-secondary-50 hover:border-secondary-300',
+  brand: 'hover:bg-brand-50 hover:border-brand-100',
+};
+
+const innerBadgeColors = {
+  gray: 'border-secondary-100 text-brand-400',
+  brand: 'border-brand-50 text-brand-700',
+};
 ---
 
-<div class={cn('flex flex-wrap gap-2', className)}>
-  {badges.map((label) => <Badge {label} {color} {size} type={type} />)}
-</div>
+<Tag
+  href={href}
+  class={cn(
+    'inline-flex items-center gap-2 rounded-full border py-1 text-xs font-medium',
+    isLeading ? 'pl-1 pr-3' : 'pl-3 pr-1',
+    outerColors[color],
+    href && [outerHoverColors[color], 'cursor-pointer transition-colors'],
+    className
+  )}
+>
+  {
+    isLeading && (
+      <span
+        class={cn(
+          'whitespace-nowrap rounded-full border bg-off-white px-2 py-0.5 text-xs font-medium',
+          innerBadgeColors[color]
+        )}
+      >
+        {badgeLabel}
+      </span>
+    )
+  }
+  <span class="whitespace-nowrap">{text}</span>
+  {
+    !isLeading && (
+      <span
+        class={cn(
+          'inline-flex items-center gap-1 whitespace-nowrap rounded-full border bg-off-white pl-2 pr-1.5 py-0.5 text-xs font-medium',
+          innerBadgeColors[color]
+        )}
+      >
+        {badgeLabel}
+        <ArrowRight class="size-3 shrink-0" />
+      </span>
+    )
+  }
+  {isLeading && href && <ArrowRight class="size-4 shrink-0" />}
+</Tag>

@@ -30,8 +30,11 @@
   --color-gray-950: #171717;
 
   /* Secondary palette */
+  --color-secondary-25: #fcfbf7;
   --color-secondary-50: #faf7ef;
+  --color-secondary-100: #f7f3e7;
   --color-secondary-200: #f6f2e3;
+  --color-secondary-300: #f5f1e8;
 
   /* Semantic status palette — used by Badge and status indicators */
   --color-error-50: #fef3f2;

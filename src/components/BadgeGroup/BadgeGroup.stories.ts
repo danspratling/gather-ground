@@ -13,20 +13,50 @@ export default {
   },
 } satisfies Record<string, unknown>;
 
-export const Default = {
+const baseArgs: BadgeGroupProps = {
+  badgeLabel: 'New feature',
+  text: "We've just released a new feature",
+};
+
+export const LeadingGray = {
   args: {
-    badges: ['New feature', 'Design'],
+    ...baseArgs,
+    color: 'gray',
+    badgePosition: 'leading',
   } satisfies BadgeGroupProps,
 };
 
-export const SingleBadge = {
+export const LeadingBrand = {
   args: {
-    badges: ['Product'],
+    ...baseArgs,
+    color: 'brand',
+    badgePosition: 'leading',
   } satisfies BadgeGroupProps,
 };
 
-export const ManyBadges = {
+export const TrailingGray = {
   args: {
-    badges: ['Product', 'Research', 'Frameworks'],
+    ...baseArgs,
+    badgeLabel: 'Version 4.0',
+    color: 'gray',
+    badgePosition: 'trailing',
+  } satisfies BadgeGroupProps,
+};
+
+export const TrailingBrand = {
+  args: {
+    ...baseArgs,
+    badgeLabel: 'Version 4.0',
+    color: 'brand',
+    badgePosition: 'trailing',
+  } satisfies BadgeGroupProps,
+};
+
+export const AsLink = {
+  args: {
+    ...baseArgs,
+    color: 'brand',
+    badgePosition: 'leading',
+    href: '/blog',
   } satisfies BadgeGroupProps,
 };
