@@ -1,55 +1,10 @@
 ---
-import { cn } from '@/lib/utils';
 import type { BlogCardProps } from '@/components/BlogCard/BlogCard.types';
+import BlogCardComponent from '@/components/BlogCard/BlogCard';
 
 type Props = BlogCardProps;
 
-const {
-  variant = 'homepage',
-  image,
-  imageAlt,
-  title,
-  excerpt,
-  date,
-  authorName,
-  authorImage,
-  authorImageAlt,
-  href,
-  class: className,
-} = Astro.props;
+const props = Astro.props;
 ---
 
-<article class={cn('flex flex-col gap-4', className)}>
-  <a href={href} class="block overflow-hidden rounded-xl">
-    <img
-      src={image}
-      alt={imageAlt}
-      class={cn(
-        'w-full object-cover transition-transform duration-300 hover:scale-105',
-        variant === 'homepage' ? 'h-56' : 'h-40'
-      )}
-    />
-  </a>
-  <div class="flex flex-col gap-3">
-    <div class="flex items-center gap-3">
-      <img
-        src={authorImage}
-        alt={authorImageAlt}
-        class="size-8 rounded-full object-cover"
-      />
-      <div class="flex flex-col">
-        <span class="text-sm font-semibold text-gray-900">{authorName}</span>
-        <time class="text-sm font-normal text-gray-600">{date}</time>
-      </div>
-    </div>
-    <h3
-      class={cn(
-        'font-semibold text-gray-900',
-        variant === 'homepage' ? 'text-lg' : 'text-base'
-      )}
-    >
-      <a href={href} class="hover:underline">{title}</a>
-    </h3>
-    <p class="text-sm font-normal text-gray-600 line-clamp-3">{excerpt}</p>
-  </div>
-</article>
+<BlogCardComponent {...props} />
