@@ -1,0 +1,133 @@
+---
+import { renderRichText, segmentStoryblokRichText } from '@storyblok/astro';
+import type { StoryblokRichTextDocumentNode } from '@storyblok/astro';
+import type { RichTextProps } from './RichText.types';
+
+type Props = RichTextProps;
+
+const { content } = Astro.props;
+
+const segments = segmentStoryblokRichText(content);
+---
+
+<div class="rt max-w-[720px]">
+  {
+    segments.map((segment) => {
+      if (segment.type === 'html') {
+        return <Fragment set:html={segment.content} />;
+      }
+
+      if (segment.type === 'blok') {
+        const { blok } = segment;
+
+        if (blok.component === 'callout') {
+          const calloutContent = blok.content as
+            | StoryblokRichTextDocumentNode
+            | undefined;
+          const calloutHtml = calloutContent
+            ? renderRichText(calloutContent)
+            : '';
+          return (
+            <div class="bg-secondary-50 rounded-2xl p-8 py-12">
+              <Fragment set:html={calloutHtml} />
+            </div>
+          );
+        }
+
+        if (blok.component === 'inline_image') {
+          const img = blok.image as
+            | { filename: string; alt?: string }
+            | undefined;
+          const caption = (blok.caption as string | undefined) ?? '';
+          const imgSrc = img?.filename ?? '';
+          const imgAlt = img?.alt ?? '';
+
+          return (
+            <div class="py-12">
+              <img
+                src={imgSrc}
+                alt={imgAlt}
+                class="w-full rounded-xl object-cover"
+              />
+              {caption && (
+                <div class="flex items-center gap-1.5 mt-4">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    width="16"
+                    height="16"
+                    aria-hidden="true"
+                    class="shrink-0 text-gray-400"
+                  >
+                    <path
+                      d="m12.708 18.364-1.415 1.414a5 5 0 1 1-7.07-7.07l1.413-1.415m12.728 1.414 1.415-1.414a5 5 0 0 0-7.071-7.071l-1.415 1.414M8.5 15.5l7-7"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <span class="text-sm text-gray-400">{caption}</span>
+                </div>
+              )}
+            </div>
+          );
+        }
+      }
+
+      return null;
+    })
+  }
+</div>
+
+<style>
+  @reference "../../styles/global.css";
+
+  .rt :global(h2) {
+    @apply text-display-sm font-semibold text-brand-900 pt-8 pb-4;
+  }
+
+  .rt :global(h3) {
+    @apply text-display-xs font-semibold text-brand-900 pt-8 pb-4;
+  }
+
+  .rt :global(p) {
+    @apply text-lg font-normal text-brand-400 mb-[18px];
+  }
+
+  .rt :global(p:last-child) {
+    @apply mb-0;
+  }
+
+  .rt :global(blockquote) {
+    @apply border-l-2 border-brand-700 pl-5 py-12 flex flex-col gap-8;
+  }
+
+  .rt :global(blockquote p) {
+    @apply mb-0;
+  }
+
+  .rt :global(blockquote p:first-child) {
+    @apply text-display-xs font-medium italic text-brand-900;
+  }
+
+  .rt :global(blockquote p:last-child) {
+    @apply text-base font-normal text-gray-600 mb-0;
+  }
+
+  .rt :global(ul) {
+    @apply ms-[27px] list-disc text-lg text-brand-400 mb-[18px];
+  }
+
+  .rt :global(ol) {
+    @apply ms-[27px] list-decimal text-lg text-brand-400 mb-[18px];
+  }
+
+  .rt :global(li) {
+    @apply text-lg text-brand-400;
+  }
+
+  .rt :global(li > p) {
+    @apply mb-0;
+  }
+</style>
