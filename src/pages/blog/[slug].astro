@@ -1,0 +1,122 @@
+---
+import { useStoryblokApi } from '@storyblok/astro';
+import type { StoryblokRichTextDocumentNode } from '@storyblok/astro';
+import Layout from '@/layouts/Layout.astro';
+import PostHeader from '@/components/PostHeader/PostHeader.astro';
+import SectionDivider from '@/components/SectionDivider/SectionDivider.astro';
+import BlogSection from '@/components/BlogSection/BlogSection.astro';
+
+export async function getStaticPaths() {
+  const storyblokApi = useStoryblokApi();
+  const { data } = await storyblokApi.get('cdn/stories', {
+    version: 'published',
+    content_type: 'blog_post',
+    per_page: 100,
+    excluding_fields: 'content',
+  });
+
+  return data.stories.map((story: { slug: string }) => ({
+    params: { slug: story.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
+  .href;
+
+const storyblokApi = useStoryblokApi();
+const version = import.meta.env.DEV ? 'draft' : 'published';
+
+const { data } = await storyblokApi.get(`cdn/stories/blog/${slug}`, {
+  version,
+});
+const post = data.story;
+
+type PostContent = {
+  title: string;
+  excerpt: string;
+  date: string;
+  categories?: string[];
+  image: { filename: string; alt: string };
+  body: StoryblokRichTextDocumentNode;
+  author_name: string;
+  author_image: { filename: string; alt: string };
+  author_role?: string;
+};
+
+const content = post.content as PostContent;
+
+// Fetch related posts (all blog posts, then exclude the current slug)
+const { data: relatedData } = await storyblokApi.get('cdn/stories', {
+  version,
+  content_type: 'blog_post',
+  per_page: 4,
+  sort_by: 'content.date:desc',
+  excluding_slugs: slug,
+});
+
+const relatedPosts = (
+  relatedData.stories as Array<{
+    full_slug: string;
+    content: {
+      image: { filename: string; alt: string };
+      title: string;
+      excerpt: string;
+      date: string;
+      author_name: string;
+      author_image: { filename: string; alt: string };
+    };
+  }>
+)
+  .slice(0, 3)
+  .map((s) => ({
+    image: s.content.image?.filename ?? '',
+    imageAlt: s.content.image?.alt ?? s.content.title,
+    title: s.content.title,
+    excerpt: s.content.excerpt,
+    date: s.content.date,
+    authorName: s.content.author_name,
+    authorImage: s.content.author_image?.filename ?? '',
+    authorImageAlt: s.content.author_image?.alt ?? s.content.author_name,
+    href: `/${s.full_slug}`,
+  }));
+---
+
+<Layout
+  title={content.title}
+  description={content.excerpt}
+  ogImage={content.image.filename}
+  ogType="article"
+  canonicalUrl={canonicalUrl}
+>
+  <main>
+    <PostHeader
+      publishedDate={`Published ${content.date}`}
+      title={content.title}
+      excerpt={content.excerpt}
+      categories={content.categories ?? []}
+      heroImage={content.image.filename}
+      heroImageAlt={content.image.alt || content.title}
+      body={content.body}
+      authorName={content.author_name}
+      authorAvatar={content.author_image.filename}
+      authorAvatarAlt={content.author_image.alt || content.author_name}
+      authorRole={content.author_role ?? ''}
+    />
+    {
+      relatedPosts.length > 0 && (
+        <>
+          <SectionDivider />
+          <BlogSection
+            eyebrow="From the blog"
+            heading="More articles"
+            subCopy="More reading from the Gather Ground team."
+            viewAllHref="/blog"
+            viewAllLabel="View all articles"
+            posts={relatedPosts}
+          />
+        </>
+      )
+    }
+  </main>
+</Layout>
