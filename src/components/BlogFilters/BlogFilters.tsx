@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { SearchMd, XClose } from '@untitledui-pro/icons/line';
 import { cn } from '@/lib/utils';
+import type { BadgeColor } from '@/components/Badge/Badge.types';
 import type { BlogFiltersProps } from '@/components/BlogFilters/BlogFilters.types';
 
 export const FILTER_CHANGE_EVENT = 'blog-filter-change';
@@ -10,10 +11,27 @@ export interface FilterChangeDetail {
   search: string;
 }
 
+// Maps badge color names to a dot background class — mirrors Badge.astro's dot palette.
+const dotColorClasses: Record<BadgeColor, string> = {
+  gray: 'bg-brand-400',
+  brand: 'bg-brand-700',
+  error: 'bg-error-700',
+  warning: 'bg-warning-700',
+  success: 'bg-success-700',
+  'blue-light': 'bg-blue-light-700',
+  blue: 'bg-blue-700',
+  indigo: 'bg-indigo-700',
+  purple: 'bg-purple-700',
+  pink: 'bg-pink-700',
+  orange: 'bg-orange-700',
+  'gray-blue': 'bg-gray-blue-700',
+};
+
 export default function BlogFilters({
   categories,
   initialCategory = null,
   initialSearch = '',
+  categoryColors,
 }: BlogFiltersProps) {
   const [activeCategory, setActiveCategory] = useState<string | null>(
     initialCategory
@@ -66,11 +84,20 @@ export default function BlogFilters({
             aria-pressed={activeCategory === value}
             onClick={() => handleCategoryClick(value)}
             className={cn(
-              'inline-flex shrink-0 cursor-pointer items-center rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap transition-colors',
+              'inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap transition-colors',
               'text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring',
               activeCategory === value ? 'bg-muted' : 'bg-transparent'
             )}
           >
+            {value && categoryColors?.[value] && (
+              <span
+                className={cn(
+                  'size-2 shrink-0 rounded-full',
+                  dotColorClasses[categoryColors[value]]
+                )}
+                aria-hidden="true"
+              />
+            )}
             {label}
           </button>
         ))}

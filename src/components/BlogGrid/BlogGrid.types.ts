@@ -1,3 +1,5 @@
+import type { BadgeColor } from '@/components/Badge/Badge.types';
+
 export interface BlogGridPost {
   image: string;
   imageAlt: string;
@@ -5,8 +7,8 @@ export interface BlogGridPost {
   excerpt: string;
   date: string;
   authorName: string;
-  authorImage: string;
-  authorImageAlt: string;
+  authorImage?: string;
+  authorImageAlt?: string;
   href: string;
   slug: string;
   categories: string[];
@@ -15,6 +17,7 @@ export interface BlogGridPost {
 export interface BlogGridProps {
   posts: BlogGridPost[];
   initialVisibleCount?: number;
+  categoryColorMap?: Record<string, BadgeColor>;
 }
 
 export default null;

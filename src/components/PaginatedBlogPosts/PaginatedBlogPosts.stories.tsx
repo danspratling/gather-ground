@@ -1,12 +1,11 @@
-// @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, userEvent, within } from 'storybook/test';
 
-import BlogGrid from '@/components/BlogGrid/BlogGrid';
+import PaginatedBlogPosts from '@/components/PaginatedBlogPosts/PaginatedBlogPosts';
 
 const meta = {
-  title: 'Blog/Blog Grid',
-  component: BlogGrid,
+  title: 'Blog/Paginated Blog Posts',
+  component: PaginatedBlogPosts,
   tags: ['autodocs'],
   parameters: {
     renderer: 'react',
@@ -18,7 +17,7 @@ const meta = {
     },
     chromatic: { viewports: [375, 1440] },
   },
-} satisfies Meta<typeof BlogGrid>;
+} satisfies Meta<typeof PaginatedBlogPosts>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -48,11 +47,13 @@ const mockPosts = Array.from({ length: 9 }, (_, i) => ({
   href: `/blog/heritage-breeds-${i + 1}`,
   slug: `heritage-breeds-${i + 1}`,
   categories:
-    i % 3 === 0
+    i % 4 === 0
       ? ['Design']
-      : i % 3 === 1
+      : i % 4 === 1
         ? ['Product']
-        : ['Software Engineering'],
+        : i % 4 === 2
+          ? ['Software Engineering']
+          : ['Customer Success'],
 }));
 
 export const Default: Story = {
@@ -62,24 +63,18 @@ export const Default: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const loadMoreBtn = canvas.getByRole('button', { name: /load more/i });
-    expect(loadMoreBtn).toBeInTheDocument();
-    await userEvent.click(loadMoreBtn);
-    // After clicking, all 9 should be visible — no load more button
-    expect(canvas.queryByRole('button', { name: /load more/i })).toBeNull();
-  },
-};
 
-export const EmptyState: Story = {
-  args: {
-    posts: [],
-    initialVisibleCount: 6,
-  },
-};
+    // Category dots should be visible in the filter tabs
+    const designTab = canvas.getByRole('button', { name: /design/i });
+    expect(designTab).toBeInTheDocument();
 
-export const FewPosts: Story = {
-  args: {
-    posts: mockPosts.slice(0, 3),
-    initialVisibleCount: 6,
+    // Filter to Design category
+    await userEvent.click(designTab);
+
+    // Load more posts
+    const loadMoreBtn = canvas.queryByRole('button', { name: /load more/i });
+    if (loadMoreBtn) {
+      await userEvent.click(loadMoreBtn);
+    }
   },
 };

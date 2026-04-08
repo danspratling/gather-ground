@@ -17,6 +17,7 @@ const {
   authorImageAlt,
   href,
   categories,
+  categoryColorMap,
   class: className,
 } = Astro.props;
 ---
@@ -33,31 +34,48 @@ const {
     />
   </a>
   <div class="flex flex-col gap-3">
-    <div class="flex items-center gap-3">
-      <img
-        src={authorImage}
-        alt={authorImageAlt}
-        class="size-8 rounded-full object-cover"
-      />
-      <div class="flex flex-col">
-        <span class="text-sm font-semibold text-gray-900">{authorName}</span>
-        <time class="text-sm font-normal text-gray-600">{date}</time>
-      </div>
-    </div>
+    {
+      variant === 'homepage' && authorImage ? (
+        <div class="flex items-center gap-3">
+          <img
+            src={authorImage}
+            alt={authorImageAlt ?? authorName}
+            class="size-8 rounded-full object-cover"
+          />
+          <div class="flex flex-col">
+            <span class="text-sm font-semibold text-brand-700">
+              {authorName}
+            </span>
+            <time class="text-sm font-normal text-brand-500">{date}</time>
+          </div>
+        </div>
+      ) : (
+        <p class="text-sm text-brand-600">
+          {authorName}
+          <span class="mx-1.5 text-brand-400">&bull;</span>
+          <time>{date}</time>
+        </p>
+      )
+    }
     <h3
       class={cn(
-        'font-semibold text-gray-900',
+        'font-semibold text-brand-900',
         variant === 'homepage' ? 'text-lg' : 'text-base'
       )}
     >
       <a href={href} class="hover:underline">{title}</a>
     </h3>
-    <p class="text-sm font-normal text-gray-600 line-clamp-3">{excerpt}</p>
+    <p class="text-sm font-normal text-brand-600 line-clamp-3">{excerpt}</p>
     {
       categories && categories.length > 0 && (
         <div class="flex flex-wrap gap-2 pt-1">
           {categories.map((cat) => (
-            <Badge label={cat} type="pill" size="sm" color="gray" />
+            <Badge
+              label={cat}
+              type="pill"
+              size="sm"
+              color={categoryColorMap?.[cat] ?? 'gray'}
+            />
           ))}
         </div>
       )

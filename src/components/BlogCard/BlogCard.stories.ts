@@ -36,7 +36,8 @@ const defaultArgs = {
     'Modern commodity pork has been bred for leanness and fast growth. Heritage breeds like Berkshire and Duroc are slower-growing and fattier — and that fat is where the flavour lives.',
   date: '28 Mar 2026',
   authorName: 'Dan Spratling',
-  authorImage: 'https://i.pravatar.cc/150?img=3',
+  authorImage:
+    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face',
   authorImageAlt: 'Dan Spratling',
   href: '/blog/why-heritage-breeds-taste-different',
 };
@@ -75,5 +76,14 @@ export const IndexCard = {
         'Why heritage breeds taste different — and why it matters'
       )
     ).toBeInTheDocument();
+  },
+};
+
+export const IndexCardWithCategories = {
+  args: {
+    ...defaultArgs,
+    variant: 'index' as const,
+    categories: ['Design', 'Product'],
+    categoryColorMap: { Design: 'blue', Product: 'purple' },
   },
 };
