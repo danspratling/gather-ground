@@ -3,14 +3,39 @@ import { useStoryblokApi } from '@storyblok/astro';
 import Layout from '@/layouts/Layout.astro';
 import BlogHero from '@/components/BlogHero/BlogHero.astro';
 import FeaturedPost from '@/components/FeaturedPost/FeaturedPost.astro';
-import BlogFilters from '@/components/BlogFilters/BlogFilters';
-import BlogGrid from '@/components/BlogGrid/BlogGrid';
+import PaginatedBlogPosts from '@/components/PaginatedBlogPosts/PaginatedBlogPosts';
 import SectionDivider from '@/components/SectionDivider/SectionDivider.astro';
 
 const storyblokApi = useStoryblokApi();
+const version = import.meta.env.DEV ? 'draft' : 'published';
 
+// Fetch blog page hero content from CMS — fallback to defaults if story not yet created.
+type BlogPageContent = {
+  hero_eyebrow?: string;
+  hero_heading?: string;
+  hero_sub_copy?: string;
+  hero_privacy_policy_href?: string;
+};
+
+let pageContent: BlogPageContent = {};
+try {
+  const { data } = await storyblokApi.get('cdn/stories/blog', { version });
+  pageContent = data.story.content as BlogPageContent;
+} catch {
+  // Story not yet created in Storyblok — use defaults below.
+}
+
+const heroEyebrow = pageContent.hero_eyebrow ?? 'Blog';
+const heroHeading = pageContent.hero_heading ?? 'Resources and insights';
+const heroSubCopy =
+  pageContent.hero_sub_copy ??
+  'Practical advice from our farm to your table — heritage breeds, seasonal produce, and sustainable farming.';
+const heroPrivacyPolicyHref =
+  pageContent.hero_privacy_policy_href ?? '/privacy';
+
+// Fetch all blog posts.
 const { data } = await storyblokApi.get('cdn/stories', {
-  version: import.meta.env.DEV ? 'draft' : 'published',
+  version,
   content_type: 'blog_post',
   per_page: 100,
   sort_by: 'content.date:desc',
@@ -44,19 +69,15 @@ const posts = rawPosts.map((story) => ({
 }));
 
 const [featuredPost, ...gridPosts] = posts;
-
-const allCategories = [...new Set(posts.flatMap((p) => p.categories))].filter(
-  Boolean
-);
 ---
 
 <Layout title="Blog – Gather Ground">
   <main>
     <BlogHero
-      eyebrow="Blog"
-      heading="Resources and insights"
-      subCopy="Practical advice from our farm to your table — heritage breeds, seasonal produce, and sustainable farming."
-      privacyPolicyHref="/privacy"
+      eyebrow={heroEyebrow}
+      heading={heroHeading}
+      subCopy={heroSubCopy}
+      privacyPolicyHref={heroPrivacyPolicyHref}
     />
     <SectionDivider />
     {
@@ -66,7 +87,6 @@ const allCategories = [...new Set(posts.flatMap((p) => p.categories))].filter(
             <FeaturedPost
               image={featuredPost.image}
               imageAlt={featuredPost.imageAlt}
-              categories={featuredPost.categories}
               title={featuredPost.title}
               excerpt={featuredPost.excerpt}
               href={featuredPost.href}
@@ -81,9 +101,8 @@ const allCategories = [...new Set(posts.flatMap((p) => p.categories))].filter(
     }
     <SectionDivider />
     <section class="py-16 lg:py-24">
-      <div class="container flex flex-col gap-10">
-        <BlogFilters categories={allCategories} client:load />
-        <BlogGrid posts={gridPosts} client:load />
+      <div class="container">
+        <PaginatedBlogPosts posts={gridPosts} client:load />
       </div>
     </section>
   </main>

@@ -17,10 +17,10 @@ export const featuredPostSchema = {
       required: true,
       filetypes: ['images'],
     },
-    categories: {
-      type: 'array',
-      display_name: 'Categories',
-      description: 'e.g. Design, Product',
+    read_time: {
+      type: 'text',
+      display_name: 'Read time',
+      description: 'e.g. "8 min read". Displayed in the chip above the title.',
     },
     title: {
       type: 'text',
