@@ -55,7 +55,7 @@ export default function BlogFilters({
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div
-        className="-mx-1 flex gap-2 overflow-x-auto px-1 py-1 md:py-0"
+        className="-mx-1 flex gap-2 overflow-auto px-1 py-1 md:py-0"
         role="group"
         aria-label="Filter by category"
       >

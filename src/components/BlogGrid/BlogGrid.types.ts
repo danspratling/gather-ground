@@ -1,9 +1,6 @@
 import type { BadgeColor } from '@/components/Badge/Badge.types';
 
-export type BlogCardVariant = 'homepage' | 'index';
-
-export interface BlogCardProps {
-  variant?: BlogCardVariant;
+export interface BlogGridPost {
   image: string;
   imageAlt: string;
   title: string;
@@ -13,9 +10,14 @@ export interface BlogCardProps {
   authorImage?: string;
   authorImageAlt?: string;
   href: string;
-  categories?: string[];
+  slug: string;
+  categories: string[];
+}
+
+export interface BlogGridProps {
+  posts: BlogGridPost[];
+  initialVisibleCount?: number;
   categoryColorMap?: Record<string, BadgeColor>;
-  class?: string;
 }
 
 export default null;
