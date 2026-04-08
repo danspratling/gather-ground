@@ -1,84 +1,10 @@
 ---
-import { cn } from '@/lib/utils';
 import type { BlogCardProps } from '@/components/BlogCard/BlogCard.types';
-import Badge from '@/components/Badge/Badge.astro';
+import BlogCardComponent from '@/components/BlogCard/BlogCard';
 
 type Props = BlogCardProps;
 
-const {
-  variant = 'homepage',
-  image,
-  imageAlt,
-  title,
-  excerpt,
-  date,
-  authorName,
-  authorImage,
-  authorImageAlt,
-  href,
-  categories,
-  categoryColorMap,
-  class: className,
-} = Astro.props;
+const props = Astro.props;
 ---
 
-<article class={cn('flex flex-col gap-4', className)}>
-  <a href={href} class="block overflow-hidden rounded-xl">
-    <img
-      src={image}
-      alt={imageAlt}
-      class={cn(
-        'w-full object-cover transition-transform duration-300 hover:scale-105',
-        variant === 'homepage' ? 'h-56' : 'h-48'
-      )}
-    />
-  </a>
-  <div class="flex flex-col gap-3">
-    {
-      variant === 'homepage' && authorImage ? (
-        <div class="flex items-center gap-3">
-          <img
-            src={authorImage}
-            alt={authorImageAlt ?? authorName}
-            class="size-8 rounded-full object-cover"
-          />
-          <div class="flex flex-col">
-            <span class="text-sm font-semibold text-brand-700">
-              {authorName}
-            </span>
-            <time class="text-sm font-normal text-brand-500">{date}</time>
-          </div>
-        </div>
-      ) : (
-        <p class="text-sm text-brand-600">
-          {authorName}
-          <span class="mx-1.5 text-brand-400">&bull;</span>
-          <time>{date}</time>
-        </p>
-      )
-    }
-    <h3
-      class={cn(
-        'font-semibold text-brand-900',
-        variant === 'homepage' ? 'text-lg' : 'text-base'
-      )}
-    >
-      <a href={href} class="hover:underline">{title}</a>
-    </h3>
-    <p class="text-sm font-normal text-brand-600 line-clamp-3">{excerpt}</p>
-    {
-      categories && categories.length > 0 && (
-        <div class="flex flex-wrap gap-2 pt-1">
-          {categories.map((cat) => (
-            <Badge
-              label={cat}
-              type="pill"
-              size="sm"
-              color={categoryColorMap?.[cat] ?? 'gray'}
-            />
-          ))}
-        </div>
-      )
-    }
-  </div>
-</article>
+<BlogCardComponent {...props} />
