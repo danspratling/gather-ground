@@ -79,7 +79,6 @@ const [featuredPost, ...gridPosts] = posts;
       subCopy={heroSubCopy}
       privacyPolicyHref={heroPrivacyPolicyHref}
     />
-    <SectionDivider />
     {
       featuredPost && (
         <section class="py-16 lg:py-24">
@@ -99,7 +98,6 @@ const [featuredPost, ...gridPosts] = posts;
         </section>
       )
     }
-    <SectionDivider />
     <section class="py-16 lg:py-24">
       <div class="container">
         <PaginatedBlogPosts posts={gridPosts} client:load />
