@@ -48,7 +48,7 @@ export const blogPostSchema = {
       filetypes: ['images'],
     },
     categories: {
-      type: 'array',
+      type: 'options',
       display_name: 'Categories',
       description: 'e.g. Design, Product, Software Development',
     },

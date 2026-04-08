@@ -29,8 +29,11 @@ import {
 } from '../src/storyblok/accordion.ts';
 import { badgeSchema } from '../src/storyblok/badge.ts';
 import { blogCardSchema } from '../src/storyblok/blogCard.ts';
+import { blogHeroSchema } from '../src/storyblok/blogHero.ts';
+import { blogPageSchema } from '../src/storyblok/blogPage.ts';
 import { blogPostSchema } from '../src/storyblok/blogPost.ts';
 import { blogSectionSchema } from '../src/storyblok/blogSection.ts';
+import { featuredPostSchema } from '../src/storyblok/featuredPost.ts';
 import { bodySchema } from '../src/storyblok/body.ts';
 import { buttonSchema } from '../src/storyblok/button.ts';
 import { callToActionSchema } from '../src/storyblok/callToAction.ts';
@@ -76,6 +79,10 @@ const schemas = [
   testimonialSchema,
   faqSchema,
   blogPostSchema,
+  blogPageSchema,
+  // Page sections
+  blogHeroSchema,
+  featuredPostSchema,
   // Sections
   heroSectionSchema,
   productsSectionSchema,

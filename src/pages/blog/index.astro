@@ -1,0 +1,107 @@
+---
+import { useStoryblokApi } from '@storyblok/astro';
+import Layout from '@/layouts/Layout.astro';
+import BlogHero from '@/components/BlogHero/BlogHero.astro';
+import FeaturedPost from '@/components/FeaturedPost/FeaturedPost.astro';
+import PaginatedBlogPosts from '@/components/PaginatedBlogPosts/PaginatedBlogPosts';
+import SectionDivider from '@/components/SectionDivider/SectionDivider.astro';
+
+const storyblokApi = useStoryblokApi();
+const version = import.meta.env.DEV ? 'draft' : 'published';
+
+// Fetch blog page hero content from CMS — fallback to defaults if story not yet created.
+type BlogPageContent = {
+  hero_eyebrow?: string;
+  hero_heading?: string;
+  hero_sub_copy?: string;
+  hero_privacy_policy_href?: string;
+};
+
+let pageContent: BlogPageContent = {};
+try {
+  const { data } = await storyblokApi.get('cdn/stories/blog', { version });
+  pageContent = data.story.content as BlogPageContent;
+} catch {
+  // Story not yet created in Storyblok — use defaults below.
+}
+
+const heroEyebrow = pageContent.hero_eyebrow ?? 'Blog';
+const heroHeading = pageContent.hero_heading ?? 'Resources and insights';
+const heroSubCopy =
+  pageContent.hero_sub_copy ??
+  'Practical advice from our farm to your table — heritage breeds, seasonal produce, and sustainable farming.';
+const heroPrivacyPolicyHref =
+  pageContent.hero_privacy_policy_href ?? '/privacy';
+
+// Fetch all blog posts.
+const { data } = await storyblokApi.get('cdn/stories', {
+  version,
+  content_type: 'blog_post',
+  per_page: 100,
+  sort_by: 'content.date:desc',
+});
+
+const rawPosts = data.stories as Array<{
+  full_slug: string;
+  content: {
+    image: { filename: string; alt: string };
+    title: string;
+    excerpt: string;
+    date: string;
+    author_name: string;
+    author_image: { filename: string; alt: string };
+    categories?: string[];
+  };
+}>;
+
+const posts = rawPosts.map((story) => ({
+  image: story.content.image.filename,
+  imageAlt: story.content.image.alt || story.content.title,
+  title: story.content.title,
+  excerpt: story.content.excerpt,
+  date: story.content.date,
+  authorName: story.content.author_name,
+  authorImage: story.content.author_image.filename,
+  authorImageAlt: story.content.author_image.alt || story.content.author_name,
+  href: `/${story.full_slug}`,
+  slug: story.full_slug,
+  categories: story.content.categories ?? [],
+}));
+
+const [featuredPost, ...gridPosts] = posts;
+---
+
+<Layout title="Blog – Gather Ground">
+  <main>
+    <BlogHero
+      eyebrow={heroEyebrow}
+      heading={heroHeading}
+      subCopy={heroSubCopy}
+      privacyPolicyHref={heroPrivacyPolicyHref}
+    />
+    {
+      featuredPost && (
+        <section class="py-16 lg:py-24">
+          <div class="container">
+            <FeaturedPost
+              image={featuredPost.image}
+              imageAlt={featuredPost.imageAlt}
+              title={featuredPost.title}
+              excerpt={featuredPost.excerpt}
+              href={featuredPost.href}
+              authorName={featuredPost.authorName}
+              authorImage={featuredPost.authorImage}
+              authorImageAlt={featuredPost.authorImageAlt}
+              date={featuredPost.date}
+            />
+          </div>
+        </section>
+      )
+    }
+    <section class="py-16 lg:py-24">
+      <div class="container">
+        <PaginatedBlogPosts posts={gridPosts} client:load />
+      </div>
+    </section>
+  </main>
+</Layout>
