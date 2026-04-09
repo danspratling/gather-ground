@@ -1,0 +1,81 @@
+---
+import type { ContentSimpleProps } from './Content.types';
+import * as icons from '@untitledui-pro/icons/line';
+
+type Props = Omit<ContentSimpleProps, 'variant'>;
+
+const { icon, heading, body, features, dark = false } = Astro.props;
+
+const IconComponent = icons[icon as keyof typeof icons];
+---
+
+<section class:list={[dark ? 'bg-brand-900' : 'bg-off-white', 'py-24']}>
+  <div class="container flex flex-col lg:flex-row gap-16 items-start">
+    <!-- Left column: icon, heading, body -->
+    <div class="flex flex-col gap-5 lg:max-w-[360px] w-full shrink-0">
+      <div class="flex flex-col gap-6 items-start">
+        <div
+          class:list={[
+            'flex items-center justify-center rounded-[10px] size-14',
+            dark ? 'bg-brand-600' : 'bg-brand-50',
+          ]}
+        >
+          {
+            IconComponent && (
+              <IconComponent
+                className={
+                  dark ? 'size-7 text-brand-50' : 'size-7 text-brand-600'
+                }
+                aria-hidden="true"
+              />
+            )
+          }
+        </div>
+        <h2
+          class:list={[
+            'text-display-md font-semibold tracking-display-md',
+            dark ? 'text-off-white' : 'text-brand-900',
+          ]}
+        >
+          {heading}
+        </h2>
+      </div>
+      <p
+        class:list={[
+          'text-xl font-normal',
+          dark ? 'text-brand-300' : 'text-brand-300',
+        ]}
+      >
+        {body}
+      </p>
+    </div>
+
+    <!-- Right column: feature grid -->
+    <div
+      class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10 min-w-0"
+    >
+      {
+        features.map((feature) => (
+          <div class="flex flex-col gap-1">
+            <h3
+              class:list={[
+                'text-lg font-semibold',
+                dark ? 'text-off-white' : 'text-brand-900',
+              ]}
+            >
+              {feature.heading}
+            </h3>
+            <p
+              class:list={[
+                'text-md font-normal',
+                dark ? 'text-brand-300' : 'text-brand-300',
+              ]}
+            >
+              {feature.body}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
