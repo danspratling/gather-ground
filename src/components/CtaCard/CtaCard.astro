@@ -1,0 +1,83 @@
+---
+import type { CtaCardProps } from './CtaCard.types';
+import Button from '@/components/Forms/Button/Button.astro';
+
+type Props = CtaCardProps;
+
+const {
+  heading,
+  body,
+  primaryCta,
+  secondaryCta,
+  layout = 'horizontal',
+} = Astro.props;
+
+const isVertical = layout === 'vertical';
+---
+
+<section class="py-24">
+  <div class="container">
+    <div
+      class:list={[
+        'bg-brand-700 rounded-2xl px-8 py-10',
+        isVertical
+          ? 'flex flex-col items-center text-center gap-8'
+          : 'flex flex-col md:flex-row md:items-center md:justify-between gap-8',
+      ]}
+    >
+      <!-- Content -->
+      <div
+        class:list={[
+          'flex flex-col gap-2',
+          isVertical ? 'items-center max-w-[768px]' : '',
+        ]}
+      >
+        <h2
+          class:list={[
+            'font-semibold text-gray-25',
+            isVertical
+              ? 'text-display-md tracking-display-md'
+              : 'text-display-sm tracking-display-sm',
+          ]}
+        >
+          {heading}
+        </h2>
+        <p
+          class:list={[
+            'font-normal text-brand-200',
+            isVertical ? 'text-xl' : 'text-lg',
+          ]}
+        >
+          {body}
+        </p>
+      </div>
+
+      <!-- Buttons -->
+      <div
+        class:list={[
+          'flex gap-3 shrink-0',
+          isVertical
+            ? 'flex-col sm:flex-row items-center justify-center'
+            : 'flex-col sm:flex-row items-stretch sm:items-center',
+        ]}
+      >
+        {
+          secondaryCta && (
+            <Button
+              label={secondaryCta.label}
+              href={secondaryCta.href}
+              variant="outline"
+              class="border-brand-200 text-off-white hover:bg-brand-600"
+            />
+          )
+        }
+        <Button
+          label={primaryCta.label}
+          href={primaryCta.href}
+          variant="default"
+          class="bg-off-white text-brand-900 border-brand-200 hover:bg-gray-100 hover:border-gray-100"
+        />
+      </div>
+    </div>
+  </div>
+</section>
