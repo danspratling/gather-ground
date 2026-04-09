@@ -52,6 +52,17 @@ export const blogPostSchema = {
       display_name: 'Categories',
       description: 'e.g. Design, Product, Software Development',
     },
+    body: {
+      type: 'richtext',
+      display_name: 'Body',
+      required: true,
+      description:
+        'Full article body. Supports headings, blockquotes, lists, inline images, and callout blocks.',
+    },
+    author_role: {
+      type: 'text',
+      display_name: 'Author role / title',
+    },
   },
 } as const;
 

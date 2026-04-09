@@ -1,0 +1,47 @@
+.rt h2 {
+  @apply text-display-sm font-semibold text-brand-900 pt-8 pb-4;
+}
+
+.rt h3 {
+  @apply text-display-xs font-semibold text-brand-900 pt-8 pb-4;
+}
+
+.rt p {
+  @apply text-lg font-normal text-brand-400 mb-[18px];
+}
+
+.rt p:last-child {
+  @apply mb-0;
+}
+
+.rt blockquote {
+  @apply border-l-2 border-brand-700 pl-5 py-12 flex flex-col gap-8;
+}
+
+.rt blockquote p {
+  @apply mb-0;
+}
+
+.rt blockquote p:first-child {
+  @apply text-display-xs font-medium italic text-brand-900;
+}
+
+.rt blockquote p:last-child {
+  @apply text-base font-normal text-gray-600 mb-0;
+}
+
+.rt ul {
+  @apply ms-[27px] list-disc text-lg text-brand-400 mb-[18px];
+}
+
+.rt ol {
+  @apply ms-[27px] list-decimal text-lg text-brand-400 mb-[18px];
+}
+
+.rt li {
+  @apply text-lg text-brand-400;
+}
+
+.rt li > p {
+  @apply mb-0;
+}

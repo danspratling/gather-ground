@@ -5,9 +5,13 @@ import '@/styles/global.css';
 
 interface Props {
   title: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: string;
+  canonicalUrl?: string;
 }
 
-const { title } = Astro.props;
+const { title, description, ogImage, ogType, canonicalUrl } = Astro.props;
 
 const footerProps = {
   logoSrc: '/favicon.svg',
@@ -70,6 +74,12 @@ const footerProps = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    {ogType && <meta property="og:type" content={ogType} />}
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
   </head>
   <body>
     <Header

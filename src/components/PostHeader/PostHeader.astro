@@ -1,0 +1,134 @@
+---
+import type { PostHeaderProps } from './PostHeader.types';
+import Badge from '@/components/Badge/Badge.astro';
+import RichText from '@/components/RichText/RichText.astro';
+import AvatarLabelGroup from '@/components/Avatar/AvatarLabelGroup.astro';
+import Button from '@/components/Forms/Button/Button.astro';
+import TwitterIcon from '@/components/Icons/TwitterIcon.astro';
+import FacebookIcon from '@/components/Icons/FacebookIcon.astro';
+import LinkedInIcon from '@/components/Icons/LinkedInIcon.astro';
+import { Copy01 } from '@untitledui-pro/icons/line';
+
+type Props = PostHeaderProps;
+
+const {
+  publishedDate,
+  title,
+  excerpt,
+  categories = [],
+  heroImage,
+  heroImageAlt,
+  body,
+  authorName,
+  authorAvatar,
+  authorAvatarAlt,
+  authorRole,
+} = Astro.props;
+---
+
+<article>
+  <!-- Sub-section 1: Meta + hero image -->
+  <div class="bg-off-white py-24">
+    <div class="container flex flex-col gap-16">
+      <div
+        class="flex flex-col gap-8 items-center max-w-[768px] mx-auto w-full text-center"
+      >
+        <div class="flex flex-col gap-3 w-full">
+          <p class="text-base font-semibold text-brand-700">{publishedDate}</p>
+          <h1
+            class="text-display-md font-semibold tracking-display-md text-brand-900 lg:text-display-lg lg:tracking-display-lg"
+          >
+            {title}
+          </h1>
+          <p class="text-xl font-normal text-gray-600">{excerpt}</p>
+        </div>
+        {
+          categories.length > 0 && (
+            <div class="flex flex-wrap gap-2 justify-center">
+              {categories.map((category) => (
+                <Badge label={category} type="pill" size="md" color="brand" />
+              ))}
+            </div>
+          )
+        }
+      </div>
+      <div class="w-full">
+        <img
+          src={heroImage}
+          alt={heroImageAlt}
+          class="w-full aspect-[4/3] lg:aspect-[1216/640] object-cover"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub-section 2: Rich text body -->
+  <div class="bg-off-white pb-24">
+    <div class="container">
+      <div class="max-w-[720px] mx-auto">
+        <RichText content={body} />
+
+        <!-- Author + share footer -->
+        <div
+          class="border-t border-gray-200 pt-6 flex flex-wrap gap-y-6 items-center justify-between"
+        >
+          <AvatarLabelGroup
+            src={authorAvatar}
+            alt={authorAvatarAlt}
+            name={authorName}
+            secondary={authorRole}
+            size="lg"
+          />
+          <div class="flex items-center gap-3 flex-wrap">
+            <button
+              data-copy-link
+              class="inline-flex items-center justify-center gap-1 bg-off-white border border-brand-50 rounded-full px-3.5 py-2.5 text-sm font-semibold text-brand-900 hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
+              aria-label="Copy link to post"
+            >
+              <Copy01 className="size-5" aria-hidden="true" />
+              Copy link
+            </button>
+            <a
+              href="https://twitter.com/intent/tweet"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center bg-off-white border border-brand-50 rounded-full p-2.5 hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
+              aria-label="Share on X (Twitter)"
+            >
+              <TwitterIcon class="size-5 text-brand-900" />
+            </a>
+            <a
+              href="https://www.facebook.com/sharer.php"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center bg-off-white border border-brand-50 rounded-full p-2.5 hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
+              aria-label="Share on Facebook"
+            >
+              <FacebookIcon class="size-5 text-brand-900" />
+            </a>
+            <a
+              href="https://www.linkedin.com/sharing/share-offsite/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center bg-off-white border border-brand-50 rounded-full p-2.5 hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
+              aria-label="Share on LinkedIn"
+            >
+              <LinkedInIcon class="size-5 text-brand-900" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<script>
+  document
+    .querySelectorAll<HTMLButtonElement>('[data-copy-link]')
+    .forEach((btn) => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(window.location.href).catch(() => {});
+      });
+    });
+</script>
