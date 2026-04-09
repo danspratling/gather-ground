@@ -1,17 +1,30 @@
 ---
-import type { DetailsAlternatingProps } from './DetailsAlternating.types';
+import type { ContentAlternatingProps } from './Content.types';
+import * as icons from '@untitledui-pro/icons/line';
 import { CheckCircle } from '@untitledui-pro/icons/line';
 
-type Props = DetailsAlternatingProps;
+type Props = Omit<ContentAlternatingProps, 'variant'>;
 
 const {
+  icon,
   heading,
   body,
-  checklistItems,
+  checklistItems: rawChecklistItems = [],
   image,
   imagePosition = 'right',
   dark = false,
 } = Astro.props;
+
+const checklistItems = Array.isArray(rawChecklistItems)
+  ? rawChecklistItems
+  : typeof rawChecklistItems === 'string'
+    ? rawChecklistItems
+        .split('\n')
+        .map((item) => item.trim())
+        .filter(Boolean)
+    : [];
+
+const IconComponent = icon ? icons[icon as keyof typeof icons] : null;
 ---
 
 <section class:list={[dark ? 'bg-brand-900' : 'bg-off-white', 'py-24']}>
@@ -30,7 +43,16 @@ const {
             dark ? 'bg-brand-600' : 'bg-brand-50',
           ]}
         >
-          <slot name="icon" />
+          {
+            IconComponent && (
+              <IconComponent
+                className={
+                  dark ? 'size-7 text-brand-50' : 'size-7 text-brand-600'
+                }
+                aria-hidden="true"
+              />
+            )
+          }
         </div>
         <h2
           class:list={[
@@ -55,10 +77,12 @@ const {
             {checklistItems.map((item) => (
               <li class="flex items-start gap-3">
                 <CheckCircle
-                  className:list={[
-                    'size-6 shrink-0 mt-0.5',
-                    dark ? 'text-brand-300' : 'text-brand-600',
-                  ]}
+                  className={
+                    dark
+                      ? 'size-6 shrink-0 mt-0.5 text-brand-300'
+                      : 'size-6 shrink-0 mt-0.5 text-brand-600'
+                  }
+                  aria-hidden="true"
                 />
                 <span
                   class:list={[
