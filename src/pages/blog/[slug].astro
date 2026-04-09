@@ -5,11 +5,13 @@ import Layout from '@/layouts/Layout.astro';
 import PostHeader from '@/components/PostHeader/PostHeader.astro';
 import SectionDivider from '@/components/SectionDivider/SectionDivider.astro';
 import BlogSection from '@/components/BlogSection/BlogSection.astro';
+import { getStoryAuthors } from '@/lib/storyblokAuthors';
 
 export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi();
+  const version = import.meta.env.DEV ? 'draft' : 'published';
   const { data } = await storyblokApi.get('cdn/stories', {
-    version: 'published',
+    version,
     content_type: 'blog_post',
     per_page: 100,
     excluding_fields: 'content',
@@ -35,51 +37,74 @@ const post = data.story;
 type PostContent = {
   title: string;
   excerpt: string;
-  date: string;
   categories?: string[];
   image: { filename: string; alt: string };
   body: StoryblokRichTextDocumentNode;
-  author_name: string;
-  author_image: { filename: string; alt: string };
-  author_role?: string;
 };
 
 const content = post.content as PostContent;
 
-// Fetch related posts (all blog posts, then exclude the current slug)
+// Fetch author info for this story from the Management API
+const spaceId = import.meta.env.STORYBLOK_SPACE_ID;
+const authorMap = await getStoryAuthors(spaceId, [post.id]);
+const author = authorMap.get(post.id) ?? { name: '', avatarUrl: '' };
+
+// Format the story's first_published_at as a human-readable date
+const publishedDate = new Date(
+  post.first_published_at ?? post.created_at
+).toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+
+// Fetch related posts (exclude the current slug)
 const { data: relatedData } = await storyblokApi.get('cdn/stories', {
   version,
   content_type: 'blog_post',
   per_page: 4,
-  sort_by: 'content.date:desc',
+  sort_by: 'first_published_at:desc',
   excluding_slugs: slug,
 });
 
-const relatedPosts = (
+const relatedStories = (
   relatedData.stories as Array<{
+    id: number;
     full_slug: string;
+    first_published_at: string;
+    created_at: string;
     content: {
       image: { filename: string; alt: string };
       title: string;
       excerpt: string;
-      date: string;
-      author_name: string;
-      author_image: { filename: string; alt: string };
     };
   }>
-)
-  .slice(0, 3)
-  .map((s) => ({
+).slice(0, 3);
+
+const relatedAuthorMap = await getStoryAuthors(
+  spaceId,
+  relatedStories.map((s) => s.id)
+);
+
+const relatedPosts = relatedStories.map((s) => {
+  const a = relatedAuthorMap.get(s.id) ?? { name: '', avatarUrl: '' };
+  const date = new Date(
+    s.first_published_at ?? s.created_at
+  ).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+  return {
     image: s.content.image?.filename ?? '',
     imageAlt: s.content.image?.alt ?? s.content.title,
     title: s.content.title,
     excerpt: s.content.excerpt,
-    date: s.content.date,
-    authorName: s.content.author_name,
-    authorImage: s.content.author_image?.filename ?? '',
-    authorImageAlt: s.content.author_image?.alt ?? s.content.author_name,
+    date,
+    authorName: a.name,
     href: `/${s.full_slug}`,
-  }));
+  };
+});
 ---
 
 <Layout
@@ -91,17 +116,17 @@ const relatedPosts = (
 >
   <main>
     <PostHeader
-      publishedDate={`Published ${content.date}`}
+      publishedDate={`Published ${publishedDate}`}
       title={content.title}
       excerpt={content.excerpt}
       categories={content.categories ?? []}
       heroImage={content.image.filename}
       heroImageAlt={content.image.alt || content.title}
       body={content.body}
-      authorName={content.author_name}
-      authorAvatar={content.author_image.filename}
-      authorAvatarAlt={content.author_image.alt || content.author_name}
-      authorRole={content.author_role ?? ''}
+      authorName={author.name}
+      authorAvatar={author.avatarUrl}
+      authorAvatarAlt={author.name}
+      authorRole={author.role ?? ''}
     />
     {
       relatedPosts.length > 0 && (

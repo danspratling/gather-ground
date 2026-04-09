@@ -205,27 +205,9 @@ export const WithCalloutAndImage = {
           content: [
             {
               type: 'text',
-              text: 'Below you will find an inline image and a callout block demonstrating all supported rich text block types.',
+              text: 'Below you will find a callout block demonstrating the supported richtext block type.',
             },
           ],
-        },
-        {
-          type: 'blok',
-          attrs: {
-            id: 'img-01',
-            body: [
-              {
-                component: 'inline_image',
-                image: {
-                  filename:
-                    'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=720&q=80',
-                  alt: 'Rolling pasture at dawn',
-                },
-                caption:
-                  'Image courtesy of Unsplash — rolling pasture at dawn.',
-              },
-            ],
-          },
         },
         {
           type: 'blok',

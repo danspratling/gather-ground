@@ -4,6 +4,8 @@
 @import '@fontsource-variable/dm-sans';
 @import '../components/RichText/RichText.css';
 
+@plugin "@tailwindcss/typography";
+
 @custom-variant dark (&:is(.dark *));
 
 /* Gather Ground design tokens — literal values */
