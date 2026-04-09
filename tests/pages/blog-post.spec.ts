@@ -29,9 +29,7 @@ async function getFirstPostUrl(baseURL: string): Promise<string | null> {
     if (!res.ok) {
       if (res.status === 404) return null;
 
-      throw new Error(
-        `Failed to fetch /blog: ${res.status} ${res.statusText}`
-      );
+      throw new Error(`Failed to fetch /blog: ${res.status} ${res.statusText}`);
     }
 
     const html = await res.text();
