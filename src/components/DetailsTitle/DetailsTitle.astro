@@ -1,0 +1,42 @@
+---
+import type { DetailsTitleProps } from './DetailsTitle.types';
+import Label from '@/components/Typography/Label/Label.astro';
+
+type Props = DetailsTitleProps;
+
+const { eyebrow, heading, body, align = 'left', dark = false } = Astro.props;
+
+const isCentered = align === 'center';
+---
+
+<section class:list={[dark ? 'bg-brand-900' : 'bg-off-white', 'py-24']}>
+  <div
+    class:list={[
+      'container flex flex-col gap-5',
+      isCentered ? 'items-center text-center' : 'items-start text-left',
+    ]}
+  >
+    <Label
+      size="sm"
+      text={eyebrow}
+      class={dark ? 'text-brand-300' : 'text-brand-700'}
+    />
+    <h2
+      class:list={[
+        'text-display-md font-semibold tracking-display-md',
+        dark ? 'text-off-white' : 'text-brand-900',
+      ]}
+    >
+      {heading}
+    </h2>
+    <p
+      class:list={[
+        'text-xl font-normal',
+        dark ? 'text-brand-200' : 'text-brand-400',
+        isCentered ? 'max-w-[768px]' : '',
+      ]}
+    >
+      {body}
+    </p>
+  </div>
+</section>
