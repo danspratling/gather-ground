@@ -32,6 +32,7 @@ import { blogCardSchema } from '../src/storyblok/blogCard.ts';
 import { blogHeroSchema } from '../src/storyblok/blogHero.ts';
 import { blogPageSchema } from '../src/storyblok/blogPage.ts';
 import { blogPostSchema } from '../src/storyblok/blogPost.ts';
+import { calloutSchema } from '../src/storyblok/richtextBloks.ts';
 import { blogSectionSchema } from '../src/storyblok/blogSection.ts';
 import { featuredPostSchema } from '../src/storyblok/featuredPost.ts';
 import { bodySchema } from '../src/storyblok/body.ts';
@@ -71,6 +72,7 @@ const schemas = [
   headingSchema,
   inputSchema,
   labelSchema,
+  calloutSchema,
   // Cards
   blogCardSchema,
   productCardSchema,
