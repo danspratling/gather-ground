@@ -11,10 +11,10 @@ export interface ContentIconFeature {
 
 export interface ContentSimpleProps {
   variant: 'simple';
-  icon: string;
+  icon?: string;
   heading: string;
   body: string;
-  features: ContentFeature[];
+  features?: ContentFeature[];
   dark?: boolean;
 }
 

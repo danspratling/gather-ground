@@ -4,9 +4,9 @@ import * as icons from '@untitledui-pro/icons/line';
 
 type Props = Omit<ContentSimpleProps, 'variant'>;
 
-const { icon, heading, body, features, dark = false } = Astro.props;
+const { icon, heading, body, features = [], dark = false } = Astro.props;
 
-const IconComponent = icons[icon as keyof typeof icons];
+const IconComponent = icon ? icons[icon as keyof typeof icons] : null;
 ---
 
 <section class:list={[dark ? 'bg-brand-900' : 'bg-off-white', 'py-24']}>
