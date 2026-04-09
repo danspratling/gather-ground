@@ -25,10 +25,25 @@ async function getFirstPostUrl(baseURL: string): Promise<string | null> {
   // loading a full browser page — faster and does not depend on JavaScript.
   try {
     const res = await fetch(`${baseURL}/blog`);
+
+    if (!res.ok) {
+      if (res.status === 404) return null;
+
+      throw new Error(
+        `Failed to fetch /blog: ${res.status} ${res.statusText}`
+      );
+    }
+
     const html = await res.text();
     const match = html.match(/href="(\/blog\/[^"]+)"/);
     return match ? match[1] : null;
-  } catch {
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message.startsWith('Failed to fetch /blog:')
+    ) {
+      throw error;
+    }
     return null;
   }
 }
@@ -127,18 +142,10 @@ test.describe('blog post page behavior', () => {
     const copyBtn = page.getByRole('button', { name: /copy link/i });
     await expect(copyBtn).toBeVisible();
 
-    // Tab to the button from the start of the page to confirm it is in the
-    // natural tab order (not removed with tabindex="-1").
-    await page.keyboard.press('Tab');
-    const focused = await page.evaluate(() => document.activeElement?.tagName);
     // At minimum, some element must receive focus — full tab traversal would be
-    // brittle, so we just confirm the button itself is focusable via JS.
+    // brittle, so we just confirm the button itself is focusable directly.
     await copyBtn.focus();
-    const isFocused = await page.evaluate(() => {
-      const btn = document.activeElement;
-      return btn?.getAttribute('aria-label')?.toLowerCase().includes('copy');
-    });
-    expect(isFocused).toBe(true);
+    await expect(copyBtn).toBeFocused();
   });
 
   test('social share links open in a new tab', async ({ page }) => {
