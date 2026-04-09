@@ -23,9 +23,10 @@ const hasTrailingIcon = Astro.slots.has('icon-trailing');
 
 const variantClasses = {
   default:
-    'bg-brand-700 border-2 border-brand-600 text-brand-25 hover:bg-brand-600 disabled:bg-gray-100 disabled:border-0 disabled:text-gray-400',
+    'bg-brand-700 border border-brand-600 text-brand-25 hover:bg-brand-600 disabled:bg-gray-100 disabled:border-0 disabled:text-gray-400',
   outline: 'bg-background border border-border text-foreground hover:bg-muted',
-  ghost: 'bg-transparent text-foreground hover:bg-muted',
+  ghost:
+    'bg-transparent border border-transparent text-foreground hover:bg-muted hover:border-muted',
   link: 'text-foreground underline-offset-4 hover:underline',
 };
 

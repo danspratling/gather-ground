@@ -10,6 +10,7 @@ const simpleCenteredProps = {
 
 const meta = {
   title: 'Sections/Call To Action',
+  component: CallToActionSimpleCentered,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',

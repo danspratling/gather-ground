@@ -1,7 +1,10 @@
 ---
 import type { FaqSectionProps } from '@/components/FaqSection/FaqSection.types';
 import Accordion from '@/components/Accordion/Accordion';
-import CallToAction from '@/components/CallToAction/CallToAction.astro';
+import Heading from '@/components/Typography/Heading/Heading.astro';
+import Body from '@/components/Typography/Body/Body.astro';
+import Button from '@/components/Forms/Button/Button.astro';
+import AvatarGroup from '@/components/Avatar/AvatarGroup.astro';
 
 type Props = FaqSectionProps;
 
@@ -23,14 +26,39 @@ const { heading, subCopy, items, cta } = Astro.props;
     </div>
     {
       cta && (
-        <CallToAction
-          heading={cta.heading}
-          body={cta.body}
-          primaryButton={cta.primaryButton}
-          secondaryButton={cta.secondaryButton}
-          avatarGroup={cta.avatarGroup}
-          centered
-        />
+        <div class="flex flex-col items-center text-center gap-8 rounded-2xl bg-secondary-50 px-8 pb-10 pt-8">
+          {cta.avatarGroup && cta.avatarGroup.avatars.length > 0 && (
+            <AvatarGroup
+              avatars={cta.avatarGroup.avatars}
+              size={cta.avatarGroup.size}
+            />
+          )}
+          <div class="flex flex-col gap-4">
+            <Heading
+              as="h3"
+              size="text-xl"
+              weight="semibold"
+              text={cta.heading}
+            />
+            <Body size="md" text={cta.body} class="text-gray-600" />
+          </div>
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
+            {cta.secondaryButton && (
+              <Button
+                label={cta.secondaryButton.label}
+                href={cta.secondaryButton.href}
+                variant={cta.secondaryButton.variant ?? 'outline'}
+                size={cta.secondaryButton.size ?? 'md'}
+              />
+            )}
+            <Button
+              label={cta.primaryButton.label}
+              href={cta.primaryButton.href}
+              variant={cta.primaryButton.variant ?? 'default'}
+              size={cta.primaryButton.size ?? 'md'}
+            />
+          </div>
+        </div>
       )
     }
   </div>
