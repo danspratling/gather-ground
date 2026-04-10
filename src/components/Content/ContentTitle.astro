@@ -1,8 +1,8 @@
 ---
-import type { DetailsTitleProps } from './DetailsTitle.types';
+import type { ContentTitleProps } from './Content.types';
 import Label from '@/components/Typography/Label/Label.astro';
 
-type Props = DetailsTitleProps;
+type Props = Omit<ContentTitleProps, 'variant'>;
 
 const { eyebrow, heading, body, align = 'left', dark = false } = Astro.props;
 

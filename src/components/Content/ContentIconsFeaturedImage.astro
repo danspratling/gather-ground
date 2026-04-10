@@ -1,0 +1,112 @@
+---
+import type { ContentIconsFeaturedImageProps } from './Content.types';
+import * as icons from '@untitledui-pro/icons/line';
+import Label from '@/components/Typography/Label/Label.astro';
+
+type Props = Omit<ContentIconsFeaturedImageProps, 'variant'>;
+
+const {
+  eyebrow,
+  heading,
+  body,
+  features = [],
+  image,
+  dark = false,
+} = Astro.props;
+---
+
+<section class:list="bg-off-white overflow-clip pb-24">
+  <!-- Colored background zone behind content -->
+  <div
+    class:list={[dark ? 'bg-brand-900' : 'bg-brand-25', 'pt-24 pb-40 -mb-24']}
+  >
+    <div class="container">
+      <div class="flex flex-col lg:flex-row gap-16 lg:gap-24">
+        <!-- Left column: eyebrow, heading, body -->
+        <div class="flex flex-col gap-5 flex-1 min-w-0">
+          <Label
+            size="sm"
+            text={eyebrow}
+            class={dark ? 'text-brand-300' : 'text-brand-700'}
+          />
+          <h2
+            class:list={[
+              'text-display-md font-semibold tracking-display-md',
+              dark ? 'text-off-white' : 'text-brand-900',
+            ]}
+          >
+            {heading}
+          </h2>
+          <p
+            class:list={[
+              'text-xl font-normal',
+              dark ? 'text-brand-200' : 'text-brand-600',
+            ]}
+          >
+            {body}
+          </p>
+        </div>
+
+        <!-- Right column: vertical list of icon features -->
+        <div class="flex flex-col gap-12 flex-1 min-w-0">
+          {
+            features.map((feature) => {
+              const FeatureIcon = feature.icon
+                ? icons[feature.icon as keyof typeof icons]
+                : null;
+              return (
+                <div class="flex items-start gap-4">
+                  <div
+                    class:list={[
+                      'flex items-center justify-center rounded-[10px] size-12 shrink-0',
+                      dark ? 'bg-brand-600' : 'bg-brand-50',
+                    ]}
+                  >
+                    {FeatureIcon && (
+                      <FeatureIcon
+                        className={
+                          dark
+                            ? 'size-6 text-brand-50'
+                            : 'size-6 text-brand-600'
+                        }
+                        aria-hidden="true"
+                      />
+                    )}
+                  </div>
+                  <div class="flex flex-col gap-1 pt-2.5">
+                    <h3
+                      class:list={[
+                        'text-lg font-semibold',
+                        dark ? 'text-off-white' : 'text-brand-900',
+                      ]}
+                    >
+                      {feature.heading}
+                    </h3>
+                    <p
+                      class:list={[
+                        'text-md font-normal',
+                        dark ? 'text-brand-300' : 'text-brand-600',
+                      ]}
+                    >
+                      {feature.body}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image zone: sits in outer bg, overlaps colored zone -->
+  <div class="container">
+    <img
+      src={image.src}
+      alt={image.alt}
+      class="w-full rounded-2xl object-cover aspect-[1216/480]"
+      loading="lazy"
+    />
+  </div>
+</section>

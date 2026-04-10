@@ -1,0 +1,25 @@
+---
+import type { ContentProps } from './Content.types';
+import ContentSimple from './ContentSimple.astro';
+import ContentAlternating from './ContentAlternating.astro';
+import ContentIconsFeaturedImage from './ContentIconsFeaturedImage.astro';
+import ContentTitle from './ContentTitle.astro';
+
+type Props = ContentProps;
+
+const props = Astro.props;
+
+const variantMap = {
+  simple: ContentSimple,
+  alternating: ContentAlternating,
+  'icons-featured-image': ContentIconsFeaturedImage,
+  title: ContentTitle,
+} as const;
+
+const Component = variantMap[props.variant];
+const { variant, ...rest } = props;
+---
+
+<Component {...rest}>
+  <slot />
+</Component>
