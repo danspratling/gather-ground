@@ -40,6 +40,8 @@ import { buttonSchema } from '../src/storyblok/button.ts';
 import {
   callToActionSchema,
   callToActionSimpleLeftSchema,
+  callToActionCardCenteredSchema,
+  callToActionCardLeftSchema,
 } from '../src/storyblok/callToAction.ts';
 import { faqSchema } from '../src/storyblok/faq.ts';
 import { faqSectionSchema } from '../src/storyblok/faqSection.ts';
@@ -104,6 +106,8 @@ const schemas = [
   blogSectionSchema,
   callToActionSchema,
   callToActionSimpleLeftSchema,
+  callToActionCardCenteredSchema,
+  callToActionCardLeftSchema,
   contentSimpleSchema,
   contentFeatureItemSchema,
   contentAlternatingSchema,

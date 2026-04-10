@@ -33,6 +33,7 @@ Architecture decision log for the Gather Ground website. Read this before changi
 | ADR-028 | multilink field type + resolveLink() helper       | Storyblok    |
 | ADR-029 | Reference content types for reusable CMS entries  | Storyblok    |
 | ADR-030 | storyblokEditable + mkcert for Visual Editor      | Storyblok    |
+| ADR-031 | Variant mapper stories use the mapper component   | Storybook    |
 
 ---
 
@@ -469,3 +470,17 @@ When you make a decision that future-you (or Claude Code) might question, add it
 
 **Consequence:** What this means for how code should be written day-to-day.
 ```
+
+---
+
+## ADR-031: Variant mapper stories use the mapper component
+
+**Decision:** Storybook stories for variant-mapped components (e.g. `CallToAction`, `Content`) must use the **mapper component** as the meta `component`, not individual sub-components. The `variant` prop is passed in each story's `args`.
+
+**Reasoning:** The Astro Storybook renderer (`@storybook-astro/framework`) uses the meta-level `component` for SSR rendering. Per-story `component:` overrides do not work — every story renders the meta component regardless. Using the mapper ensures each story routes through the `variantMap` and renders the correct sub-component.
+
+**Consequence:**
+
+- One story file per mapper component (e.g. `CallToAction.stories.ts`), not separate files per variant
+- Every story must include `variant` in its `args`
+- The mapper component handles dispatch — stories don't import sub-components directly

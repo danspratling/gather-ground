@@ -14,8 +14,26 @@ export interface CallToActionSimpleLeftProps {
   secondaryCta?: { label: string; href: string };
 }
 
+export interface CallToActionCardCenteredProps {
+  variant: 'card-centered';
+  heading: string;
+  body: string;
+  primaryCta: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
+}
+
+export interface CallToActionCardLeftProps {
+  variant: 'card-left';
+  heading: string;
+  body: string;
+  primaryCta: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
+}
+
 export type CallToActionProps =
   | CallToActionSimpleCenteredProps
-  | CallToActionSimpleLeftProps;
+  | CallToActionSimpleLeftProps
+  | CallToActionCardCenteredProps
+  | CallToActionCardLeftProps;
 
 export default null;
