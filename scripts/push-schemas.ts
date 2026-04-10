@@ -59,6 +59,14 @@ import { testimonialSchema } from '../src/storyblok/testimonial.ts';
 import { testimonialCardSchema } from '../src/storyblok/testimonialCard.ts';
 import { testimonialsSectionSchema } from '../src/storyblok/testimonialsSection.ts';
 import { heroSectionSchema } from '../src/storyblok/heroSection.ts';
+import {
+  contentSimpleSchema,
+  contentFeatureItemSchema,
+  contentAlternatingSchema,
+  contentIconsFeaturedImageSchema,
+  contentIconFeatureSchema,
+  contentTitleSchema,
+} from '../src/storyblok/content.ts';
 
 // --- Collect all schemas ---
 
@@ -92,6 +100,12 @@ const schemas = [
   faqSectionSchema,
   blogSectionSchema,
   callToActionSchema,
+  contentSimpleSchema,
+  contentFeatureItemSchema,
+  contentAlternatingSchema,
+  contentIconsFeaturedImageSchema,
+  contentIconFeatureSchema,
+  contentTitleSchema,
   // Navigation
   headerSchema,
   headerNavLinkSchema,

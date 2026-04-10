@@ -175,4 +175,42 @@ export const contentIconFeatureSchema = {
   },
 };
 
+export const contentTitleSchema = {
+  name: 'content_title',
+  display_name: 'Content — Title',
+  is_root: false,
+  is_nestable: true,
+  schema: {
+    eyebrow: {
+      type: 'text',
+      display_name: 'Eyebrow',
+      required: true,
+    },
+    heading: {
+      type: 'text',
+      display_name: 'Heading',
+      required: true,
+    },
+    body: {
+      type: 'textarea',
+      display_name: 'Body',
+      required: true,
+    },
+    align: {
+      type: 'option',
+      display_name: 'Alignment',
+      default_value: 'left',
+      options: [
+        { value: 'left', name: 'Left' },
+        { value: 'center', name: 'Center' },
+      ],
+    },
+    dark: {
+      type: 'boolean',
+      display_name: 'Dark variant',
+      default_value: false,
+    },
+  },
+};
+
 export default null;

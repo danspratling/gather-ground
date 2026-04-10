@@ -167,3 +167,68 @@ export const IconsFeaturedImageDark = {
     },
   },
 };
+
+const mockTitleProps = {
+  variant: 'title' as const,
+  eyebrow: 'Features',
+  heading: 'Overflowing with useful features',
+  body: 'Powerful, self-serve product and growth analytics to help you convert, engage, and retain more users. Trusted by over 4,000 startups.',
+};
+
+export const TitleLeft = {
+  args: {
+    ...mockTitleProps,
+    align: 'left' as const,
+    dark: false,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=18874-96185',
+    },
+  },
+};
+
+export const TitleCentered = {
+  args: {
+    ...mockTitleProps,
+    heading: 'Beautiful analytics to grow smarter',
+    align: 'center' as const,
+    dark: false,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=18874-95933',
+    },
+  },
+};
+
+export const TitleDark = {
+  args: {
+    ...mockTitleProps,
+    align: 'left' as const,
+    dark: true,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=18874-96433',
+    },
+  },
+};
+
+export const TitleDarkCentered = {
+  args: {
+    ...mockTitleProps,
+    heading: 'Beautiful analytics to grow smarter',
+    align: 'center' as const,
+    dark: true,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=18874-96409',
+    },
+  },
+};

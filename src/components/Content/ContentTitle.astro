@@ -1,8 +1,41 @@
 ---
-/**
- * Stub — implemented on the GG-93 branch.
- * This file exists so the Content.astro mapper can import all variants.
- */
+import type { ContentTitleProps } from './Content.types';
+import Label from '@/components/Typography/Label/Label.astro';
+
+type Props = Omit<ContentTitleProps, 'variant'>;
+
+const { eyebrow, heading, body, align = 'left', dark = false } = Astro.props;
+
+const isCentered = align === 'center';
 ---
 
-<div>ContentTitle — not yet implemented</div>
+<section class:list={[dark ? 'bg-brand-900' : 'bg-off-white', 'py-24']}>
+  <div
+    class:list={[
+      'container flex flex-col gap-5',
+      isCentered ? 'items-center text-center' : 'items-start text-left',
+    ]}
+  >
+    <Label
+      size="sm"
+      text={eyebrow}
+      class={dark ? 'text-brand-300' : 'text-brand-700'}
+    />
+    <h2
+      class:list={[
+        'text-display-md font-semibold tracking-display-md',
+        dark ? 'text-off-white' : 'text-brand-900',
+      ]}
+    >
+      {heading}
+    </h2>
+    <p
+      class:list={[
+        'text-xl font-normal max-w-3xl',
+        dark ? 'text-brand-200' : 'text-brand-400',
+      ]}
+    >
+      {body}
+    </p>
+  </div>
+</section>
