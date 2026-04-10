@@ -33,6 +33,18 @@ const cardLeftProps = {
   secondaryCta: { label: 'Learn more', href: '#' },
 };
 
+const splitImageProps = {
+  variant: 'split-image' as const,
+  heading: 'Join 4,000+ startups growing with Untitled',
+  body: 'Start your 30-day free trial today.',
+  primaryCta: { label: 'Get started', href: '#' },
+  secondaryCta: { label: 'Learn more', href: '#' },
+  image: {
+    src: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=592&h=592&fit=crop',
+    alt: 'Woman with curly hair standing with arms crossed',
+  },
+};
+
 const meta = {
   title: 'Sections/Call To Action',
   component: CallToAction,
@@ -150,6 +162,34 @@ export const CardLeftPrimaryOnly = {
     design: {
       type: 'figma',
       url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1624-435597',
+    },
+  },
+};
+
+export const SplitImage = {
+  args: {
+    ...splitImageProps,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1365-198707',
+    },
+  },
+};
+
+export const SplitImagePrimaryOnly = {
+  args: {
+    variant: 'split-image' as const,
+    heading: splitImageProps.heading,
+    body: splitImageProps.body,
+    primaryCta: splitImageProps.primaryCta,
+    image: splitImageProps.image,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1365-198707',
     },
   },
 };

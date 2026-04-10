@@ -1,0 +1,46 @@
+---
+import type { CallToActionSplitImageProps } from './CallToAction.types';
+import Button from '@/components/Forms/Button/Button.astro';
+
+type Props = Omit<CallToActionSplitImageProps, 'variant'>;
+
+const { heading, body, primaryCta, secondaryCta, image } = Astro.props;
+---
+
+<section class="py-24">
+  <div class="container flex flex-col lg:flex-row items-center gap-16">
+    <div class="flex flex-col gap-12">
+      <div class="flex flex-col gap-6">
+        <h2
+          class="text-display-lg font-semibold tracking-display-lg text-gray-900"
+        >
+          {heading}
+        </h2>
+        <p class="text-xl font-normal text-gray-600">
+          {body}
+        </p>
+      </div>
+      <div class="flex items-center gap-3">
+        {
+          secondaryCta && (
+            <Button
+              label={secondaryCta.label}
+              href={secondaryCta.href}
+              variant="outline"
+            />
+          )
+        }
+        <Button
+          label={primaryCta.label}
+          href={primaryCta.href}
+          variant="default"
+        />
+      </div>
+    </div>
+    <img
+      src={image.src}
+      alt={image.alt}
+      class="w-full lg:flex-1 rounded-2xl object-cover aspect-square"
+    />
+  </div>
+</section>

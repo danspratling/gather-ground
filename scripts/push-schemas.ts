@@ -42,6 +42,7 @@ import {
   callToActionSimpleLeftSchema,
   callToActionCardCenteredSchema,
   callToActionCardLeftSchema,
+  callToActionSplitImageSchema,
 } from '../src/storyblok/callToAction.ts';
 import { faqSchema } from '../src/storyblok/faq.ts';
 import { faqSectionSchema } from '../src/storyblok/faqSection.ts';
@@ -108,6 +109,7 @@ const schemas = [
   callToActionSimpleLeftSchema,
   callToActionCardCenteredSchema,
   callToActionCardLeftSchema,
+  callToActionSplitImageSchema,
   contentSimpleSchema,
   contentFeatureItemSchema,
   contentAlternatingSchema,
