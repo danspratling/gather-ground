@@ -4,6 +4,7 @@ import CallToActionSimpleCentered from './CallToActionSimpleCentered.astro';
 import CallToActionSimpleLeft from './CallToActionSimpleLeft.astro';
 import CallToActionCardCentered from './CallToActionCardCentered.astro';
 import CallToActionCardLeft from './CallToActionCardLeft.astro';
+import CallToActionSplitImage from './CallToActionSplitImage.astro';
 
 type Props = CallToActionProps;
 
@@ -14,6 +15,7 @@ const variantMap = {
   'simple-left': CallToActionSimpleLeft,
   'card-centered': CallToActionCardCentered,
   'card-left': CallToActionCardLeft,
+  'split-image': CallToActionSplitImage,
 } as const;
 
 const Component = variantMap[props.variant];

@@ -30,10 +30,20 @@ export interface CallToActionCardLeftProps {
   secondaryCta?: { label: string; href: string };
 }
 
+export interface CallToActionSplitImageProps {
+  variant: 'split-image';
+  heading: string;
+  body: string;
+  primaryCta: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
+  image: { src: string; alt: string };
+}
+
 export type CallToActionProps =
   | CallToActionSimpleCenteredProps
   | CallToActionSimpleLeftProps
   | CallToActionCardCenteredProps
-  | CallToActionCardLeftProps;
+  | CallToActionCardLeftProps
+  | CallToActionSplitImageProps;
 
 export default null;
