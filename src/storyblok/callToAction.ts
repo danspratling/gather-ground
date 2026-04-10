@@ -1,12 +1,12 @@
 /**
- * Storyblok component schema for CallToAction.
+ * Storyblok component schemas for CallToAction variants.
  *
  * Push to Storyblok via the CLI:
  *   npx storyblok push-components --space 289911665285843
  */
 export const callToActionSchema = {
-  name: 'cta_block',
-  display_name: 'Call To Action',
+  name: 'call_to_action_simple_centered',
+  display_name: 'CTA — Simple Centered',
   is_root: false,
   is_nestable: true,
   schema: {
@@ -17,45 +17,25 @@ export const callToActionSchema = {
     },
     body: {
       type: 'textarea',
-      display_name: 'Body text',
+      display_name: 'Body',
       required: true,
     },
-    primary_button_label: {
-      type: 'text',
-      display_name: 'Primary button label',
-      required: true,
-    },
-    primary_button_href: {
-      type: 'multilink',
-      display_name: 'Primary button URL',
-      required: true,
-    },
-    primary_button_variant: {
-      type: 'option',
-      display_name: 'Primary button variant',
-      default_value: 'default',
-      options: [
-        { value: 'default', name: 'Primary (filled)' },
-        { value: 'outline', name: 'Outline' },
-        { value: 'ghost', name: 'Ghost' },
-        { value: 'link', name: 'Link' },
-      ],
-    },
-    secondary_button_label: {
-      type: 'text',
-      display_name: 'Secondary button label',
-      description: 'Leave blank to hide the secondary button.',
-    },
-    secondary_button_href: {
-      type: 'multilink',
-      display_name: 'Secondary button URL',
-    },
-    avatars: {
+    primary_cta: {
       type: 'bloks',
-      display_name: 'Avatars',
-      description: 'Optional group of avatars shown beneath the buttons.',
+      display_name: 'Primary CTA',
       restrict_components: true,
-      component_whitelist: ['avatar'],
+      component_whitelist: ['button'],
+      minimum: 1,
+      maximum: 1,
+    },
+    secondary_cta: {
+      type: 'bloks',
+      display_name: 'Secondary CTA',
+      restrict_components: true,
+      component_whitelist: ['button'],
+      maximum: 1,
     },
   },
-} as const;
+};
+
+export default null;
