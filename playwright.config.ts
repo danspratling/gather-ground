@@ -1,14 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const isCI = !!process.env.CI;
+const baseURL = isCI ? 'http://localhost:4321' : 'https://localhost:4321';
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  forbidOnly: isCI,
+  retries: isCI ? 2 : 0,
+  workers: isCI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'https://localhost:4321',
+    baseURL,
     ignoreHTTPSErrors: true,
     trace: 'on-first-retry',
   },
@@ -19,11 +22,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: process.env.CI
-      ? 'npm run build && npm run preview'
-      : 'npm run dev',
-    url: 'https://localhost:4321',
+    command: isCI ? 'npm run build && npm run preview' : 'npm run dev',
+    url: baseURL,
     ignoreHTTPSErrors: true,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !isCI,
   },
 });
