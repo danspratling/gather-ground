@@ -1,6 +1,7 @@
 ---
 import type { CallToActionProps } from './CallToAction.types';
 import CallToActionSimpleCentered from './CallToActionSimpleCentered.astro';
+import CallToActionSimpleLeft from './CallToActionSimpleLeft.astro';
 
 type Props = CallToActionProps;
 
@@ -8,6 +9,7 @@ const props = Astro.props;
 
 const variantMap = {
   'simple-centered': CallToActionSimpleCentered,
+  'simple-left': CallToActionSimpleLeft,
 } as const;
 
 const Component = variantMap[props.variant];
