@@ -1,9 +1,8 @@
 // @ts-expect-error — .astro files have no TypeScript declarations
-import CallToActionSimpleCentered from '@/components/CallToAction/CallToActionSimpleCentered.astro';
-// @ts-expect-error — .astro files have no TypeScript declarations
-import CallToActionSimpleLeft from '@/components/CallToAction/CallToActionSimpleLeft.astro';
+import CallToAction from '@/components/CallToAction/CallToAction.astro';
 
 const simpleCenteredProps = {
+  variant: 'simple-centered' as const,
   heading: 'Start your free trial',
   body: 'Join over 4,000+ startups already growing with Untitled.',
   primaryCta: { label: 'Get started', href: '#' },
@@ -11,7 +10,24 @@ const simpleCenteredProps = {
 };
 
 const simpleLeftProps = {
+  variant: 'simple-left' as const,
   heading: 'Start your free trial',
+  body: 'Join over 4,000+ startups already growing with Untitled.',
+  primaryCta: { label: 'Get started', href: '#' },
+  secondaryCta: { label: 'Learn more', href: '#' },
+};
+
+const cardCenteredProps = {
+  variant: 'card-centered' as const,
+  heading: 'Start your 30-day free trial',
+  body: 'Join over 4,000+ startups already growing with Untitled.',
+  primaryCta: { label: 'Get started', href: '#' },
+  secondaryCta: { label: 'Learn more', href: '#' },
+};
+
+const cardLeftProps = {
+  variant: 'card-left' as const,
+  heading: 'Start your 30-day free trial',
   body: 'Join over 4,000+ startups already growing with Untitled.',
   primaryCta: { label: 'Get started', href: '#' },
   secondaryCta: { label: 'Learn more', href: '#' },
@@ -19,7 +35,7 @@ const simpleLeftProps = {
 
 const meta = {
   title: 'Sections/Call To Action',
-  component: CallToActionSimpleCentered,
+  component: CallToAction,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
@@ -31,7 +47,6 @@ const meta = {
 export default meta;
 
 export const SimpleCentered = {
-  component: CallToActionSimpleCentered,
   args: {
     ...simpleCenteredProps,
   },
@@ -44,8 +59,8 @@ export const SimpleCentered = {
 };
 
 export const SimpleCenteredPrimaryOnly = {
-  component: CallToActionSimpleCentered,
   args: {
+    variant: 'simple-centered' as const,
     heading: simpleCenteredProps.heading,
     body: simpleCenteredProps.body,
     primaryCta: simpleCenteredProps.primaryCta,
@@ -59,7 +74,6 @@ export const SimpleCenteredPrimaryOnly = {
 };
 
 export const SimpleLeft = {
-  component: CallToActionSimpleLeft,
   args: {
     ...simpleLeftProps,
   },
@@ -72,8 +86,8 @@ export const SimpleLeft = {
 };
 
 export const SimpleLeftPrimaryOnly = {
-  component: CallToActionSimpleLeft,
   args: {
+    variant: 'simple-left' as const,
     heading: simpleLeftProps.heading,
     body: simpleLeftProps.body,
     primaryCta: simpleLeftProps.primaryCta,
@@ -82,6 +96,60 @@ export const SimpleLeftPrimaryOnly = {
     design: {
       type: 'figma',
       url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1365-198680',
+    },
+  },
+};
+
+export const CardCentered = {
+  args: {
+    ...cardCenteredProps,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1624-435579',
+    },
+  },
+};
+
+export const CardCenteredPrimaryOnly = {
+  args: {
+    variant: 'card-centered' as const,
+    heading: cardCenteredProps.heading,
+    body: cardCenteredProps.body,
+    primaryCta: cardCenteredProps.primaryCta,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1624-435579',
+    },
+  },
+};
+
+export const CardLeft = {
+  args: {
+    ...cardLeftProps,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1624-435597',
+    },
+  },
+};
+
+export const CardLeftPrimaryOnly = {
+  args: {
+    variant: 'card-left' as const,
+    heading: cardLeftProps.heading,
+    body: cardLeftProps.body,
+    primaryCta: cardLeftProps.primaryCta,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1624-435597',
     },
   },
 };
