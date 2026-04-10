@@ -1,66 +1,21 @@
 ---
-import { cn } from '@/lib/utils';
-import type { CallToActionProps } from '@/components/CallToAction/CallToAction.types';
-import Heading from '@/components/Typography/Heading/Heading.astro';
-import Body from '@/components/Typography/Body/Body.astro';
-import Button from '@/components/Forms/Button/Button.astro';
-import AvatarGroup from '@/components/Avatar/AvatarGroup.astro';
+import type { CallToActionProps } from './CallToAction.types';
+import CallToActionSimpleCentered from './CallToActionSimpleCentered.astro';
+import CallToActionSimpleLeft from './CallToActionSimpleLeft.astro';
 
 type Props = CallToActionProps;
 
-const {
-  heading,
-  body,
-  primaryButton,
-  secondaryButton,
-  avatarGroup,
-  centered = false,
-  class: className,
-} = Astro.props;
+const props = Astro.props;
+
+const variantMap = {
+  'simple-centered': CallToActionSimpleCentered,
+  'simple-left': CallToActionSimpleLeft,
+} as const;
+
+const Component = variantMap[props.variant];
+const { variant, ...rest } = props;
 ---
 
-<div
-  class={cn(
-    'flex flex-col gap-8 rounded-2xl bg-secondary-50 px-8 pb-10 pt-8',
-    centered && 'items-center text-center',
-    className
-  )}
->
-  {
-    centered && avatarGroup && avatarGroup.avatars.length > 0 && (
-      <AvatarGroup avatars={avatarGroup.avatars} size={avatarGroup.size} />
-    )
-  }
-  <div class="flex flex-col gap-4">
-    <Heading as="h3" size="text-xl" weight="semibold" text={heading} />
-    <Body size="md" text={body} class="text-gray-600" />
-  </div>
-  <div
-    class={cn(
-      'flex flex-col gap-3 sm:flex-row sm:items-center',
-      centered && 'sm:justify-center'
-    )}
-  >
-    {
-      secondaryButton && (
-        <Button
-          label={secondaryButton.label}
-          href={secondaryButton.href}
-          variant={secondaryButton.variant ?? 'outline'}
-          size={secondaryButton.size ?? 'md'}
-        />
-      )
-    }
-    <Button
-      label={primaryButton.label}
-      href={primaryButton.href}
-      variant={primaryButton.variant ?? 'default'}
-      size={primaryButton.size ?? 'md'}
-    />
-  </div>
-  {
-    !centered && avatarGroup && avatarGroup.avatars.length > 0 && (
-      <AvatarGroup avatars={avatarGroup.avatars} size={avatarGroup.size} />
-    )
-  }
-</div>
+<Component {...rest}>
+  <slot />
+</Component>

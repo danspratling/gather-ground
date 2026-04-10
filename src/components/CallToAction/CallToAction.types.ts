@@ -1,14 +1,21 @@
-import type { ButtonProps } from '@/components/Forms/Button/Button.types';
-import type { AvatarGroupProps } from '@/components/Avatar/Avatar.types';
-
-export interface CallToActionProps {
+export interface CallToActionSimpleCenteredProps {
+  variant: 'simple-centered';
   heading: string;
   body: string;
-  primaryButton: ButtonProps;
-  secondaryButton?: ButtonProps;
-  avatarGroup?: AvatarGroupProps;
-  centered?: boolean;
-  class?: string;
+  primaryCta: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
 }
+
+export interface CallToActionSimpleLeftProps {
+  variant: 'simple-left';
+  heading: string;
+  body: string;
+  primaryCta: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
+}
+
+export type CallToActionProps =
+  | CallToActionSimpleCenteredProps
+  | CallToActionSimpleLeftProps;
 
 export default null;

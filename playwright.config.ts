@@ -8,7 +8,8 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:4321',
+    baseURL: 'https://localhost:4321',
+    ignoreHTTPSErrors: true,
     trace: 'on-first-retry',
   },
   projects: [
@@ -21,7 +22,8 @@ export default defineConfig({
     command: process.env.CI
       ? 'npm run build && npm run preview'
       : 'npm run dev',
-    url: 'http://localhost:4321',
+    url: 'https://localhost:4321',
+    ignoreHTTPSErrors: true,
     reuseExistingServer: !process.env.CI,
   },
 });

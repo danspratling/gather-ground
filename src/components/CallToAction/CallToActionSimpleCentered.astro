@@ -1,0 +1,39 @@
+---
+import type { CallToActionSimpleCenteredProps } from './CallToAction.types';
+import Button from '@/components/Forms/Button/Button.astro';
+
+type Props = Omit<CallToActionSimpleCenteredProps, 'variant'>;
+
+const { heading, body, primaryCta, secondaryCta } = Astro.props;
+---
+
+<section class="py-24">
+  <div class="container flex flex-col items-center text-center gap-8">
+    <div class="flex flex-col gap-5 max-w-3xl">
+      <h2
+        class="text-display-md font-semibold tracking-display-md text-brand-900"
+      >
+        {heading}
+      </h2>
+      <p class="text-xl font-normal text-gray-600 max-w-2xl mx-auto">
+        {body}
+      </p>
+    </div>
+    <div class="flex flex-col sm:flex-row items-center gap-3">
+      {
+        secondaryCta && (
+          <Button
+            label={secondaryCta.label}
+            href={secondaryCta.href}
+            variant="outline"
+          />
+        )
+      }
+      <Button
+        label={primaryCta.label}
+        href={primaryCta.href}
+        variant="default"
+      />
+    </div>
+  </div>
+</section>
