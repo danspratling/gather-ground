@@ -32,6 +32,7 @@ import { blogCardSchema } from '../src/storyblok/blogCard.ts';
 import { blogHeroSchema } from '../src/storyblok/blogHero.ts';
 import { blogPageSchema } from '../src/storyblok/blogPage.ts';
 import { blogPostSchema } from '../src/storyblok/blogPost.ts';
+import { calloutSchema } from '../src/storyblok/richtextBloks.ts';
 import { blogSectionSchema } from '../src/storyblok/blogSection.ts';
 import { featuredPostSchema } from '../src/storyblok/featuredPost.ts';
 import { bodySchema } from '../src/storyblok/body.ts';
@@ -58,6 +59,14 @@ import { testimonialSchema } from '../src/storyblok/testimonial.ts';
 import { testimonialCardSchema } from '../src/storyblok/testimonialCard.ts';
 import { testimonialsSectionSchema } from '../src/storyblok/testimonialsSection.ts';
 import { heroSectionSchema } from '../src/storyblok/heroSection.ts';
+import {
+  contentSimpleSchema,
+  contentFeatureItemSchema,
+  contentAlternatingSchema,
+  contentIconsFeaturedImageSchema,
+  contentIconFeatureSchema,
+  contentTitleSchema,
+} from '../src/storyblok/content.ts';
 
 // --- Collect all schemas ---
 
@@ -71,6 +80,7 @@ const schemas = [
   headingSchema,
   inputSchema,
   labelSchema,
+  calloutSchema,
   // Cards
   blogCardSchema,
   productCardSchema,
@@ -90,6 +100,12 @@ const schemas = [
   faqSectionSchema,
   blogSectionSchema,
   callToActionSchema,
+  contentSimpleSchema,
+  contentFeatureItemSchema,
+  contentAlternatingSchema,
+  contentIconsFeaturedImageSchema,
+  contentIconFeatureSchema,
+  contentTitleSchema,
   // Navigation
   headerSchema,
   headerNavLinkSchema,

@@ -30,23 +30,6 @@ export const blogPostSchema = {
       display_name: 'Excerpt',
       required: true,
     },
-    date: {
-      type: 'text',
-      display_name: 'Publish date',
-      required: true,
-      description: 'Displayed as-is (e.g. "12 Mar 2026").',
-    },
-    author_name: {
-      type: 'text',
-      display_name: 'Author name',
-      required: true,
-    },
-    author_image: {
-      type: 'asset',
-      display_name: 'Author photo',
-      required: true,
-      filetypes: ['images'],
-    },
     categories: {
       type: 'options',
       display_name: 'Categories',
@@ -58,10 +41,8 @@ export const blogPostSchema = {
       required: true,
       description:
         'Full article body. Supports headings, blockquotes, lists, inline images, and callout blocks.',
-    },
-    author_role: {
-      type: 'text',
-      display_name: 'Author role / title',
+      allow_target_types: ['blok'],
+      component_whitelist: ['callout'],
     },
   },
 } as const;
