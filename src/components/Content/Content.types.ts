@@ -34,7 +34,7 @@ export interface ContentIconsFeaturedImageProps {
   eyebrow: string;
   heading: string;
   body: string;
-  features: ContentIconFeature[];
+  features?: ContentIconFeature[];
   image: { src: string; alt: string };
   dark?: boolean;
 }

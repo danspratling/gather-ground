@@ -120,3 +120,50 @@ export const AlternatingDark = {
     },
   },
 };
+
+const mockIconFeatures = [
+  {
+    icon: 'MessageChatCircle',
+    heading: 'Share team inboxes',
+    body: 'Whether you have a team of 2 or 200, our shared team inboxes keep everyone on the same page and in the loop.',
+  },
+  {
+    icon: 'ZapFast',
+    heading: 'Deliver instant answers',
+    body: 'An all-in-one customer service platform that helps you balance everything your customers need to be happy.',
+  },
+];
+
+export const IconsFeaturedImage = {
+  args: {
+    variant: 'icons-featured-image' as const,
+    eyebrow: 'New feature',
+    heading: 'Introducing team inboxes',
+    body: 'Powerful, self-serve product and growth analytics to help you convert, engage, and retain more users. Trusted by over 4,000 startups.',
+    features: mockIconFeatures,
+    image: {
+      src: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1216&h=480&fit=crop',
+      alt: 'Modern workspace with computer',
+    },
+    dark: false,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1344-25',
+    },
+  },
+};
+
+export const IconsFeaturedImageDark = {
+  args: {
+    ...IconsFeaturedImage.args,
+    dark: true,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=18874-96273',
+    },
+  },
+};
