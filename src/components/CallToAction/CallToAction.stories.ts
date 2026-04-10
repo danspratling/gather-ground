@@ -1,90 +1,155 @@
-// @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
-// See: https://storybook-astro.org/writing-stories/
-import { expect, within } from 'storybook/test';
-
 // @ts-expect-error — .astro files have no TypeScript declarations
 import CallToAction from '@/components/CallToAction/CallToAction.astro';
+
+const simpleCenteredProps = {
+  variant: 'simple-centered' as const,
+  heading: 'Start your free trial',
+  body: 'Join over 4,000+ startups already growing with Untitled.',
+  primaryCta: { label: 'Get started', href: '#' },
+  secondaryCta: { label: 'Learn more', href: '#' },
+};
+
+const simpleLeftProps = {
+  variant: 'simple-left' as const,
+  heading: 'Start your free trial',
+  body: 'Join over 4,000+ startups already growing with Untitled.',
+  primaryCta: { label: 'Get started', href: '#' },
+  secondaryCta: { label: 'Learn more', href: '#' },
+};
+
+const cardCenteredProps = {
+  variant: 'card-centered' as const,
+  heading: 'Start your 30-day free trial',
+  body: 'Join over 4,000+ startups already growing with Untitled.',
+  primaryCta: { label: 'Get started', href: '#' },
+  secondaryCta: { label: 'Learn more', href: '#' },
+};
+
+const cardLeftProps = {
+  variant: 'card-left' as const,
+  heading: 'Start your 30-day free trial',
+  body: 'Join over 4,000+ startups already growing with Untitled.',
+  primaryCta: { label: 'Get started', href: '#' },
+  secondaryCta: { label: 'Learn more', href: '#' },
+};
 
 const meta = {
   title: 'Sections/Call To Action',
   component: CallToAction,
   tags: ['autodocs'],
   parameters: {
-    layout: 'padded',
+    layout: 'fullscreen',
     a11y: { disable: false },
-    design: {
-      type: 'figma',
-      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1647-392826',
-    },
+    chromatic: { viewports: [375, 1440] },
   },
 };
 
 export default meta;
 
-export const Default = {
+export const SimpleCentered = {
   args: {
-    heading: 'Still have questions?',
-    body: "Can't find the answer you're looking for? Get in touch with our team — we're happy to help.",
-    primaryButton: {
-      label: 'Get in touch',
-      href: '#',
-      variant: 'default' as const,
-      size: 'md' as const,
-    },
+    ...simpleCenteredProps,
   },
-  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
-    const canvas = within(canvasElement);
-    await expect(canvas.getByText('Still have questions?')).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('link', { name: 'Get in touch' })
-    ).toBeInTheDocument();
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1365-198678',
+    },
   },
 };
 
-export const WithSecondaryButton = {
+export const SimpleCenteredPrimaryOnly = {
   args: {
-    heading: 'Still have questions?',
-    body: "Can't find the answer you're looking for? Get in touch with our team — we're happy to help.",
-    primaryButton: {
-      label: 'Get in touch',
-      href: '#',
-      variant: 'default' as const,
-      size: 'md' as const,
-    },
-    secondaryButton: {
-      label: 'Read the FAQ',
-      href: '#faq',
-      variant: 'outline' as const,
-      size: 'md' as const,
-    },
+    variant: 'simple-centered' as const,
+    heading: simpleCenteredProps.heading,
+    body: simpleCenteredProps.body,
+    primaryCta: simpleCenteredProps.primaryCta,
   },
-  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
-    const canvas = within(canvasElement);
-    await expect(
-      canvas.getByRole('link', { name: 'Get in touch' })
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('link', { name: 'Read the FAQ' })
-    ).toBeInTheDocument();
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1365-198678',
+    },
   },
 };
 
-export const WithAvatars = {
+export const SimpleLeft = {
   args: {
-    heading: 'Still have questions?',
-    body: "Can't find the answer you're looking for? Get in touch with our team — we're happy to help.",
-    primaryButton: {
-      label: 'Get in touch',
-      href: '#',
-      variant: 'default' as const,
-      size: 'md' as const,
+    ...simpleLeftProps,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1365-198680',
     },
-    avatarGroup: {
-      avatars: [
-        { src: 'https://i.pravatar.cc/150?img=1', alt: 'Team member 1' },
-        { src: 'https://i.pravatar.cc/150?img=2', alt: 'Team member 2' },
-        { src: 'https://i.pravatar.cc/150?img=3', alt: 'Team member 3' },
-      ],
+  },
+};
+
+export const SimpleLeftPrimaryOnly = {
+  args: {
+    variant: 'simple-left' as const,
+    heading: simpleLeftProps.heading,
+    body: simpleLeftProps.body,
+    primaryCta: simpleLeftProps.primaryCta,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1365-198680',
+    },
+  },
+};
+
+export const CardCentered = {
+  args: {
+    ...cardCenteredProps,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1624-435579',
+    },
+  },
+};
+
+export const CardCenteredPrimaryOnly = {
+  args: {
+    variant: 'card-centered' as const,
+    heading: cardCenteredProps.heading,
+    body: cardCenteredProps.body,
+    primaryCta: cardCenteredProps.primaryCta,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1624-435579',
+    },
+  },
+};
+
+export const CardLeft = {
+  args: {
+    ...cardLeftProps,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1624-435597',
+    },
+  },
+};
+
+export const CardLeftPrimaryOnly = {
+  args: {
+    variant: 'card-left' as const,
+    heading: cardLeftProps.heading,
+    body: cardLeftProps.body,
+    primaryCta: cardLeftProps.primaryCta,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1624-435597',
     },
   },
 };

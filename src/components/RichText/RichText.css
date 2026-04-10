@@ -15,7 +15,7 @@
 }
 
 .rt blockquote {
-  @apply border-l-2 border-brand-700 pl-5 py-12 flex flex-col gap-8;
+  @apply border-l-[3px] border-brand-700 pl-5 my-12 flex flex-col gap-8;
 }
 
 .rt blockquote p {
@@ -44,4 +44,27 @@
 
 .rt li > p {
   @apply mb-0;
+}
+
+/* Callout blok embedded in richtext */
+.rt .bg-secondary-50 {
+  @apply my-12;
+}
+
+.rt .bg-secondary-50 > :first-child {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* Native Storyblok richtext image (figure + optional figcaption) */
+.rt img {
+  @apply w-full rounded-xl object-cover;
+}
+
+.rt figure {
+  @apply py-12;
+}
+
+.rt figcaption {
+  @apply flex items-center gap-1.5 mt-4 text-sm text-gray-600;
 }

@@ -12,27 +12,33 @@ const {
   type = 'button',
   disabled = false,
   loading = false,
+  iconOnly = false,
   class: className,
+  ...rest
 } = Astro.props;
 
 const isDisabled = disabled || loading;
+const hasLeadingIcon = Astro.slots.has('icon-leading');
+const hasTrailingIcon = Astro.slots.has('icon-trailing');
 
 const variantClasses = {
-  default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+  default:
+    'bg-brand-700 border border-brand-600 text-brand-25 hover:bg-brand-600 disabled:bg-gray-100 disabled:border-0 disabled:text-gray-400',
   outline: 'bg-background border border-border text-foreground hover:bg-muted',
-  ghost: 'bg-transparent text-foreground hover:bg-muted',
+  ghost:
+    'bg-transparent border border-transparent text-foreground hover:bg-muted hover:border-muted',
   link: 'text-foreground underline-offset-4 hover:underline',
 };
 
 const sizeClasses = {
-  sm: 'px-3 py-2 text-sm',
-  md: 'px-3.5 py-2.5 text-sm',
-  lg: 'px-4.5 py-3 text-base',
-  xl: 'px-5 py-3 text-base',
+  sm: iconOnly ? 'p-2 text-sm' : 'px-3 py-2 text-sm',
+  md: iconOnly ? 'p-2.5 text-sm' : 'px-3.5 py-2.5 text-sm',
+  lg: iconOnly ? 'p-3 text-base' : 'px-4.5 py-3 text-base',
+  xl: iconOnly ? 'p-3 text-base' : 'px-5 py-3 text-base',
 };
 
 const classes = cn(
-  'inline-flex items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition-colors',
+  'inline-flex items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition-colors cursor-pointer',
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring',
   'disabled:pointer-events-none disabled:opacity-50',
   variantClasses[variant],
@@ -48,6 +54,7 @@ const classes = cn(
       class={classes}
       aria-disabled={isDisabled || undefined}
       aria-busy={loading || undefined}
+      {...rest}
     >
       {loading && (
         <span
@@ -55,7 +62,9 @@ const classes = cn(
           aria-hidden="true"
         />
       )}
-      {label}
+      {hasLeadingIcon && <slot name="icon-leading" />}
+      {!iconOnly && label}
+      {hasTrailingIcon && <slot name="icon-trailing" />}
       {loading && <span class="sr-only">Loading</span>}
     </a>
   ) : (
@@ -64,6 +73,7 @@ const classes = cn(
       class={classes}
       disabled={isDisabled}
       aria-busy={loading || undefined}
+      {...rest}
     >
       {loading && (
         <span
@@ -71,7 +81,9 @@ const classes = cn(
           aria-hidden="true"
         />
       )}
-      {label}
+      {hasLeadingIcon && <slot name="icon-leading" />}
+      {!iconOnly && label}
+      {hasTrailingIcon && <slot name="icon-trailing" />}
       {loading && <span class="sr-only">Loading</span>}
     </button>
   )
