@@ -53,4 +53,5 @@ interface ImportMetaEnv {
   readonly STORYBLOK_TOKEN: string;
   readonly STORYBLOK_SPACE_ID: string;
   readonly PUBLIC_STORYBLOK_TOKEN: string;
+  readonly STORYBLOK_PERSONAL_TOKEN: string;
 }
