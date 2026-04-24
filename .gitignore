@@ -35,8 +35,6 @@ storybook-server/
 /playwright/.auth/
 /.playwright-mcp/
 
-# Storyblok CLI generated output
-.storyblok/
 *.png
 
 # Vercel build output

@@ -44,10 +44,14 @@ const { slug } = Astro.params;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
   .href;
 
-const { data: post } = await loadQuery<BlogPost>({
+const { data: post } = await loadQuery<BlogPost | null>({
   query: blogPostBySlugQuery,
   params: { slug },
 });
+
+if (!post) {
+  return Astro.redirect('/blog');
+}
 
 const formatDate = (date: string | undefined) =>
   date

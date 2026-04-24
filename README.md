@@ -2,7 +2,7 @@
 
 Marketing website for Gather Ground — a heritage-breed family farm in rural Iowa.
 
-Built with Astro, Tailwind CSS v4, shadcn/ui, and Storyblok.
+Built with Astro, Tailwind CSS v4, shadcn/ui, and Sanity.
 
 ## First-time setup
 

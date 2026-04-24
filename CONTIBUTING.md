@@ -9,7 +9,7 @@ How to contribute to the Gather Ground website codebase. Read this before openin
 This project has two kinds of contribution with different checklists:
 
 - **UI components** — primitive building blocks (`Button`, `Badge`, `Carousel`, etc.) that live in `src/components/` and appear in Storybook
-- **Page sections** — composed sections that assemble UI components into full-width layouts (`HeroSection`, `FeaturesSection`, `CtaSection`, etc.) driven by Storyblok content
+- **Page sections** — composed sections that assemble UI components into full-width layouts (`HeroSection`, `FeaturesSection`, `CtaSection`, etc.) driven by Sanity content
 
 Read the relevant section below for the one you're working on.
 
@@ -25,20 +25,20 @@ These are non-negotiable. A PR missing any item will not be merged.
 | 2   | TypeScript props interface | `src/components/[Name]/[Name].types.ts` (co-located, exported) |
 | 3   | Storybook story            | `src/components/[Name]/[Name].stories.ts` (co-located)         |
 | 4   | Story interaction test     | `play` function inside the story file                          |
-| 5   | Storyblok schema           | `src/storyblok/[name].ts`                                      |
+| 5   | Sanity schema              | `src/sanity/schemas/[name].ts`                                 |
 | 6   | Page integration           | Component rendered in a page or layout                         |
 
 ### Notes on each
 
 **Component file:** Use `.astro` for static components, `.tsx` React island for anything requiring client-side interactivity. All three files — component, types, and story — live together in `src/components/[Name]/`. The component imports its props type from its co-located `[Name].types.ts`.
 
-**TypeScript interface:** Write this first, before the markup. It is the contract between the component, the story, and the Storyblok schema — all three must stay in sync.
+**TypeScript interface:** Write this first, before the markup. It is the contract between the component, the story, and the Sanity schema — all three must stay in sync.
 
 **Storybook story:** Must include a `Default` story and at least one variant that demonstrates a meaningful difference (e.g. with/without optional props, different visual states).
 
 **Story interaction test:** Use `@storybook/test` (`userEvent`, `expect`) in a `play` function. For purely static components, a snapshot-style test that confirms rendering is acceptable. Do not use Playwright inside story files.
 
-**Storyblok schema:** Field names must be `snake_case`. They must map 1:1 to the TypeScript props interface. Never create schemas manually in the Storyblok dashboard — push via CLI.
+**Sanity schema:** Field names match the TypeScript props 1:1 (camelCase). Schemas live in `src/sanity/schemas/` and are loaded directly by the embedded Studio at `/studio` — no push step required.
 
 **Page integration:** The component must appear somewhere on the real site, not just in Storybook. For section components this means `index.astro`. For layout components this means `Layout.astro`.
 
@@ -48,14 +48,14 @@ These are non-negotiable. A PR missing any item will not be merged.
 
 Page sections compose existing UI components into CMS-driven layouts. The workflow and deliverables differ from UI components.
 
-| #   | Deliverable                | Location                                                       |
-| --- | -------------------------- | -------------------------------------------------------------- |
-| 1   | Section component file     | `src/components/[Name]/[Name].astro` (always `.astro`)         |
-| 2   | TypeScript props interface | `src/components/[Name]/[Name].types.ts` (co-located, exported) |
-| 3   | Storybook story            | `src/components/[Name]/[Name].stories.ts` (co-located)         |
-| 4   | Storyblok schema           | `src/storyblok/[name].ts`                                      |
-| 5   | Page integration           | Section rendered in `src/pages/index.astro` (or relevant page) |
-| 6   | Playwright tests           | `tests/pages/[pageName].spec.ts` — structural + behavioral     |
+| #   | Deliverable                | Location                                                           |
+| --- | -------------------------- | ------------------------------------------------------------------ |
+| 1   | Section component file     | `src/components/[Name]/[Name].astro` (always `.astro`)             |
+| 2   | TypeScript props interface | `src/components/[Name]/[Name].types.ts` (co-located, exported)     |
+| 3   | Storybook story            | `src/components/[Name]/[Name].stories.ts` (co-located)             |
+| 4   | Sanity schema              | `src/sanity/schemas/[name].ts`                                     |
+| 5   | Page integration           | Section rendered in `src/pages/[...slug].astro` (or relevant page) |
+| 6   | Playwright tests           | `tests/pages/[pageName].spec.ts` — structural + behavioral         |
 
 Note: page sections rarely need a play function — the composed UI components carry their own. Add one only if the section introduces interaction that isn't tested by any sub-component (e.g. a section-level animation trigger, or a layout-level keyboard behaviour).
 
@@ -63,13 +63,13 @@ Note: page sections rarely need a play function — the composed UI components c
 
 **Section component:** Always `.astro` — sections are static server-rendered layouts. Only introduce a co-located React island (`.tsx`) if the section contains interactive behaviour that cannot be handled by an existing UI component.
 
-**TypeScript interface:** Write this first. Props map 1:1 to Storyblok schema fields (using `camelCase` in TypeScript, `snake_case` in the schema). Data is received as props from the Astro page frontmatter — never fetched inside the section.
+**TypeScript interface:** Write this first. Props map 1:1 to Sanity schema fields (camelCase in both). Data is received as props from the Astro page frontmatter — never fetched inside the section.
 
-**Storybook story:** Provide realistic hardcoded mock data as story args — do not fetch from Storyblok inside stories. The story's purpose is visual documentation and Chromatic snapshot coverage. A `Default` story with representative content is sufficient; add variants for meaningful layout differences (e.g. with/without an optional `badge` field, short vs long copy). Play functions are not required but are welcome if the section introduces interaction that isn't already tested by a sub-component — do not duplicate a play function that exists on a composed component.
+**Storybook story:** Provide realistic hardcoded mock data as story args — do not fetch from Sanity inside stories. The story's purpose is visual documentation and Chromatic snapshot coverage. A `Default` story with representative content is sufficient; add variants for meaningful layout differences (e.g. with/without an optional `badge` field, short vs long copy). Play functions are not required but are welcome if the section introduces interaction that isn't already tested by a sub-component — do not duplicate a play function that exists on a composed component.
 
-**Storyblok schema:** Field names must be `snake_case`. Push via CLI, never via the Storyblok dashboard.
+**Sanity schema:** Define the schema in `src/sanity/schemas/[name].ts` and register it in `src/sanity/schemas/index.ts`. The embedded Studio picks it up automatically on the next dev server reload.
 
-**Page integration:** The section must be rendered in the real page (`index.astro`) receiving live Storyblok data. Verify it renders correctly in the Vercel preview on the PR.
+**Page integration:** The section must be rendered by `[...slug].astro` (or the relevant page) receiving live Sanity data via `loadQuery`. Verify it renders correctly in the Vercel preview on the PR.
 
 **Playwright tests:** Add structural and behavioral tests for the section to the relevant page spec. See the testing rules below and `tests/pages/homepage.spec.ts` for examples. Never assert on CMS content — assert on structure and behavior only (ADR-020).
 
@@ -80,9 +80,9 @@ Note: page sections rarely need a play function — the composed UI components c
 3. **Create the branch** using Linear's generated branch name
 4. **Write the TypeScript interface first** — `src/components/[Name]/[Name].types.ts` (add `export default null` at the end)
 5. **Build the section component** — `src/components/[Name]/[Name].astro`, using only design tokens and existing UI components
-6. **Write the Storybook story** — `src/components/[Name]/[Name].stories.ts` with hardcoded mock props; no live Storyblok data
-7. **Write the Storyblok schema** — `src/storyblok/[name].ts`, matching the TypeScript interface
-8. **Integrate into the page** — import and render the section in `index.astro`, wired to Storyblok data
+6. **Write the Storybook story** — `src/components/[Name]/[Name].stories.ts` with hardcoded mock props; no live Sanity data
+7. **Write the Sanity schema** — `src/sanity/schemas/[name].ts` and register it in `src/sanity/schemas/index.ts`
+8. **Integrate into the page** — import and render the section via `SectionMapper.astro`, wired to Sanity data from `loadQuery`
 9. **Validate with Playwright MCP** — screenshot at 375px and 1440px, compare against the Figma frame, fix discrepancies (ADR-021)
 10. **Write Playwright tests** — structural and behavioral assertions in `tests/pages/[pageName].spec.ts`
 11. **Run the full local check** (see Definition of done below)
@@ -95,7 +95,7 @@ Note: page sections rarely need a play function — the composed UI components c
 
 These apply to all tests in `tests/pages/`.
 
-**Assert on structure, not content.** Page content comes from Storyblok and is edited by non-engineers — content assertions will break on routine CMS updates.
+**Assert on structure, not content.** Page content comes from Sanity and is edited by non-engineers — content assertions will break on routine CMS updates.
 
 | Do                                          | Don’t                                   |
 | ------------------------------------------- | --------------------------------------- |
@@ -131,7 +131,7 @@ Before opening a PR, confirm all of these pass locally:
 - [ ] `npm run test-storybook` — all story tests pass
 - [ ] `npx playwright test` — all e2e tests pass
 - [ ] No console errors in the browser
-- [ ] Storyblok schema field names match TypeScript props exactly
+- [ ] Sanity schema field names match TypeScript props exactly
 
 ---
 
@@ -142,7 +142,7 @@ Before opening a PR, confirm all of these pass locally:
 3. **Write the TypeScript interface first** — `src/components/[Name]/[Name].types.ts` (add `export default null` at the end)
 4. **Build the component** — `src/components/[Name]/[Name].astro` (or `[Name].tsx` if interactive), using only design tokens for styling
 5. **Write the Storybook story** — `src/components/[Name]/[Name].stories.ts` with Default + variant stories and a play function
-6. **Write the Storyblok schema** — `src/storyblok/[name].ts`, matching the TypeScript interface field-for-field
+6. **Write the Sanity schema** — `src/sanity/schemas/[name].ts`, matching the TypeScript interface field-for-field, and register it in `src/sanity/schemas/index.ts`
 7. **Integrate into the page or layout**
 8. **Run the full local check** (see Definition of done above)
 9. **Commit and push** — CI will run automatically, Vercel will generate a preview URL
@@ -165,7 +165,7 @@ Do not invent your own branch names — Linear's format keeps issues and branche
 ## Commit message format
 
 ```
-feat(button): add Button component, story, and Storyblok schema — Closes GG-16
+feat(button): add Button component, story, and Sanity schema — Closes GG-16
 ```
 
 Prefixes:

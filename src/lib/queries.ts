@@ -159,8 +159,8 @@ export const allBlogPostsQuery = `*[_type == "blogPost"] | order(publishedAt des
   }
 }`;
 
-/** Fetch all blog post slugs for static path generation. */
-export const allBlogPostSlugsQuery = `*[_type == "blogPost"]{ "slug": slug.current }`;
+/** Fetch all blog post slugs for static path generation. Excludes posts missing required fields. */
+export const allBlogPostSlugsQuery = `*[_type == "blogPost" && defined(slug.current) && defined(publishedAt)]{ "slug": slug.current }`;
 
 /** Fetch a single blog post by slug. */
 export const blogPostBySlugQuery = `*[_type == "blogPost" && slug.current == $slug][0]{

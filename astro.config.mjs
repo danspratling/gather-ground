@@ -20,6 +20,23 @@ export default defineConfig({
         '@': path.resolve('./src'),
       },
     },
+    optimizeDeps: {
+      include: [
+        'sanity',
+        'sanity/structure',
+        'sanity/presentation',
+        '@sanity/visual-editing',
+        // Pre-bundle every lodash submodule so CJS→ESM interop works for
+        // transitive imports like `lodash/groupBy.js`, `lodash/isObject.js`, etc.
+        // used inside @sanity/visual-editing's createOptimisticStore.
+        'lodash',
+        'lodash/*.js',
+        'react',
+        'react-dom',
+        'react-dom/client',
+        'react/compiler-runtime',
+      ],
+    },
   },
   integrations: [
     react(),

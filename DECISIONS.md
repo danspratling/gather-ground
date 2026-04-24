@@ -4,37 +4,38 @@ Architecture decision log for the Gather Ground website. Read this before changi
 
 ## Quick reference
 
-| ADR     | Title                                             | Category     |
-| ------- | ------------------------------------------------- | ------------ | --- | ------- | ------------------------------------------------------------------ | ------- |
-| ADR-001 | Astro over Next.js                                | Stack        |
-| ADR-002 | shadcn/ui as a primitive layer                    | Components   |
-| ADR-004 | Storyblok schemas in code                         | Storyblok    |
-| ADR-005 | No client-side Storyblok fetching                 | Storyblok    |
-| ADR-006 | Play functions vs Playwright                      | Testing      |
-| ADR-007 | Design tokens as visual source of truth           | Styling      |
-| ADR-008 | Tailwind v4 via @tailwindcss/vite                 | Stack        |
-| ADR-009 | shadcn/ui uses Base UI, not Radix                 | Components   |
-| ADR-010 | Node ≥22.12.0                                     | Stack        |
-| ADR-012 | .astro for static, .tsx for islands               | Components   |
-| ADR-013 | Storybook uses @storybook-astro/framework         | Storybook    |
-| ADR-014 | Icons: @untitledui-pro + brand SVGs               | Components   |
-| ADR-015 | CSF Factories migration (deferred)                | Storybook    |
-| ADR-016 | Chromatic + a11y + docs addons                    | Storybook    |
-| ADR-017 | Co-locate all component files                     | Organisation |
-| ADR-018 | sb.mock for API mocking (deferred)                | Storybook    |
-| ADR-019 | Chromatic replaces browser-mode CI tests          | Testing      |
-| ADR-020 | Playwright page testing: structural + behavioral  | Testing      |
-| ADR-021 | MCP-aided development workflow                    | Process      |
-| ADR-022 | Storyblok component mapper via StoryblokComponent | Storyblok    |
-| ADR-023 | Co-located .storyblok.astro wrappers              | Storyblok    |
-| ADR-024 | src/templates/ for Storyblok page templates       | Organisation |
-| ADR-025 | [..slug].astro catch-all page router              | Routing      |
-| ADR-026 | enableFallbackComponent for unknown bloks         | Storyblok    |     | ADR-027 | Check official docs before implementing external platform features | Process |
-| ADR-028 | multilink field type + resolveLink() helper       | Storyblok    |
-| ADR-029 | Reference content types for reusable CMS entries  | Storyblok    |
-| ADR-030 | storyblokEditable + mkcert for Visual Editor      | Storyblok    |
-| ADR-031 | Variant mapper stories use the mapper component   | Storybook    |
-| ADR-032 | Migrate from Storyblok to Sanity                  | CMS          |
+| ADR     | Title                                             | Category     | Status                |
+| ------- | ------------------------------------------------- | ------------ | --------------------- |
+| ADR-001 | Astro over Next.js                                | Stack        | Active                |
+| ADR-002 | shadcn/ui as a primitive layer                    | Components   | Active                |
+| ADR-004 | Storyblok schemas in code                         | CMS          | Superseded by ADR-032 |
+| ADR-005 | No client-side Storyblok fetching                 | CMS          | Superseded by ADR-032 |
+| ADR-006 | Play functions vs Playwright                      | Testing      | Active                |
+| ADR-007 | Design tokens as visual source of truth           | Styling      | Active                |
+| ADR-008 | Tailwind v4 via @tailwindcss/vite                 | Stack        | Active                |
+| ADR-009 | shadcn/ui uses Base UI, not Radix                 | Components   | Active                |
+| ADR-010 | Node ≥22.12.0                                     | Stack        | Active                |
+| ADR-012 | .astro for static, .tsx for islands               | Components   | Active                |
+| ADR-013 | Storybook uses @storybook-astro/framework         | Storybook    | Active                |
+| ADR-014 | Icons: @untitledui-pro + brand SVGs               | Components   | Active                |
+| ADR-015 | CSF Factories migration (deferred)                | Storybook    | Active                |
+| ADR-016 | Chromatic + a11y + docs addons                    | Storybook    | Active                |
+| ADR-017 | Co-locate all component files                     | Organisation | Active                |
+| ADR-018 | sb.mock for API mocking (deferred)                | Storybook    | Active                |
+| ADR-019 | Chromatic replaces browser-mode CI tests          | Testing      | Active                |
+| ADR-020 | Playwright page testing: structural + behavioral  | Testing      | Active                |
+| ADR-021 | MCP-aided development workflow                    | Process      | Active                |
+| ADR-022 | Storyblok component mapper via StoryblokComponent | CMS          | Superseded by ADR-032 |
+| ADR-023 | Co-located .storyblok.astro wrappers              | CMS          | Superseded by ADR-032 |
+| ADR-024 | src/templates/ for page-level templates           | Organisation | Active                |
+| ADR-025 | [...slug].astro catch-all page router             | Routing      | Active                |
+| ADR-026 | enableFallbackComponent for unknown bloks         | CMS          | Superseded by ADR-032 |
+| ADR-027 | Check official docs before implementing features  | Process      | Active                |
+| ADR-028 | multilink field type + resolveLink() helper       | CMS          | Superseded by ADR-032 |
+| ADR-029 | Reference content types for reusable CMS entries  | CMS          | Superseded by ADR-032 |
+| ADR-030 | storyblokEditable + mkcert for Visual Editor      | CMS          | Superseded by ADR-032 |
+| ADR-031 | Variant mapper stories use the mapper component   | Storybook    | Active                |
+| ADR-032 | Migrate from Storyblok to Sanity                  | CMS          | Active                |
 
 ---
 
