@@ -1,128 +1,114 @@
 ---
-import { useStoryblokApi } from '@storyblok/astro';
-import type { StoryblokRichTextDocumentNode } from '@storyblok/astro';
 import Layout from '@/layouts/Layout.astro';
 import PostHeader from '@/components/PostHeader/PostHeader.astro';
 import SectionDivider from '@/components/SectionDivider/SectionDivider.astro';
 import BlogSection from '@/components/BlogSection/BlogSection.astro';
-import { getStoryAuthors } from '@/lib/storyblokAuthors';
+import { loadQuery } from '@/lib/sanity';
+import {
+  allBlogPostSlugsQuery,
+  blogPostBySlugQuery,
+  relatedBlogPostsQuery,
+} from '@/lib/queries';
+import { sanityImageSrc, sanityImageAlt } from '@/lib/sanityImage';
+import type { PortableTextBlock } from '@portabletext/types';
 
 export async function getStaticPaths() {
-  const storyblokApi = useStoryblokApi();
-  const version = import.meta.env.DEV ? 'draft' : 'published';
-  const { data } = await storyblokApi.get('cdn/stories', {
-    version,
-    content_type: 'blog_post',
-    per_page: 100,
-    excluding_fields: 'content',
+  const { data: posts } = await loadQuery<Array<{ slug: string }>>({
+    query: allBlogPostSlugsQuery,
   });
+  return posts.map((p) => ({ params: { slug: p.slug } }));
+}
 
-  return data.stories.map((story: { slug: string }) => ({
-    params: { slug: story.slug },
-  }));
+interface SanityImage {
+  asset?: { _ref: string };
+  alt?: string;
+}
+
+interface BlogPost {
+  _id: string;
+  title: string;
+  slug: string;
+  image?: SanityImage;
+  excerpt: string;
+  categories?: string[];
+  publishedAt?: string;
+  body?: PortableTextBlock[];
+  author?: {
+    name: string;
+    avatar?: SanityImage;
+    role?: string;
+  };
 }
 
 const { slug } = Astro.params;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
   .href;
 
-const storyblokApi = useStoryblokApi();
-const version = import.meta.env.DEV ? 'draft' : 'published';
-
-const { data } = await storyblokApi.get(`cdn/stories/blog/${slug}`, {
-  version,
-});
-const post = data.story;
-
-type PostContent = {
-  title: string;
-  excerpt: string;
-  categories?: string[];
-  image: { filename: string; alt: string };
-  body: StoryblokRichTextDocumentNode;
-};
-
-const content = post.content as PostContent;
-
-// Format the story's first_published_at as a human-readable date
-const publishedDate = new Date(
-  post.first_published_at ?? post.created_at
-).toLocaleDateString('en-GB', {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
+const { data: post } = await loadQuery<BlogPost | null>({
+  query: blogPostBySlugQuery,
+  params: { slug },
 });
 
-// Fetch related posts (exclude the current slug)
-const { data: relatedData } = await storyblokApi.get('cdn/stories', {
-  version,
-  content_type: 'blog_post',
-  per_page: 4,
-  sort_by: 'first_published_at:desc',
-  excluding_slugs: slug,
-});
-
-const relatedStories = (
-  relatedData.stories as Array<{
-    id: number;
-    full_slug: string;
-    first_published_at: string;
-    created_at: string;
-    content: {
-      image: { filename: string; alt: string };
-      title: string;
-      excerpt: string;
-    };
-  }>
-).slice(0, 3);
-
-// Fetch author info for this post and all related posts in a single MAPI call
-const spaceId = import.meta.env.STORYBLOK_SPACE_ID;
-const allStoryIds = [post.id, ...relatedStories.map((s) => s.id)];
-const authorMap = await getStoryAuthors(spaceId, allStoryIds);
-const author = authorMap.get(post.id) ?? { name: '', avatarUrl: '' };
-
-const relatedPosts = relatedStories.map((s) => {
-  const a = authorMap.get(s.id) ?? { name: '', avatarUrl: '' };
-  const date = new Date(
-    s.first_published_at ?? s.created_at
-  ).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
+if (!post) {
+  return new Response(`Blog post "${slug}" not found in Sanity.`, {
+    status: 404,
   });
-  return {
-    image: s.content.image?.filename ?? '',
-    imageAlt: s.content.image?.alt ?? s.content.title,
-    title: s.content.title,
-    excerpt: s.content.excerpt,
-    date,
-    authorName: a.name,
-    href: `/${s.full_slug}`,
-  };
+}
+
+const formatDate = (date: string | undefined) =>
+  date
+    ? new Date(date).toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
+    : '';
+
+const publishedDate = formatDate(post.publishedAt);
+
+const { data: relatedRaw } = await loadQuery<BlogPost[]>({
+  query: relatedBlogPostsQuery,
+  params: { slug },
 });
+
+const relatedPosts = (relatedRaw ?? []).map((p) => ({
+  image: sanityImageSrc(p.image),
+  imageAlt: sanityImageAlt(p.image, p.title),
+  title: p.title,
+  excerpt: p.excerpt,
+  date: formatDate(p.publishedAt),
+  authorName: p.author?.name ?? '',
+  authorImage: p.author?.avatar ? sanityImageSrc(p.author.avatar) : '',
+  authorImageAlt: p.author?.name ?? '',
+  href: `/blog/${p.slug}`,
+}));
+
+const heroImage = sanityImageSrc(post.image);
+const heroImageAlt = sanityImageAlt(post.image, post.title);
 ---
 
 <Layout
-  title={content.title}
-  description={content.excerpt}
-  ogImage={content.image.filename}
+  title={post.title}
+  description={post.excerpt}
+  ogImage={heroImage}
   ogType="article"
   canonicalUrl={canonicalUrl}
 >
   <main>
     <PostHeader
-      publishedDate={`Published ${publishedDate}`}
-      title={content.title}
-      excerpt={content.excerpt}
-      categories={content.categories ?? []}
-      heroImage={content.image.filename}
-      heroImageAlt={content.image.alt || content.title}
-      body={content.body}
-      authorName={author.name}
-      authorAvatar={author.avatarUrl}
-      authorAvatarAlt={author.name}
-      authorRole=""
+      publishedDate={publishedDate ? `Published ${publishedDate}` : ''}
+      title={post.title}
+      excerpt={post.excerpt}
+      categories={post.categories ?? []}
+      heroImage={heroImage}
+      heroImageAlt={heroImageAlt}
+      body={post.body ?? []}
+      authorName={post.author?.name ?? ''}
+      authorAvatar={post.author?.avatar
+        ? sanityImageSrc(post.author.avatar)
+        : ''}
+      authorAvatarAlt={post.author?.name ?? ''}
+      authorRole={post.author?.role ?? ''}
     />
     {
       relatedPosts.length > 0 && (

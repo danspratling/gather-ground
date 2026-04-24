@@ -1,41 +1,19 @@
 ---
-import { renderRichText, segmentStoryblokRichText } from '@storyblok/astro';
-import type { StoryblokRichTextDocumentNode } from '@storyblok/astro';
+import { PortableText } from 'astro-portabletext';
 import type { RichTextProps } from './RichText.types';
+import Callout from './Callout.astro';
 
 type Props = RichTextProps;
 
 const { content } = Astro.props;
 
-const segments = segmentStoryblokRichText(content);
+const components = {
+  type: {
+    callout: Callout,
+  },
+};
 ---
 
 <div class="rt prose max-w-[720px]">
-  {
-    segments.map((segment) => {
-      if (segment.type === 'html') {
-        return <Fragment set:html={segment.content} />;
-      }
-
-      if (segment.type === 'blok') {
-        const { blok } = segment;
-
-        if (blok.component === 'callout') {
-          const calloutContent = blok.content as
-            | StoryblokRichTextDocumentNode
-            | undefined;
-          const calloutHtml = calloutContent
-            ? renderRichText(calloutContent)
-            : '';
-          return (
-            <div class="bg-secondary-50 rounded-2xl p-8 py-12">
-              <Fragment set:html={calloutHtml} />
-            </div>
-          );
-        }
-      }
-
-      return null;
-    })
-  }
+  <PortableText value={content} components={components} />
 </div>

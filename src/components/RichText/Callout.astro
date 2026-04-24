@@ -1,0 +1,14 @@
+---
+import { PortableText } from 'astro-portabletext';
+import type { PortableTextBlock } from '@portabletext/types';
+
+interface Props {
+  node: { value: { content: PortableTextBlock[] } };
+}
+
+const { node } = Astro.props;
+---
+
+<div class="bg-secondary-50 rounded-2xl p-8 py-12">
+  <PortableText value={node.value.content} />
+</div>
