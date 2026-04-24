@@ -1,5 +1,25 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
+import {
+  link,
+  callout,
+  page,
+  blogPage,
+  blogPost,
+  author,
+  faq,
+  testimonial,
+  heroSection,
+  productsSection,
+  productCard,
+  testimonialsSection,
+  faqSection,
+  blogSection,
+  callToAction,
+  contentSection,
+  contentFeatureItem,
+  contentIconFeature,
+} from './src/sanity/schemas';
 
 export default defineConfig({
   name: 'gather-ground',
@@ -9,7 +29,27 @@ export default defineConfig({
   plugins: [structureTool()],
   schema: {
     types: [
-      // Schema types will be added in Phase 2 (GG-100b).
+      // Shared types
+      link,
+      callout,
+      // Documents
+      page,
+      blogPage,
+      blogPost,
+      author,
+      faq,
+      testimonial,
+      // Page section objects
+      heroSection,
+      productsSection,
+      productCard,
+      testimonialsSection,
+      faqSection,
+      blogSection,
+      callToAction,
+      contentSection,
+      contentFeatureItem,
+      contentIconFeature,
     ],
   },
 });
