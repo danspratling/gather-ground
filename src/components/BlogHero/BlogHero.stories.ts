@@ -2,7 +2,6 @@
 // See: https://storybook-astro.org/writing-stories/
 import type { BlogHeroProps } from './BlogHero.types';
 
-// @ts-expect-error — .astro files have no TypeScript declarations
 import BlogHero from '@/components/BlogHero/BlogHero.astro';
 
 export default {

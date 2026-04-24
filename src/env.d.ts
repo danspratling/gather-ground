@@ -1,4 +1,5 @@
 /// <reference types="astro/client" />
+/// <reference types="@sanity/astro/module" />
 
 // Ambient declarations for optional peer dependencies used by
 // @storybook-astro/framework that we don't install (Preact, Solid, Svelte, Vue).

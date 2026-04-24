@@ -1,7 +1,6 @@
 // @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
 // See: https://storybook-astro.org/writing-stories/
 
-// @ts-expect-error — .astro files have no TypeScript declarations
 import ProductsSection from '@/components/ProductsSection/ProductsSection.astro';
 
 const meta = {

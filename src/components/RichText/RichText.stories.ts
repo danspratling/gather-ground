@@ -3,7 +3,6 @@
 import { expect, within } from 'storybook/test';
 import type { RichTextProps } from './RichText.types';
 
-// @ts-expect-error — .astro files have no TypeScript declarations
 import RichText from '@/components/RichText/RichText.astro';
 
 const meta = {

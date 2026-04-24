@@ -1,4 +1,3 @@
-// @ts-expect-error — .astro files have no TypeScript declarations
 import Content from '@/components/Content/Content.astro';
 
 const mockFeatures = [

@@ -1,4 +1,3 @@
-// @ts-expect-error — .astro files have no TypeScript declarations
 import BadgeGroup from './BadgeGroup.astro';
 import type { BadgeGroupProps } from './BadgeGroup.types';
 

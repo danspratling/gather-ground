@@ -2,7 +2,6 @@
 // See: https://storybook-astro.org/writing-stories/
 import type { PostHeaderProps } from './PostHeader.types';
 
-// @ts-expect-error — .astro files have no TypeScript declarations
 import PostHeader from '@/components/PostHeader/PostHeader.astro';
 
 const meta = {

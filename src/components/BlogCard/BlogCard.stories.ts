@@ -2,7 +2,6 @@
 // See: https://storybook-astro.org/writing-stories/
 import { expect, within } from 'storybook/test';
 
-// @ts-expect-error — .astro files have no TypeScript declarations
 import BlogCard from '@/components/BlogCard/BlogCard.astro';
 
 const meta = {
