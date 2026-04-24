@@ -30,7 +30,7 @@ export async function loadQuery<T>({
     filterResponse: false,
     perspective,
     resultSourceMap: visualEditingEnabled ? 'withKeyArraySelector' : false,
-    stega: visualEditingEnabled,
+    stega: visualEditingEnabled ? { studioUrl: '/studio' } : false,
     ...(visualEditingEnabled ? { token } : {}),
     useCdn: !visualEditingEnabled,
   });

@@ -1,4 +1,5 @@
 import { createImageUrlBuilder } from '@sanity/image-url';
+import { stegaClean } from '@sanity/client/stega';
 import { sanityClient } from 'sanity:client';
 
 const builder = createImageUrlBuilder(sanityClient);
@@ -24,10 +25,13 @@ export function sanityImageUrl(source: {
 export function sanityImageSrc(
   source: { asset?: { _ref?: string; _id?: string } } | undefined
 ): string {
-  const id = source?.asset?._ref ?? source?.asset?._id;
+  const cleaned = stegaClean(source) as
+    | { asset?: { _ref?: string; _id?: string } }
+    | undefined;
+  const id = cleaned?.asset?._ref ?? cleaned?.asset?._id;
   if (!id) return '';
   return builder
-    .image(source as { asset: { _ref: string } })
+    .image(cleaned as { asset: { _ref: string } })
     .auto('format')
     .url();
 }

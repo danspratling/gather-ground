@@ -1,5 +1,6 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
+import { presentationTool } from 'sanity/presentation';
 import {
   link,
   callout,
@@ -26,7 +27,49 @@ export default defineConfig({
   title: 'Gather Ground',
   projectId: 'mrz1ftls',
   dataset: 'production',
-  plugins: [structureTool()],
+  plugins: [
+    structureTool(),
+    presentationTool({
+      previewUrl: {
+        origin:
+          typeof window !== 'undefined' && window.location.origin
+            ? window.location.origin
+            : 'http://localhost:4321',
+      },
+      resolve: {
+        locations: {
+          page: {
+            select: { title: 'title', slug: 'slug.current' },
+            resolve: (doc) => ({
+              locations: [
+                {
+                  title: doc?.title || 'Untitled',
+                  href: doc?.slug === '/' || !doc?.slug ? '/' : `/${doc.slug}`,
+                },
+              ],
+            }),
+          },
+          blogPost: {
+            select: { title: 'title', slug: 'slug.current' },
+            resolve: (doc) => ({
+              locations: [
+                {
+                  title: doc?.title || 'Untitled',
+                  href: `/blog/${doc?.slug}`,
+                },
+              ],
+            }),
+          },
+          blogPage: {
+            select: { _id: '_id' },
+            resolve: () => ({
+              locations: [{ title: 'Blog', href: '/blog' }],
+            }),
+          },
+        },
+      },
+    }),
+  ],
   schema: {
     types: [
       // Shared types
