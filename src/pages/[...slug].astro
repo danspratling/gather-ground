@@ -10,28 +10,21 @@ export async function getStaticPaths() {
   });
 
   return pages.map((page) => ({
-    params: { slug: page.slug === 'home' ? undefined : page.slug },
+    params: { slug: page.slug === '/' ? undefined : page.slug },
   }));
 }
 
 const { slug } = Astro.params;
-const pageSlug = slug ?? 'home';
+const pageSlug = slug ?? '/';
 
 const { data: page } = await loadQuery<{
   title: string;
   slug: string;
   body: Array<Record<string, unknown> & { _type: string; _key: string }>;
-} | null>({
+}>({
   query: pageBySlugQuery,
   params: { slug: pageSlug },
 });
-
-if (!page) {
-  return new Response(
-    `Page "${pageSlug}" not found in Sanity. Create it in the Studio at /studio.`,
-    { status: 404 }
-  );
-}
 ---
 
 <Layout title={page.title}>

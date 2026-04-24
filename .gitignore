@@ -38,3 +38,6 @@ storybook-server/
 # Storyblok CLI generated output
 .storyblok/
 *.png
+
+# Vercel build output
+.vercel/

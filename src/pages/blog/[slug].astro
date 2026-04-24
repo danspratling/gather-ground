@@ -44,16 +44,10 @@ const { slug } = Astro.params;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
   .href;
 
-const { data: post } = await loadQuery<BlogPost | null>({
+const { data: post } = await loadQuery<BlogPost>({
   query: blogPostBySlugQuery,
   params: { slug },
 });
-
-if (!post) {
-  return new Response(`Blog post "${slug}" not found in Sanity.`, {
-    status: 404,
-  });
-}
 
 const formatDate = (date: string | undefined) =>
   date
