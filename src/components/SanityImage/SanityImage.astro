@@ -1,0 +1,31 @@
+---
+import { sanityImageUrl } from '@/lib/sanityImage';
+import type { SanityImageProps } from './SanityImage.types';
+
+type Props = SanityImageProps;
+
+const {
+  asset,
+  alt,
+  width = 800,
+  height,
+  quality = 80,
+  class: className,
+} = Astro.props;
+
+const src = sanityImageUrl(asset)
+  .width(width)
+  .quality(quality)
+  .auto('format')
+  .url();
+---
+
+<img
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  loading="lazy"
+  decoding="async"
+  class={className}
+/>

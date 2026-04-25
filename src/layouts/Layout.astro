@@ -1,6 +1,7 @@
 ---
 import AnnouncementBanner from '@/components/AnnouncementBanner/AnnouncementBanner.astro';
 import CookieBanner from '@/components/CookieBanner/CookieBanner';
+import Clarity from '@/components/Analytics/Clarity.astro';
 import Footer from '@/components/Layout/Footer/Footer.astro';
 import type { SocialPlatform } from '@/components/Layout/Footer/Footer.types';
 import Header from '@/components/Layout/Header/Header.astro';
@@ -326,7 +327,12 @@ const footerProps = {
     <Footer {...footerProps} />
     {/* body-end: cookie banner, analytics */}
     <slot name="body-end" />
-    <CookieBanner client:visible />
+    <CookieBanner client:load />
+    {
+      import.meta.env.PUBLIC_CLARITY_PROJECT_ID && (
+        <Clarity projectId={import.meta.env.PUBLIC_CLARITY_PROJECT_ID} />
+      )
+    }
     <VisualEditing enabled={visualEditingEnabled} />
     {visualEditingEnabled && previewDoc && <PreviewBanner doc={previewDoc} />}
   </body>
