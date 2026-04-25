@@ -69,6 +69,22 @@ const config: StorybookConfig = {
   viteFinal: async (config) => {
     config.plugins = config.plugins ?? [];
     config.plugins.push(tailwindcss());
+    // Stub the `sanity:client` virtual module — provided by @sanity/astro at
+    // runtime but not available inside Storybook. Components that use it
+    // (e.g. via sanityImage helpers) work in stories with hardcoded mock data.
+    config.plugins.push({
+      name: 'stub-sanity-client',
+      resolveId(id) {
+        if (id === 'sanity:client') return '\0sanity:client-stub';
+        return null;
+      },
+      load(id) {
+        if (id === '\0sanity:client-stub') {
+          return `export const sanityClient = { config: () => ({ projectId: 'stub', dataset: 'stub' }) };`;
+        }
+        return null;
+      },
+    });
     config.resolve = config.resolve ?? {};
     config.resolve.alias = {
       ...(config.resolve.alias ?? {}),
