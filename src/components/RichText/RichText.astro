@@ -2,7 +2,6 @@
 import { PortableText } from 'astro-portabletext';
 import type { RichTextProps } from './RichText.types';
 import Callout from './Callout.astro';
-import PortableImage from './PortableImage.astro';
 
 type Props = RichTextProps;
 
@@ -11,7 +10,6 @@ const { content } = Astro.props;
 const components = {
   type: {
     callout: Callout,
-    image: PortableImage,
   },
 };
 ---

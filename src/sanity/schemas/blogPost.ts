@@ -16,28 +16,8 @@ export const blogPost = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      options: {
-        source: 'title',
-        // Strip leading/trailing slashes so authored slugs like "/foo" become "foo".
-        // Otherwise the blog index renders hrefs with a double slash (/blog//foo) that 404.
-        slugify: (input) =>
-          input
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, '-')
-            .replace(/[^a-z0-9-]/g, '')
-            .replace(/^-+|-+$/g, '')
-            .slice(0, 96),
-      },
-      validation: (Rule) =>
-        Rule.required().custom((value) => {
-          const current = value?.current;
-          if (!current) return true;
-          if (current.startsWith('/') || current.endsWith('/')) {
-            return 'Slug must not start or end with a slash';
-          }
-          return true;
-        }),
+      options: { source: 'title' },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'image',
