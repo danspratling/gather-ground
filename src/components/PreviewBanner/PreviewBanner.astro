@@ -9,7 +9,6 @@ const publishedId = doc._id.replace(/^drafts\./, '');
 // Studio structure tool deep link to this document.
 const editHref = `/studio/structure/${doc._type};${publishedId}`;
 
-const lastEditedIso = doc._updatedAt ?? '';
 const lastEditedLabel = doc._updatedAt
   ? new Date(doc._updatedAt).toLocaleString('en-GB', {
       day: 'numeric',
@@ -22,27 +21,40 @@ const lastEditedLabel = doc._updatedAt
 ---
 
 <aside
-  class="preview-banner"
+  class="preview-banner fixed inset-x-0 bottom-0 z-50 border-t border-gray-700 bg-brand-900/90 text-xs text-white backdrop-blur-md data-[state=hidden]:hidden"
   role="status"
   aria-label="Preview environment"
   data-state="visible"
 >
-  <div class="preview-banner__inner">
+  <div
+    class="mx-auto flex max-w-[1440px] flex-wrap items-center gap-3 px-4 py-2.5"
+  >
     <span
-      class="preview-banner__badge"
+      class="rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wider data-[variant=draft]:bg-warning-200 data-[variant=draft]:text-warning-700 data-[variant=published]:bg-success-200 data-[variant=published]:text-success-700"
       data-variant={isDraft ? 'draft' : 'published'}
     >
       {isDraft ? 'Draft' : 'Published'}
     </span>
-    <span class="preview-banner__label">Preview mode</span>
-    <span class="preview-banner__meta">
-      Last edited
-      <time datetime={lastEditedIso}>{lastEditedLabel}</time>
+    <span class="font-semibold">Preview mode</span>
+    <span class="text-gray-400">
+      Last edited{' '}
+      {
+        doc._updatedAt ? (
+          <time class="tabular-nums text-white" datetime={doc._updatedAt}>
+            {lastEditedLabel}
+          </time>
+        ) : (
+          <span class="text-white">{lastEditedLabel}</span>
+        )
+      }
     </span>
-    <a class="preview-banner__edit" href={editHref}>Edit in Studio →</a>
+    <a
+      class="ms-auto text-white underline underline-offset-4 transition-colors hover:text-secondary-400"
+      href={editHref}>Edit in Studio →</a
+    >
     <button
       type="button"
-      class="preview-banner__dismiss"
+      class="cursor-pointer border-0 bg-transparent px-1 text-xl leading-none text-gray-400 transition-colors hover:text-white"
       aria-label="Dismiss preview banner"
       data-preview-banner-dismiss
     >
@@ -50,80 +62,6 @@ const lastEditedLabel = doc._updatedAt
     </button>
   </div>
 </aside>
-
-<style>
-  .preview-banner {
-    position: fixed;
-    inset-inline: 0;
-    bottom: 0;
-    z-index: 9999;
-    background: oklch(0.2 0 0 / 0.92);
-    color: white;
-    font-size: 0.8125rem;
-    line-height: 1.4;
-    backdrop-filter: blur(8px);
-    border-top: 1px solid oklch(1 0 0 / 0.1);
-  }
-  .preview-banner[data-state='hidden'] {
-    display: none;
-  }
-  .preview-banner__inner {
-    display: flex;
-    align-items: center;
-    gap: 0.875rem;
-    padding: 0.625rem 1rem;
-    max-width: 1440px;
-    margin: 0 auto;
-    flex-wrap: wrap;
-  }
-  .preview-banner__badge {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    padding: 0.125rem 0.5rem;
-    border-radius: 9999px;
-  }
-  .preview-banner__badge[data-variant='draft'] {
-    background: oklch(0.75 0.18 70);
-    color: oklch(0.2 0.05 70);
-  }
-  .preview-banner__badge[data-variant='published'] {
-    background: oklch(0.75 0.15 150);
-    color: oklch(0.2 0.05 150);
-  }
-  .preview-banner__label {
-    font-weight: 600;
-  }
-  .preview-banner__meta {
-    color: oklch(1 0 0 / 0.7);
-  }
-  .preview-banner__meta time {
-    color: white;
-    font-variant-numeric: tabular-nums;
-  }
-  .preview-banner__edit {
-    margin-inline-start: auto;
-    color: white;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .preview-banner__edit:hover {
-    color: oklch(0.85 0.15 220);
-  }
-  .preview-banner__dismiss {
-    background: transparent;
-    border: none;
-    color: oklch(1 0 0 / 0.7);
-    font-size: 1.25rem;
-    line-height: 1;
-    cursor: pointer;
-    padding: 0 0.25rem;
-  }
-  .preview-banner__dismiss:hover {
-    color: white;
-  }
-</style>
 
 <script>
   const banner = document.querySelector<HTMLElement>('.preview-banner');

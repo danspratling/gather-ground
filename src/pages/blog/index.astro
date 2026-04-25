@@ -74,12 +74,14 @@ const [featuredPost, ...gridPosts] = posts;
 
 <Layout
   title="Blog – Gather Ground"
-  previewDoc={pageContent ? {
-    _id: pageContent._id,
-    _type: pageContent._type,
-    _updatedAt: pageContent._updatedAt,
-    _originalId: pageContent._originalId,
-  } : undefined}
+  previewDoc={pageContent
+    ? {
+        _id: pageContent._id,
+        _type: pageContent._type,
+        _updatedAt: pageContent._updatedAt,
+        _originalId: pageContent._originalId,
+      }
+    : undefined}
 >
   <main>
     <BlogHero

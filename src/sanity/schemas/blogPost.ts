@@ -17,7 +17,18 @@ export const blogPost = defineType({
       title: 'Slug',
       type: 'slug',
       options: { source: 'title' },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.required().custom((value) => {
+          const current = value?.current;
+          if (!current) return true;
+          if (current.startsWith('/') || current.endsWith('/')) {
+            return 'Slug must not start or end with a slash';
+          }
+          if (current.includes('/')) {
+            return 'Slug must be a single path segment (no embedded slashes)';
+          }
+          return true;
+        }),
     }),
     defineField({
       name: 'image',
