@@ -1,8 +1,19 @@
 import { createImageUrlBuilder } from '@sanity/image-url';
 import { stegaClean } from '@sanity/client/stega';
-import { sanityClient } from 'sanity:client';
 
-const builder = createImageUrlBuilder(sanityClient);
+// Read project config directly from env rather than importing `sanity:client`,
+// which is a virtual module provided by @sanity/astro at runtime and not
+// available in Storybook builds.
+const projectId =
+  import.meta.env.SANITY_PROJECT_ID ||
+  import.meta.env.PUBLIC_SANITY_PROJECT_ID ||
+  'placeholder';
+const dataset =
+  import.meta.env.SANITY_DATASET ||
+  import.meta.env.PUBLIC_SANITY_DATASET ||
+  'production';
+
+const builder = createImageUrlBuilder({ projectId, dataset });
 
 /**
  * Build a Sanity image URL from an image reference.
