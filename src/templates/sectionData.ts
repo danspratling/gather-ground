@@ -18,6 +18,7 @@ export type SanitySection = Record<string, unknown> & {
 };
 
 type Dict = Record<string, unknown>;
+type SanityImage = { asset?: { _ref: string }; alt?: string } | undefined;
 
 function arr(value: unknown): Dict[] {
   return (Array.isArray(value) ? value : []) as Dict[];
@@ -42,9 +43,7 @@ function formatDate(dateStr: string | undefined): string {
 function cta(label: unknown, href: unknown) {
   const lbl = label as string | undefined;
   if (!lbl) return undefined;
-  const resolvedHref = resolveSanityLink(href);
-  if (!resolvedHref) return undefined;
-  return { label: lbl, href: resolvedHref };
+  return { label: lbl, href: resolveSanityLink(href) };
 }
 
 export function heroSectionProps(s: Dict) {
@@ -156,7 +155,7 @@ export function blogSectionProps(s: Dict) {
           ? sanityImageSrc(author.avatar as { asset?: { _ref: string } })
           : '',
         authorImageAlt: (author?.name as string) ?? '',
-        href: '/blog/' + (p.slug as string),
+        href: '/blog/' + (p.slug as string).replace(/^\/+/, ''),
       };
     }),
   };

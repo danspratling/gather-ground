@@ -21,14 +21,10 @@ const { data: page } = await loadQuery<{
   title: string;
   slug: string;
   body: Array<Record<string, unknown> & { _type: string; _key: string }>;
-} | null>({
+}>({
   query: pageBySlugQuery,
   params: { slug: pageSlug },
 });
-
-if (!page) {
-  return new Response(null, { status: 404, statusText: 'Not Found' });
-}
 ---
 
 <Layout title={page.title}>

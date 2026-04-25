@@ -162,8 +162,8 @@ export const allBlogPostsQuery = `*[_type == "blogPost"] | order(publishedAt des
 /** Fetch all blog post slugs for static path generation. Excludes posts missing required fields. */
 export const allBlogPostSlugsQuery = `*[_type == "blogPost" && defined(slug.current) && defined(publishedAt)]{ "slug": slug.current }`;
 
-/** Fetch a single blog post by slug. */
-export const blogPostBySlugQuery = `*[_type == "blogPost" && slug.current == $slug][0]{
+/** Fetch a single blog post by slug. Accepts variants to tolerate legacy slugs stored with a leading slash. */
+export const blogPostBySlugQuery = `*[_type == "blogPost" && slug.current in $slugVariants][0]{
   _id,
   title,
   "slug": slug.current,
@@ -180,7 +180,7 @@ export const blogPostBySlugQuery = `*[_type == "blogPost" && slug.current == $sl
 }`;
 
 /** Fetch related blog posts (exclude current slug). */
-export const relatedBlogPostsQuery = `*[_type == "blogPost" && slug.current != $slug] | order(publishedAt desc) [0...3]{
+export const relatedBlogPostsQuery = `*[_type == "blogPost" && !(slug.current in $slugVariants)] | order(publishedAt desc) [0...3]{
   _id,
   title,
   "slug": slug.current,

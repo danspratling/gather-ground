@@ -59,7 +59,7 @@ const posts = (rawPosts ?? []).map((post) => {
       ? sanityImageSrc(post.author.avatar as { asset?: { _ref: string } })
       : '',
     authorImageAlt: post.author?.name ?? '',
-    href: `/blog/${post.slug}`,
+    href: `/blog/${post.slug?.replace(/^\/+/, '') ?? ''}`,
     slug: post.slug,
     categories: post.categories ?? [],
   };

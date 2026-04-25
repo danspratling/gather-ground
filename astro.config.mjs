@@ -41,7 +41,7 @@ export default defineConfig({
   integrations: [
     react(),
     sanity({
-      projectId: env.SANITY_PROJECT_ID || 'mrz1ftls',
+      projectId: env.SANITY_PROJECT_ID,
       dataset: env.SANITY_DATASET || 'production',
       useCdn: false, // Static build — no CDN needed at request time
       studioBasePath: '/studio',
