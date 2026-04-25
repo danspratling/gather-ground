@@ -1,0 +1,41 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogType?: string;
+  ogImage?: string;
+  ogUrl?: string;
+  twitterCard?: 'summary' | 'summary_large_image';
+  twitterImage?: string;
+}
+const {
+  title,
+  description,
+  canonicalUrl,
+  ogType = 'website',
+  ogImage,
+  ogUrl,
+  twitterCard = 'summary_large_image',
+  twitterImage,
+} = Astro.props;
+const resolvedCanonical = canonicalUrl ?? Astro.url.href;
+---
+
+<meta charset="utf-8" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href="/favicon.ico" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+<link rel="canonical" href={resolvedCanonical} />
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:site_name" content="Gather Ground" />
+<meta property="og:url" content={ogUrl ?? resolvedCanonical} />
+{description && <meta property="og:description" content={description} />}
+{ogImage && <meta property="og:image" content={ogImage} />}
+{twitterCard && <meta name="twitter:card" content={twitterCard} />}
+{twitterImage && <meta name="twitter:image" content={twitterImage} />}
+<slot name="head-extras" />

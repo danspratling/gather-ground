@@ -1,6 +1,7 @@
 ---
 import Footer from '@/components/Layout/Footer/Footer.astro';
 import Header from '@/components/Layout/Header/Header.astro';
+import PageHead from '@/components/PageHead/PageHead.astro';
 import PreviewBanner from '@/components/PreviewBanner/PreviewBanner.astro';
 import type { PreviewDoc } from '@/components/PreviewBanner/PreviewBanner.types';
 import { VisualEditing } from '@sanity/astro/visual-editing';
@@ -76,20 +77,18 @@ const footerProps = {
 
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    {description && <meta name="description" content={description} />}
-    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
-    {ogType && <meta property="og:type" content={ogType} />}
-    <meta property="og:title" content={title} />
-    {description && <meta property="og:description" content={description} />}
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    <PageHead
+      title={title}
+      description={description}
+      ogImage={ogImage}
+      ogType={ogType}
+      canonicalUrl={canonicalUrl}
+    />
+    <slot name="head-extras" />
   </head>
   <body>
+    {/* body-start: announcement banner, skip-to-content */}
+    <slot name="body-start" />
     <Header
       logoSrc="/favicon.svg"
       logoAlt="Gather Ground"
@@ -151,6 +150,8 @@ const footerProps = {
     />
     <slot />
     <Footer {...footerProps} />
+    {/* body-end: cookie banner, analytics */}
+    <slot name="body-end" />
     <VisualEditing enabled={visualEditingEnabled} />
     {visualEditingEnabled && previewDoc && <PreviewBanner doc={previewDoc} />}
   </body>
