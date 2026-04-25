@@ -22,9 +22,15 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: isCI ? 'npm run build && npm run preview' : 'npm run dev',
+    // In CI we build then serve the prerendered static output directly,
+    // because the Vercel adapter doesn't support `astro preview`.
+    // Studio (SSR) isn't exercised by Playwright tests.
+    command: isCI
+      ? 'npm run build && npx -y serve .vercel/output/static -l 4321 --no-port-switching'
+      : 'npm run dev',
     url: baseURL,
     ignoreHTTPSErrors: true,
     reuseExistingServer: !isCI,
+    timeout: 180_000,
   },
 });
