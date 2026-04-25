@@ -38,7 +38,9 @@ export function sanityImageSrc(
 
 /**
  * Get the alt text from a Sanity image field.
- * Sanity stores alt text on the asset metadata or as a sibling field.
+ * Reads the sibling `alt` field on the image object
+ * (defined on each image-using schema). Falls back to the
+ * provided string if no alt is set.
  */
 export function sanityImageAlt(
   source: { alt?: string } | undefined,

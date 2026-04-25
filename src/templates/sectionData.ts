@@ -18,7 +18,6 @@ export type SanitySection = Record<string, unknown> & {
 };
 
 type Dict = Record<string, unknown>;
-type SanityImage = { asset?: { _ref: string }; alt?: string } | undefined;
 
 function arr(value: unknown): Dict[] {
   return (Array.isArray(value) ? value : []) as Dict[];
@@ -43,7 +42,9 @@ function formatDate(dateStr: string | undefined): string {
 function cta(label: unknown, href: unknown) {
   const lbl = label as string | undefined;
   if (!lbl) return undefined;
-  return { label: lbl, href: resolveSanityLink(href) };
+  const resolvedHref = resolveSanityLink(href);
+  if (!resolvedHref) return undefined;
+  return { label: lbl, href: resolvedHref };
 }
 
 export function heroSectionProps(s: Dict) {
