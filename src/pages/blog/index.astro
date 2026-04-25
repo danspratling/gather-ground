@@ -10,6 +10,10 @@ import { sanityImageSrc, sanityImageAlt } from '@/lib/sanityImage';
 
 // Fetch blog page hero content — fallback to defaults if not yet created.
 const { data: pageContent } = await loadQuery<{
+  _id: string;
+  _type: string;
+  _updatedAt?: string;
+  _originalId?: string;
   heroEyebrow?: string;
   heroHeading?: string;
   heroSubCopy?: string;
@@ -59,7 +63,7 @@ const posts = (rawPosts ?? []).map((post) => {
       ? sanityImageSrc(post.author.avatar as { asset?: { _ref: string } })
       : '',
     authorImageAlt: post.author?.name ?? '',
-    href: `/blog/${post.slug?.replace(/^\/+/, '') ?? ''}`,
+    href: `/blog/${post.slug}`,
     slug: post.slug,
     categories: post.categories ?? [],
   };
@@ -68,7 +72,15 @@ const posts = (rawPosts ?? []).map((post) => {
 const [featuredPost, ...gridPosts] = posts;
 ---
 
-<Layout title="Blog – Gather Ground">
+<Layout
+  title="Blog – Gather Ground"
+  previewDoc={pageContent ? {
+    _id: pageContent._id,
+    _type: pageContent._type,
+    _updatedAt: pageContent._updatedAt,
+    _originalId: pageContent._originalId,
+  } : undefined}
+>
   <main>
     <BlogHero
       eyebrow={heroEyebrow}

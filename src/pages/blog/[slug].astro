@@ -16,10 +16,7 @@ export async function getStaticPaths() {
   const { data: posts } = await loadQuery<Array<{ slug: string }>>({
     query: allBlogPostSlugsQuery,
   });
-  return posts
-    .map((p) => ({ slug: p.slug?.replace(/^\/+/, '') }))
-    .filter((p) => !!p.slug)
-    .map((p) => ({ params: { slug: p.slug } }));
+  return posts.map((p) => ({ params: { slug: p.slug } }));
 }
 
 interface SanityImage {
@@ -29,6 +26,9 @@ interface SanityImage {
 
 interface BlogPost {
   _id: string;
+  _type: string;
+  _updatedAt?: string;
+  _originalId?: string;
   title: string;
   slug: string;
   image?: SanityImage;
@@ -44,14 +44,12 @@ interface BlogPost {
 }
 
 const { slug } = Astro.params;
-// Tolerate legacy slugs stored with a leading slash by querying both forms.
-const slugVariants = [slug, `/${slug}`];
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
   .href;
 
 const { data: post } = await loadQuery<BlogPost | null>({
   query: blogPostBySlugQuery,
-  params: { slugVariants },
+  params: { slug },
 });
 
 if (!post) {
@@ -71,7 +69,7 @@ const publishedDate = formatDate(post.publishedAt);
 
 const { data: relatedRaw } = await loadQuery<BlogPost[]>({
   query: relatedBlogPostsQuery,
-  params: { slugVariants },
+  params: { slug },
 });
 
 const relatedPosts = (relatedRaw ?? []).map((p) => ({
@@ -83,7 +81,7 @@ const relatedPosts = (relatedRaw ?? []).map((p) => ({
   authorName: p.author?.name ?? '',
   authorImage: p.author?.avatar ? sanityImageSrc(p.author.avatar) : '',
   authorImageAlt: p.author?.name ?? '',
-  href: `/blog/${p.slug?.replace(/^\/+/, '') ?? ''}`,
+  href: `/blog/${p.slug}`,
 }));
 
 const heroImage = sanityImageSrc(post.image);
@@ -96,6 +94,12 @@ const heroImageAlt = sanityImageAlt(post.image, post.title);
   ogImage={heroImage}
   ogType="article"
   canonicalUrl={canonicalUrl}
+  previewDoc={{
+    _id: post._id,
+    _type: post._type,
+    _updatedAt: post._updatedAt,
+    _originalId: post._originalId,
+  }}
 >
   <main>
     <PostHeader
