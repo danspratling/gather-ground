@@ -1,4 +1,5 @@
 ---
+import AnnouncementBanner from '@/components/AnnouncementBanner/AnnouncementBanner.astro';
 import CookieBanner from '@/components/CookieBanner/CookieBanner';
 import Footer from '@/components/Layout/Footer/Footer.astro';
 import type { SocialPlatform } from '@/components/Layout/Footer/Footer.types';
@@ -305,6 +306,23 @@ const footerProps = {
   <body>
     {/* body-start: announcement banner, skip-to-content */}
     <slot name="body-start" />
+    {
+      siteSettings?.announcementBanner?.enabled &&
+        siteSettings.announcementBanner.message && (
+          <AnnouncementBanner
+            message={siteSettings.announcementBanner.message}
+            ctaLabel={siteSettings.announcementBanner.ctaLabel}
+            ctaHref={siteSettings.announcementBanner.ctaHref}
+            variant={
+              siteSettings.announcementBanner.variant as
+                | 'info'
+                | 'warning'
+                | 'success'
+                | undefined
+            }
+          />
+        )
+    }
     <Header {...headerProps} />
     <slot />
     <Footer {...footerProps} />
