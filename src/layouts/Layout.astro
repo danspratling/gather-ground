@@ -1,6 +1,8 @@
 ---
 import Footer from '@/components/Layout/Footer/Footer.astro';
 import Header from '@/components/Layout/Header/Header.astro';
+import PreviewBanner from '@/components/PreviewBanner/PreviewBanner.astro';
+import type { PreviewDoc } from '@/components/PreviewBanner/PreviewBanner.types';
 import { VisualEditing } from '@sanity/astro/visual-editing';
 import '@/styles/global.css';
 
@@ -13,9 +15,11 @@ interface Props {
   ogImage?: string;
   ogType?: string;
   canonicalUrl?: string;
+  previewDoc?: PreviewDoc;
 }
 
-const { title, description, ogImage, ogType, canonicalUrl } = Astro.props;
+const { title, description, ogImage, ogType, canonicalUrl, previewDoc } =
+  Astro.props;
 
 const footerProps = {
   logoSrc: '/favicon.svg',
@@ -148,5 +152,6 @@ const footerProps = {
     <slot />
     <Footer {...footerProps} />
     <VisualEditing enabled={visualEditingEnabled} />
+    {visualEditingEnabled && previewDoc && <PreviewBanner doc={previewDoc} />}
   </body>
 </html>

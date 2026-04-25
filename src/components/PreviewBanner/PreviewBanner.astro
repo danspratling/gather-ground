@@ -1,0 +1,76 @@
+---
+import type { PreviewBannerProps } from './PreviewBanner.types';
+
+const { doc } = Astro.props as PreviewBannerProps;
+
+const isDraft = Boolean(doc._originalId?.startsWith('drafts.'));
+const publishedId = doc._id.replace(/^drafts\./, '');
+
+// Studio structure tool deep link to this document.
+const editHref = `/studio/structure/${doc._type};${publishedId}`;
+
+const lastEditedLabel = doc._updatedAt
+  ? new Date(doc._updatedAt).toLocaleString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  : 'Unknown';
+---
+
+<aside
+  class="preview-banner fixed inset-x-0 bottom-0 z-50 border-t border-gray-700 bg-brand-900/90 text-xs text-white backdrop-blur-md data-[state=hidden]:hidden"
+  role="status"
+  aria-label="Preview environment"
+  data-state="visible"
+>
+  <div
+    class="mx-auto flex max-w-[1440px] flex-wrap items-center gap-3 px-4 py-2.5"
+  >
+    <span
+      class="rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wider data-[variant=draft]:bg-warning-200 data-[variant=draft]:text-warning-700 data-[variant=published]:bg-success-200 data-[variant=published]:text-success-700"
+      data-variant={isDraft ? 'draft' : 'published'}
+    >
+      {isDraft ? 'Draft' : 'Published'}
+    </span>
+    <span class="font-semibold">Preview mode</span>
+    <span class="text-gray-400">
+      Last edited{' '}
+      {
+        doc._updatedAt ? (
+          <time class="tabular-nums text-white" datetime={doc._updatedAt}>
+            {lastEditedLabel}
+          </time>
+        ) : (
+          <span class="text-white">{lastEditedLabel}</span>
+        )
+      }
+    </span>
+    <a
+      class="ms-auto text-white underline underline-offset-4 transition-colors hover:text-secondary-400"
+      href={editHref}>Edit in Studio →</a
+    >
+    <button
+      type="button"
+      class="cursor-pointer border-0 bg-transparent px-1 text-xl leading-none text-gray-400 transition-colors hover:text-white"
+      aria-label="Dismiss preview banner"
+      data-preview-banner-dismiss
+    >
+      ×
+    </button>
+  </div>
+</aside>
+
+<script>
+  const banner = document.querySelector<HTMLElement>('.preview-banner');
+  const dismiss = document.querySelector<HTMLButtonElement>(
+    '[data-preview-banner-dismiss]'
+  );
+  if (banner && dismiss) {
+    dismiss.addEventListener('click', () => {
+      banner.setAttribute('data-state', 'hidden');
+    });
+  }
+</script>

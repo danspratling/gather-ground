@@ -18,6 +18,10 @@ const { slug } = Astro.params;
 const pageSlug = slug ?? '/';
 
 const { data: page } = await loadQuery<{
+  _id: string;
+  _type: string;
+  _updatedAt?: string;
+  _originalId?: string;
   title: string;
   slug: string;
   body: Array<Record<string, unknown> & { _type: string; _key: string }>;
@@ -27,7 +31,15 @@ const { data: page } = await loadQuery<{
 });
 ---
 
-<Layout title={page.title}>
+<Layout
+  title={page.title}
+  previewDoc={{
+    _id: page._id,
+    _type: page._type,
+    _updatedAt: page._updatedAt,
+    _originalId: page._originalId,
+  }}
+>
   <main>
     <SectionMapper sections={page.body ?? []} />
   </main>

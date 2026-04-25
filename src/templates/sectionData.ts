@@ -155,7 +155,7 @@ export function blogSectionProps(s: Dict) {
           ? sanityImageSrc(author.avatar as { asset?: { _ref: string } })
           : '',
         authorImageAlt: (author?.name as string) ?? '',
-        href: '/blog/' + (p.slug as string).replace(/^\/+/, ''),
+        href: '/blog/' + (p.slug as string),
       };
     }),
   };
