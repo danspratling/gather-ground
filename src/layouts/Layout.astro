@@ -1,4 +1,5 @@
 ---
+import CookieBanner from '@/components/CookieBanner/CookieBanner';
 import Footer from '@/components/Layout/Footer/Footer.astro';
 import type { SocialPlatform } from '@/components/Layout/Footer/Footer.types';
 import Header from '@/components/Layout/Header/Header.astro';
@@ -308,6 +309,7 @@ const footerProps = {
     <Footer {...footerProps} />
     {/* body-end: cookie banner, analytics */}
     <slot name="body-end" />
+    <CookieBanner client:load />
     <VisualEditing enabled={visualEditingEnabled} />
     {visualEditingEnabled && previewDoc && <PreviewBanner doc={previewDoc} />}
   </body>
