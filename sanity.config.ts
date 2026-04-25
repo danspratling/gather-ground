@@ -22,6 +22,7 @@ import {
   contentSection,
   contentFeatureItem,
   contentIconFeature,
+  siteSettings,
 } from './src/sanity/schemas';
 
 export default defineConfig({
@@ -36,6 +37,14 @@ export default defineConfig({
           .title('Content')
           .items([
             S.listItem()
+              .title('Site Settings')
+              .id('siteSettings')
+              .child(
+                S.document()
+                  .schemaType('siteSettings')
+                  .documentId('siteSettings')
+              ),
+            S.listItem()
               .title('Product Page')
               .id('productPage')
               .child(
@@ -43,7 +52,10 @@ export default defineConfig({
               ),
             S.divider(),
             ...S.documentTypeListItems().filter(
-              (listItem) => !['productPage'].includes(listItem.getId() ?? '')
+              (listItem) =>
+                !['siteSettings', 'productPage'].includes(
+                  listItem.getId() ?? ''
+                )
             ),
           ]),
     }),
@@ -107,6 +119,8 @@ export default defineConfig({
   ],
   schema: {
     types: [
+      // Singletons
+      siteSettings,
       // Shared types
       link,
       callout,

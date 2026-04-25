@@ -235,4 +235,23 @@ export const relatedBlogPostsQuery = `*[_type == "blogPosts" && slug.current != 
   }
 }`;
 
+// ─── Site Settings ──────────────────────────────────────────────────
+
+/** Fetch the singleton siteSettings document. */
+export const siteSettingsQuery = `*[_type == "siteSettings"][0]{
+  siteName,
+  siteDescription,
+  logoAlt,
+  "logo": logo.asset->url,
+  primaryNav,
+  headerCtaLabel,
+  headerCtaHref,
+  footerDescription,
+  footerLinkGroups,
+  socialLinks,
+  copyrightText,
+  footerLegalLinks,
+  announcementBanner
+}`;
+
 export default null;
