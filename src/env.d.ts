@@ -1,4 +1,5 @@
 /// <reference types="astro/client" />
+/// <reference types="@sanity/astro/module" />
 
 // Ambient declarations for optional peer dependencies used by
 // @storybook-astro/framework that we don't install (Preact, Solid, Svelte, Vue).
@@ -50,8 +51,8 @@ declare module '@vitejs/plugin-vue-jsx' {
 }
 
 interface ImportMetaEnv {
-  readonly STORYBLOK_TOKEN: string;
-  readonly STORYBLOK_SPACE_ID: string;
-  readonly PUBLIC_STORYBLOK_TOKEN: string;
-  readonly STORYBLOK_PERSONAL_TOKEN: string;
+  readonly SANITY_PROJECT_ID: string;
+  readonly SANITY_DATASET: string;
+  readonly SANITY_API_READ_TOKEN: string;
+  readonly PUBLIC_SANITY_VISUAL_EDITING_ENABLED: string;
 }

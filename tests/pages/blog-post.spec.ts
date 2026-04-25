@@ -3,11 +3,11 @@
  *
  * Rules (ADR-020):
  * - Assert on structure and behavior — never on CMS content
- * - No getByText() for copy that comes from Storyblok
+ * - No getByText() for copy that comes from Sanity
  * - No screenshot assertions — Chromatic owns visual regression
  *
  * The blog post page requires a real slug to load. If no published posts exist
- * in the Storyblok space, getStaticPaths() generates no pages and the suite is
+ * in the Sanity dataset, getStaticPaths() generates no pages and the suite is
  * skipped gracefully (tests remain pending rather than failing).
  */
 
@@ -17,7 +17,7 @@ import { expect, test } from '@playwright/test';
 
 /**
  * Resolve the first available blog post slug from the blog index page.
- * Returns null when no posts exist yet (Storyblok space empty).
+ * Returns null when no posts exist yet (Sanity dataset empty).
  */
 async function getFirstPostUrl(baseURL: string): Promise<string | null> {
   // The blog index page renders <a> cards that link to individual posts.

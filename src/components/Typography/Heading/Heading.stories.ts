@@ -1,6 +1,5 @@
 import { expect, within } from 'storybook/test';
 
-// @ts-expect-error — .astro files have no TypeScript declarations
 import Heading from '@/components/Typography/Heading/Heading.astro';
 
 const meta = {

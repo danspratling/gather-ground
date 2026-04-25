@@ -1,15 +1,18 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
-import { storyblok } from '@storyblok/astro';
+import sanity from '@sanity/astro';
+import vercel from '@astrojs/vercel';
 import { loadEnv } from 'vite';
 import path from 'node:path';
 import mkcert from 'vite-plugin-mkcert';
 
-const env = loadEnv('', process.cwd(), 'STORYBLOK');
+const env = loadEnv('', process.cwd(), ['SANITY', 'PUBLIC_SANITY']);
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'static',
+  adapter: vercel(),
   vite: {
     plugins: [tailwindcss(), mkcert()],
     resolve: {
@@ -17,29 +20,31 @@ export default defineConfig({
         '@': path.resolve('./src'),
       },
     },
+    optimizeDeps: {
+      include: [
+        'sanity',
+        'sanity/structure',
+        'sanity/presentation',
+        '@sanity/visual-editing',
+        // Pre-bundle every lodash submodule so CJS→ESM interop works for
+        // transitive imports like `lodash/groupBy.js`, `lodash/isObject.js`, etc.
+        // used inside @sanity/visual-editing's createOptimisticStore.
+        'lodash',
+        'lodash/*.js',
+        'react',
+        'react-dom',
+        'react-dom/client',
+        'react/compiler-runtime',
+      ],
+    },
   },
   integrations: [
     react(),
-    storyblok({
-      accessToken: env.STORYBLOK_TOKEN,
-      bridge: {
-        resolveRelations: [
-          'testimonials_section.testimonials',
-          'faq_section.faqs',
-          'blog_section.posts',
-        ],
-      },
-      enableFallbackComponent: true,
-      components: {
-        page: 'templates/Page.astro',
-        hero_section: 'components/HeroSection/HeroSection.storyblok.astro',
-        products_section:
-          'components/ProductsSection/ProductsSection.storyblok.astro',
-        testimonials_section:
-          'components/TestimonialsSection/TestimonialsSection.storyblok.astro',
-        faq_section: 'components/FaqSection/FaqSection.storyblok.astro',
-        blog_section: 'components/BlogSection/BlogSection.storyblok.astro',
-      },
+    sanity({
+      projectId: env.SANITY_PROJECT_ID,
+      dataset: env.SANITY_DATASET || 'production',
+      useCdn: false, // Static build — no CDN needed at request time
+      studioBasePath: '/studio',
     }),
   ],
 });

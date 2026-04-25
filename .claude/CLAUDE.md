@@ -6,11 +6,11 @@ Persistent context for Claude Code on the Gather Ground website. **Read this fil
 
 ## Project overview
 
-Marketing website for Gather Ground. Astro framework, Tailwind CSS + shadcn/ui for styling, Storyblok as the headless CMS, Storybook for the component library, Playwright for e2e testing, deployed on Vercel.
+Marketing website for Gather Ground. Astro framework, Tailwind CSS + shadcn/ui for styling, Sanity as the headless CMS (embedded Studio at `/studio`), Storybook for the component library, Playwright for e2e testing, deployed on Vercel.
 
 - **Repo:** https://github.com/danspratling/gather-ground
 - **Design source:** Figma (via Figma MCP in Claude desktop app)
-- **CMS:** Storyblok — Space ID `289911665285843`
+- **CMS:** Sanity — Project ID `mrz1ftls`, dataset `production`, embedded Studio at `/studio`
 - **Deployment:** Vercel — preview on every PR, production on merge to `main`
 - **Issue tracking:** Linear — https://linear.app/dspratling/project/gather-ground-website-9f2703a0cb94
 
@@ -23,7 +23,7 @@ Marketing website for Gather Ground. Astro framework, Tailwind CSS + shadcn/ui f
 | Framework      | Astro (latest)                     | `.astro` for static, React islands for interactive                                         |
 | Styling        | Tailwind CSS v4                    | CSS custom properties in `src/styles/global.css`                                           |
 | Primitives     | shadcn/ui                          | Via Astro + React integration                                                              |
-| CMS            | `@storyblok/astro`                 | Space ID `289911665285843`                                                                 |
+| CMS            | `@sanity/astro`                    | Embedded Studio at `/studio`; project `mrz1ftls`, dataset `production`                     |
 | Component docs | Storybook v10                      | `@storybook-astro/framework`; addon-a11y, addon-designs, addon-docs, Chromatic             |
 | Testing        | `@storybook/test` + Playwright     | Stories for component interactions; Playwright for full-page structural + behavioral tests |
 | Linting        | ESLint (`eslint-config-astro`)     | `eslint.config.js`                                                                         |
@@ -44,7 +44,7 @@ Marketing website for Gather Ground. Astro framework, Tailwind CSS + shadcn/ui f
 │   ├── components/           # UI components — each in its own folder, co-located with stories and types
 │   ├── layouts/              # Base layouts (Layout.astro = Header + Footer wrapper)
 │   ├── pages/                # Astro pages (index.astro = homepage)
-│   ├── storyblok/            # Storyblok component schema definitions
+│   ├── sanity/               # Sanity schema definitions and config
 │   ├── stories/              # Global Storybook docs only (Introduction.mdx)
 │   └── styles/               # Global CSS + design tokens (global.css)
 ├── tests/                    # Playwright e2e and visual regression tests
@@ -137,7 +137,7 @@ As the codebase grows, validate at minimum the steps that cover changed files �
 - Component files: `PascalCase` — `HeroSection.astro`, `FaqAccordion.tsx`
 - Type files: `[ComponentName].types.ts` — co-located in the component folder
 - Story files: `[ComponentName].stories.ts` (or `.tsx` for React islands) — co-located in the component folder
-- Storyblok schema files: `[componentName].ts` in `src/storyblok/`
+- Sanity schema files: `[name].ts` in `src/sanity/schemas/`
 
 ### Styling
 
@@ -151,12 +151,12 @@ As the codebase grows, validate at minimum the steps that cover changed files �
 - Strict mode is enabled. No `any`. No `@ts-ignore` without an explanation comment.
 - Define the TypeScript interface **first**, before writing component markup.
 
-### Storyblok
+### Sanity
 
-- Schema field names: `snake_case` (CMS convention)
-- TypeScript props: `camelCase` — the schema file handles mapping
-- Never create or edit schemas in the Storyblok dashboard — always via `src/storyblok/` + CLI push
-- Never fetch Storyblok data client-side (only exception: visual editor bridge in preview mode)
+- Schema field names: `camelCase`; TypeScript props: `camelCase` (1:1)
+- Schemas live in `src/sanity/schemas/` and are picked up automatically by the embedded Studio at `/studio` — no push step
+- Never fetch Sanity data client-side. Use `loadQuery` from `src/lib/sanity.ts` in Astro page frontmatter only
+- Visual Editing (click-to-edit overlays + stega encoding) is gated by `PUBLIC_SANITY_VISUAL_EDITING_ENABLED=true` and only runs in dev/preview
 
 ### Storybook
 
@@ -174,11 +174,14 @@ As the codebase grows, validate at minimum the steps that cover changed files �
 
 ## Environment variables
 
-| Variable                 | Used by                       | Where to get it                      |
-| ------------------------ | ----------------------------- | ------------------------------------ |
-| `STORYBLOK_TOKEN`        | `@storyblok/astro` (server)   | Storyblok → Settings → Access Tokens |
-| `STORYBLOK_SPACE_ID`     | `@storyblok/astro`            | `289911665285843`                    |
-| `PUBLIC_STORYBLOK_TOKEN` | Visual editor bridge (client) | Same token value, public prefix      |
+| Variable                                | Used by                                 | Where to get it                            |
+| --------------------------------------- | --------------------------------------- | ------------------------------------------ |
+| Variable                                | Used by                                 | Where to get it                            |
+| --------------------------------------- | --------------------------------------  | ------------------------------------------ |
+| `SANITY_PROJECT_ID`                     | `@sanity/astro` + `loadQuery` (server)  | `mrz1ftls`                                 |
+| `SANITY_DATASET`                        | `@sanity/astro`                         | `production`                               |
+| `SANITY_API_READ_TOKEN`                 | Draft preview + stega                   | sanity.io/manage → API → Tokens (Viewer)   |
+| `PUBLIC_SANITY_VISUAL_EDITING_ENABLED`  | Visual Editing overlays (client+server) | Set `true` locally to enable click-to-edit |
 
 Copy `.env.example` to `.env`. Never commit `.env`.
 
@@ -186,7 +189,7 @@ Copy `.env.example` to `.env`. Never commit `.env`.
 
 ## Homepage sections (Figma order)
 
-These are **page sections** — composed layouts driven by Storyblok content. Each one is a separate component in `src/components/` and is rendered in `src/pages/index.astro`. Follow the page section workflow in `CONTRIBUTING.md` when building or updating these.
+These are **page sections** — composed layouts driven by Sanity content. Each one is a separate component in `src/components/` and is rendered via `SectionMapper.astro` from `src/pages/[...slug].astro`. Follow the page section workflow in `CONTRIBUTING.md` when building or updating these.
 
 1. Header — in `Layout.astro`
 2. `HeroSection.astro` — 1440×1140
@@ -210,7 +213,7 @@ When building a page section, use Figma MCP and Playwright MCP as a closed-loop 
 1. **Get the Figma frame URL** from the Linear issue for the section being built
 2. **Read the frame with Figma MCP** — extract: layout structure, which design tokens apply, spacing, responsive behaviour at 375px and 1440px, which existing UI components are used
 3. **Build the section** — types interface first, then markup using only design tokens and existing components (no new primitives unless the component checklist is followed)
-4. **Write the Storybook story** — hardcoded mock props, `Default` story + any meaningful variants; no live Storyblok data in stories
+4. **Write the Storybook story** — hardcoded mock props, `Default` story + any meaningful variants; no live Sanity data in stories
 5. **Validate with Playwright MCP**:
    - Navigate to `http://localhost:4321` (dev server must be running)
    - Screenshot at viewport width 375px (mobile)
@@ -232,7 +235,7 @@ When building a page section, use Figma MCP and Playwright MCP as a closed-loop 
 3. `npm install` — dependencies may have updated
 4. `npm run dev` + `npm run storybook` + `npx playwright test` — confirm green baseline
 5. Check Linear for any open issues before starting anything new
-6. Content changes belong in Storyblok, not in code
+6. Content changes belong in Sanity, not in code
 
 ---
 
@@ -242,7 +245,7 @@ When building a page section, use Figma MCP and Playwright MCP as a closed-loop 
 - Do not format code manually — run `npm run format`
 - Do not use `client:load` when `client:visible` is sufficient
 - Do not fetch data inside components
-- Do not create Storyblok schemas in the dashboard
+- Do not create Sanity schemas in the Studio UI — always edit `src/sanity/schemas/` and let the dev server reload
 - Do not skip writing the TypeScript interface before the component
 - Do not push without `npm run format`, `npm run typecheck`, and both test suites passing
 - Do not commit to `main` directly

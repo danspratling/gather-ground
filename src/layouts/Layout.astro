@@ -1,7 +1,11 @@
 ---
 import Footer from '@/components/Layout/Footer/Footer.astro';
 import Header from '@/components/Layout/Header/Header.astro';
+import { VisualEditing } from '@sanity/astro/visual-editing';
 import '@/styles/global.css';
+
+const visualEditingEnabled =
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true';
 
 interface Props {
   title: string;
@@ -143,5 +147,6 @@ const footerProps = {
     />
     <slot />
     <Footer {...footerProps} />
+    <VisualEditing enabled={visualEditingEnabled} />
   </body>
 </html>

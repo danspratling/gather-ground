@@ -1,9 +1,7 @@
 // @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
-// See: https://storybook-astro.org/writing-stories/
 import { expect, within } from 'storybook/test';
 import type { RichTextProps } from './RichText.types';
 
-// @ts-expect-error — .astro files have no TypeScript declarations
 import RichText from '@/components/RichText/RichText.astro';
 
 const meta = {
@@ -22,152 +20,139 @@ const meta = {
 
 export default meta;
 
-const richContent: RichTextProps['content'] = {
-  type: 'doc',
-  content: [
-    {
-      type: 'heading',
-      attrs: { level: 2 },
-      content: [{ type: 'text', text: 'Introduction' }],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        {
-          type: 'text',
-          text: 'Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam suspendisse morbi eleifend faucibus eget vestibulum felis. Dictum quis montes, sit sit. Tellus aliquam enim urna, etiam.',
-        },
-      ],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        {
-          type: 'text',
-          text: 'Eget quis mi enim, leo lacinia pharetra, semper. Eget in volutpat mollis at volutpat lectus velit, sed auctor. Porttitor fames arcu quis fusce augue enim.',
-        },
-      ],
-    },
-    {
-      type: 'heading',
-      attrs: { level: 3 },
-      content: [{ type: 'text', text: 'Software and tools' }],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        {
-          type: 'text',
-          text: 'Dolor enim eu tortor urna sed duis nulla. Aliquam vestibulum, nulla odio nisl vitae. In aliquet pellentesque aenean hac vestibulum turpis mi bibendum diam.',
-        },
-      ],
-    },
-    {
-      type: 'blockquote',
-      content: [
-        {
-          type: 'paragraph',
-          content: [
-            {
-              type: 'text',
-              text: '"In a world older and more complete than ours they move finished and complete, gifted with extensions of the senses we have lost or never attained."',
-            },
-          ],
-        },
-        {
-          type: 'paragraph',
-          content: [{ type: 'text', text: '— Olivia Rhye, Product Designer' }],
-        },
-      ],
-    },
-    {
-      type: 'heading',
-      attrs: { level: 3 },
-      content: [{ type: 'text', text: 'Other resources' }],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        {
-          type: 'text',
-          text: 'Sagittis et eu at elementum, quis in. Proin praesent volutpat egestas sociis sit lorem nunc nunc sit.',
-        },
-      ],
-    },
-    {
-      type: 'ordered_list',
-      content: [
-        {
-          type: 'list_item',
-          content: [
-            {
-              type: 'paragraph',
-              content: [
-                {
-                  type: 'text',
-                  text: 'Lectus id duis vitae porttitor enim gravida morbi.',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'list_item',
-          content: [
-            {
-              type: 'paragraph',
-              content: [
-                {
-                  type: 'text',
-                  text: 'Eu turpis posuere semper feugiat volutpat elit, ultrices suspendisse.',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'list_item',
-          content: [
-            {
-              type: 'paragraph',
-              content: [
-                {
-                  type: 'text',
-                  text: 'Suspendisse maecenas ac donec scelerisque diam sed est duis purus.',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      type: 'bullet_list',
-      content: [
-        {
-          type: 'list_item',
-          content: [
-            {
-              type: 'paragraph',
-              content: [
-                { type: 'text', text: 'Pasture-raised heritage breeds' },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'list_item',
-          content: [
-            {
-              type: 'paragraph',
-              content: [{ type: 'text', text: 'No antibiotics or hormones' }],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
+const richContent: RichTextProps['content'] = [
+  {
+    _type: 'block',
+    _key: 'h1',
+    style: 'h2',
+    children: [{ _type: 'span', _key: 's1', text: 'Introduction', marks: [] }],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'p1',
+    style: 'normal',
+    children: [
+      {
+        _type: 'span',
+        _key: 's2',
+        text: 'Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam suspendisse morbi eleifend faucibus eget vestibulum felis.',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'h2',
+    style: 'h3',
+    children: [
+      { _type: 'span', _key: 's3', text: 'Software and tools', marks: [] },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'p2',
+    style: 'normal',
+    children: [
+      {
+        _type: 'span',
+        _key: 's4',
+        text: 'Dolor enim eu tortor urna sed duis nulla. Aliquam vestibulum, nulla odio nisl vitae.',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'q1',
+    style: 'blockquote',
+    children: [
+      {
+        _type: 'span',
+        _key: 's5',
+        text: '"In a world older and more complete than ours they move finished and complete, gifted with extensions of the senses we have lost or never attained." — Olivia Rhye, Product Designer',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'h3',
+    style: 'h3',
+    children: [
+      { _type: 'span', _key: 's6', text: 'Other resources', marks: [] },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'li1',
+    style: 'normal',
+    listItem: 'number',
+    level: 1,
+    children: [
+      {
+        _type: 'span',
+        _key: 's7',
+        text: 'Lectus id duis vitae porttitor enim gravida morbi.',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'li2',
+    style: 'normal',
+    listItem: 'number',
+    level: 1,
+    children: [
+      {
+        _type: 'span',
+        _key: 's8',
+        text: 'Eu turpis posuere semper feugiat volutpat elit, ultrices suspendisse.',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'li3',
+    style: 'normal',
+    listItem: 'bullet',
+    level: 1,
+    children: [
+      {
+        _type: 'span',
+        _key: 's9',
+        text: 'Pasture-raised heritage breeds',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'li4',
+    style: 'normal',
+    listItem: 'bullet',
+    level: 1,
+    children: [
+      {
+        _type: 'span',
+        _key: 's10',
+        text: 'No antibiotics or hormones',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+];
 
 export const Default = {
   args: {
@@ -175,71 +160,77 @@ export const Default = {
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
-
-    // Heading hierarchy: H2 appears before H3, no skipped levels
     const h2 = canvas.getByRole('heading', { level: 2 });
     const h3s = canvas.getAllByRole('heading', { level: 3 });
 
     expect(h2).toBeTruthy();
     expect(h3s.length).toBeGreaterThanOrEqual(1);
-
-    // H2 should appear before the first H3 in the DOM
     expect(
       h2.compareDocumentPosition(h3s[0]) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
   },
 };
 
-export const WithCalloutAndImage = {
+export const WithCallout = {
   args: {
-    content: {
-      type: 'doc',
-      content: [
-        {
-          type: 'heading',
-          attrs: { level: 2 },
-          content: [{ type: 'text', text: 'Featured block types' }],
-        },
-        {
-          type: 'paragraph',
-          content: [
-            {
-              type: 'text',
-              text: 'Below you will find a callout block demonstrating the supported richtext block type.',
-            },
-          ],
-        },
-        {
-          type: 'blok',
-          attrs: {
-            id: 'callout-01',
-            body: [
+    content: [
+      {
+        _type: 'block',
+        _key: 'h1',
+        style: 'h2',
+        children: [
+          {
+            _type: 'span',
+            _key: 's1',
+            text: 'Featured block types',
+            marks: [],
+          },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'block',
+        _key: 'p1',
+        style: 'normal',
+        children: [
+          {
+            _type: 'span',
+            _key: 's2',
+            text: 'Below you will find a callout block demonstrating the supported richtext block type.',
+            marks: [],
+          },
+        ],
+        markDefs: [],
+      },
+      {
+        _type: 'callout',
+        _key: 'c1',
+        content: [
+          {
+            _type: 'block',
+            _key: 'ch1',
+            style: 'h3',
+            children: [
+              { _type: 'span', _key: 'cs1', text: 'Did you know?', marks: [] },
+            ],
+            markDefs: [],
+          },
+          {
+            _type: 'block',
+            _key: 'cp1',
+            style: 'normal',
+            children: [
               {
-                component: 'callout',
-                content: {
-                  type: 'doc',
-                  content: [
-                    {
-                      type: 'heading',
-                      attrs: { level: 3 },
-                      content: [{ type: 'text', text: 'Did you know?' }],
-                    },
-                    {
-                      type: 'paragraph',
-                      content: [
-                        {
-                          type: 'text',
-                          text: 'Heritage breed animals raised on pasture produce meat with significantly higher levels of omega-3 fatty acids and conjugated linoleic acid (CLA) compared to conventionally raised animals.',
-                        },
-                      ],
-                    },
-                  ],
-                },
+                _type: 'span',
+                _key: 'cs2',
+                text: 'Heritage breed animals raised on pasture produce meat with significantly higher levels of omega-3 fatty acids and CLA compared to conventionally raised animals.',
+                marks: [],
               },
             ],
+            markDefs: [],
           },
-        },
-      ],
-    } as RichTextProps['content'],
+        ],
+      },
+    ] as RichTextProps['content'],
   },
 };

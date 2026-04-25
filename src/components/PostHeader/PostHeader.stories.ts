@@ -2,7 +2,6 @@
 // See: https://storybook-astro.org/writing-stories/
 import type { PostHeaderProps } from './PostHeader.types';
 
-// @ts-expect-error — .astro files have no TypeScript declarations
 import PostHeader from '@/components/PostHeader/PostHeader.astro';
 
 const meta = {
@@ -22,110 +21,114 @@ const meta = {
 
 export default meta;
 
-const mockBody: PostHeaderProps['body'] = {
-  type: 'doc',
-  content: [
-    {
-      type: 'heading',
-      attrs: { level: 2 },
-      content: [{ type: 'text', text: 'Introduction' }],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        {
-          type: 'text',
-          text: 'Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam suspendisse morbi eleifend faucibus eget vestibulum felis. Dictum quis montes, sit sit. Tellus aliquam enim urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi, tellus tincidunt.',
-        },
-      ],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        {
-          type: 'text',
-          text: 'Eget quis mi enim, leo lacinia pharetra, semper. Eget in volutpat mollis at volutpat lectus velit, sed auctor. Porttitor fames arcu quis fusce augue enim.',
-        },
-      ],
-    },
-    {
-      type: 'blockquote',
-      content: [
-        {
-          type: 'paragraph',
-          content: [
-            {
-              type: 'text',
-              text: '"In a world older and more complete than ours they move finished and complete, gifted with extensions of the senses we have lost or never attained, living by voices we shall never hear."',
-            },
-          ],
-        },
-        {
-          type: 'paragraph',
-          content: [{ type: 'text', text: '— Olivia Rhye, Product Designer' }],
-        },
-      ],
-    },
-    {
-      type: 'heading',
-      attrs: { level: 3 },
-      content: [{ type: 'text', text: 'Software and tools' }],
-    },
-    {
-      type: 'paragraph',
-      content: [
-        {
-          type: 'text',
-          text: 'Dolor enim eu tortor urna sed duis nulla. Aliquam vestibulum, nulla odio nisl vitae. In aliquet pellentesque aenean hac vestibulum turpis mi bibendum diam. Tempor integer aliquam in vitae malesuada fringilla.',
-        },
-      ],
-    },
-    {
-      type: 'ordered_list',
-      content: [
-        {
-          type: 'list_item',
-          content: [
-            {
-              type: 'paragraph',
-              content: [
-                { type: 'text', text: 'Lectus id duis vitae porttitor enim.' },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'list_item',
-          content: [
-            {
-              type: 'paragraph',
-              content: [
-                {
-                  type: 'text',
-                  text: 'Eu turpis posuere semper feugiat volutpat elit.',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'list_item',
-          content: [
-            {
-              type: 'paragraph',
-              content: [
-                {
-                  type: 'text',
-                  text: 'Suspendisse maecenas ac donec scelerisque diam.',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
+const mockBody: PostHeaderProps['body'] = [
+  {
+    _type: 'block',
+    _key: 'h1',
+    style: 'h2',
+    children: [{ _type: 'span', _key: 's1', text: 'Introduction', marks: [] }],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'p1',
+    style: 'normal',
+    children: [
+      {
+        _type: 'span',
+        _key: 's2',
+        text: 'Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam suspendisse morbi eleifend faucibus eget vestibulum felis. Dictum quis montes, sit sit.',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'q1',
+    style: 'blockquote',
+    children: [
+      {
+        _type: 'span',
+        _key: 's3',
+        text: '"In a world older and more complete than ours they move finished and complete, gifted with extensions of the senses we have lost or never attained." — Olivia Rhye, Product Designer',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'h2',
+    style: 'h3',
+    children: [
+      { _type: 'span', _key: 's4', text: 'Software and tools', marks: [] },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'p2',
+    style: 'normal',
+    children: [
+      {
+        _type: 'span',
+        _key: 's5',
+        text: 'Dolor enim eu tortor urna sed duis nulla. Aliquam vestibulum, nulla odio nisl vitae.',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'li1',
+    style: 'normal',
+    listItem: 'number',
+    level: 1,
+    children: [
+      {
+        _type: 'span',
+        _key: 's6',
+        text: 'Lectus id duis vitae porttitor enim.',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'li2',
+    style: 'normal',
+    listItem: 'number',
+    level: 1,
+    children: [
+      {
+        _type: 'span',
+        _key: 's7',
+        text: 'Eu turpis posuere semper feugiat volutpat elit.',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+  {
+    _type: 'block',
+    _key: 'li3',
+    style: 'normal',
+    listItem: 'number',
+    level: 1,
+    children: [
+      {
+        _type: 'span',
+        _key: 's8',
+        text: 'Suspendisse maecenas ac donec scelerisque diam.',
+        marks: [],
+      },
+    ],
+    markDefs: [],
+  },
+];
 
 export const Default = {
   args: {

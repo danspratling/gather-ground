@@ -1,6 +1,5 @@
 import { expect, within } from 'storybook/test';
 
-// @ts-expect-error — .astro files have no TypeScript declarations
 import AvatarGroup from './AvatarGroup.astro';
 
 const PLACEHOLDER = 'https://i.pravatar.cc/150?img=1';

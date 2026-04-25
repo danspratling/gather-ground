@@ -1,40 +1,34 @@
 ---
-import { useStoryblokApi } from '@storyblok/astro';
-import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
 import Layout from '@/layouts/Layout.astro';
+import SectionMapper from '@/templates/SectionMapper.astro';
+import { loadQuery } from '@/lib/sanity';
+import { allPageSlugsQuery, pageBySlugQuery } from '@/lib/queries';
 
 export async function getStaticPaths() {
-  const storyblokApi = useStoryblokApi();
-  const { data } = await storyblokApi.get('cdn/stories', {
-    version: 'published',
-    content_type: 'page',
-    per_page: 100,
-    excluding_fields: 'content',
+  const { data: pages } = await loadQuery<Array<{ slug: string }>>({
+    query: allPageSlugsQuery,
   });
 
-  return data.stories.map((story: { full_slug: string }) => ({
-    params: { slug: story.full_slug === 'home' ? undefined : story.full_slug },
+  return pages.map((page) => ({
+    params: { slug: page.slug === '/' ? undefined : page.slug },
   }));
 }
 
 const { slug } = Astro.params;
-const storyPath = slug ?? 'home';
+const pageSlug = slug ?? '/';
 
-const storyblokApi = useStoryblokApi();
-const { data } = await storyblokApi.get(`cdn/stories/${storyPath}`, {
-  version: import.meta.env.DEV ? 'draft' : 'published',
-  resolve_relations: [
-    'testimonials_section.testimonials',
-    'faq_section.faqs',
-    'blog_section.posts',
-  ],
+const { data: page } = await loadQuery<{
+  title: string;
+  slug: string;
+  body: Array<Record<string, unknown> & { _type: string; _key: string }>;
+}>({
+  query: pageBySlugQuery,
+  params: { slug: pageSlug },
 });
-
-const story = data.story;
 ---
 
-<Layout title={story.name}>
+<Layout title={page.title}>
   <main>
-    <StoryblokComponent blok={story.content} />
+    <SectionMapper sections={page.body ?? []} />
   </main>
 </Layout>

@@ -1,6 +1,5 @@
 import { expect, within } from 'storybook/test';
 
-// @ts-expect-error — .astro files have no TypeScript declarations
 import Badge from '@/components/Badge/Badge.astro';
 
 const meta = {

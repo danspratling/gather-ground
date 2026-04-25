@@ -1,7 +1,7 @@
-import type { StoryblokRichTextDocumentNode } from '@storyblok/astro';
+import type { PortableTextBlock } from '@portabletext/types';
 
 export interface RichTextProps {
-  content: StoryblokRichTextDocumentNode;
+  content: PortableTextBlock[];
 }
 
 export default null;

@@ -1,0 +1,62 @@
+---
+/**
+ * SectionMapper — replaces StoryblokComponent for Sanity.
+ * Maps `_type` to the correct section component.
+ *
+ * All data normalization lives in `sectionData.ts` so that
+ * the template body stays free of TypeScript generics, which
+ * the .astro JSX parser treats ambiguously.
+ */
+import HeroSection from '@/components/HeroSection/HeroSection.astro';
+import ProductsSection from '@/components/ProductsSection/ProductsSection.astro';
+import TestimonialsSection from '@/components/TestimonialsSection/TestimonialsSection';
+import FaqSection from '@/components/FaqSection/FaqSection.astro';
+import BlogSection from '@/components/BlogSection/BlogSection.astro';
+import CallToAction from '@/components/CallToAction/CallToAction.astro';
+import Content from '@/components/Content/Content.astro';
+import {
+  blogSectionProps,
+  callToActionProps,
+  contentSectionProps,
+  faqSectionProps,
+  heroSectionProps,
+  productsSectionProps,
+  testimonialsSectionProps,
+  type SanitySection,
+} from './sectionData';
+
+interface Props {
+  sections: SanitySection[];
+}
+
+const { sections } = Astro.props;
+---
+
+{
+  sections.map((section) => {
+    switch (section._type) {
+      case 'heroSection':
+        return <HeroSection {...heroSectionProps(section)} />;
+      case 'productsSection':
+        return <ProductsSection {...productsSectionProps(section)} />;
+      case 'testimonialsSection':
+        return (
+          <TestimonialsSection
+            client:visible
+            {...testimonialsSectionProps(section)}
+          />
+        );
+      case 'faqSection':
+        return <FaqSection {...faqSectionProps(section)} />;
+      case 'blogSection':
+        return <BlogSection {...blogSectionProps(section)} />;
+      case 'callToAction':
+        return <CallToAction {...callToActionProps(section)} />;
+      case 'contentSection':
+        return <Content {...contentSectionProps(section)} />;
+      default:
+        console.warn('[SectionMapper] Unknown section type: ' + section._type);
+        return null;
+    }
+  })
+}

@@ -1,4 +1,3 @@
-// @ts-expect-error — .astro files have no TypeScript declarations
 import CallToAction from '@/components/CallToAction/CallToAction.astro';
 
 const simpleCenteredProps = {

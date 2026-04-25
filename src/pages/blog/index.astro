@@ -1,87 +1,67 @@
 ---
-import { useStoryblokApi } from '@storyblok/astro';
 import Layout from '@/layouts/Layout.astro';
 import BlogHero from '@/components/BlogHero/BlogHero.astro';
 import FeaturedPost from '@/components/FeaturedPost/FeaturedPost.astro';
 import PaginatedBlogPosts from '@/components/PaginatedBlogPosts/PaginatedBlogPosts';
 import SectionDivider from '@/components/SectionDivider/SectionDivider.astro';
-import { getStoryAuthors } from '@/lib/storyblokAuthors';
+import { loadQuery } from '@/lib/sanity';
+import { blogPageQuery, allBlogPostsQuery } from '@/lib/queries';
+import { sanityImageSrc, sanityImageAlt } from '@/lib/sanityImage';
 
-const storyblokApi = useStoryblokApi();
-const version = import.meta.env.DEV ? 'draft' : 'published';
+// Fetch blog page hero content — fallback to defaults if not yet created.
+const { data: pageContent } = await loadQuery<{
+  heroEyebrow?: string;
+  heroHeading?: string;
+  heroSubCopy?: string;
+  heroPrivacyPolicyHref?: string;
+} | null>({ query: blogPageQuery });
 
-// Fetch blog page hero content from CMS — fallback to defaults if story not yet created.
-type BlogPageContent = {
-  hero_eyebrow?: string;
-  hero_heading?: string;
-  hero_sub_copy?: string;
-  hero_privacy_policy_href?: string;
-};
-
-let pageContent: BlogPageContent = {};
-try {
-  const { data } = await storyblokApi.get('cdn/stories/blog', { version });
-  pageContent = data.story.content as BlogPageContent;
-} catch {
-  // Story not yet created in Storyblok — use defaults below.
-}
-
-const heroEyebrow = pageContent.hero_eyebrow ?? 'Blog';
-const heroHeading = pageContent.hero_heading ?? 'Resources and insights';
+const heroEyebrow = pageContent?.heroEyebrow ?? 'Blog';
+const heroHeading = pageContent?.heroHeading ?? 'Resources and insights';
 const heroSubCopy =
-  pageContent.hero_sub_copy ??
+  pageContent?.heroSubCopy ??
   'Practical advice from our farm to your table — heritage breeds, seasonal produce, and sustainable farming.';
-const heroPrivacyPolicyHref =
-  pageContent.hero_privacy_policy_href ?? '/privacy';
+const heroPrivacyPolicyHref = pageContent?.heroPrivacyPolicyHref ?? '/privacy';
 
 // Fetch all blog posts.
-const { data } = await storyblokApi.get('cdn/stories', {
-  version,
-  content_type: 'blog_post',
-  per_page: 100,
-  sort_by: 'first_published_at:desc',
-});
-
-const rawPosts = data.stories as Array<{
-  id: number;
-  full_slug: string;
-  first_published_at: string;
-  created_at: string;
-  content: {
-    image: { filename: string; alt: string };
+const { data: rawPosts } = await loadQuery<
+  Array<{
+    _id: string;
     title: string;
+    slug: string;
+    image?: { asset?: { _ref: string }; alt?: string };
     excerpt: string;
     categories?: string[];
-  };
-}>;
+    publishedAt?: string;
+    author?: {
+      name: string;
+      avatar?: { asset?: { _ref: string } };
+    };
+  }>
+>({ query: allBlogPostsQuery });
 
-const spaceId = import.meta.env.STORYBLOK_SPACE_ID;
-const authorMap = await getStoryAuthors(
-  spaceId,
-  rawPosts.map((s) => s.id)
-);
-
-const posts = rawPosts.map((story) => {
-  const a = authorMap.get(story.id) ?? { name: '', avatarUrl: '' };
-  const date = new Date(
-    story.first_published_at ?? story.created_at
-  ).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
+const posts = (rawPosts ?? []).map((post) => {
+  const date = post.publishedAt
+    ? new Date(post.publishedAt).toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
+    : '';
   return {
-    image: story.content.image.filename,
-    imageAlt: story.content.image.alt || story.content.title,
-    title: story.content.title,
-    excerpt: story.content.excerpt,
+    image: sanityImageSrc(post.image as { asset?: { _ref: string } }),
+    imageAlt: sanityImageAlt(post.image, post.title),
+    title: post.title,
+    excerpt: post.excerpt,
     date,
-    authorName: a.name,
-    authorImage: a.avatarUrl,
-    authorImageAlt: a.name,
-    href: `/${story.full_slug}`,
-    slug: story.full_slug,
-    categories: story.content.categories ?? [],
+    authorName: post.author?.name ?? '',
+    authorImage: post.author?.avatar
+      ? sanityImageSrc(post.author.avatar as { asset?: { _ref: string } })
+      : '',
+    authorImageAlt: post.author?.name ?? '',
+    href: `/blog/${post.slug?.replace(/^\/+/, '') ?? ''}`,
+    slug: post.slug,
+    categories: post.categories ?? [],
   };
 });
 

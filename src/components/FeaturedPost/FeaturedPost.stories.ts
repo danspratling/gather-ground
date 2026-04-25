@@ -1,4 +1,3 @@
-// @ts-expect-error — .astro files have no TypeScript declarations
 import FeaturedPost from './FeaturedPost.astro';
 import type { FeaturedPostProps } from './FeaturedPost.types';
 

@@ -1,4 +1,4 @@
-import type { StoryblokRichTextDocumentNode } from '@storyblok/astro';
+import type { PortableTextBlock } from '@portabletext/types';
 
 export interface PostHeaderProps {
   publishedDate: string;
@@ -7,7 +7,7 @@ export interface PostHeaderProps {
   categories?: string[];
   heroImage: string;
   heroImageAlt: string;
-  body: StoryblokRichTextDocumentNode;
+  body: PortableTextBlock[];
   authorName: string;
   authorAvatar: string;
   authorAvatarAlt: string;

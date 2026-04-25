@@ -3,7 +3,7 @@
  *
  * Rules (ADR-020):
  * - Assert on structure and behavior — never on CMS content
- * - No getByText() for copy that comes from Storyblok
+ * - No getByText() for copy that comes from Sanity
  * - No screenshot assertions — Chromatic owns visual regression
  */
 

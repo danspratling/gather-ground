@@ -73,7 +73,9 @@ jobs:
       - name: Astro build
         run: npm run build
         env:
-          STORYBLOK_TOKEN: ${{ secrets.STORYBLOK_TOKEN }}
+          SANITY_PROJECT_ID: mrz1ftls
+          SANITY_DATASET: production
+          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
 
   e2e:
     name: E2E Tests (Playwright)
@@ -99,7 +101,9 @@ jobs:
       - name: Playwright tests
         run: npm run test -- --project=chromium
         env:
-          STORYBLOK_TOKEN: ${{ secrets.STORYBLOK_TOKEN }}
+          SANITY_PROJECT_ID: mrz1ftls
+          SANITY_DATASET: production
+          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
 
   component-tests:
     name: Component Tests (Storybook)

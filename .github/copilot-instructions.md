@@ -1,6 +1,6 @@
 # Gather Ground — Copilot Instructions
 
-Marketing website. Astro + Tailwind CSS v4 + shadcn/ui + Storyblok CMS + Storybook v10 + Playwright. Deployed on Vercel.
+Marketing website. Astro + Tailwind CSS v4 + shadcn/ui + Sanity CMS + Storybook v10 + Playwright. Deployed on Vercel.
 
 ## Stack
 
@@ -8,7 +8,7 @@ Marketing website. Astro + Tailwind CSS v4 + shadcn/ui + Storyblok CMS + Storybo
 - **Styling:** Tailwind CSS v4 — tokens defined as CSS custom properties in `src/styles/global.css`; no `tailwind.config.ts`
 - **Primitives:** shadcn/ui via Base UI (not Radix) — `components.json` configured; add with `npx shadcn add`
 - **Icons:** `@untitledui-pro/icons/line` for UI icons; `src/components/Icons/*.astro` for brand/social icons
-- **CMS:** `@storyblok/astro` — all data fetched in Astro page frontmatter only, never client-side
+- **CMS:** `@sanity/astro` — embedded Studio at `/studio`; data fetched in Astro page frontmatter via `loadQuery` only, never client-side
 - **Storybook:** `@storybook-astro/framework` — renders `.astro` and `.tsx` natively
 
 ## Component structure
@@ -49,7 +49,7 @@ Component groups: `Layout/` (Header, Footer), `Typography/` (Body, Heading, Labe
 - Component files: `PascalCase`
 - Type files: `[ComponentName].types.ts` — co-located
 - Story files: `[ComponentName].stories.ts` — co-located
-- Storyblok schemas: `camelCase` in `src/storyblok/`
+- Sanity schemas: `camelCase` in `src/sanity/schemas/`
 
 **Storybook**
 
@@ -60,10 +60,13 @@ Component groups: `Layout/` (Header, Footer), `Typography/` (Body, Heading, Labe
 - React island stories use `.tsx` extension and `renderer: 'react'` in parameters
 - Non-story `.ts/.tsx` files in `src/components/` must include `export default null`
 
-**Storyblok**
+**Sanity**
 
-- Schema field names: `snake_case`; TypeScript props: `camelCase`
-- Never edit schemas in the dashboard — always via `src/storyblok/[name].ts` + CLI push
+- Schema field names: `camelCase`; TypeScript props: `camelCase` (1:1 mapping)
+- Schemas live in `src/sanity/schemas/` and are loaded by the embedded Studio at `/studio`
+- Page data fetched via `loadQuery` from `src/lib/sanity.ts` in Astro frontmatter
+- Image URLs built via `urlFor()` from `src/lib/sanityImage.ts`; link refs resolved via `resolveSanityLink()` from `src/lib/sanityLink.ts`
+- Section dispatch handled by `src/templates/SectionMapper.astro` (switch on `_type`)
 
 **Git**
 

@@ -1,6 +1,5 @@
 // @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
 
-// @ts-expect-error — .astro files have no TypeScript declarations
 import Header from '@/components/Layout/Header/Header.astro';
 
 const shopMenu = [
