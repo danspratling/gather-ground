@@ -7,13 +7,15 @@
  *
  * Why a script (not `sanity migration`):
  *   `_type` is an immutable system field. Sanity rejects any patch or
- *   `createOrReplace` that changes it. The supported path is to delete
- *   the old document and create a new one with the same `_id` (and the
- *   new `_type`) in a single atomic transaction.
+ *   `createOrReplace` that changes it. Even delete+create on the same
+ *   `_id` within a single transaction is rejected as a modification.
+ *   The working pattern is two separate commits: delete the old doc,
+ *   then create a fresh doc with the same `_id` and the new `_type`.
  *
- *   Side note: this means the document briefly does not exist within
- *   the transaction, so there is no continuity of _rev. References
- *   (_ref) to the doc are unaffected — they're resolved by _id alone.
+ *   References (`_ref`) resolve by `_id` and re-attach as soon as the
+ *   new doc lands. There is a brief window between the two commits
+ *   where the doc does not exist; live queries during this window
+ *   will not return it.
  *
  * Run:
  *   SANITY_API_WRITE_TOKEN=... npx tsx scripts/rename-collection-types.ts          # dry-run
@@ -91,19 +93,16 @@ async function main() {
     const newType = RENAMES[doc._type];
     if (!newType) continue;
 
-    // _type is immutable on an existing document — Sanity rejects any
-    // patch/createOrReplace that changes it. The supported pattern is
-    // to delete the old document and create a new one with the same
-    // _id (and same _type swap) in a single transaction.
+    // _type is immutable. Even within a single transaction Sanity rejects
+    // delete+create on the same _id as a modification. We have to delete
+    // and create in two separate commits. References (_ref) resolve by _id
+    // so they re-attach as soon as the new document lands.
     const { _id, _rev: _discardRev, _type: _discardType, ...rest } = doc;
     const replacement = { _id, _type: newType, ...rest };
 
     try {
-      await client
-        .transaction()
-        .delete(_id)
-        .create(replacement)
-        .commit({ visibility: 'async' });
+      await client.delete(_id);
+      await client.create(replacement);
       succeeded++;
       process.stdout.write('.');
     } catch (err) {
