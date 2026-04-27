@@ -25,7 +25,7 @@ export const faqSection = defineType({
       of: [
         defineArrayMember({
           type: 'reference',
-          to: [{ type: 'faq' }],
+          to: [{ type: 'faqs' }],
         }),
       ],
     }),

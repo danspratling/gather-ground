@@ -1,9 +1,9 @@
 import { defineType, defineField } from 'sanity';
 
-/** Testimonial document — reusable across sections via references. */
-export const testimonial = defineType({
-  name: 'testimonial',
-  title: 'Testimonial',
+/** Testimonials document — reusable across sections via references. */
+export const testimonials = defineType({
+  name: 'testimonials',
+  title: 'Testimonials',
   type: 'document',
   fields: [
     defineField({

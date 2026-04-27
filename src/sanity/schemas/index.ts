@@ -5,12 +5,14 @@ export { link } from './link';
 export { callout } from './callout';
 
 // Documents
-export { page } from './page';
+export { pages } from './pages';
 export { blogPage } from './blogPage';
-export { blogPost } from './blogPost';
-export { author } from './author';
-export { faq } from './faq';
-export { testimonial } from './testimonial';
+export { blogPosts } from './blogPosts';
+export { productPage } from './productPage';
+export { products } from './products';
+export { authors } from './authors';
+export { faqs } from './faqs';
+export { testimonials } from './testimonials';
 
 // Page section objects
 export { heroSection } from './heroSection';

@@ -1,9 +1,9 @@
 import { defineType, defineField } from 'sanity';
 
-/** FAQ document — reusable across sections via references. */
-export const faq = defineType({
-  name: 'faq',
-  title: 'FAQ',
+/** FAQs document — reusable across sections via references. */
+export const faqs = defineType({
+  name: 'faqs',
+  title: 'FAQs',
   type: 'document',
   fields: [
     defineField({

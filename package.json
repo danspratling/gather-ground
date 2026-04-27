@@ -22,7 +22,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "sync-schemas": "tsx scripts/push-schemas.ts"
+    "sync-schemas": "tsx scripts/push-schemas.ts",
+    "migrate:rename-types": "tsx scripts/rename-collection-types.ts"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.2",

@@ -4,12 +4,14 @@ import { presentationTool } from 'sanity/presentation';
 import {
   link,
   callout,
-  page,
+  pages,
   blogPage,
-  blogPost,
-  author,
-  faq,
-  testimonial,
+  blogPosts,
+  productPage,
+  products,
+  authors,
+  faqs,
+  testimonials,
   heroSection,
   productsSection,
   productCard,
@@ -28,7 +30,23 @@ export default defineConfig({
   projectId: 'mrz1ftls',
   dataset: 'production',
   plugins: [
-    structureTool(),
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title('Content')
+          .items([
+            S.listItem()
+              .title('Product Page')
+              .id('productPage')
+              .child(
+                S.document().schemaType('productPage').documentId('productPage')
+              ),
+            S.divider(),
+            ...S.documentTypeListItems().filter(
+              (listItem) => !['productPage'].includes(listItem.getId() ?? '')
+            ),
+          ]),
+    }),
     presentationTool({
       previewUrl: {
         origin:
@@ -38,7 +56,7 @@ export default defineConfig({
       },
       resolve: {
         locations: {
-          page: {
+          pages: {
             select: { title: 'title', slug: 'slug.current' },
             resolve: (doc) => ({
               locations: [
@@ -49,7 +67,7 @@ export default defineConfig({
               ],
             }),
           },
-          blogPost: {
+          blogPosts: {
             select: { title: 'title', slug: 'slug.current' },
             resolve: (doc) => ({
               locations: [
@@ -66,6 +84,23 @@ export default defineConfig({
               locations: [{ title: 'Blog', href: '/blog' }],
             }),
           },
+          productPage: {
+            select: { _id: '_id' },
+            resolve: () => ({
+              locations: [{ title: 'Products', href: '/products' }],
+            }),
+          },
+          products: {
+            select: { title: 'title', slug: 'slug.current' },
+            resolve: (doc) => ({
+              locations: [
+                {
+                  title: doc?.title || 'Untitled',
+                  href: doc?.slug ? `/products/${doc.slug}` : '/products',
+                },
+              ],
+            }),
+          },
         },
       },
     }),
@@ -76,12 +111,14 @@ export default defineConfig({
       link,
       callout,
       // Documents
-      page,
+      pages,
       blogPage,
-      blogPost,
-      author,
-      faq,
-      testimonial,
+      blogPosts,
+      productPage,
+      products,
+      authors,
+      faqs,
+      testimonials,
       // Page section objects
       heroSection,
       productsSection,

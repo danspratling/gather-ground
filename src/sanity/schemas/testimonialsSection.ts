@@ -26,7 +26,7 @@ export const testimonialsSection = defineType({
       of: [
         defineArrayMember({
           type: 'reference',
-          to: [{ type: 'testimonial' }],
+          to: [{ type: 'testimonials' }],
         }),
       ],
     }),

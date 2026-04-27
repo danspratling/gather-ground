@@ -1,9 +1,9 @@
 import { defineType, defineField, defineArrayMember } from 'sanity';
 
-/** Blog Post document. */
-export const blogPost = defineType({
-  name: 'blogPost',
-  title: 'Blog Post',
+/** Blog Posts document — individual blog post entries. */
+export const blogPosts = defineType({
+  name: 'blogPosts',
+  title: 'Blog Posts',
   type: 'document',
   fields: [
     defineField({
@@ -55,7 +55,7 @@ export const blogPost = defineType({
       name: 'author',
       title: 'Author',
       type: 'reference',
-      to: [{ type: 'author' }],
+      to: [{ type: 'authors' }],
     }),
     defineField({
       name: 'publishedAt',

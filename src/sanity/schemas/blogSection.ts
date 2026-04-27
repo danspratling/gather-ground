@@ -42,7 +42,7 @@ export const blogSection = defineType({
       of: [
         defineArrayMember({
           type: 'reference',
-          to: [{ type: 'blogPost' }],
+          to: [{ type: 'blogPosts' }],
         }),
       ],
     }),

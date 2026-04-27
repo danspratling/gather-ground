@@ -1,9 +1,9 @@
 import { defineType, defineField } from 'sanity';
 
-/** Author document — referenced by blog posts. */
-export const author = defineType({
-  name: 'author',
-  title: 'Author',
+/** Authors document — referenced by blog posts. */
+export const authors = defineType({
+  name: 'authors',
+  title: 'Authors',
   type: 'document',
   fields: [
     defineField({

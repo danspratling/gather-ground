@@ -1,22 +1,16 @@
 import { defineType, defineField, defineArrayMember } from 'sanity';
 
-/** Page document — homepage and other static pages. */
-export const page = defineType({
-  name: 'page',
-  title: 'Page',
+/** Product Page singleton — controls the /products landing page content. */
+export const productPage = defineType({
+  name: 'productPage',
+  title: 'Product Page',
   type: 'document',
   fields: [
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      options: { source: 'title' },
+      initialValue: 'Products',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -35,7 +29,7 @@ export const page = defineType({
     }),
   ],
   preview: {
-    select: { title: 'title', subtitle: 'slug.current' },
+    prepare: () => ({ title: 'Product Page' }),
   },
 });
 
