@@ -36,7 +36,13 @@ export const link = defineType({
       name: 'internalLink',
       title: 'Internal page',
       type: 'reference',
-      to: [{ type: 'pages' }, { type: 'blogPosts' }],
+      to: [
+        { type: 'pages' },
+        { type: 'blogPosts' },
+        { type: 'blogPage' },
+        { type: 'productPage' },
+        { type: 'products' },
+      ],
       hidden: ({ parent }) => parent?.type !== 'internal',
     },
     {

@@ -10,7 +10,7 @@ export const linkProjection = `{
   url,
   email,
   anchor,
-  internalLink->{ slug }
+  internalLink->{ _type, slug }
 }`;
 
 // ─── Body sections projection ───────────────────────────────────────
