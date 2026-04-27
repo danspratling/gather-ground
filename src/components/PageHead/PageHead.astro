@@ -1,14 +1,8 @@
 ---
-interface Props {
-  title: string;
-  description?: string;
-  canonicalUrl?: string;
-  ogType?: string;
-  ogImage?: string;
-  ogUrl?: string;
-  twitterCard?: 'summary' | 'summary_large_image';
-  twitterImage?: string;
-}
+import type { PageHeadProps } from './PageHead.types';
+
+type Props = PageHeadProps;
+
 const {
   title,
   description,
@@ -19,7 +13,10 @@ const {
   twitterCard = 'summary_large_image',
   twitterImage,
 } = Astro.props;
-const resolvedCanonical = canonicalUrl ?? Astro.url.href;
+
+const canonicalBase = Astro.site ?? Astro.url.origin;
+const resolvedCanonical =
+  canonicalUrl ?? new URL(Astro.url.pathname, canonicalBase).toString();
 ---
 
 <meta charset="utf-8" />

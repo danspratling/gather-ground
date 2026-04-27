@@ -83,8 +83,9 @@ const footerProps = {
       ogImage={ogImage}
       ogType={ogType}
       canonicalUrl={canonicalUrl}
-    />
-    <slot name="head-extras" />
+    >
+      <slot name="head-extras" slot="head-extras" />
+    </PageHead>
   </head>
   <body>
     {/* body-start: announcement banner, skip-to-content */}

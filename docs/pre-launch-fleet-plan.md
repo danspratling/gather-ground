@@ -229,15 +229,13 @@ The **single biggest collision risk** is `src/layouts/Layout.astro`. Lanes that 
 - L7 (Clarity script mount)
 - L9 (announcement banner mount)
 
-**Mitigation:**
+**Mitigation (implemented):**
 
-1. L1 lands first — establishes the new shape
-2. Subsequent lanes rebase one at a time, in order: L2 → L3 → L9 → L5 → L7
-3. Each lane's PR must include a successful local rebase
+`feature/layout-prep` (PR #59) extracted `PageHead.astro` and introduced named body slots (`body-start`, `body-end`), so lanes adding head content, announcement banners, cookie banners, or analytics no longer touch the same lines in `Layout.astro`.
 
-Alternative: an early prep PR splits `Layout.astro` into smaller composable pieces (`Head.astro`, `BodyChrome.astro`) to reduce contention.
+Remaining rebase order for lanes that still modify `Layout.astro`: L1 → L9 → L5 → L7.
 
-## Per-lane validation gate (from `CLAUDE.md`)
+## Per-lane validation gate (from `CONTRIBUTING.md`)
 
 Every PR must pass before merge:
 
