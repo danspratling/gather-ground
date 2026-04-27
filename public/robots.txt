@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /studio
 
-Sitemap: https://gatherground.com/sitemap-index.xml
+Sitemap: https://gatherground.co.uk/sitemap-index.xml

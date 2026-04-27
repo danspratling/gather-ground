@@ -13,7 +13,7 @@ const env = loadEnv('', process.cwd(), ['SANITY', 'PUBLIC_SANITY']);
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://gatherground.com',
+  site: 'https://gatherground.co.uk',
   output: 'static',
   adapter: vercel(),
   vite: {
