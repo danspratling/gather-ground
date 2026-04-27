@@ -6,11 +6,14 @@
  *   - Collection documents → plural type name (pages, blogPosts, products, authors, faqs, testimonials)
  *
  * Why a script (not `sanity migration`):
- *   `_type` is a system field that the migration API's `at()`/patch operations
- *   cannot mutate. The supported path is to fetch each document, recreate it
- *   under the new `_id` (since `_id` may be tied to `_type` in some setups —
- *   here we keep the same id), update `_type`, then delete the old document.
- *   We use a transaction with `createOrReplace` + a fresh document to swap.
+ *   `_type` is an immutable system field. Sanity rejects any patch or
+ *   `createOrReplace` that changes it. The supported path is to delete
+ *   the old document and create a new one with the same `_id` (and the
+ *   new `_type`) in a single atomic transaction.
+ *
+ *   Side note: this means the document briefly does not exist within
+ *   the transaction, so there is no continuity of _rev. References
+ *   (_ref) to the doc are unaffected — they're resolved by _id alone.
  *
  * Run:
  *   SANITY_API_WRITE_TOKEN=... npx tsx scripts/rename-collection-types.ts          # dry-run
@@ -88,13 +91,18 @@ async function main() {
     const newType = RENAMES[doc._type];
     if (!newType) continue;
 
+    // _type is immutable on an existing document — Sanity rejects any
+    // patch/createOrReplace that changes it. The supported pattern is
+    // to delete the old document and create a new one with the same
+    // _id (and same _type swap) in a single transaction.
     const { _id, _rev: _discardRev, _type: _discardType, ...rest } = doc;
     const replacement = { _id, _type: newType, ...rest };
 
     try {
       await client
         .transaction()
-        .createOrReplace(replacement)
+        .delete(_id)
+        .create(replacement)
         .commit({ visibility: 'async' });
       succeeded++;
       process.stdout.write('.');
