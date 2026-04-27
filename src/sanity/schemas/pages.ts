@@ -38,7 +38,9 @@ export const pages = defineType({
       title: 'Meta description',
       type: 'text',
       rows: 3,
-      description: 'SEO description shown in search results and social cards.',
+      description:
+        'SEO description shown in search results and social cards. Recommended maximum: 160 characters.',
+      validation: (Rule) => Rule.max(160),
       group: 'seo',
     }),
     defineField({

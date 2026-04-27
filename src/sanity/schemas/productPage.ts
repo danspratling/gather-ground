@@ -32,7 +32,8 @@ export const productPage = defineType({
       type: 'text',
       rows: 3,
       description:
-        'Overrides the auto-generated description. Leave blank to use the first hero sub-copy.',
+        'Overrides the auto-generated description. Leave blank to use the first hero sub-copy. Recommended maximum: 160 characters.',
+      validation: (Rule) => Rule.max(160),
       group: 'seo',
     }),
     defineField({

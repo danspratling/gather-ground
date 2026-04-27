@@ -49,6 +49,8 @@ export default defineConfig({
       useCdn: false, // Static build — no CDN needed at request time
       studioBasePath: '/studio',
     }),
-    sitemap(),
+    sitemap({
+      filter: (page) => !page.includes('/studio'),
+    }),
   ],
 });

@@ -87,7 +87,8 @@ export const blogPosts = defineType({
       type: 'text',
       rows: 3,
       description:
-        'Overrides the auto-generated description. Leave blank to use the excerpt.',
+        'Overrides the auto-generated description. Leave blank to use the excerpt. Recommended maximum: 160 characters.',
+      validation: (Rule) => Rule.max(160),
       group: 'seo',
     }),
     defineField({

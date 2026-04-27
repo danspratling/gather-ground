@@ -269,7 +269,8 @@ export const siteSettings = defineType({
       type: 'text',
       rows: 3,
       description:
-        'Fallback description for pages without an explicit or auto-generated description.',
+        'Fallback description for pages without an explicit or auto-generated description. Recommended maximum: 160 characters.',
+      validation: (Rule) => Rule.max(160),
       group: 'seo',
     }),
     defineField({
