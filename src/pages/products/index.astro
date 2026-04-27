@@ -18,6 +18,7 @@ const { data: page } = await loadQuery<{
 
 <Layout
   title={page?.title ?? 'Products'}
+  description="Browse our range of heritage breed products, raised on pasture year-round."
   previewDoc={page
     ? {
         _id: page._id,

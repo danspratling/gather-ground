@@ -141,6 +141,8 @@ export const pageBySlugQuery = `*[_type == "pages" && slug.current == $slug][0]{
   "_originalId": _originalId,
   title,
   "slug": slug.current,
+  metaDescription,
+  "ogImage": ogImage.asset->url,
   ${bodySectionsProjection}
 }`;
 
@@ -167,6 +169,8 @@ export const productBySlugQuery = `*[_type == "products" && slug.current == $slu
   "_originalId": _originalId,
   title,
   "slug": slug.current,
+  metaDescription,
+  "ogImage": ogImage.asset->url,
   ${bodySectionsProjection}
 }`;
 

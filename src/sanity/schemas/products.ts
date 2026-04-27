@@ -13,6 +13,10 @@ export const products = defineType({
   name: 'products',
   title: 'Products',
   type: 'document',
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
     defineField({
       name: 'title',
@@ -39,6 +43,21 @@ export const products = defineType({
           }
           return true;
         }),
+    }),
+    defineField({
+      name: 'metaDescription',
+      title: 'Meta description',
+      type: 'text',
+      rows: 3,
+      description: 'SEO description shown in search results and social cards.',
+      group: 'seo',
+    }),
+    defineField({
+      name: 'ogImage',
+      title: 'Social share image',
+      type: 'image',
+      description: 'Image used for Open Graph / Twitter cards.',
+      group: 'seo',
     }),
     defineField({
       name: 'body',
