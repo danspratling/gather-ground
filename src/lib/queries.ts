@@ -181,7 +181,7 @@ export const blogPageQuery = `*[_type == "blogPage"][0]{
   heroEyebrow,
   heroHeading,
   heroSubCopy,
-  heroPrivacyPolicyHref
+  heroPrivacyPolicyLink ${linkProjection}
 }`;
 
 /** Fetch all blog posts sorted by publish date. */

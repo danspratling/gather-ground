@@ -26,13 +26,11 @@ export const blogPage = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'heroPrivacyPolicyHref',
-      title: 'Privacy policy URL',
-      type: 'url',
+      name: 'heroPrivacyPolicyLink',
+      title: 'Privacy policy page',
+      type: 'link',
       description:
         'When set, an email capture form is shown in the hero. Leave blank to hide the form.',
-      validation: (Rule) =>
-        Rule.uri({ allowRelative: true, scheme: ['http', 'https'] }),
     }),
   ],
   preview: {
