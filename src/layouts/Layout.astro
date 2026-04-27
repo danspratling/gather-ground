@@ -5,10 +5,12 @@ import Header from '@/components/Layout/Header/Header.astro';
 import PageHead from '@/components/PageHead/PageHead.astro';
 import PreviewBanner from '@/components/PreviewBanner/PreviewBanner.astro';
 import type { PreviewDoc } from '@/components/PreviewBanner/PreviewBanner.types';
+import StructuredData from '@/components/StructuredData/StructuredData.astro';
 import { VisualEditing } from '@sanity/astro/visual-editing';
 import { loadQuery } from '@/lib/sanity';
 import { siteSettingsQuery } from '@/lib/queries';
 import { resolveSanityLink } from '@/lib/sanityLink';
+import { buildOrganization, buildWebPage } from '@/lib/structuredData';
 import '@/styles/global.css';
 
 const visualEditingEnabled =
@@ -86,6 +88,23 @@ const seoDescription =
   siteSettings?.defaultMetaDescription ||
   siteSettings?.siteDescription;
 const seoOgImage = ogImage || siteSettings?.defaultOgImage;
+
+const siteUrl = (Astro.site ?? new URL(Astro.url.origin))
+  .toString()
+  .replace(/\/$/, '');
+const organizationSD = buildOrganization(
+  {
+    siteName,
+    siteDescription: siteSettings?.siteDescription,
+    logo: siteSettings?.logo,
+  },
+  siteUrl
+);
+const webPageSD = buildWebPage({
+  title: seoTitle,
+  description: seoDescription,
+  url: new URL(Astro.url.pathname, siteUrl).toString(),
+});
 
 const SUPPORTED_PLATFORMS = new Set<SocialPlatform>([
   'instagram',
@@ -271,6 +290,8 @@ const footerProps = {
       ogType={ogType}
       canonicalUrl={canonicalUrl}
     >
+      <StructuredData data={organizationSD} slot="head-extras" />
+      <StructuredData data={webPageSD} slot="head-extras" />
       <slot name="head-extras" slot="head-extras" />
     </PageHead>
   </head>
