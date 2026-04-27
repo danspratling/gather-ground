@@ -8,7 +8,7 @@ import {
   blogPage,
   blogPost,
   productsPage,
-  productPage,
+  product,
   author,
   faq,
   testimonial,
@@ -92,7 +92,7 @@ export default defineConfig({
               locations: [{ title: 'Products', href: '/products' }],
             }),
           },
-          productPage: {
+          product: {
             select: { title: 'title', slug: 'slug.current' },
             resolve: (doc) => ({
               locations: [
@@ -117,7 +117,7 @@ export default defineConfig({
       blogPage,
       blogPost,
       productsPage,
-      productPage,
+      product,
       author,
       faq,
       testimonial,

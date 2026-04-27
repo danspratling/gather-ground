@@ -14,7 +14,7 @@ export const linkProjection = `{
 
 // ─── Body sections projection ───────────────────────────────────────
 // Reusable projection for the section-array `body` field, shared by
-// `page`, `productsPage`, and `productPage` documents.
+// `page`, `productsPage`, and `product` documents.
 export const bodySectionsProjection = `body[]{
   _type,
   _key,
@@ -155,11 +155,11 @@ export const productsPageQuery = `*[_type == "productsPage"][0]{
   ${bodySectionsProjection}
 }`;
 
-/** Fetch all product page slugs for static path generation. */
-export const allProductPageSlugsQuery = `*[_type == "productPage" && defined(slug.current)]{ "slug": slug.current }`;
+/** Fetch all product slugs for static path generation. */
+export const allProductSlugsQuery = `*[_type == "product" && defined(slug.current)]{ "slug": slug.current }`;
 
-/** Fetch a single productPage by slug. */
-export const productPageBySlugQuery = `*[_type == "productPage" && slug.current == $slug][0]{
+/** Fetch a single product by slug. */
+export const productBySlugQuery = `*[_type == "product" && slug.current == $slug][0]{
   _id,
   _type,
   _updatedAt,

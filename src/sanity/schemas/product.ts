@@ -1,7 +1,7 @@
 import { defineType, defineField, defineArrayMember } from 'sanity';
 
 /**
- * Product Page document — individual product detail page.
+ * Product document — individual product detail page.
  *
  * Routed under `/products/[slug]`. The `/products` prefix is owned by the
  * route, not the slug — the slug must be a single path segment.
@@ -9,9 +9,9 @@ import { defineType, defineField, defineArrayMember } from 'sanity';
  * Uses the same section-based body as the generic `page` type so editors
  * can compose product pages from the same building blocks.
  */
-export const productPage = defineType({
-  name: 'productPage',
-  title: 'Product Page',
+export const product = defineType({
+  name: 'product',
+  title: 'Product',
   type: 'document',
   fields: [
     defineField({
@@ -25,7 +25,7 @@ export const productPage = defineType({
       title: 'Slug',
       type: 'slug',
       description:
-        'A single URL segment. The product page will be served at /products/<slug>.',
+        'A single URL segment. The product will be served at /products/<slug>.',
       options: { source: 'title' },
       validation: (Rule) =>
         Rule.required().custom((value) => {

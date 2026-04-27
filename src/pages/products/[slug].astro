@@ -2,14 +2,11 @@
 import Layout from '@/layouts/Layout.astro';
 import SectionMapper from '@/templates/SectionMapper.astro';
 import { loadQuery } from '@/lib/sanity';
-import {
-  allProductPageSlugsQuery,
-  productPageBySlugQuery,
-} from '@/lib/queries';
+import { allProductSlugsQuery, productBySlugQuery } from '@/lib/queries';
 
 export async function getStaticPaths() {
   const { data: products } = await loadQuery<Array<{ slug: string }>>({
-    query: allProductPageSlugsQuery,
+    query: allProductSlugsQuery,
   });
 
   return products.map((product) => ({
@@ -28,7 +25,7 @@ const { data: page } = await loadQuery<{
   slug: string;
   body: Array<Record<string, unknown> & { _type: string; _key: string }>;
 }>({
-  query: productPageBySlugQuery,
+  query: productBySlugQuery,
   params: { slug },
 });
 ---

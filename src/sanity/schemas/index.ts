@@ -9,7 +9,7 @@ export { page } from './page';
 export { blogPage } from './blogPage';
 export { blogPost } from './blogPost';
 export { productsPage } from './productsPage';
-export { productPage } from './productPage';
+export { product } from './product';
 export { author } from './author';
 export { faq } from './faq';
 export { testimonial } from './testimonial';
