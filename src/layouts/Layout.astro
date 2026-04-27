@@ -16,6 +16,7 @@ const visualEditingEnabled =
 
 interface Props {
   title: string;
+  metaTitle?: string;
   description?: string;
   ogImage?: string;
   ogType?: string;
@@ -58,14 +59,33 @@ interface SiteSettingsData {
     ctaLink?: SanityLinkData;
     variant?: 'info' | 'warning' | 'success';
   };
+  defaultMetaTitle?: string;
+  defaultMetaDescription?: string;
+  defaultOgImage?: string;
 }
 
-const { title, description, ogImage, ogType, canonicalUrl, previewDoc } =
-  Astro.props;
+const {
+  title,
+  metaTitle,
+  description,
+  ogImage,
+  ogType,
+  canonicalUrl,
+  previewDoc,
+} = Astro.props;
 
 const { data: siteSettings } = await loadQuery<SiteSettingsData | null>({
   query: siteSettingsQuery,
 });
+
+// ── SEO fallback chain ──────────────────────────────────────────────
+const siteName = siteSettings?.siteName ?? 'Gather Ground';
+const seoTitle = metaTitle || `${title} | ${siteName}`;
+const seoDescription =
+  description ||
+  siteSettings?.defaultMetaDescription ||
+  siteSettings?.siteDescription;
+const seoOgImage = ogImage || siteSettings?.defaultOgImage;
 
 const SUPPORTED_PLATFORMS = new Set<SocialPlatform>([
   'instagram',
@@ -245,9 +265,9 @@ const footerProps = {
 <html lang="en">
   <head>
     <PageHead
-      title={title}
-      description={description}
-      ogImage={ogImage}
+      title={seoTitle}
+      description={seoDescription}
+      ogImage={seoOgImage}
       ogType={ogType}
       canonicalUrl={canonicalUrl}
     >

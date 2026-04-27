@@ -4,24 +4,43 @@ export const siteSettings = defineType({
   name: 'siteSettings',
   title: 'Site Settings',
   type: 'document',
+  groups: [
+    { name: 'general', title: 'General', default: true },
+    { name: 'navigation', title: 'Navigation' },
+    { name: 'footer', title: 'Footer' },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
     defineField({
       name: 'siteName',
       title: 'Site Name',
       type: 'string',
       validation: (r) => r.required(),
+      group: 'general',
     }),
     defineField({
       name: 'siteDescription',
       title: 'Site Description',
       type: 'string',
+      group: 'general',
     }),
-    defineField({ name: 'logo', title: 'Logo', type: 'image' }),
-    defineField({ name: 'logoAlt', title: 'Logo Alt Text', type: 'string' }),
+    defineField({
+      name: 'logo',
+      title: 'Logo',
+      type: 'image',
+      group: 'general',
+    }),
+    defineField({
+      name: 'logoAlt',
+      title: 'Logo Alt Text',
+      type: 'string',
+      group: 'general',
+    }),
     defineField({
       name: 'primaryNav',
       title: 'Primary Navigation',
       type: 'array',
+      group: 'navigation',
       of: [
         {
           type: 'object',
@@ -74,21 +93,25 @@ export const siteSettings = defineType({
       name: 'headerCtaLabel',
       title: 'Header CTA Label',
       type: 'string',
+      group: 'navigation',
     }),
     defineField({
       name: 'headerCtaLink',
       title: 'Header CTA Link',
       type: 'link',
+      group: 'navigation',
     }),
     defineField({
       name: 'footerDescription',
       title: 'Footer Description',
       type: 'string',
+      group: 'footer',
     }),
     defineField({
       name: 'footerLinkGroups',
       title: 'Footer Link Groups',
       type: 'array',
+      group: 'footer',
       of: [
         {
           type: 'object',
@@ -131,6 +154,7 @@ export const siteSettings = defineType({
       name: 'socialLinks',
       title: 'Social Links',
       type: 'array',
+      group: 'footer',
       of: [
         {
           type: 'object',
@@ -170,11 +194,13 @@ export const siteSettings = defineType({
       name: 'copyrightText',
       title: 'Copyright Text',
       type: 'string',
+      group: 'footer',
     }),
     defineField({
       name: 'footerLegalLinks',
       title: 'Footer Legal Links',
       type: 'array',
+      group: 'footer',
       of: [
         {
           type: 'object',
@@ -199,6 +225,7 @@ export const siteSettings = defineType({
       name: 'announcementBanner',
       title: 'Announcement Banner',
       type: 'object',
+      group: 'general',
       fields: [
         defineField({
           name: 'enabled',
@@ -227,6 +254,32 @@ export const siteSettings = defineType({
           initialValue: 'info',
         }),
       ],
+    }),
+    defineField({
+      name: 'defaultMetaTitle',
+      title: 'Default Meta Title',
+      type: 'string',
+      description:
+        'Fallback page title for pages that don\u2019t have one. Site name is appended automatically.',
+      group: 'seo',
+    }),
+    defineField({
+      name: 'defaultMetaDescription',
+      title: 'Default Meta Description',
+      type: 'text',
+      rows: 3,
+      description:
+        'Fallback description for pages without an explicit or auto-generated description. Recommended maximum: 160 characters.',
+      validation: (Rule) => Rule.max(160),
+      group: 'seo',
+    }),
+    defineField({
+      name: 'defaultOgImage',
+      title: 'Default Social Share Image',
+      type: 'image',
+      description:
+        'Fallback image for Open Graph / Twitter cards when a page has no image.',
+      group: 'seo',
     }),
   ],
 });

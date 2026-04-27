@@ -5,18 +5,24 @@ export const blogPosts = defineType({
   name: 'blogPosts',
   title: 'Blog Posts',
   type: 'document',
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
       options: { source: 'title' },
+      group: 'content',
       validation: (Rule) =>
         Rule.required().custom((value) => {
           const current = value?.current;
@@ -36,6 +42,7 @@ export const blogPosts = defineType({
       type: 'image',
       options: { hotspot: true },
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'excerpt',
@@ -43,6 +50,7 @@ export const blogPosts = defineType({
       type: 'text',
       rows: 3,
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'categories',
@@ -50,22 +58,44 @@ export const blogPosts = defineType({
       type: 'array',
       of: [defineArrayMember({ type: 'string' })],
       options: { layout: 'tags' },
+      group: 'content',
     }),
     defineField({
       name: 'author',
       title: 'Author',
       type: 'reference',
       to: [{ type: 'authors' }],
+      group: 'content',
     }),
     defineField({
       name: 'publishedAt',
       title: 'Published at',
       type: 'datetime',
+      group: 'content',
+    }),
+    defineField({
+      name: 'metaTitle',
+      title: 'Meta title',
+      type: 'string',
+      description:
+        'Overrides the auto-generated page title. Leave blank to use the post title + site name.',
+      group: 'seo',
+    }),
+    defineField({
+      name: 'metaDescription',
+      title: 'Meta description',
+      type: 'text',
+      rows: 3,
+      description:
+        'Overrides the auto-generated description. Leave blank to use the excerpt. Recommended maximum: 160 characters.',
+      validation: (Rule) => Rule.max(160),
+      group: 'seo',
     }),
     defineField({
       name: 'body',
       title: 'Body',
       type: 'array',
+      group: 'content',
       of: [
         defineArrayMember({
           type: 'block',

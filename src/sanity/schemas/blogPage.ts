@@ -5,18 +5,42 @@ export const blogPage = defineType({
   name: 'blogPage',
   title: 'Blog Page',
   type: 'document',
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
+    defineField({
+      name: 'metaTitle',
+      title: 'Meta title',
+      type: 'string',
+      description:
+        'Overrides the auto-generated page title. Leave blank to use "Blog | {site name}".',
+      group: 'seo',
+    }),
+    defineField({
+      name: 'metaDescription',
+      title: 'Meta description',
+      type: 'text',
+      rows: 3,
+      description:
+        'Overrides the auto-generated description. Leave blank to use the hero sub-copy. Recommended maximum: 160 characters.',
+      validation: (Rule) => Rule.max(160),
+      group: 'seo',
+    }),
     defineField({
       name: 'heroEyebrow',
       title: 'Hero eyebrow',
       type: 'string',
       initialValue: 'Blog',
+      group: 'content',
     }),
     defineField({
       name: 'heroHeading',
       title: 'Hero heading',
       type: 'string',
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'heroSubCopy',
@@ -24,6 +48,7 @@ export const blogPage = defineType({
       type: 'text',
       rows: 3,
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'heroPrivacyPolicyLink',
@@ -31,6 +56,7 @@ export const blogPage = defineType({
       type: 'link',
       description:
         'When set, an email capture form is shown in the hero. Leave blank to hide the form.',
+      group: 'content',
     }),
   ],
   preview: {

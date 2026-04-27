@@ -7,10 +7,13 @@ import { loadEnv } from 'vite';
 import path from 'node:path';
 import mkcert from 'vite-plugin-mkcert';
 
+import sitemap from '@astrojs/sitemap';
+
 const env = loadEnv('', process.cwd(), ['SANITY', 'PUBLIC_SANITY']);
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://gatherground.co.uk',
   output: 'static',
   adapter: vercel(),
   vite: {
@@ -45,6 +48,9 @@ export default defineConfig({
       dataset: env.SANITY_DATASET || 'production',
       useCdn: false, // Static build — no CDN needed at request time
       studioBasePath: '/studio',
+    }),
+    sitemap({
+      filter: (page) => !page.includes('/studio'),
     }),
   ],
 });

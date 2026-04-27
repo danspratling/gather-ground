@@ -141,6 +141,11 @@ export const pageBySlugQuery = `*[_type == "pages" && slug.current == $slug][0]{
   "_originalId": _originalId,
   title,
   "slug": slug.current,
+  metaTitle,
+  metaDescription,
+  "ogImage": ogImage.asset->url,
+  "autoDescription": body[_type == "heroSection"][0].subCopy,
+  "autoOgImage": body[_type == "heroSection"][0].image.asset->url,
   ${bodySectionsProjection}
 }`;
 
@@ -153,6 +158,11 @@ export const productPageQuery = `*[_type == "productPage"][0]{
   _updatedAt,
   "_originalId": _originalId,
   title,
+  metaTitle,
+  metaDescription,
+  "ogImage": ogImage.asset->url,
+  "autoDescription": body[_type == "heroSection"][0].subCopy,
+  "autoOgImage": body[_type == "heroSection"][0].image.asset->url,
   ${bodySectionsProjection}
 }`;
 
@@ -167,6 +177,11 @@ export const productBySlugQuery = `*[_type == "products" && slug.current == $slu
   "_originalId": _originalId,
   title,
   "slug": slug.current,
+  metaTitle,
+  metaDescription,
+  "ogImage": ogImage.asset->url,
+  "autoDescription": body[_type == "heroSection"][0].subCopy,
+  "autoOgImage": body[_type == "heroSection"][0].image.asset->url,
   ${bodySectionsProjection}
 }`;
 
@@ -178,6 +193,8 @@ export const blogPageQuery = `*[_type == "blogPage"][0]{
   _type,
   _updatedAt,
   "_originalId": _originalId,
+  metaTitle,
+  metaDescription,
   heroEyebrow,
   heroHeading,
   heroSubCopy,
@@ -215,6 +232,8 @@ export const blogPostBySlugQuery = `*[_type == "blogPosts" && slug.current == $s
   categories,
   publishedAt,
   body,
+  metaTitle,
+  metaDescription,
   author->{
     name,
     avatar { asset-> },
@@ -244,6 +263,9 @@ export const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   siteDescription,
   logoAlt,
   "logo": logo.asset->url,
+  defaultMetaTitle,
+  defaultMetaDescription,
+  "defaultOgImage": defaultOgImage.asset->url,
   primaryNav[]{
     label,
     link ${linkProjection},
