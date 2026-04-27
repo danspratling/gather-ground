@@ -23,6 +23,7 @@ export const products = defineType({
       title: 'Title',
       type: 'string',
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'slug',
@@ -31,6 +32,7 @@ export const products = defineType({
       description:
         'A single URL segment. The product will be served at /products/<slug>.',
       options: { source: 'title' },
+      group: 'content',
       validation: (Rule) =>
         Rule.required().custom((value) => {
           const current = value?.current;
@@ -71,6 +73,7 @@ export const products = defineType({
       name: 'body',
       title: 'Body sections',
       type: 'array',
+      group: 'content',
       of: [
         defineArrayMember({ type: 'heroSection' }),
         defineArrayMember({ type: 'productsSection' }),

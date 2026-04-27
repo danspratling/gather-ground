@@ -15,6 +15,7 @@ export const pages = defineType({
       title: 'Title',
       type: 'string',
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'slug',
@@ -22,6 +23,7 @@ export const pages = defineType({
       type: 'slug',
       options: { source: 'title' },
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'metaTitle',
@@ -50,6 +52,7 @@ export const pages = defineType({
       name: 'body',
       title: 'Body sections',
       type: 'array',
+      group: 'content',
       of: [
         defineArrayMember({ type: 'heroSection' }),
         defineArrayMember({ type: 'productsSection' }),

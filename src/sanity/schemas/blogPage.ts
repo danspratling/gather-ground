@@ -32,12 +32,14 @@ export const blogPage = defineType({
       title: 'Hero eyebrow',
       type: 'string',
       initialValue: 'Blog',
+      group: 'content',
     }),
     defineField({
       name: 'heroHeading',
       title: 'Hero heading',
       type: 'string',
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'heroSubCopy',
@@ -45,6 +47,7 @@ export const blogPage = defineType({
       type: 'text',
       rows: 3,
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'heroPrivacyPolicyLink',
@@ -52,6 +55,7 @@ export const blogPage = defineType({
       type: 'link',
       description:
         'When set, an email capture form is shown in the hero. Leave blank to hide the form.',
+      group: 'content',
     }),
   ],
   preview: {

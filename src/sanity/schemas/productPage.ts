@@ -16,6 +16,7 @@ export const productPage = defineType({
       type: 'string',
       initialValue: 'Products',
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'metaTitle',
@@ -45,6 +46,7 @@ export const productPage = defineType({
       name: 'body',
       title: 'Body sections',
       type: 'array',
+      group: 'content',
       of: [
         defineArrayMember({ type: 'heroSection' }),
         defineArrayMember({ type: 'productsSection' }),

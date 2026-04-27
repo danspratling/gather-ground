@@ -15,12 +15,14 @@ export const blogPosts = defineType({
       title: 'Title',
       type: 'string',
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
       options: { source: 'title' },
+      group: 'content',
       validation: (Rule) =>
         Rule.required().custom((value) => {
           const current = value?.current;
@@ -40,6 +42,7 @@ export const blogPosts = defineType({
       type: 'image',
       options: { hotspot: true },
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'excerpt',
@@ -47,6 +50,7 @@ export const blogPosts = defineType({
       type: 'text',
       rows: 3,
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'categories',
@@ -54,17 +58,20 @@ export const blogPosts = defineType({
       type: 'array',
       of: [defineArrayMember({ type: 'string' })],
       options: { layout: 'tags' },
+      group: 'content',
     }),
     defineField({
       name: 'author',
       title: 'Author',
       type: 'reference',
       to: [{ type: 'authors' }],
+      group: 'content',
     }),
     defineField({
       name: 'publishedAt',
       title: 'Published at',
       type: 'datetime',
+      group: 'content',
     }),
     defineField({
       name: 'metaTitle',
@@ -87,6 +94,7 @@ export const blogPosts = defineType({
       name: 'body',
       title: 'Body',
       type: 'array',
+      group: 'content',
       of: [
         defineArrayMember({
           type: 'block',
