@@ -7,16 +7,6 @@ export const blogPage = defineType({
   type: 'document',
   fields: [
     defineField({
-      name: 'slug',
-      title: 'URL slug',
-      type: 'slug',
-      description:
-        'The URL path for the blog index (e.g. "blog" → /blog). Also update src/pages/blog/ if you rename this.',
-      options: { source: () => 'blog' },
-      initialValue: { current: 'blog' },
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
       name: 'heroEyebrow',
       title: 'Hero eyebrow',
       type: 'string',

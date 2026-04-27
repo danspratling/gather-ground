@@ -178,7 +178,6 @@ export const blogPageQuery = `*[_type == "blogPage"][0]{
   _type,
   _updatedAt,
   "_originalId": _originalId,
-  "slug": slug.current,
   heroEyebrow,
   heroHeading,
   heroSubCopy,

@@ -25,7 +25,7 @@ export function resolveSanityLink(link: unknown): string {
     case 'internal': {
       const doc = l.internalLink;
       if (!doc) return '';
-      if (doc._type === 'blogPage') return `/${doc.slug?.current ?? 'blog'}`;
+      if (doc._type === 'blogPage') return '/blog';
       if (doc._type === 'blogPosts')
         return doc.slug?.current ? `/blog/${doc.slug.current}` : '';
       if (doc._type === 'productPage') return '/products';
