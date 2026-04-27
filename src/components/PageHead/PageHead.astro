@@ -1,0 +1,38 @@
+---
+import type { PageHeadProps } from './PageHead.types';
+
+type Props = PageHeadProps;
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  ogType = 'website',
+  ogImage,
+  ogUrl,
+  twitterCard = 'summary_large_image',
+  twitterImage,
+} = Astro.props;
+
+const canonicalBase = Astro.site ?? Astro.url.origin;
+const resolvedCanonical =
+  canonicalUrl ?? new URL(Astro.url.pathname, canonicalBase).toString();
+---
+
+<meta charset="utf-8" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href="/favicon.ico" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+<link rel="canonical" href={resolvedCanonical} />
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:site_name" content="Gather Ground" />
+<meta property="og:url" content={ogUrl ?? resolvedCanonical} />
+{description && <meta property="og:description" content={description} />}
+{ogImage && <meta property="og:image" content={ogImage} />}
+{twitterCard && <meta name="twitter:card" content={twitterCard} />}
+{twitterImage && <meta name="twitter:image" content={twitterImage} />}
+<slot name="head-extras" />
