@@ -24,10 +24,14 @@ const { data: page } = await loadQuery<{
   title: string;
   slug: string;
   body: Array<Record<string, unknown> & { _type: string; _key: string }>;
-}>({
+} | null>({
   query: productBySlugQuery,
   params: { slug },
 });
+
+if (!page) {
+  return Astro.redirect('/products');
+}
 ---
 
 <Layout

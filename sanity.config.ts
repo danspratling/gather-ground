@@ -96,7 +96,7 @@ export default defineConfig({
               locations: [
                 {
                   title: doc?.title || 'Untitled',
-                  href: `/products/${doc?.slug}`,
+                  href: doc?.slug ? `/products/${doc.slug}` : '/products',
                 },
               ],
             }),
