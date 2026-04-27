@@ -8,10 +8,11 @@
 import { stegaClean } from '@sanity/client/stega';
 
 interface SanityLink {
-  type?: 'url' | 'internal' | 'email';
+  type?: 'url' | 'internal' | 'email' | 'anchor';
   url?: string;
-  internalLink?: { slug?: { current?: string } };
+  internalLink?: { _type?: string; slug?: { current?: string } };
   email?: string;
+  anchor?: string;
 }
 
 export function resolveSanityLink(link: unknown): string {
@@ -21,10 +22,24 @@ export function resolveSanityLink(link: unknown): string {
   switch (l.type) {
     case 'email':
       return l.email ? `mailto:${l.email}` : '';
-    case 'internal':
-      return l.internalLink?.slug?.current
-        ? `/${l.internalLink.slug.current}`.replace(/\/\//, '/')
+    case 'internal': {
+      const doc = l.internalLink;
+      if (!doc) return '';
+      if (doc._type === 'blogPage') return '/blog';
+      if (doc._type === 'blogPosts')
+        return doc.slug?.current ? `/blog/${doc.slug.current}` : '';
+      if (doc._type === 'productPage') return '/products';
+      if (doc._type === 'products')
+        return doc.slug?.current ? `/products/${doc.slug.current}` : '';
+      return doc.slug?.current
+        ? `/${doc.slug.current}`.replace(/\/\//, '/')
         : '';
+    }
+    case 'anchor': {
+      if (!l.anchor) return '';
+      const cleaned = l.anchor.trim().replace(/^#+/, '');
+      return cleaned ? `#${encodeURIComponent(cleaned)}` : '';
+    }
     case 'url':
     default:
       return l.url ?? '';

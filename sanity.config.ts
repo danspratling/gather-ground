@@ -22,6 +22,7 @@ import {
   contentSection,
   contentFeatureItem,
   contentIconFeature,
+  siteSettings,
 } from './src/sanity/schemas';
 
 export default defineConfig({
@@ -36,6 +37,20 @@ export default defineConfig({
           .title('Content')
           .items([
             S.listItem()
+              .title('Site Settings')
+              .id('siteSettings')
+              .child(
+                S.document()
+                  .schemaType('siteSettings')
+                  .documentId('siteSettings')
+              ),
+            S.listItem()
+              .title('Blog Page')
+              .id('blogPage')
+              .child(
+                S.document().schemaType('blogPage').documentId('blogPage')
+              ),
+            S.listItem()
               .title('Product Page')
               .id('productPage')
               .child(
@@ -43,7 +58,10 @@ export default defineConfig({
               ),
             S.divider(),
             ...S.documentTypeListItems().filter(
-              (listItem) => !['productPage'].includes(listItem.getId() ?? '')
+              (listItem) =>
+                !['siteSettings', 'blogPage', 'productPage'].includes(
+                  listItem.getId() ?? ''
+                )
             ),
           ]),
     }),
@@ -107,6 +125,8 @@ export default defineConfig({
   ],
   schema: {
     types: [
+      // Singletons
+      siteSettings,
       // Shared types
       link,
       callout,
@@ -131,5 +151,26 @@ export default defineConfig({
       contentFeatureItem,
       contentIconFeature,
     ],
+  },
+  document: {
+    // Hide singleton types from the global "Create new" menu so editors
+    // can't create duplicates that would conflict with the singleton query.
+    newDocumentOptions: (prev, { creationContext }) =>
+      creationContext.type === 'global'
+        ? prev.filter(
+            (templateItem) =>
+              !['siteSettings', 'blogPage', 'productPage'].includes(
+                templateItem.templateId
+              )
+          )
+        : prev,
+    // Remove duplicate/delete actions for singletons so editors can't
+    // accidentally remove the canonical document.
+    actions: (prev, { schemaType }) =>
+      ['siteSettings', 'blogPage', 'productPage'].includes(schemaType)
+        ? prev.filter(
+            ({ action }) => !['duplicate', 'delete'].includes(action ?? '')
+          )
+        : prev,
   },
 });

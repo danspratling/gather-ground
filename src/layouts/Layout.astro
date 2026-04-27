@@ -1,10 +1,14 @@
 ---
 import Footer from '@/components/Layout/Footer/Footer.astro';
+import type { SocialPlatform } from '@/components/Layout/Footer/Footer.types';
 import Header from '@/components/Layout/Header/Header.astro';
 import PageHead from '@/components/PageHead/PageHead.astro';
 import PreviewBanner from '@/components/PreviewBanner/PreviewBanner.astro';
 import type { PreviewDoc } from '@/components/PreviewBanner/PreviewBanner.types';
 import { VisualEditing } from '@sanity/astro/visual-editing';
+import { loadQuery } from '@/lib/sanity';
+import { siteSettingsQuery } from '@/lib/queries';
+import { resolveSanityLink } from '@/lib/sanityLink';
 import '@/styles/global.css';
 
 const visualEditingEnabled =
@@ -19,59 +23,222 @@ interface Props {
   previewDoc?: PreviewDoc;
 }
 
+interface SanityLinkData {
+  type?: 'url' | 'internal' | 'email' | 'anchor';
+  url?: string;
+  internalLink?: { slug?: { current?: string } };
+  email?: string;
+  anchor?: string;
+}
+
+interface SiteSettingsData {
+  siteName?: string;
+  siteDescription?: string;
+  logo?: string;
+  logoAlt?: string;
+  primaryNav?: Array<{
+    label: string;
+    link?: SanityLinkData;
+    menu?: Array<{ label: string; link: SanityLinkData; description?: string }>;
+  }>;
+  headerCtaLabel?: string;
+  headerCtaLink?: SanityLinkData;
+  footerDescription?: string;
+  footerLinkGroups?: Array<{
+    heading: string;
+    links: Array<{ label: string; link: SanityLinkData }>;
+  }>;
+  socialLinks?: Array<{ platform: string; url: string; label: string }>;
+  copyrightText?: string;
+  footerLegalLinks?: Array<{ label: string; link: SanityLinkData }>;
+  announcementBanner?: {
+    enabled?: boolean;
+    message?: string;
+    ctaLabel?: string;
+    ctaLink?: SanityLinkData;
+    variant?: 'info' | 'warning' | 'success';
+  };
+}
+
 const { title, description, ogImage, ogType, canonicalUrl, previewDoc } =
   Astro.props;
 
-const footerProps = {
-  logoSrc: '/favicon.svg',
-  logoAlt: 'Gather Ground',
-  description:
-    'Family farm in rural Iowa. We raise heritage breed animals on pasture year-round.',
-  socialLinks: [
-    {
-      platform: 'instagram' as const,
-      href: 'https://instagram.com',
-      label: 'Instagram',
-    },
-    {
-      platform: 'facebook' as const,
-      href: 'https://facebook.com',
-      label: 'Facebook',
-    },
-    {
-      platform: 'tiktok' as const,
-      href: 'https://tiktok.com',
-      label: 'TikTok',
-    },
-  ],
-  linkGroups: [
-    {
-      heading: 'Company',
-      links: [
-        { label: 'About', href: '/about' },
-        { label: 'News', href: '/news' },
-        { label: 'Shop', href: '/shop', badge: 'New' },
-        { label: 'Contact', href: '/contact' },
-      ],
-    },
-    {
-      heading: 'Products',
-      links: [
-        { label: 'Beef', href: '/products/beef' },
-        { label: 'Pork', href: '/products/pork' },
-        { label: 'Chicken', href: '/products/chicken' },
-        { label: 'Turkey', href: '/products/turkey' },
-        { label: 'Eggs', href: '/products/eggs' },
-      ],
-    },
-  ],
-  newsletterHeading: 'Stay up to date',
-  copyrightText: `© ${new Date().getFullYear()} Gather Ground`,
-  legalLinks: [
-    { label: 'Terms', href: '/terms' },
+const { data: siteSettings } = await loadQuery<SiteSettingsData | null>({
+  query: siteSettingsQuery,
+});
+
+const SUPPORTED_PLATFORMS = new Set<SocialPlatform>([
+  'instagram',
+  'facebook',
+  'tiktok',
+  'twitter',
+  'linkedin',
+]);
+
+const defaultNavLinks = [
+  {
+    label: 'Shop',
+    menu: [
+      {
+        label: 'Beef',
+        href: '/shop/beef',
+        description: 'Angus and Hereford, dry-aged.',
+      },
+      {
+        label: 'Pork',
+        href: '/shop/pork',
+        description: 'Berkshire and Duroc, pasture-raised.',
+      },
+      {
+        label: 'Chicken',
+        href: '/shop/chicken',
+        description: 'Freedom Ranger, slow-grown.',
+      },
+      { label: 'View all products', href: '/shop', iconTrailing: true },
+    ],
+  },
+  {
+    label: 'About us',
+    menu: [
+      {
+        label: 'Our story',
+        href: '/about',
+        description: 'How Gather Ground began.',
+      },
+      {
+        label: 'The farm',
+        href: '/about/farm',
+        description: 'Our land and animals.',
+      },
+      { label: 'Sustainability', href: '/about/sustainability' },
+    ],
+  },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const headerProps = {
+  logoSrc: siteSettings?.logo ?? '/favicon.svg',
+  logoAlt: siteSettings?.logoAlt ?? 'Gather Ground',
+  navLinks: siteSettings?.primaryNav
+    ? siteSettings.primaryNav.flatMap((item) => {
+        const menu = item.menu
+          ?.map((m) => {
+            const href = resolveSanityLink(m.link);
+            return href
+              ? { label: m.label, href, description: m.description }
+              : null;
+          })
+          .filter(
+            (
+              menuItem
+            ): menuItem is {
+              label: string;
+              href: string;
+              description?: string;
+            } => menuItem !== null
+          );
+
+        if (menu && menu.length > 0) {
+          return [{ label: item.label, menu }];
+        }
+
+        const href = item.link ? resolveSanityLink(item.link) : '';
+        return href ? [{ label: item.label, href }] : [];
+      })
+    : defaultNavLinks,
+  ctaLabel: siteSettings?.headerCtaLabel ?? 'Sign up',
+  ctaHref: siteSettings?.headerCtaLink
+    ? resolveSanityLink(siteSettings.headerCtaLink)
+    : '/signup',
+  loginLabel: 'Log in',
+  loginHref: '/login',
+  accountHref: '/account',
+  basketHref: '/cart',
+  footerLinks: [
+    { label: 'About us', href: '/about' },
+    { label: 'Blog', href: '/blog' },
     { label: 'Privacy', href: '/privacy' },
+    { label: 'Terms', href: '/terms' },
+    { label: 'Contact', href: '/contact' },
     { label: 'Cookies', href: '/cookies' },
   ],
+};
+
+const footerProps = {
+  logoSrc: siteSettings?.logo ?? '/favicon.svg',
+  logoAlt: siteSettings?.logoAlt ?? 'Gather Ground',
+  description:
+    siteSettings?.footerDescription ??
+    'Family farm in rural Iowa. We raise heritage breed animals on pasture year-round.',
+  socialLinks: siteSettings?.socialLinks
+    ? siteSettings.socialLinks
+        .filter((l) => SUPPORTED_PLATFORMS.has(l.platform as SocialPlatform))
+        .map((l) => ({
+          platform: l.platform as SocialPlatform,
+          href: l.url,
+          label: l.label,
+        }))
+    : [
+        {
+          platform: 'instagram' as const,
+          href: 'https://instagram.com',
+          label: 'Instagram',
+        },
+        {
+          platform: 'facebook' as const,
+          href: 'https://facebook.com',
+          label: 'Facebook',
+        },
+        {
+          platform: 'tiktok' as const,
+          href: 'https://tiktok.com',
+          label: 'TikTok',
+        },
+      ],
+  linkGroups: siteSettings?.footerLinkGroups
+    ? siteSettings.footerLinkGroups.map((group) => ({
+        heading: group.heading,
+        links: group.links.map((l) => ({
+          label: l.label,
+          href: resolveSanityLink(l.link),
+        })),
+      }))
+    : [
+        {
+          heading: 'Company',
+          links: [
+            { label: 'About', href: '/about' },
+            { label: 'News', href: '/news' },
+            { label: 'Shop', href: '/shop', badge: 'New' },
+            { label: 'Contact', href: '/contact' },
+          ],
+        },
+        {
+          heading: 'Products',
+          links: [
+            { label: 'Beef', href: '/products/beef' },
+            { label: 'Pork', href: '/products/pork' },
+            { label: 'Chicken', href: '/products/chicken' },
+            { label: 'Turkey', href: '/products/turkey' },
+            { label: 'Eggs', href: '/products/eggs' },
+          ],
+        },
+      ],
+  newsletterHeading: 'Stay up to date',
+  copyrightText:
+    siteSettings?.copyrightText ??
+    `© ${new Date().getFullYear()} Gather Ground`,
+  legalLinks: siteSettings?.footerLegalLinks
+    ? siteSettings.footerLegalLinks.map((l) => ({
+        label: l.label,
+        href: resolveSanityLink(l.link),
+      }))
+    : [
+        { label: 'Terms', href: '/terms' },
+        { label: 'Privacy', href: '/privacy' },
+        { label: 'Cookies', href: '/cookies' },
+      ],
 };
 ---
 
@@ -90,65 +257,7 @@ const footerProps = {
   <body>
     {/* body-start: announcement banner, skip-to-content */}
     <slot name="body-start" />
-    <Header
-      logoSrc="/favicon.svg"
-      logoAlt="Gather Ground"
-      navLinks={[
-        {
-          label: 'Shop',
-          menu: [
-            {
-              label: 'Beef',
-              href: '/shop/beef',
-              description: 'Angus and Hereford, dry-aged.',
-            },
-            {
-              label: 'Pork',
-              href: '/shop/pork',
-              description: 'Berkshire and Duroc, pasture-raised.',
-            },
-            {
-              label: 'Chicken',
-              href: '/shop/chicken',
-              description: 'Freedom Ranger, slow-grown.',
-            },
-            { label: 'View all products', href: '/shop', iconTrailing: true },
-          ],
-        },
-        {
-          label: 'About us',
-          menu: [
-            {
-              label: 'Our story',
-              href: '/about',
-              description: 'How Gather Ground began.',
-            },
-            {
-              label: 'The farm',
-              href: '/about/farm',
-              description: 'Our land and animals.',
-            },
-            { label: 'Sustainability', href: '/about/sustainability' },
-          ],
-        },
-        { label: 'Blog', href: '/blog' },
-        { label: 'Contact', href: '/contact' },
-      ]}
-      ctaLabel="Sign up"
-      ctaHref="/signup"
-      loginLabel="Log in"
-      loginHref="/login"
-      accountHref="/account"
-      basketHref="/cart"
-      footerLinks={[
-        { label: 'About us', href: '/about' },
-        { label: 'Blog', href: '/blog' },
-        { label: 'Privacy', href: '/privacy' },
-        { label: 'Terms', href: '/terms' },
-        { label: 'Contact', href: '/contact' },
-        { label: 'Cookies', href: '/cookies' },
-      ]}
-    />
+    <Header {...headerProps} />
     <slot />
     <Footer {...footerProps} />
     {/* body-end: cookie banner, analytics */}

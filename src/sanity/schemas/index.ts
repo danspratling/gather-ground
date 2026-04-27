@@ -1,5 +1,8 @@
 /** Barrel export for all Sanity schema types. */
 
+// Singletons
+export { siteSettings } from './siteSettings';
+
 // Shared types
 export { link } from './link';
 export { callout } from './callout';

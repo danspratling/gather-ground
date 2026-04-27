@@ -9,7 +9,8 @@ export const linkProjection = `{
   type,
   url,
   email,
-  internalLink->{ slug }
+  anchor,
+  internalLink->{ _type, slug }
 }`;
 
 // ─── Body sections projection ───────────────────────────────────────
@@ -180,7 +181,7 @@ export const blogPageQuery = `*[_type == "blogPage"][0]{
   heroEyebrow,
   heroHeading,
   heroSubCopy,
-  heroPrivacyPolicyHref
+  heroPrivacyPolicyLink ${linkProjection}
 }`;
 
 /** Fetch all blog posts sorted by publish date. */
@@ -232,6 +233,48 @@ export const relatedBlogPostsQuery = `*[_type == "blogPosts" && slug.current != 
   author->{
     name,
     avatar { asset-> }
+  }
+}`;
+
+// ─── Site Settings ──────────────────────────────────────────────────
+
+/** Fetch the singleton siteSettings document. */
+export const siteSettingsQuery = `*[_id == "siteSettings"][0]{
+  siteName,
+  siteDescription,
+  logoAlt,
+  "logo": logo.asset->url,
+  primaryNav[]{
+    label,
+    link ${linkProjection},
+    menu[]{
+      label,
+      link ${linkProjection},
+      description
+    }
+  },
+  headerCtaLabel,
+  headerCtaLink ${linkProjection},
+  footerDescription,
+  footerLinkGroups[]{
+    heading,
+    links[]{
+      label,
+      link ${linkProjection}
+    }
+  },
+  socialLinks,
+  copyrightText,
+  footerLegalLinks[]{
+    label,
+    link ${linkProjection}
+  },
+  announcementBanner{
+    enabled,
+    message,
+    ctaLabel,
+    ctaLink ${linkProjection},
+    variant
   }
 }`;
 

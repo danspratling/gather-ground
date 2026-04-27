@@ -547,3 +547,29 @@ When you make a decision that future-you (or Claude Code) might question, add it
 - All `_type ==` GROQ filters and reference `to: [...]` arrays use the collection name.
 - Field names (e.g. `author` ref field on a post) remain singular when they hold one value — field cardinality, not the target type, drives the field name.
 - The migration script runs once per environment when this convention is introduced. Subsequent renames follow the same pattern.
+
+## ADR-034: Internal links must use CMS page references, not typed URLs
+
+**Status:** Accepted
+**Date:** 2026-04-27
+**Branch:** feature/cms-site-settings
+
+**Context:** The `link` object type (introduced in ADR-032) supports four link modes: `url` (external), `internal` (page reference), `email`, and `anchor`. When wiring nav items, CTAs, footer links, and any other navigational fields in Sanity schemas, there is a temptation to use a plain `string` or `url` field for simplicity — or to use the `url` mode and type `/about` manually.
+
+**Decision:** Internal links must always use `type: 'internal'` with a `reference` to a Sanity `page` or `blogPost` document, never a manually-typed path string. The `url` mode is reserved for external URLs only (i.e. links to a different origin).
+
+**Reasoning:**
+
+- Typed paths break silently when a page is renamed or its slug changes. A reference-based link is automatically updated (or flagged as broken) because it resolves through the document's `slug` field at query time.
+- The CMS Studio dropdown gives editors discoverability — they can see available pages without memorising slugs.
+- `resolveSanityLink()` already handles the `internal` case by dereferencing `internalLink->{ slug }` in GROQ and building the path. There is no additional work for developers.
+- Consistency: all `link` fields behave the same way regardless of where they appear (nav, footer, CTAs, banners).
+
+**Rules:**
+
+1. Any field linking to a page within this site must use `type: 'link'` with the `internal` option available — not `type: 'string'` or `type: 'url'`.
+2. The `url` mode in the `link` type is only for external URLs (different origin, e.g. social profiles, third-party sites).
+3. Anchor links (`#section-id`) use `type: 'anchor'`. These may stand alone or be combined with an internal reference if a future need arises.
+4. Social link fields (e.g. `siteSettings.socialLinks`) are the exception — they are always external URLs and use a plain `type: 'url'` field directly.
+
+**Consequence:** Developers adding new link fields to any Sanity schema must use `type: 'link'` rather than `type: 'string'`. PR reviewers should reject schemas that use typed string fields for internal navigation.

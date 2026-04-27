@@ -18,6 +18,7 @@ export const link = defineType({
           { title: 'URL', value: 'url' },
           { title: 'Internal page', value: 'internal' },
           { title: 'Email', value: 'email' },
+          { title: 'Anchor', value: 'anchor' },
         ],
         layout: 'radio',
       },
@@ -35,7 +36,13 @@ export const link = defineType({
       name: 'internalLink',
       title: 'Internal page',
       type: 'reference',
-      to: [{ type: 'pages' }, { type: 'blogPosts' }],
+      to: [
+        { type: 'pages' },
+        { type: 'blogPosts' },
+        { type: 'blogPage' },
+        { type: 'productPage' },
+        { type: 'products' },
+      ],
       hidden: ({ parent }) => parent?.type !== 'internal',
     },
     {
@@ -43,6 +50,26 @@ export const link = defineType({
       title: 'Email address',
       type: 'string',
       hidden: ({ parent }) => parent?.type !== 'email',
+    },
+    {
+      name: 'anchor',
+      title: 'Anchor ID',
+      type: 'string',
+      description:
+        'The ID of the section to scroll to, without the # (e.g. "about-us")',
+      hidden: ({ parent }) => parent?.type !== 'anchor',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const parent = context.parent as { type?: string } | undefined;
+          if (parent?.type !== 'anchor') return true;
+          if (typeof value !== 'string' || value.trim() === '') {
+            return 'Anchor ID is required when link type is Anchor';
+          }
+          if (value.trim().startsWith('#')) {
+            return 'Anchor ID must not start with #';
+          }
+          return true;
+        }),
     },
   ],
 });
