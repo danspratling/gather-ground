@@ -5,6 +5,10 @@ export const productPage = defineType({
   name: 'productPage',
   title: 'Product Page',
   type: 'document',
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
     defineField({
       name: 'title',
@@ -12,6 +16,30 @@ export const productPage = defineType({
       type: 'string',
       initialValue: 'Products',
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'metaTitle',
+      title: 'Meta title',
+      type: 'string',
+      description:
+        'Overrides the auto-generated page title. Leave blank to use the page title + site name.',
+      group: 'seo',
+    }),
+    defineField({
+      name: 'metaDescription',
+      title: 'Meta description',
+      type: 'text',
+      rows: 3,
+      description:
+        'Overrides the auto-generated description. Leave blank to use the first hero sub-copy.',
+      group: 'seo',
+    }),
+    defineField({
+      name: 'ogImage',
+      title: 'Social share image',
+      type: 'image',
+      description: 'Image used for Open Graph / Twitter cards.',
+      group: 'seo',
     }),
     defineField({
       name: 'body',

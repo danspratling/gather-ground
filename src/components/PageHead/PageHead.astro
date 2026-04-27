@@ -1,11 +1,12 @@
 ---
+import { stegaClean } from '@sanity/client/stega';
 import type { PageHeadProps } from './PageHead.types';
 
 type Props = PageHeadProps;
 
 const {
-  title,
-  description,
+  title: rawTitle,
+  description: rawDescription,
   canonicalUrl,
   ogType = 'website',
   ogImage,
@@ -13,6 +14,11 @@ const {
   twitterCard = 'summary_large_image',
   twitterImage,
 } = Astro.props;
+
+const title = stegaClean(rawTitle);
+const description = rawDescription
+  ? stegaClean(rawDescription)
+  : rawDescription;
 
 const canonicalBase = Astro.site ?? Astro.url.origin;
 const resolvedCanonical =

@@ -15,6 +15,8 @@ const { data: pageContent } = await loadQuery<{
   _type: string;
   _updatedAt?: string;
   _originalId?: string;
+  metaTitle?: string;
+  metaDescription?: string;
   heroEyebrow?: string;
   heroHeading?: string;
   heroSubCopy?: string;
@@ -76,8 +78,9 @@ const [featuredPost, ...gridPosts] = posts;
 ---
 
 <Layout
-  title="Blog – Gather Ground"
-  description={heroSubCopy}
+  title="Blog"
+  metaTitle={pageContent?.metaTitle}
+  description={pageContent?.metaDescription || heroSubCopy}
   previewDoc={pageContent
     ? {
         _id: pageContent._id,

@@ -228,5 +228,27 @@ export const siteSettings = defineType({
         }),
       ],
     }),
+    defineField({
+      name: 'defaultMetaTitle',
+      title: 'Default Meta Title',
+      type: 'string',
+      description:
+        'Fallback page title for pages that don\u2019t have one. Site name is appended automatically.',
+    }),
+    defineField({
+      name: 'defaultMetaDescription',
+      title: 'Default Meta Description',
+      type: 'text',
+      rows: 3,
+      description:
+        'Fallback description for pages without an explicit or auto-generated description.',
+    }),
+    defineField({
+      name: 'defaultOgImage',
+      title: 'Default Social Share Image',
+      type: 'image',
+      description:
+        'Fallback image for Open Graph / Twitter cards when a page has no image.',
+    }),
   ],
 });

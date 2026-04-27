@@ -5,7 +5,28 @@ export const blogPage = defineType({
   name: 'blogPage',
   title: 'Blog Page',
   type: 'document',
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
+    defineField({
+      name: 'metaTitle',
+      title: 'Meta title',
+      type: 'string',
+      description:
+        'Overrides the auto-generated page title. Leave blank to use "Blog | {site name}".',
+      group: 'seo',
+    }),
+    defineField({
+      name: 'metaDescription',
+      title: 'Meta description',
+      type: 'text',
+      rows: 3,
+      description:
+        'Overrides the auto-generated description. Leave blank to use the hero sub-copy.',
+      group: 'seo',
+    }),
     defineField({
       name: 'heroEyebrow',
       title: 'Hero eyebrow',

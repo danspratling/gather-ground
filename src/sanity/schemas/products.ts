@@ -45,6 +45,14 @@ export const products = defineType({
         }),
     }),
     defineField({
+      name: 'metaTitle',
+      title: 'Meta title',
+      type: 'string',
+      description:
+        'Overrides the auto-generated page title. Leave blank to use the content title + site name.',
+      group: 'seo',
+    }),
+    defineField({
       name: 'metaDescription',
       title: 'Meta description',
       type: 'text',

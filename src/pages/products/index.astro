@@ -10,6 +10,11 @@ const { data: page } = await loadQuery<{
   _updatedAt?: string;
   _originalId?: string;
   title: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  ogImage?: string;
+  autoDescription?: string;
+  autoOgImage?: string;
   body: Array<Record<string, unknown> & { _type: string; _key: string }>;
 } | null>({
   query: productPageQuery,
@@ -18,7 +23,9 @@ const { data: page } = await loadQuery<{
 
 <Layout
   title={page?.title ?? 'Products'}
-  description="Browse our range of heritage breed products, raised on pasture year-round."
+  metaTitle={page?.metaTitle}
+  description={page?.metaDescription || page?.autoDescription}
+  ogImage={page?.ogImage || page?.autoOgImage}
   previewDoc={page
     ? {
         _id: page._id,

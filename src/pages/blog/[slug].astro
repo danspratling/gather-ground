@@ -36,6 +36,8 @@ interface BlogPost {
   categories?: string[];
   publishedAt?: string;
   body?: PortableTextBlock[];
+  metaTitle?: string;
+  metaDescription?: string;
   author?: {
     name: string;
     avatar?: SanityImage;
@@ -90,7 +92,8 @@ const heroImageAlt = sanityImageAlt(post.image, post.title);
 
 <Layout
   title={post.title}
-  description={post.excerpt}
+  metaTitle={post.metaTitle}
+  description={post.metaDescription || post.excerpt}
   ogImage={heroImage}
   ogType="article"
   canonicalUrl={canonicalUrl}

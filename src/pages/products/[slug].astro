@@ -23,8 +23,11 @@ const { data: page } = await loadQuery<{
   _originalId?: string;
   title: string;
   slug: string;
+  metaTitle?: string;
   metaDescription?: string;
   ogImage?: string;
+  autoDescription?: string;
+  autoOgImage?: string;
   body: Array<Record<string, unknown> & { _type: string; _key: string }>;
 } | null>({
   query: productBySlugQuery,
@@ -38,8 +41,9 @@ if (!page) {
 
 <Layout
   title={page.title}
-  description={page.metaDescription}
-  ogImage={page.ogImage}
+  metaTitle={page.metaTitle}
+  description={page.metaDescription || page.autoDescription}
+  ogImage={page.ogImage || page.autoOgImage}
   previewDoc={{
     _id: page._id,
     _type: page._type,
