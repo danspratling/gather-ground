@@ -4,14 +4,14 @@ import { presentationTool } from 'sanity/presentation';
 import {
   link,
   callout,
-  page,
+  pages,
   blogPage,
-  blogPost,
+  blogPosts,
   productPage,
   products,
-  author,
-  faq,
-  testimonial,
+  authors,
+  faqs,
+  testimonials,
   heroSection,
   productsSection,
   productCard,
@@ -56,7 +56,7 @@ export default defineConfig({
       },
       resolve: {
         locations: {
-          page: {
+          pages: {
             select: { title: 'title', slug: 'slug.current' },
             resolve: (doc) => ({
               locations: [
@@ -67,7 +67,7 @@ export default defineConfig({
               ],
             }),
           },
-          blogPost: {
+          blogPosts: {
             select: { title: 'title', slug: 'slug.current' },
             resolve: (doc) => ({
               locations: [
@@ -111,14 +111,14 @@ export default defineConfig({
       link,
       callout,
       // Documents
-      page,
+      pages,
       blogPage,
-      blogPost,
+      blogPosts,
       productPage,
       products,
-      author,
-      faq,
-      testimonial,
+      authors,
+      faqs,
+      testimonials,
       // Page section objects
       heroSection,
       productsSection,

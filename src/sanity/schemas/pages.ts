@@ -1,9 +1,9 @@
 import { defineType, defineField, defineArrayMember } from 'sanity';
 
-/** Page document — homepage and other static pages. */
-export const page = defineType({
-  name: 'page',
-  title: 'Page',
+/** Pages document — generic static pages composed from sections. */
+export const pages = defineType({
+  name: 'pages',
+  title: 'Pages',
   type: 'document',
   fields: [
     defineField({

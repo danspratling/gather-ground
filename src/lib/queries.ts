@@ -130,10 +130,10 @@ export const bodySectionsProjection = `body[]{
 // ─── Page queries ───────────────────────────────────────────────────
 
 /** Fetch all page slugs for static path generation. */
-export const allPageSlugsQuery = `*[_type == "page"]{ "slug": slug.current }`;
+export const allPageSlugsQuery = `*[_type == "pages"]{ "slug": slug.current }`;
 
 /** Fetch a single page by slug with all nested section data resolved. */
-export const pageBySlugQuery = `*[_type == "page" && slug.current == $slug][0]{
+export const pageBySlugQuery = `*[_type == "pages" && slug.current == $slug][0]{
   _id,
   _type,
   _updatedAt,
@@ -184,7 +184,7 @@ export const blogPageQuery = `*[_type == "blogPage"][0]{
 }`;
 
 /** Fetch all blog posts sorted by publish date. */
-export const allBlogPostsQuery = `*[_type == "blogPost"] | order(publishedAt desc){
+export const allBlogPostsQuery = `*[_type == "blogPosts"] | order(publishedAt desc){
   _id,
   title,
   "slug": slug.current,
@@ -199,10 +199,10 @@ export const allBlogPostsQuery = `*[_type == "blogPost"] | order(publishedAt des
 }`;
 
 /** Fetch all blog post slugs for static path generation. Excludes posts missing required fields. */
-export const allBlogPostSlugsQuery = `*[_type == "blogPost" && defined(slug.current) && defined(publishedAt)]{ "slug": slug.current }`;
+export const allBlogPostSlugsQuery = `*[_type == "blogPosts" && defined(slug.current) && defined(publishedAt)]{ "slug": slug.current }`;
 
 /** Fetch a single blog post by slug. */
-export const blogPostBySlugQuery = `*[_type == "blogPost" && slug.current == $slug][0]{
+export const blogPostBySlugQuery = `*[_type == "blogPosts" && slug.current == $slug][0]{
   _id,
   _type,
   _updatedAt,
@@ -222,7 +222,7 @@ export const blogPostBySlugQuery = `*[_type == "blogPost" && slug.current == $sl
 }`;
 
 /** Fetch related blog posts (exclude current slug). */
-export const relatedBlogPostsQuery = `*[_type == "blogPost" && slug.current != $slug] | order(publishedAt desc) [0...3]{
+export const relatedBlogPostsQuery = `*[_type == "blogPosts" && slug.current != $slug] | order(publishedAt desc) [0...3]{
   _id,
   title,
   "slug": slug.current,

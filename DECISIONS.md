@@ -520,3 +520,30 @@ When you make a decision that future-you (or Claude Code) might question, add it
 **Supersedes:** ADR-004, ADR-005, ADR-022, ADR-023, ADR-024, ADR-026, ADR-028, ADR-029, ADR-030. These remain in the log for historical context but their guidance no longer applies after migration is complete.
 
 **Consequence:** After migration, all CMS interactions use Sanity. Schemas are defined in `src/sanity/schemas/`. Data is fetched via `sanityClient.fetch()` with GROQ in page frontmatter. Rich text uses Portable Text. The `.storyblok.astro` wrapper pattern, `resolveLink()` helper, `push-schemas` script, and `storyblokAuthors.ts` are all removed.
+
+---
+
+## ADR-033: Sanity document type names — singular for singletons, plural for collections
+
+**Decision:** Sanity document `type` names follow grammatical number based on cardinality:
+
+- **Singleton documents** (exactly one instance) → **singular** name. Examples: `siteSettings`, `blogPage`, `productPage`.
+- **Collection documents** (many instances) → **plural** name. Examples: `pages`, `blogPosts`, `products`, `authors`, `faqs`, `testimonials`.
+- **Object types** (nested shapes, not documents) → **singular** name — they describe one shape, not a collection. Examples: `link`, `callout`, `heroSection`, `productCard`, `contentFeatureItem`.
+
+**Schema file naming follows the type name:** `blogPosts.ts` (collection), `blogPage.ts` (singleton), `link.ts` (object).
+
+**Reasoning:** The codebase had two competing patterns — `productPage`/`products` (this convention) and `blogPost`/`page`/`author`/etc. (the more common Sanity convention of singular-for-everything). Mixing both is confusing; pick one and apply it. The singular-for-singletons / plural-for-collections rule mirrors database table naming and REST collection endpoints — the type name describes "what's in the bucket". A singleton holds one thing (singular); a collection holds many (plural).
+
+**Trade-offs accepted:**
+
+- Departs from the wider Sanity ecosystem convention. Most Sanity examples and plugins use singular type names (`post`, `author`). Editors familiar with other Sanity projects will find this surprising.
+- Reference fields read awkwardly: `to: [{ type: 'authors' }]` looks like "many authors" but actually accepts one. The interpretation is consistent (the `type` is the name of the collection the doc comes from), but it requires a second of thought.
+- Required a one-time data migration (see `scripts/rename-collection-types.ts`) to update existing `_type` values in production.
+
+**Consequence:**
+
+- New collection schemas must use plural names. New singleton schemas must use singular names.
+- All `_type ==` GROQ filters and reference `to: [...]` arrays use the collection name.
+- Field names (e.g. `author` ref field on a post) remain singular when they hold one value — field cardinality, not the target type, drives the field name.
+- The migration script runs once per environment when this convention is introduced. Subsequent renames follow the same pattern.
