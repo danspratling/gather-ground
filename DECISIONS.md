@@ -547,6 +547,7 @@ When you make a decision that future-you (or Claude Code) might question, add it
 - All `_type ==` GROQ filters and reference `to: [...]` arrays use the collection name.
 - Field names (e.g. `author` ref field on a post) remain singular when they hold one value — field cardinality, not the target type, drives the field name.
 - The migration script runs once per environment when this convention is introduced. Subsequent renames follow the same pattern.
+
 ## ADR-034: Internal links must use CMS page references, not typed URLs
 
 **Status:** Accepted

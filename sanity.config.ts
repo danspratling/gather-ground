@@ -152,4 +152,25 @@ export default defineConfig({
       contentIconFeature,
     ],
   },
+  document: {
+    // Hide singleton types from the global "Create new" menu so editors
+    // can't create duplicates that would conflict with the singleton query.
+    newDocumentOptions: (prev, { creationContext }) =>
+      creationContext.type === 'global'
+        ? prev.filter(
+            (templateItem) =>
+              !['siteSettings', 'blogPage', 'productPage'].includes(
+                templateItem.templateId
+              )
+          )
+        : prev,
+    // Remove duplicate/delete actions for singletons so editors can't
+    // accidentally remove the canonical document.
+    actions: (prev, { schemaType }) =>
+      ['siteSettings', 'blogPage', 'productPage'].includes(schemaType)
+        ? prev.filter(
+            ({ action }) => !['duplicate', 'delete'].includes(action ?? '')
+          )
+        : prev,
+  },
 });

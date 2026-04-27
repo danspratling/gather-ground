@@ -58,6 +58,18 @@ export const link = defineType({
       description:
         'The ID of the section to scroll to, without the # (e.g. "about-us")',
       hidden: ({ parent }) => parent?.type !== 'anchor',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const parent = context.parent as { type?: string } | undefined;
+          if (parent?.type !== 'anchor') return true;
+          if (typeof value !== 'string' || value.trim() === '') {
+            return 'Anchor ID is required when link type is Anchor';
+          }
+          if (value.trim().startsWith('#')) {
+            return 'Anchor ID must not start with #';
+          }
+          return true;
+        }),
     },
   ],
 });

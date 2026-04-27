@@ -239,7 +239,7 @@ export const relatedBlogPostsQuery = `*[_type == "blogPosts" && slug.current != 
 // ─── Site Settings ──────────────────────────────────────────────────
 
 /** Fetch the singleton siteSettings document. */
-export const siteSettingsQuery = `*[_type == "siteSettings"][0]{
+export const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   siteName,
   siteDescription,
   logoAlt,

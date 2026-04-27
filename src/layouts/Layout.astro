@@ -121,15 +121,31 @@ const headerProps = {
   logoSrc: siteSettings?.logo ?? '/favicon.svg',
   logoAlt: siteSettings?.logoAlt ?? 'Gather Ground',
   navLinks: siteSettings?.primaryNav
-    ? siteSettings.primaryNav.map((item) => ({
-        label: item.label,
-        href: item.link ? resolveSanityLink(item.link) : undefined,
-        menu: item.menu?.map((m) => ({
-          label: m.label,
-          href: resolveSanityLink(m.link),
-          description: m.description,
-        })),
-      }))
+    ? siteSettings.primaryNav.flatMap((item) => {
+        const menu = item.menu
+          ?.map((m) => {
+            const href = resolveSanityLink(m.link);
+            return href
+              ? { label: m.label, href, description: m.description }
+              : null;
+          })
+          .filter(
+            (
+              menuItem
+            ): menuItem is {
+              label: string;
+              href: string;
+              description?: string;
+            } => menuItem !== null
+          );
+
+        if (menu && menu.length > 0) {
+          return [{ label: item.label, menu }];
+        }
+
+        const href = item.link ? resolveSanityLink(item.link) : '';
+        return href ? [{ label: item.label, href }] : [];
+      })
     : defaultNavLinks,
   ctaLabel: siteSettings?.headerCtaLabel ?? 'Sign up',
   ctaHref: siteSettings?.headerCtaLink

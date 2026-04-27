@@ -35,8 +35,11 @@ export function resolveSanityLink(link: unknown): string {
         ? `/${doc.slug.current}`.replace(/\/\//, '/')
         : '';
     }
-    case 'anchor':
-      return l.anchor ? `#${l.anchor}` : '';
+    case 'anchor': {
+      if (!l.anchor) return '';
+      const cleaned = l.anchor.trim().replace(/^#+/, '');
+      return cleaned ? `#${encodeURIComponent(cleaned)}` : '';
+    }
     case 'url':
     default:
       return l.url ?? '';
