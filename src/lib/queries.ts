@@ -14,7 +14,7 @@ export const linkProjection = `{
 
 // ─── Body sections projection ───────────────────────────────────────
 // Reusable projection for the section-array `body` field, shared by
-// `page`, `productsPage`, and `product` documents.
+// `page`, `productPage`, and `products` documents.
 export const bodySectionsProjection = `body[]{
   _type,
   _key,
@@ -145,8 +145,8 @@ export const pageBySlugQuery = `*[_type == "page" && slug.current == $slug][0]{
 
 // ─── Products queries ───────────────────────────────────────────────
 
-/** Fetch the singleton productsPage document (the /products landing page). */
-export const productsPageQuery = `*[_type == "productsPage"][0]{
+/** Fetch the singleton productPage document (the /products landing page). */
+export const productPageQuery = `*[_type == "productPage"][0]{
   _id,
   _type,
   _updatedAt,
@@ -156,10 +156,10 @@ export const productsPageQuery = `*[_type == "productsPage"][0]{
 }`;
 
 /** Fetch all product slugs for static path generation. */
-export const allProductSlugsQuery = `*[_type == "product" && defined(slug.current)]{ "slug": slug.current }`;
+export const allProductSlugsQuery = `*[_type == "products" && defined(slug.current)]{ "slug": slug.current }`;
 
 /** Fetch a single product by slug. */
-export const productBySlugQuery = `*[_type == "product" && slug.current == $slug][0]{
+export const productBySlugQuery = `*[_type == "products" && slug.current == $slug][0]{
   _id,
   _type,
   _updatedAt,

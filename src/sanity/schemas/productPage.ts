@@ -1,9 +1,9 @@
 import { defineType, defineField, defineArrayMember } from 'sanity';
 
-/** Products Page singleton — controls the /products landing page content. */
-export const productsPage = defineType({
-  name: 'productsPage',
-  title: 'Products Page',
+/** Product Page singleton — controls the /products landing page content. */
+export const productPage = defineType({
+  name: 'productPage',
+  title: 'Product Page',
   type: 'document',
   fields: [
     defineField({
@@ -29,7 +29,7 @@ export const productsPage = defineType({
     }),
   ],
   preview: {
-    prepare: () => ({ title: 'Products Page' }),
+    prepare: () => ({ title: 'Product Page' }),
   },
 });
 

@@ -7,8 +7,8 @@ import {
   page,
   blogPage,
   blogPost,
-  productsPage,
-  product,
+  productPage,
+  products,
   author,
   faq,
   testimonial,
@@ -36,16 +36,14 @@ export default defineConfig({
           .title('Content')
           .items([
             S.listItem()
-              .title('Products Page')
-              .id('productsPage')
+              .title('Product Page')
+              .id('productPage')
               .child(
-                S.document()
-                  .schemaType('productsPage')
-                  .documentId('productsPage')
+                S.document().schemaType('productPage').documentId('productPage')
               ),
             S.divider(),
             ...S.documentTypeListItems().filter(
-              (listItem) => !['productsPage'].includes(listItem.getId() ?? '')
+              (listItem) => !['productPage'].includes(listItem.getId() ?? '')
             ),
           ]),
     }),
@@ -86,13 +84,13 @@ export default defineConfig({
               locations: [{ title: 'Blog', href: '/blog' }],
             }),
           },
-          productsPage: {
+          productPage: {
             select: { _id: '_id' },
             resolve: () => ({
               locations: [{ title: 'Products', href: '/products' }],
             }),
           },
-          product: {
+          products: {
             select: { title: 'title', slug: 'slug.current' },
             resolve: (doc) => ({
               locations: [
@@ -116,8 +114,8 @@ export default defineConfig({
       page,
       blogPage,
       blogPost,
-      productsPage,
-      product,
+      productPage,
+      products,
       author,
       faq,
       testimonial,

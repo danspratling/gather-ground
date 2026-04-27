@@ -2,7 +2,7 @@
 import Layout from '@/layouts/Layout.astro';
 import SectionMapper from '@/templates/SectionMapper.astro';
 import { loadQuery } from '@/lib/sanity';
-import { productsPageQuery } from '@/lib/queries';
+import { productPageQuery } from '@/lib/queries';
 
 const { data: page } = await loadQuery<{
   _id: string;
@@ -12,7 +12,7 @@ const { data: page } = await loadQuery<{
   title: string;
   body: Array<Record<string, unknown> & { _type: string; _key: string }>;
 }>({
-  query: productsPageQuery,
+  query: productPageQuery,
 });
 ---
 
