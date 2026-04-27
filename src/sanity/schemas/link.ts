@@ -18,6 +18,7 @@ export const link = defineType({
           { title: 'URL', value: 'url' },
           { title: 'Internal page', value: 'internal' },
           { title: 'Email', value: 'email' },
+          { title: 'Anchor', value: 'anchor' },
         ],
         layout: 'radio',
       },
@@ -43,6 +44,14 @@ export const link = defineType({
       title: 'Email address',
       type: 'string',
       hidden: ({ parent }) => parent?.type !== 'email',
+    },
+    {
+      name: 'anchor',
+      title: 'Anchor ID',
+      type: 'string',
+      description:
+        'The ID of the section to scroll to, without the # (e.g. "about-us")',
+      hidden: ({ parent }) => parent?.type !== 'anchor',
     },
   ],
 });

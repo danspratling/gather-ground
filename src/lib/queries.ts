@@ -9,6 +9,7 @@ export const linkProjection = `{
   type,
   url,
   email,
+  anchor,
   internalLink->{ slug }
 }`;
 
@@ -243,15 +244,38 @@ export const siteSettingsQuery = `*[_type == "siteSettings"][0]{
   siteDescription,
   logoAlt,
   "logo": logo.asset->url,
-  primaryNav,
+  primaryNav[]{
+    label,
+    link ${linkProjection},
+    menu[]{
+      label,
+      link ${linkProjection},
+      description
+    }
+  },
   headerCtaLabel,
-  headerCtaHref,
+  headerCtaLink ${linkProjection},
   footerDescription,
-  footerLinkGroups,
+  footerLinkGroups[]{
+    heading,
+    links[]{
+      label,
+      link ${linkProjection}
+    }
+  },
   socialLinks,
   copyrightText,
-  footerLegalLinks,
-  announcementBanner
+  footerLegalLinks[]{
+    label,
+    link ${linkProjection}
+  },
+  announcementBanner{
+    enabled,
+    message,
+    ctaLabel,
+    ctaLink ${linkProjection},
+    variant
+  }
 }`;
 
 export default null;

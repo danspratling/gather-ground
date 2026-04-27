@@ -8,6 +8,7 @@ import type { PreviewDoc } from '@/components/PreviewBanner/PreviewBanner.types'
 import { VisualEditing } from '@sanity/astro/visual-editing';
 import { loadQuery } from '@/lib/sanity';
 import { siteSettingsQuery } from '@/lib/queries';
+import { resolveSanityLink } from '@/lib/sanityLink';
 import '@/styles/global.css';
 
 const visualEditingEnabled =
@@ -22,6 +23,14 @@ interface Props {
   previewDoc?: PreviewDoc;
 }
 
+interface SanityLinkData {
+  type?: 'url' | 'internal' | 'email' | 'anchor';
+  url?: string;
+  internalLink?: { slug?: { current?: string } };
+  email?: string;
+  anchor?: string;
+}
+
 interface SiteSettingsData {
   siteName?: string;
   siteDescription?: string;
@@ -29,24 +38,24 @@ interface SiteSettingsData {
   logoAlt?: string;
   primaryNav?: Array<{
     label: string;
-    href?: string;
-    menu?: Array<{ label: string; href: string; description?: string }>;
+    link?: SanityLinkData;
+    menu?: Array<{ label: string; link: SanityLinkData; description?: string }>;
   }>;
   headerCtaLabel?: string;
-  headerCtaHref?: string;
+  headerCtaLink?: SanityLinkData;
   footerDescription?: string;
   footerLinkGroups?: Array<{
     heading: string;
-    links: Array<{ label: string; href: string }>;
+    links: Array<{ label: string; link: SanityLinkData }>;
   }>;
-  socialLinks?: Array<{ platform: string; href: string; label: string }>;
+  socialLinks?: Array<{ platform: string; url: string; label: string }>;
   copyrightText?: string;
-  footerLegalLinks?: Array<{ label: string; href: string }>;
+  footerLegalLinks?: Array<{ label: string; link: SanityLinkData }>;
   announcementBanner?: {
     enabled?: boolean;
     message?: string;
     ctaLabel?: string;
-    ctaHref?: string;
+    ctaLink?: SanityLinkData;
     variant?: 'info' | 'warning' | 'success';
   };
 }
@@ -111,9 +120,21 @@ const defaultNavLinks = [
 const headerProps = {
   logoSrc: siteSettings?.logo ?? '/favicon.svg',
   logoAlt: siteSettings?.logoAlt ?? 'Gather Ground',
-  navLinks: siteSettings?.primaryNav ?? defaultNavLinks,
+  navLinks: siteSettings?.primaryNav
+    ? siteSettings.primaryNav.map((item) => ({
+        label: item.label,
+        href: item.link ? resolveSanityLink(item.link) : undefined,
+        menu: item.menu?.map((m) => ({
+          label: m.label,
+          href: resolveSanityLink(m.link),
+          description: m.description,
+        })),
+      }))
+    : defaultNavLinks,
   ctaLabel: siteSettings?.headerCtaLabel ?? 'Sign up',
-  ctaHref: siteSettings?.headerCtaHref ?? '/signup',
+  ctaHref: siteSettings?.headerCtaLink
+    ? resolveSanityLink(siteSettings.headerCtaLink)
+    : '/signup',
   loginLabel: 'Log in',
   loginHref: '/login',
   accountHref: '/account',
@@ -139,7 +160,7 @@ const footerProps = {
         .filter((l) => SUPPORTED_PLATFORMS.has(l.platform as SocialPlatform))
         .map((l) => ({
           platform: l.platform as SocialPlatform,
-          href: l.href,
+          href: l.url,
           label: l.label,
         }))
     : [
@@ -159,36 +180,49 @@ const footerProps = {
           label: 'TikTok',
         },
       ],
-  linkGroups: siteSettings?.footerLinkGroups ?? [
-    {
-      heading: 'Company',
-      links: [
-        { label: 'About', href: '/about' },
-        { label: 'News', href: '/news' },
-        { label: 'Shop', href: '/shop', badge: 'New' },
-        { label: 'Contact', href: '/contact' },
+  linkGroups: siteSettings?.footerLinkGroups
+    ? siteSettings.footerLinkGroups.map((group) => ({
+        heading: group.heading,
+        links: group.links.map((l) => ({
+          label: l.label,
+          href: resolveSanityLink(l.link),
+        })),
+      }))
+    : [
+        {
+          heading: 'Company',
+          links: [
+            { label: 'About', href: '/about' },
+            { label: 'News', href: '/news' },
+            { label: 'Shop', href: '/shop', badge: 'New' },
+            { label: 'Contact', href: '/contact' },
+          ],
+        },
+        {
+          heading: 'Products',
+          links: [
+            { label: 'Beef', href: '/products/beef' },
+            { label: 'Pork', href: '/products/pork' },
+            { label: 'Chicken', href: '/products/chicken' },
+            { label: 'Turkey', href: '/products/turkey' },
+            { label: 'Eggs', href: '/products/eggs' },
+          ],
+        },
       ],
-    },
-    {
-      heading: 'Products',
-      links: [
-        { label: 'Beef', href: '/products/beef' },
-        { label: 'Pork', href: '/products/pork' },
-        { label: 'Chicken', href: '/products/chicken' },
-        { label: 'Turkey', href: '/products/turkey' },
-        { label: 'Eggs', href: '/products/eggs' },
-      ],
-    },
-  ],
   newsletterHeading: 'Stay up to date',
   copyrightText:
     siteSettings?.copyrightText ??
     `© ${new Date().getFullYear()} Gather Ground`,
-  legalLinks: siteSettings?.footerLegalLinks ?? [
-    { label: 'Terms', href: '/terms' },
-    { label: 'Privacy', href: '/privacy' },
-    { label: 'Cookies', href: '/cookies' },
-  ],
+  legalLinks: siteSettings?.footerLegalLinks
+    ? siteSettings.footerLegalLinks.map((l) => ({
+        label: l.label,
+        href: resolveSanityLink(l.link),
+      }))
+    : [
+        { label: 'Terms', href: '/terms' },
+        { label: 'Privacy', href: '/privacy' },
+        { label: 'Cookies', href: '/cookies' },
+      ],
 };
 ---
 

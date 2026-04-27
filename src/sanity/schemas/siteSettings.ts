@@ -28,12 +28,18 @@ export const siteSettings = defineType({
           fields: [
             defineField({
               name: 'label',
+              title: 'Label',
               type: 'string',
               validation: (r) => r.required(),
             }),
-            defineField({ name: 'href', type: 'string' }),
+            defineField({
+              name: 'link',
+              title: 'Link',
+              type: 'link',
+            }),
             defineField({
               name: 'menu',
+              title: 'Dropdown items',
               type: 'array',
               of: [
                 {
@@ -41,15 +47,21 @@ export const siteSettings = defineType({
                   fields: [
                     defineField({
                       name: 'label',
+                      title: 'Label',
                       type: 'string',
                       validation: (r) => r.required(),
                     }),
                     defineField({
-                      name: 'href',
-                      type: 'string',
+                      name: 'link',
+                      title: 'Link',
+                      type: 'link',
                       validation: (r) => r.required(),
                     }),
-                    defineField({ name: 'description', type: 'string' }),
+                    defineField({
+                      name: 'description',
+                      title: 'Description',
+                      type: 'string',
+                    }),
                   ],
                 },
               ],
@@ -64,9 +76,9 @@ export const siteSettings = defineType({
       type: 'string',
     }),
     defineField({
-      name: 'headerCtaHref',
-      title: 'Header CTA URL',
-      type: 'string',
+      name: 'headerCtaLink',
+      title: 'Header CTA Link',
+      type: 'link',
     }),
     defineField({
       name: 'footerDescription',
@@ -83,11 +95,13 @@ export const siteSettings = defineType({
           fields: [
             defineField({
               name: 'heading',
+              title: 'Heading',
               type: 'string',
               validation: (r) => r.required(),
             }),
             defineField({
               name: 'links',
+              title: 'Links',
               type: 'array',
               of: [
                 {
@@ -95,12 +109,14 @@ export const siteSettings = defineType({
                   fields: [
                     defineField({
                       name: 'label',
+                      title: 'Label',
                       type: 'string',
                       validation: (r) => r.required(),
                     }),
                     defineField({
-                      name: 'href',
-                      type: 'string',
+                      name: 'link',
+                      title: 'Link',
+                      type: 'link',
                       validation: (r) => r.required(),
                     }),
                   ],
@@ -121,19 +137,28 @@ export const siteSettings = defineType({
           fields: [
             defineField({
               name: 'platform',
+              title: 'Platform',
               type: 'string',
               options: {
-                list: ['instagram', 'facebook', 'tiktok', 'youtube', 'x'],
+                list: [
+                  { title: 'Instagram', value: 'instagram' },
+                  { title: 'Facebook', value: 'facebook' },
+                  { title: 'TikTok', value: 'tiktok' },
+                  { title: 'YouTube', value: 'youtube' },
+                  { title: 'X (Twitter)', value: 'x' },
+                ],
               },
               validation: (r) => r.required(),
             }),
             defineField({
-              name: 'href',
+              name: 'url',
+              title: 'URL',
               type: 'url',
               validation: (r) => r.required(),
             }),
             defineField({
               name: 'label',
+              title: 'Accessible label',
               type: 'string',
               validation: (r) => r.required(),
             }),
@@ -156,12 +181,14 @@ export const siteSettings = defineType({
           fields: [
             defineField({
               name: 'label',
+              title: 'Label',
               type: 'string',
               validation: (r) => r.required(),
             }),
             defineField({
-              name: 'href',
-              type: 'string',
+              name: 'link',
+              title: 'Link',
+              type: 'link',
               validation: (r) => r.required(),
             }),
           ],
@@ -175,16 +202,28 @@ export const siteSettings = defineType({
       fields: [
         defineField({
           name: 'enabled',
+          title: 'Show banner',
           type: 'boolean',
           initialValue: false,
         }),
-        defineField({ name: 'message', type: 'string' }),
-        defineField({ name: 'ctaLabel', type: 'string' }),
-        defineField({ name: 'ctaHref', type: 'string' }),
+        defineField({ name: 'message', title: 'Message', type: 'string' }),
+        defineField({
+          name: 'ctaLabel',
+          title: 'Button label',
+          type: 'string',
+        }),
+        defineField({ name: 'ctaLink', title: 'Button link', type: 'link' }),
         defineField({
           name: 'variant',
+          title: 'Style',
           type: 'string',
-          options: { list: ['info', 'warning', 'success'] },
+          options: {
+            list: [
+              { title: 'Info', value: 'info' },
+              { title: 'Warning', value: 'warning' },
+              { title: 'Success', value: 'success' },
+            ],
+          },
           initialValue: 'info',
         }),
       ],

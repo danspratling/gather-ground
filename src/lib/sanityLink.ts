@@ -8,10 +8,11 @@
 import { stegaClean } from '@sanity/client/stega';
 
 interface SanityLink {
-  type?: 'url' | 'internal' | 'email';
+  type?: 'url' | 'internal' | 'email' | 'anchor';
   url?: string;
   internalLink?: { slug?: { current?: string } };
   email?: string;
+  anchor?: string;
 }
 
 export function resolveSanityLink(link: unknown): string {
@@ -25,6 +26,8 @@ export function resolveSanityLink(link: unknown): string {
       return l.internalLink?.slug?.current
         ? `/${l.internalLink.slug.current}`.replace(/\/\//, '/')
         : '';
+    case 'anchor':
+      return l.anchor ? `#${l.anchor}` : '';
     case 'url':
     default:
       return l.url ?? '';
