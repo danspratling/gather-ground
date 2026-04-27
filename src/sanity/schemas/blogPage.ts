@@ -34,7 +34,7 @@ export const blogPage = defineType({
     }),
   ],
   preview: {
-    prepare: () => ({ title: 'Blog Page Settings' }),
+    prepare: () => ({ title: 'Blog Page' }),
   },
 });
 
