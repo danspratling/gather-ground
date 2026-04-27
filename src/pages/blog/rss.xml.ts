@@ -1,13 +1,21 @@
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
+import { stegaClean } from '@sanity/client/stega';
 import { loadQuery } from '@/lib/sanity';
-import { allBlogPostsQuery, siteSettingsQuery } from '@/lib/queries';
+import { siteSettingsQuery } from '@/lib/queries';
+
+const rssBlogPostsQuery = `*[_type == "blogPosts" && defined(slug.current) && defined(publishedAt)] | order(publishedAt desc){
+  title,
+  "slug": slug.current,
+  excerpt,
+  publishedAt
+}`;
 
 interface BlogPostRSS {
   title: string;
   slug: string;
   excerpt: string;
-  publishedAt?: string;
+  publishedAt: string;
 }
 
 interface SiteSettingsRSS {
@@ -17,7 +25,7 @@ interface SiteSettingsRSS {
 
 export async function GET(context: APIContext) {
   const { data: posts } = await loadQuery<BlogPostRSS[]>({
-    query: allBlogPostsQuery,
+    query: rssBlogPostsQuery,
   });
 
   const { data: settings } = await loadQuery<SiteSettingsRSS | null>({
@@ -27,16 +35,17 @@ export async function GET(context: APIContext) {
   const siteUrl = context.site ?? new URL(context.url.origin);
 
   return rss({
-    title: settings?.siteName ?? 'Gather Ground',
-    description:
+    title: stegaClean(settings?.siteName ?? 'Gather Ground'),
+    description: stegaClean(
       settings?.siteDescription ??
-      'Family farm in rural Iowa — heritage breeds, seasonal produce, and sustainable farming.',
+        'Family farm in rural Iowa — heritage breeds, seasonal produce, and sustainable farming.'
+    ),
     site: siteUrl.toString(),
     items: (posts ?? []).map((post) => ({
-      title: post.title,
-      description: post.excerpt,
-      pubDate: post.publishedAt ? new Date(post.publishedAt) : undefined,
-      link: `/blog/${post.slug}`,
+      title: stegaClean(post.title),
+      description: stegaClean(post.excerpt),
+      pubDate: new Date(post.publishedAt),
+      link: `/blog/${stegaClean(post.slug)}`,
     })),
   });
 }

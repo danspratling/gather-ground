@@ -100,10 +100,12 @@ const organizationSD = buildOrganization(
   },
   siteUrl
 );
+const resolvedPageUrl =
+  canonicalUrl || new URL(Astro.url.pathname, siteUrl).toString();
 const webPageSD = buildWebPage({
   title: seoTitle,
   description: seoDescription,
-  url: new URL(Astro.url.pathname, siteUrl).toString(),
+  url: resolvedPageUrl,
 });
 
 const SUPPORTED_PLATFORMS = new Set<SocialPlatform>([

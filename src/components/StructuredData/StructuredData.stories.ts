@@ -5,9 +5,7 @@ import StructuredData from './StructuredData.astro';
 const meta = {
   title: 'SEO/StructuredData',
   component: StructuredData,
-  parameters: {
-    design: { type: 'figma', url: '' },
-  },
+  parameters: {},
 };
 
 export default meta;

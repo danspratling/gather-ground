@@ -3,6 +3,7 @@ interface Props {
   data: Record<string, unknown>;
 }
 const { data } = Astro.props;
+const jsonLd = JSON.stringify(data).replaceAll('</', '<\\/');
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(data)} />
+<script type="application/ld+json" set:html={jsonLd} />
