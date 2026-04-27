@@ -8,6 +8,8 @@ export { callout } from './callout';
 export { page } from './page';
 export { blogPage } from './blogPage';
 export { blogPost } from './blogPost';
+export { productsPage } from './productsPage';
+export { productPage } from './productPage';
 export { author } from './author';
 export { faq } from './faq';
 export { testimonial } from './testimonial';

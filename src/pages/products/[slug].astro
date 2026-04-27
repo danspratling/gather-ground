@@ -1,0 +1,48 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import SectionMapper from '@/templates/SectionMapper.astro';
+import { loadQuery } from '@/lib/sanity';
+import {
+  allProductPageSlugsQuery,
+  productPageBySlugQuery,
+} from '@/lib/queries';
+
+export async function getStaticPaths() {
+  const { data: products } = await loadQuery<Array<{ slug: string }>>({
+    query: allProductPageSlugsQuery,
+  });
+
+  return products.map((product) => ({
+    params: { slug: product.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+
+const { data: page } = await loadQuery<{
+  _id: string;
+  _type: string;
+  _updatedAt?: string;
+  _originalId?: string;
+  title: string;
+  slug: string;
+  body: Array<Record<string, unknown> & { _type: string; _key: string }>;
+}>({
+  query: productPageBySlugQuery,
+  params: { slug },
+});
+---
+
+<Layout
+  title={page.title}
+  previewDoc={{
+    _id: page._id,
+    _type: page._type,
+    _updatedAt: page._updatedAt,
+    _originalId: page._originalId,
+  }}
+>
+  <main>
+    <SectionMapper sections={page.body ?? []} />
+  </main>
+</Layout>

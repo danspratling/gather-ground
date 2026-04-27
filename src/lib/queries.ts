@@ -12,6 +12,121 @@ export const linkProjection = `{
   internalLink->{ slug }
 }`;
 
+// ─── Body sections projection ───────────────────────────────────────
+// Reusable projection for the section-array `body` field, shared by
+// `page`, `productsPage`, and `productPage` documents.
+export const bodySectionsProjection = `body[]{
+  _type,
+  _key,
+
+  // heroSection
+  _type == "heroSection" => {
+    headline,
+    subCopy,
+    primaryCtaLabel,
+    primaryCtaHref ${linkProjection},
+    secondaryCtaLabel,
+    secondaryCtaHref ${linkProjection},
+    image { asset->, alt }
+  },
+
+  // productsSection
+  _type == "productsSection" => {
+    variant,
+    eyebrow,
+    heading,
+    subCopy,
+    products[]{
+      _key,
+      image { asset->, alt },
+      title,
+      description,
+      href ${linkProjection}
+    }
+  },
+
+  // testimonialsSection
+  _type == "testimonialsSection" => {
+    heading,
+    subCopy,
+    testimonials[]->{
+      _id,
+      quote,
+      platform,
+      authorImage { asset->, alt },
+      authorName,
+      authorSecondary,
+      authorSecondaryIsHandle
+    }
+  },
+
+  // faqSection
+  _type == "faqSection" => {
+    heading,
+    subCopy,
+    faqs[]->{
+      _id,
+      title,
+      detail
+    },
+    ctaHeading,
+    ctaBody,
+    ctaPrimaryLabel,
+    ctaPrimaryHref ${linkProjection},
+    ctaSecondaryLabel,
+    ctaSecondaryHref ${linkProjection}
+  },
+
+  // blogSection
+  _type == "blogSection" => {
+    eyebrow,
+    heading,
+    subCopy,
+    viewAllHref ${linkProjection},
+    viewAllLabel,
+    posts[]->{
+      _id,
+      title,
+      "slug": slug.current,
+      image { asset->, alt },
+      excerpt,
+      publishedAt,
+      author->{
+        name,
+        avatar { asset-> }
+      }
+    }
+  },
+
+  // callToAction
+  _type == "callToAction" => {
+    variant,
+    heading,
+    body,
+    primaryCtaLabel,
+    primaryCtaHref ${linkProjection},
+    secondaryCtaLabel,
+    secondaryCtaHref ${linkProjection},
+    image { asset->, alt }
+  },
+
+  // contentSection
+  _type == "contentSection" => {
+    variant,
+    eyebrow,
+    icon,
+    heading,
+    body,
+    features[]{ _key, heading, body },
+    iconFeatures[]{ _key, icon, heading, body },
+    checklistItems,
+    image { asset->, alt },
+    imagePosition,
+    align,
+    dark
+  }
+}`;
+
 // ─── Page queries ───────────────────────────────────────────────────
 
 /** Fetch all page slugs for static path generation. */
@@ -25,117 +140,33 @@ export const pageBySlugQuery = `*[_type == "page" && slug.current == $slug][0]{
   "_originalId": _originalId,
   title,
   "slug": slug.current,
-  body[]{
-    _type,
-    _key,
+  ${bodySectionsProjection}
+}`;
 
-    // heroSection
-    _type == "heroSection" => {
-      headline,
-      subCopy,
-      primaryCtaLabel,
-      primaryCtaHref ${linkProjection},
-      secondaryCtaLabel,
-      secondaryCtaHref ${linkProjection},
-      image { asset->, alt }
-    },
+// ─── Products queries ───────────────────────────────────────────────
 
-    // productsSection
-    _type == "productsSection" => {
-      variant,
-      eyebrow,
-      heading,
-      subCopy,
-      products[]{
-        _key,
-        image { asset->, alt },
-        title,
-        description,
-        href ${linkProjection}
-      }
-    },
+/** Fetch the singleton productsPage document (the /products landing page). */
+export const productsPageQuery = `*[_type == "productsPage"][0]{
+  _id,
+  _type,
+  _updatedAt,
+  "_originalId": _originalId,
+  title,
+  ${bodySectionsProjection}
+}`;
 
-    // testimonialsSection
-    _type == "testimonialsSection" => {
-      heading,
-      subCopy,
-      testimonials[]->{
-        _id,
-        quote,
-        platform,
-        authorImage { asset->, alt },
-        authorName,
-        authorSecondary,
-        authorSecondaryIsHandle
-      }
-    },
+/** Fetch all product page slugs for static path generation. */
+export const allProductPageSlugsQuery = `*[_type == "productPage" && defined(slug.current)]{ "slug": slug.current }`;
 
-    // faqSection
-    _type == "faqSection" => {
-      heading,
-      subCopy,
-      faqs[]->{
-        _id,
-        title,
-        detail
-      },
-      ctaHeading,
-      ctaBody,
-      ctaPrimaryLabel,
-      ctaPrimaryHref ${linkProjection},
-      ctaSecondaryLabel,
-      ctaSecondaryHref ${linkProjection}
-    },
-
-    // blogSection
-    _type == "blogSection" => {
-      eyebrow,
-      heading,
-      subCopy,
-      viewAllHref ${linkProjection},
-      viewAllLabel,
-      posts[]->{
-        _id,
-        title,
-        "slug": slug.current,
-        image { asset->, alt },
-        excerpt,
-        publishedAt,
-        author->{
-          name,
-          avatar { asset-> }
-        }
-      }
-    },
-
-    // callToAction
-    _type == "callToAction" => {
-      variant,
-      heading,
-      body,
-      primaryCtaLabel,
-      primaryCtaHref ${linkProjection},
-      secondaryCtaLabel,
-      secondaryCtaHref ${linkProjection},
-      image { asset->, alt }
-    },
-
-    // contentSection
-    _type == "contentSection" => {
-      variant,
-      eyebrow,
-      icon,
-      heading,
-      body,
-      features[]{ _key, heading, body },
-      iconFeatures[]{ _key, icon, heading, body },
-      checklistItems,
-      image { asset->, alt },
-      imagePosition,
-      align,
-      dark
-    }
-  }
+/** Fetch a single productPage by slug. */
+export const productPageBySlugQuery = `*[_type == "productPage" && slug.current == $slug][0]{
+  _id,
+  _type,
+  _updatedAt,
+  "_originalId": _originalId,
+  title,
+  "slug": slug.current,
+  ${bodySectionsProjection}
 }`;
 
 // ─── Blog queries ───────────────────────────────────────────────────

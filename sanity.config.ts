@@ -7,6 +7,8 @@ import {
   page,
   blogPage,
   blogPost,
+  productsPage,
+  productPage,
   author,
   faq,
   testimonial,
@@ -28,7 +30,25 @@ export default defineConfig({
   projectId: 'mrz1ftls',
   dataset: 'production',
   plugins: [
-    structureTool(),
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title('Content')
+          .items([
+            S.listItem()
+              .title('Products Page')
+              .id('productsPage')
+              .child(
+                S.document()
+                  .schemaType('productsPage')
+                  .documentId('productsPage')
+              ),
+            S.divider(),
+            ...S.documentTypeListItems().filter(
+              (listItem) => !['productsPage'].includes(listItem.getId() ?? '')
+            ),
+          ]),
+    }),
     presentationTool({
       previewUrl: {
         origin:
@@ -66,6 +86,23 @@ export default defineConfig({
               locations: [{ title: 'Blog', href: '/blog' }],
             }),
           },
+          productsPage: {
+            select: { _id: '_id' },
+            resolve: () => ({
+              locations: [{ title: 'Products', href: '/products' }],
+            }),
+          },
+          productPage: {
+            select: { title: 'title', slug: 'slug.current' },
+            resolve: (doc) => ({
+              locations: [
+                {
+                  title: doc?.title || 'Untitled',
+                  href: `/products/${doc?.slug}`,
+                },
+              ],
+            }),
+          },
         },
       },
     }),
@@ -79,6 +116,8 @@ export default defineConfig({
       page,
       blogPage,
       blogPost,
+      productsPage,
+      productPage,
       author,
       faq,
       testimonial,
