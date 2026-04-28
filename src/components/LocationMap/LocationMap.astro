@@ -3,16 +3,16 @@ import type { LocationMapProps } from './LocationMap.types';
 
 type Props = LocationMapProps;
 
-const { embedUrl, title = 'Our location', height = 400 } = Astro.props;
+const { embedUrl, title = 'Our location' } = Astro.props;
 ---
 
-<div class="w-full overflow-hidden rounded-xl border border-gray-300">
+<div class="w-full overflow-hidden">
   <iframe
     src={embedUrl}
     title={title}
     width="100%"
-    height={height}
-    class="border-0"
+    height="100%"
+    class="block min-h-[400px] border-0"
     allowfullscreen
     loading="lazy"
     referrerpolicy="no-referrer-when-downgrade"></iframe>

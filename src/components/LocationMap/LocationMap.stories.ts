@@ -6,7 +6,11 @@ const meta = {
   title: 'Sections/Location Map',
   component: LocationMap,
   parameters: {
-    design: { type: 'figma', url: '' },
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1639-379476',
+    },
+    chromatic: { viewports: [375, 1440] },
   },
 };
 
@@ -15,8 +19,7 @@ export default meta;
 export const Default = {
   args: {
     embedUrl:
-      'https://www.openstreetmap.org/export/embed.html?bbox=-93.0%2C42.0%2C-92.5%2C42.5&layer=mapnik',
-    title: 'Gather Ground Farm',
-    height: 400,
+      'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d100943.26869313888!2d144.9630576!3d-37.8136278!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf577d6e99d97a57d!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sau!4v1714000000000',
+    title: 'Gather Ground Farm location',
   },
 };
