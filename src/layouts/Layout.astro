@@ -121,48 +121,6 @@ const SUPPORTED_PLATFORMS = new Set<SocialPlatform>([
   'linkedin',
 ]);
 
-const defaultNavLinks = [
-  {
-    label: 'Shop',
-    menu: [
-      {
-        label: 'Beef',
-        href: '/shop/beef',
-        description: 'Angus and Hereford, dry-aged.',
-      },
-      {
-        label: 'Pork',
-        href: '/shop/pork',
-        description: 'Berkshire and Duroc, pasture-raised.',
-      },
-      {
-        label: 'Chicken',
-        href: '/shop/chicken',
-        description: 'Freedom Ranger, slow-grown.',
-      },
-      { label: 'View all products', href: '/shop', iconTrailing: true },
-    ],
-  },
-  {
-    label: 'About us',
-    menu: [
-      {
-        label: 'Our story',
-        href: '/about',
-        description: 'How Gather Ground began.',
-      },
-      {
-        label: 'The farm',
-        href: '/about/farm',
-        description: 'Our land and animals.',
-      },
-      { label: 'Sustainability', href: '/about/sustainability' },
-    ],
-  },
-  { label: 'Blog', href: '/blog' },
-  { label: 'Contact', href: '/contact' },
-];
-
 const headerProps = {
   logoSrc: siteSettings?.logo ?? '/favicon.svg',
   logoAlt: siteSettings?.logoAlt ?? 'Gather Ground',
@@ -192,32 +150,23 @@ const headerProps = {
         const href = item.link ? resolveSanityLink(item.link) : '';
         return href ? [{ label: item.label, href }] : [];
       })
-    : defaultNavLinks,
-  ctaLabel: siteSettings?.headerCtaLabel ?? 'Sign up',
+    : [],
+  ctaLabel: siteSettings?.headerCtaLabel,
   ctaHref: siteSettings?.headerCtaLink
     ? resolveSanityLink(siteSettings.headerCtaLink)
-    : '/signup',
-  actions: siteSettings?.headerCtaLabel ? 'buttons' : 'icons',
-  loginLabel: 'Log in',
-  loginHref: '/login',
-  accountHref: '/account',
-  basketHref: '/cart',
-  footerLinks: [
-    { label: 'About us', href: '/about' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Privacy', href: '/privacy' },
-    { label: 'Terms', href: '/terms' },
-    { label: 'Contact', href: '/contact' },
-    { label: 'Cookies', href: '/cookies' },
-  ],
+    : undefined,
+  footerLinks: siteSettings?.footerLegalLinks
+    ? siteSettings.footerLegalLinks.map((l) => ({
+        label: l.label,
+        href: resolveSanityLink(l.link),
+      }))
+    : [],
 };
 
 const footerProps = {
   logoSrc: siteSettings?.logo ?? '/favicon.svg',
   logoAlt: siteSettings?.logoAlt ?? 'Gather Ground',
-  description:
-    siteSettings?.footerDescription ??
-    'Family farm in rural Iowa. We raise heritage breed animals on pasture year-round.',
+  description: siteSettings?.footerDescription ?? '',
   socialLinks: siteSettings?.socialLinks
     ? siteSettings.socialLinks
         .filter((l) => SUPPORTED_PLATFORMS.has(l.platform as SocialPlatform))
@@ -226,23 +175,7 @@ const footerProps = {
           href: l.url,
           label: l.label,
         }))
-    : [
-        {
-          platform: 'instagram' as const,
-          href: 'https://instagram.com',
-          label: 'Instagram',
-        },
-        {
-          platform: 'facebook' as const,
-          href: 'https://facebook.com',
-          label: 'Facebook',
-        },
-        {
-          platform: 'tiktok' as const,
-          href: 'https://tiktok.com',
-          label: 'TikTok',
-        },
-      ],
+    : [],
   linkGroups: siteSettings?.footerLinkGroups
     ? siteSettings.footerLinkGroups.map((group) => ({
         heading: group.heading,
@@ -251,27 +184,7 @@ const footerProps = {
           href: resolveSanityLink(l.link),
         })),
       }))
-    : [
-        {
-          heading: 'Company',
-          links: [
-            { label: 'About', href: '/about' },
-            { label: 'News', href: '/news' },
-            { label: 'Shop', href: '/shop', badge: 'New' },
-            { label: 'Contact', href: '/contact' },
-          ],
-        },
-        {
-          heading: 'Products',
-          links: [
-            { label: 'Beef', href: '/products/beef' },
-            { label: 'Pork', href: '/products/pork' },
-            { label: 'Chicken', href: '/products/chicken' },
-            { label: 'Turkey', href: '/products/turkey' },
-            { label: 'Eggs', href: '/products/eggs' },
-          ],
-        },
-      ],
+    : [],
   newsletterHeading: 'Stay up to date',
   copyrightText:
     siteSettings?.copyrightText ??
@@ -281,11 +194,7 @@ const footerProps = {
         label: l.label,
         href: resolveSanityLink(l.link),
       }))
-    : [
-        { label: 'Terms', href: '/terms' },
-        { label: 'Privacy', href: '/privacy' },
-        { label: 'Cookies', href: '/cookies' },
-      ],
+    : [],
 };
 ---
 

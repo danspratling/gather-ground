@@ -39,7 +39,6 @@ const aboutMenu = [
 const base = {
   logoSrc: '/favicon.svg',
   logoAlt: 'Gather Ground',
-  accountHref: '/account',
   footerLinks: [
     { label: 'About us', href: '/about' },
     { label: 'Blog', href: '/blog' },
@@ -103,10 +102,5 @@ export const NoDropdowns: Story = {
 
 export const NoNavigation: Story = {
   args: { ...base, navLinks: [] },
-  play: openMenu,
-};
-
-export const ActionButtons: Story = {
-  args: { ...base, navLinks: withDropdowns },
   play: openMenu,
 };
