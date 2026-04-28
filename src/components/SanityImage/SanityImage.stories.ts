@@ -3,11 +3,8 @@
 import SanityImage from './SanityImage.astro';
 
 const meta = {
-  title: 'Components/SanityImage',
+  title: 'Core/Sanity Image',
   component: SanityImage,
-  parameters: {
-    design: { type: 'figma', url: '' },
-  },
 };
 
 export default meta;

@@ -5,9 +5,6 @@ import Clarity from './Clarity.astro';
 const meta = {
   title: 'Analytics/Clarity',
   component: Clarity,
-  parameters: {
-    design: { type: 'figma', url: '' },
-  },
 };
 
 export default meta;
