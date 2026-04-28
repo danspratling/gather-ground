@@ -1,5 +1,4 @@
 ---
-import { User03, ShoppingBag02 } from '@untitledui-pro/icons/line';
 import NavMenu from '@/components/Layout/Header/NavMenu';
 import MobileMenu from '@/components/Layout/Header/MobileMenu';
 import type { HeaderProps } from '@/components/Layout/Header/Header.types';
@@ -10,13 +9,8 @@ const {
   logoSrc,
   logoAlt,
   navLinks,
-  actions = 'icons',
-  accountHref = '/account',
-  basketHref = '/cart',
-  ctaLabel = 'Sign up',
-  ctaHref = '/signup',
-  loginLabel = 'Log in',
-  loginHref = '/login',
+  ctaLabel,
+  ctaHref,
   footerLinks = [],
 } = Astro.props;
 ---
@@ -50,7 +44,6 @@ const {
           logoSrc={logoSrc}
           logoAlt={logoAlt}
           navLinks={navLinks}
-          accountHref={accountHref}
           footerLinks={footerLinks}
         />
       </div>
@@ -61,51 +54,20 @@ const {
       <img src={logoSrc} alt={logoAlt} class="h-8 w-auto" />
     </a>
 
-    <!-- Right zone: desktop actions / mobile basket icon -->
+    <!-- Right zone: desktop CTA -->
     <div class="flex grow shrink-0 basis-0 items-center justify-end">
       {
-        actions === 'icons' ? (
-          <div class="hidden items-center md:flex">
-            <a
-              href={accountHref}
-              aria-label="Account"
-              class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900"
-            >
-              <User03 className="size-5" aria-hidden="true" />
-            </a>
-            <a
-              href={basketHref}
-              aria-label="Basket"
-              class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900"
-            >
-              <ShoppingBag02 className="size-5" aria-hidden="true" />
-            </a>
-          </div>
-        ) : (
+        ctaLabel && ctaHref && (
           <div class="hidden items-center gap-3 md:flex">
             <a
               href={ctaHref}
-              class="rounded-full border border-gray-400 px-4 py-2 text-sm font-semibold text-brand-900 hover:bg-brand-25"
-            >
-              {ctaLabel}
-            </a>
-            <a
-              href={loginHref}
               class="rounded-full bg-brand-900 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
             >
-              {loginLabel}
+              {ctaLabel}
             </a>
           </div>
         )
       }
-      <!-- Mobile: basket icon only -->
-      <a
-        href={basketHref}
-        aria-label="Basket"
-        class="rounded-full p-3 text-brand-600 hover:bg-brand-25 hover:text-brand-900 md:hidden"
-      >
-        <ShoppingBag02 className="size-5" aria-hidden="true" />
-      </a>
     </div>
   </div>
 </header>

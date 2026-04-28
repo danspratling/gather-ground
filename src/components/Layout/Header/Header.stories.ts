@@ -38,12 +38,8 @@ const aboutMenu = [
 const base = {
   logoSrc: '/favicon.svg',
   logoAlt: 'Gather Ground',
-  accountHref: '/account',
-  basketHref: '/cart',
   ctaLabel: 'Sign up',
   ctaHref: '/signup',
-  loginLabel: 'Log in',
-  loginHref: '/login',
   footerLinks: [
     { label: 'About us', href: '/about' },
     { label: 'Blog', href: '/blog' },
@@ -105,10 +101,11 @@ export const NoNavigation = {
   },
 };
 
-export const ActionButtons = {
+export const NoCta = {
   args: {
     ...base,
     navLinks: withDropdowns,
-    actions: 'buttons' as const,
+    ctaLabel: undefined,
+    ctaHref: undefined,
   },
 };

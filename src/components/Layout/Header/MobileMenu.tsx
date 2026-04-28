@@ -10,7 +10,6 @@ interface MobileMenuProps {
   logoSrc: string;
   logoAlt: string;
   navLinks: HeaderNavLink[];
-  accountHref: string;
   footerLinks: { label: string; href: string }[];
 }
 
@@ -18,7 +17,6 @@ export default function MobileMenu({
   logoSrc,
   logoAlt,
   navLinks,
-  accountHref,
   footerLinks,
 }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
@@ -188,17 +186,6 @@ export default function MobileMenu({
               </div>
             )}
           </nav>
-
-          {/* Bottom: account link */}
-          <div className="shrink-0 border-t border-gray-200 px-4 py-4">
-            <a
-              href={accountHref}
-              onClick={closeAll}
-              className="block w-full rounded-full border border-gray-400 px-4 py-3 text-center text-sm font-semibold text-gray-900 hover:bg-brand-25"
-            >
-              Account
-            </a>
-          </div>
         </div>
       )}
     </>
