@@ -3,7 +3,7 @@
 import AnnouncementBanner from './AnnouncementBanner.astro';
 
 const meta = {
-  title: 'Components/AnnouncementBanner',
+  title: 'Layout/Announcement Banner',
   component: AnnouncementBanner,
   parameters: {
     design: { type: 'figma', url: '' },

@@ -312,7 +312,11 @@ const footerProps = {
           <AnnouncementBanner
             message={siteSettings.announcementBanner.message}
             ctaLabel={siteSettings.announcementBanner.ctaLabel}
-            ctaHref={siteSettings.announcementBanner.ctaHref}
+            ctaHref={
+              siteSettings.announcementBanner.ctaLink
+                ? resolveSanityLink(siteSettings.announcementBanner.ctaLink)
+                : undefined
+            }
             variant={
               siteSettings.announcementBanner.variant as
                 | 'info'
