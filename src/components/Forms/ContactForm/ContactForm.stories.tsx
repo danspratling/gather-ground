@@ -6,7 +6,6 @@ const meta: Meta<typeof ContactForm> = {
   component: ContactForm,
   parameters: {
     renderer: 'react',
-    design: { type: 'figma', url: '' },
   },
 };
 

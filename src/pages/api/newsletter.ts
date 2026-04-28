@@ -4,31 +4,74 @@ import { verifyTurnstile } from '@/lib/turnstile';
 
 export const prerender = false;
 
+/** Parse the request body from JSON or application/x-www-form-urlencoded. */
+async function parseBody(request: Request): Promise<Record<string, unknown>> {
+  const contentType = request.headers.get('content-type') ?? '';
+  if (contentType.includes('application/json')) {
+    return (await request.json()) as Record<string, unknown>;
+  }
+  if (contentType.includes('application/x-www-form-urlencoded')) {
+    const formData = await request.formData();
+    const obj: Record<string, unknown> = {};
+    formData.forEach((value, key) => {
+      obj[key] = value;
+    });
+    return obj;
+  }
+  throw new Error(`Unsupported Content-Type: ${contentType}`);
+}
+
+const jsonHeaders = { 'Content-Type': 'application/json' };
+
 export const POST: APIRoute = async ({ request }) => {
-  const body = (await request.json()) as Record<string, unknown>;
+  let body: Record<string, unknown>;
+  try {
+    body = await parseBody(request);
+  } catch {
+    return new Response(
+      JSON.stringify({ success: false, error: 'Invalid request body' }),
+      { status: 400, headers: jsonHeaders }
+    );
+  }
+
   const { email, turnstileToken } = body;
 
   if (!email || typeof email !== 'string') {
     return new Response(
       JSON.stringify({ success: false, error: 'Email is required' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+      { status: 400, headers: jsonHeaders }
     );
   }
 
-  if (typeof turnstileToken === 'string' && turnstileToken) {
+  const secretKey = import.meta.env.TURNSTILE_SECRET_KEY;
+  if (secretKey) {
+    if (typeof turnstileToken !== 'string' || !turnstileToken) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Bot verification required' }),
+        { status: 400, headers: jsonHeaders }
+      );
+    }
     const valid = await verifyTurnstile(turnstileToken);
     if (!valid) {
       return new Response(
         JSON.stringify({ success: false, error: 'Bot verification failed' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: jsonHeaders }
       );
     }
   }
 
-  await sendNewsletterWelcome(email);
+  try {
+    await sendNewsletterWelcome(email);
+  } catch (err) {
+    console.error('Newsletter email failed:', err);
+    return new Response(
+      JSON.stringify({ success: false, error: 'Failed to send email' }),
+      { status: 502, headers: jsonHeaders }
+    );
+  }
 
   return new Response(JSON.stringify({ success: true }), {
     status: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: jsonHeaders,
   });
 };
