@@ -24,6 +24,7 @@ interface Props {
   ogType?: string;
   canonicalUrl?: string;
   previewDoc?: PreviewDoc;
+  showRssFeed?: boolean;
 }
 
 interface SanityLinkData {
@@ -74,6 +75,7 @@ const {
   ogType,
   canonicalUrl,
   previewDoc,
+  showRssFeed,
 } = Astro.props;
 
 const { data: siteSettings } = await loadQuery<SiteSettingsData | null>({
@@ -291,6 +293,7 @@ const footerProps = {
       ogImage={seoOgImage}
       ogType={ogType}
       canonicalUrl={canonicalUrl}
+      showRssFeed={showRssFeed}
     >
       <StructuredData data={organizationSD} slot="head-extras" />
       <StructuredData data={webPageSD} slot="head-extras" />

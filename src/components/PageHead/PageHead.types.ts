@@ -7,6 +7,8 @@ export interface PageHeadProps {
   ogUrl?: string;
   twitterCard?: 'summary' | 'summary_large_image';
   twitterImage?: string;
+  /** Render the RSS alternate link — only set true on the blog index page. */
+  showRssFeed?: boolean;
 }
 
 export default null;
