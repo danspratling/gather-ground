@@ -54,6 +54,11 @@ for (const [modulePath, module] of Object.entries(storyModules)) {
       it(`${storyName} renders without a11y violations`, async () => {
         await renderStory(story as Parameters<typeof renderStory>[0]);
 
+        // axe-core crashes when it encounters cross-origin iframes (e.g. Google
+        // Maps embeds) because it can't postMessage into them. Remove any iframes
+        // from the document before running the accessibility check.
+        document.querySelectorAll('iframe').forEach((el) => el.remove());
+
         const results = await axe.run(document.body, {
           rules: {
             // Not meaningful for isolated story fragments with no page landmark
