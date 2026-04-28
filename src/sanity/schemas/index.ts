@@ -16,6 +16,7 @@ export { products } from './products';
 export { authors } from './authors';
 export { faqs } from './faqs';
 export { testimonials } from './testimonials';
+export { legalPages } from './legalPages';
 
 // Page section objects
 export { heroSection } from './heroSection';

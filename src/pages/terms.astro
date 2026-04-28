@@ -1,0 +1,38 @@
+---
+import type { PortableTextBlock } from '@portabletext/types';
+import Layout from '@/layouts/Layout.astro';
+import RichText from '@/components/RichText/RichText.astro';
+import { loadQuery } from '@/lib/sanity';
+import { legalPagesQuery } from '@/lib/queries';
+
+const { data: page } = await loadQuery<{
+  _id: string;
+  title: string;
+  slug: string;
+  body: PortableTextBlock[];
+} | null>({
+  query: legalPagesQuery,
+  params: { slug: 'terms' },
+});
+---
+
+<Layout
+  title={page?.title ?? 'Terms of Service'}
+  description="Our terms of service"
+>
+  <main class="container mx-auto max-w-3xl px-4 py-16">
+    <h1 class="mb-8 text-display-sm font-bold text-gray-950">
+      {page?.title ?? 'Terms of Service'}
+    </h1>
+    {
+      page?.body?.length ? (
+        <RichText content={page.body} />
+      ) : (
+        <p class="text-gray-700">
+          Our terms of service are currently being updated. Please check back
+          soon.
+        </p>
+      )
+    }
+  </main>
+</Layout>
