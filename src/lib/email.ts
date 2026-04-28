@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(import.meta.env.RESEND_API_KEY);
+const resendApiKey = import.meta.env.RESEND_API_KEY;
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 export interface ContactFormData {
   name: string;
@@ -9,6 +10,10 @@ export interface ContactFormData {
 }
 
 export async function sendContactEmail(data: ContactFormData): Promise<void> {
+  if (!resend) {
+    console.warn('RESEND_API_KEY not set — contact email not sent');
+    return;
+  }
   await resend.emails.send({
     from: import.meta.env.RESEND_FROM_EMAIL ?? 'hello@gatherground.com',
     to: import.meta.env.RESEND_FROM_EMAIL ?? 'hello@gatherground.com',
@@ -18,6 +23,10 @@ export async function sendContactEmail(data: ContactFormData): Promise<void> {
 }
 
 export async function sendNewsletterWelcome(email: string): Promise<void> {
+  if (!resend) {
+    console.warn('RESEND_API_KEY not set — newsletter welcome email not sent');
+    return;
+  }
   await resend.emails.send({
     from: import.meta.env.RESEND_FROM_EMAIL ?? 'hello@gatherground.com',
     to: email,
