@@ -13,33 +13,43 @@ export const siteSettings = defineType({
   fields: [
     defineField({
       name: 'siteName',
-      title: 'Site Name',
+      title: 'Site name',
       type: 'string',
+      description:
+        'The name of the website — shown in the browser tab and search results.',
       validation: (r) => r.required(),
       group: 'general',
     }),
     defineField({
       name: 'siteDescription',
-      title: 'Site Description',
+      title: 'Site description (optional)',
       type: 'string',
+      description:
+        'A short summary of the site. Not currently displayed publicly, but useful for reference.',
       group: 'general',
     }),
     defineField({
       name: 'logo',
       title: 'Logo',
       type: 'image',
+      description:
+        'The site logo shown in the header. Recommended: SVG or PNG with transparent background.',
       group: 'general',
     }),
     defineField({
       name: 'logoAlt',
-      title: 'Logo Alt Text',
+      title: 'Logo description for screen readers',
       type: 'string',
+      description:
+        'Describes the logo for visitors who can\'t see it (e.g. "Gather Ground logo").',
       group: 'general',
     }),
     defineField({
       name: 'primaryNav',
-      title: 'Primary Navigation',
+      title: 'Main menu',
       type: 'array',
+      description:
+        'The navigation links shown in the header. Each item can optionally have a dropdown menu.',
       group: 'navigation',
       of: [
         {
@@ -91,26 +101,33 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: 'headerCtaLabel',
-      title: 'Header CTA Label',
+      title: 'Header button text (optional)',
       type: 'string',
+      description:
+        'Text for the highlighted button in the top-right of the header. Leave blank to hide the button.',
       group: 'navigation',
     }),
     defineField({
       name: 'headerCtaLink',
-      title: 'Header CTA Link',
+      title: 'Header button link',
       type: 'link',
+      description: 'Where the header button goes.',
       group: 'navigation',
     }),
     defineField({
       name: 'footerDescription',
-      title: 'Footer Description',
+      title: 'Footer description',
       type: 'string',
+      description:
+        'A short line of text shown at the top of the footer, below the logo.',
       group: 'footer',
     }),
     defineField({
       name: 'footerLinkGroups',
-      title: 'Footer Link Groups',
+      title: 'Footer link columns',
       type: 'array',
+      description:
+        'Groups of links shown in the footer. Each group has a heading and a list of links.',
       group: 'footer',
       of: [
         {
@@ -152,8 +169,10 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: 'socialLinks',
-      title: 'Social Links',
+      title: 'Social media links',
       type: 'array',
+      description:
+        'Links to your social media profiles — shown as icons in the footer.',
       group: 'footer',
       of: [
         {
@@ -182,8 +201,10 @@ export const siteSettings = defineType({
             }),
             defineField({
               name: 'label',
-              title: 'Accessible label',
+              title: 'Label for screen readers',
               type: 'string',
+              description:
+                'Describes the link for visitors who can\'t see the icon (e.g. "Follow us on Instagram").',
               validation: (r) => r.required(),
             }),
           ],
@@ -192,14 +213,18 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: 'copyrightText',
-      title: 'Copyright Text',
+      title: 'Copyright text',
       type: 'string',
+      description:
+        'Shown at the very bottom of the footer (e.g. "© 2026 Gather Ground. All rights reserved.").',
       group: 'footer',
     }),
     defineField({
       name: 'footerLegalLinks',
-      title: 'Footer Legal Links',
+      title: 'Footer legal links',
       type: 'array',
+      description:
+        'Small links at the bottom of the footer — typically Privacy Policy, Terms of Service, etc.',
       group: 'footer',
       of: [
         {
@@ -223,8 +248,10 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: 'announcementBanner',
-      title: 'Announcement Banner',
+      title: 'Announcement banner',
       type: 'object',
+      description:
+        'A coloured strip shown above the header with a short message and optional button.',
       group: 'general',
       fields: [
         defineField({
@@ -242,13 +269,14 @@ export const siteSettings = defineType({
         defineField({ name: 'ctaLink', title: 'Button link', type: 'link' }),
         defineField({
           name: 'variant',
-          title: 'Style',
+          title: 'Colour style',
           type: 'string',
+          description: 'Controls the background colour of the banner.',
           options: {
             list: [
-              { title: 'Info', value: 'info' },
-              { title: 'Warning', value: 'warning' },
-              { title: 'Success', value: 'success' },
+              { title: 'Info (blue)', value: 'info' },
+              { title: 'Warning (amber)', value: 'warning' },
+              { title: 'Success (green)', value: 'success' },
             ],
           },
           initialValue: 'info',
@@ -257,29 +285,31 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: 'defaultMetaTitle',
-      title: 'Default Meta Title',
+      title: 'Default page title for search engines',
       type: 'string',
       description:
-        'Fallback page title for pages that don\u2019t have one. Site name is appended automatically.',
+        'Used on pages that don\u2019t have their own title set. The site name is added automatically at the end.',
       group: 'seo',
     }),
     defineField({
       name: 'defaultMetaDescription',
-      title: 'Default Meta Description',
+      title: 'Default page description for search engines',
       type: 'text',
       rows: 3,
       description:
-        'Fallback description for pages without an explicit or auto-generated description. Recommended maximum: 160 characters.',
+        'A short summary shown in Google results when a page doesn\u2019t have its own description. Keep it under 160 characters.',
       validation: (Rule) => Rule.max(160),
       group: 'seo',
     }),
     defineField({
       name: 'defaultOgImage',
-      title: 'Default Social Share Image',
+      title: 'Default social sharing image',
       type: 'image',
       description:
-        'Fallback image for Open Graph / Twitter cards when a page has no image.',
+        'The image shown when someone shares a link on Facebook, Twitter, LinkedIn, etc. — used when a page doesn\u2019t have its own image. Recommended: 1200 × 630 px.',
       group: 'seo',
     }),
   ],
 });
+
+export default null;

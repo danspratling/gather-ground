@@ -13,8 +13,10 @@ export const legalPages = defineType({
     }),
     defineField({
       name: 'slug',
-      title: 'Slug',
+      title: 'URL path',
       type: 'slug',
+      description:
+        'The web address for this page — click Generate to create it from the title.',
       options: { source: 'title' },
       validation: (r) =>
         r.required().custom((value) => {

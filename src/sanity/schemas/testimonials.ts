@@ -11,12 +11,15 @@ export const testimonials = defineType({
       title: 'Quote',
       type: 'text',
       rows: 4,
+      description: 'The testimonial text — what the customer said.',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'platform',
-      title: 'Platform',
+      title: 'Platform (optional)',
       type: 'string',
+      description:
+        'Where the testimonial came from. Shown as a small icon on the card. Leave blank if not from social media.',
       options: {
         list: [
           { title: 'Twitter / X', value: 'twitter' },
@@ -29,8 +32,10 @@ export const testimonials = defineType({
     }),
     defineField({
       name: 'authorImage',
-      title: 'Author image',
+      title: 'Author photo',
       type: 'image',
+      description:
+        'A headshot or profile picture. Recommended: square, at least 200 × 200 px.',
       options: { hotspot: true },
       validation: (Rule) => Rule.required(),
     }),
@@ -42,14 +47,17 @@ export const testimonials = defineType({
     }),
     defineField({
       name: 'authorSecondary',
-      title: 'Author secondary text',
+      title: 'Author detail (optional)',
       type: 'string',
-      description: 'Handle, date, or subtitle.',
+      description:
+        'Extra info shown below the name — e.g. a social media handle like "@farmfan", a date, or a short subtitle.',
     }),
     defineField({
       name: 'authorSecondaryIsHandle',
-      title: 'Secondary is handle',
+      title: 'Treat the detail above as a social handle',
       type: 'boolean',
+      description:
+        'Turn this on if the text above is a social media handle (like @farmfan). This styles it as a link.',
       initialValue: false,
     }),
   ],

@@ -14,14 +14,18 @@ export const faqSection = defineType({
     }),
     defineField({
       name: 'subCopy',
-      title: 'Sub copy',
+      title: 'Supporting text (optional)',
       type: 'text',
       rows: 3,
+      description:
+        'A short paragraph shown below the heading. Leave blank to hide.',
     }),
     defineField({
       name: 'faqs',
-      title: 'FAQs',
+      title: 'Questions',
       type: 'array',
+      description:
+        'Pick existing FAQ entries. Create new ones under FAQs in the sidebar.',
       of: [
         defineArrayMember({
           type: 'reference',
@@ -31,33 +35,36 @@ export const faqSection = defineType({
     }),
     defineField({
       name: 'ctaHeading',
-      title: 'CTA heading',
+      title: 'Bottom box — heading (optional)',
       type: 'string',
+      description:
+        'A coloured box appears below the questions if you fill this in. Leave blank to hide the box entirely.',
     }),
     defineField({
       name: 'ctaBody',
-      title: 'CTA body',
+      title: 'Bottom box — description',
       type: 'text',
       rows: 2,
     }),
     defineField({
       name: 'ctaPrimaryLabel',
-      title: 'CTA primary button label',
+      title: 'Bottom box — main button text',
       type: 'string',
     }),
     defineField({
       name: 'ctaPrimaryHref',
-      title: 'CTA primary button URL',
+      title: 'Bottom box — main button link',
       type: 'link',
     }),
     defineField({
       name: 'ctaSecondaryLabel',
-      title: 'CTA secondary button label',
+      title: 'Bottom box — second button text (optional)',
       type: 'string',
+      description: 'Leave blank to show only one button.',
     }),
     defineField({
       name: 'ctaSecondaryHref',
-      title: 'CTA secondary button URL',
+      title: 'Bottom box — second button link',
       type: 'link',
     }),
   ],

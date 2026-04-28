@@ -8,8 +8,10 @@ export const blogSection = defineType({
   fields: [
     defineField({
       name: 'eyebrow',
-      title: 'Eyebrow label',
+      title: 'Tag line (optional)',
       type: 'string',
+      description:
+        'A short label shown in small text above the heading (e.g. "From the blog"). Leave blank to hide.',
     }),
     defineField({
       name: 'heading',
@@ -19,19 +21,22 @@ export const blogSection = defineType({
     }),
     defineField({
       name: 'subCopy',
-      title: 'Sub copy',
+      title: 'Supporting text (optional)',
       type: 'text',
       rows: 3,
+      description:
+        'A short paragraph shown below the heading. Leave blank to hide.',
     }),
     defineField({
       name: 'viewAllHref',
-      title: 'View all URL',
+      title: '"View all" button link',
       type: 'link',
+      description: 'Usually points to the blog listing page.',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'viewAllLabel',
-      title: 'View all button label',
+      title: '"View all" button text',
       type: 'string',
       initialValue: 'View all updates',
     }),
@@ -39,6 +44,7 @@ export const blogSection = defineType({
       name: 'posts',
       title: 'Blog posts',
       type: 'array',
+      description: 'Pick the posts to feature in this section.',
       of: [
         defineArrayMember({
           type: 'reference',

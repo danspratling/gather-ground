@@ -10,6 +10,7 @@ export const faqs = defineType({
       name: 'title',
       title: 'Question',
       type: 'string',
+      description: 'The question as the visitor would ask it.',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -17,6 +18,7 @@ export const faqs = defineType({
       title: 'Answer',
       type: 'text',
       rows: 4,
+      description: 'The answer shown when the question is expanded.',
       validation: (Rule) => Rule.required(),
     }),
   ],

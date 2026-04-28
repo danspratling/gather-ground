@@ -10,6 +10,8 @@ export const productCard = defineType({
       name: 'image',
       title: 'Image',
       type: 'image',
+      description:
+        'Product photo. Recommended: square or 4:3 ratio, at least 600 × 600 px.',
       options: { hotspot: true },
       validation: (Rule) => Rule.required(),
     }),
@@ -21,14 +23,16 @@ export const productCard = defineType({
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: 'Short description',
       type: 'string',
-      description: 'Only shown in the category variant.',
+      description:
+        'Only shown when the section uses the "Category cards" layout. Optional for "Image carousel".',
     }),
     defineField({
       name: 'href',
-      title: 'Link URL',
+      title: 'Link',
       type: 'link',
+      description: 'Where this card links to when clicked.',
       validation: (Rule) => Rule.required(),
     }),
   ],
@@ -45,12 +49,20 @@ export const productsSection = defineType({
   fields: [
     defineField({
       name: 'variant',
-      title: 'Variant',
+      title: 'Layout style',
       type: 'string',
+      description: 'Choose how products are displayed.',
       options: {
         list: [
-          { title: 'Category Cards', value: 'cards' },
-          { title: 'Image Carousel', value: 'carousel' },
+          {
+            title:
+              'Category cards — a grid of product cards with images and descriptions',
+            value: 'cards',
+          },
+          {
+            title: 'Image carousel — a scrollable row of product images',
+            value: 'carousel',
+          },
         ],
       },
       initialValue: 'cards',
@@ -58,8 +70,10 @@ export const productsSection = defineType({
     }),
     defineField({
       name: 'eyebrow',
-      title: 'Eyebrow',
+      title: 'Tag line',
       type: 'string',
+      description:
+        'A short label shown in small text above the heading (e.g. "Products").',
       initialValue: 'Products',
       validation: (Rule) => Rule.required(),
     }),
@@ -71,9 +85,10 @@ export const productsSection = defineType({
     }),
     defineField({
       name: 'subCopy',
-      title: 'Sub-copy',
+      title: 'Supporting text',
       type: 'text',
       rows: 3,
+      description: 'A short paragraph shown below the heading.',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
