@@ -303,7 +303,7 @@ export const siteSettingsQuery = `*[_id == "siteSettings"][0]{
 // ─── Legal Pages ────────────────────────────────────────────────────
 
 /** Fetch a single legal page by slug. */
-export const legalPageQuery = `*[_type == "legalPage" && slug.current == $slug][0]{
+export const legalPagesQuery = `*[_type == "legalPages" && slug.current == $slug][0]{
   _id,
   title,
   "slug": slug.current,

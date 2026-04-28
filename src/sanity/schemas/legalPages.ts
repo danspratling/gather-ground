@@ -1,7 +1,7 @@
 import { defineField, defineType, defineArrayMember } from 'sanity';
 
-export const legalPage = defineType({
-  name: 'legalPage',
+export const legalPages = defineType({
+  name: 'legalPages',
   title: 'Legal Page',
   type: 'document',
   fields: [

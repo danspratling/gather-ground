@@ -12,7 +12,7 @@ import {
   authors,
   faqs,
   testimonials,
-  legalPage,
+  legalPages,
   heroSection,
   productsSection,
   productCard,
@@ -140,7 +140,7 @@ export default defineConfig({
       authors,
       faqs,
       testimonials,
-      legalPage,
+      legalPages,
       // Page section objects
       heroSection,
       productsSection,

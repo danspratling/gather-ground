@@ -3,7 +3,7 @@ import type { PortableTextBlock } from '@portabletext/types';
 import Layout from '@/layouts/Layout.astro';
 import RichText from '@/components/RichText/RichText.astro';
 import { loadQuery } from '@/lib/sanity';
-import { legalPageQuery } from '@/lib/queries';
+import { legalPagesQuery } from '@/lib/queries';
 
 const { data: page } = await loadQuery<{
   _id: string;
@@ -11,7 +11,7 @@ const { data: page } = await loadQuery<{
   slug: string;
   body: PortableTextBlock[];
 } | null>({
-  query: legalPageQuery,
+  query: legalPagesQuery,
   params: { slug: 'terms' },
 });
 ---
