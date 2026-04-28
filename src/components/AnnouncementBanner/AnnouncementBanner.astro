@@ -1,4 +1,5 @@
 ---
+import { XClose } from '@untitledui-pro/icons/line';
 import type { AnnouncementBannerProps } from './AnnouncementBanner.types';
 
 type Props = AnnouncementBannerProps;
@@ -35,7 +36,7 @@ const classes = variantClasses[variant] ?? variantClasses.info;
       aria-label="Dismiss announcement"
       class="ml-auto cursor-pointer opacity-70 hover:opacity-100"
     >
-      ×
+      <XClose size={16} />
     </button>
   </div>
 </div>
