@@ -22,7 +22,8 @@ export const contactHero = defineType({
       name: 'mapEmbedUrl',
       title: 'Map embed URL',
       type: 'url',
-      description: 'Google Maps embed URL (from Share → Embed a map → copy src attribute)',
+      description:
+        'Google Maps embed URL (from Share → Embed a map → copy src attribute)',
       validation: (Rule) =>
         Rule.uri({ scheme: ['https'] }).custom((val) => {
           if (!val) return true;
