@@ -1,4 +1,4 @@
-export interface ContactSectionProps {
+export interface ContactHeroProps {
   heading: string;
   body?: string;
   embedUrl: string;

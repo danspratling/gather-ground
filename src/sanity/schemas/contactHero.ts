@@ -1,9 +1,9 @@
 import { defineType, defineField } from 'sanity';
 
-/** Contact Section — page section object with form + map. */
-export const contactSection = defineType({
-  name: 'contactSection',
-  title: 'Contact Section',
+/** Contact Hero — page section object with form + map. */
+export const contactHero = defineType({
+  name: 'contactHero',
+  title: 'Contact Hero',
   type: 'object',
   fields: [
     defineField({
@@ -40,7 +40,7 @@ export const contactSection = defineType({
   ],
   preview: {
     select: { title: 'heading' },
-    prepare: ({ title }) => ({ title: title || 'Contact Section' }),
+    prepare: ({ title }) => ({ title: title || 'Contact Hero' }),
   },
 });
 

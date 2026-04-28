@@ -1,10 +1,10 @@
 // @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
 // See: https://storybook-astro.org/writing-stories/
-import ContactSection from './ContactSection.astro';
+import ContactHero from './ContactHero.astro';
 
 const meta = {
-  title: 'Sections/Contact Section',
-  component: ContactSection,
+  title: 'Sections/Contact Hero',
+  component: ContactHero,
   parameters: {
     layout: 'fullscreen',
     chromatic: { viewports: [375, 1440] },

@@ -235,7 +235,7 @@ export function contentSectionProps(s: Dict): ContentProps {
   };
 }
 
-export function contactSectionProps(s: Dict) {
+export function contactHeroProps(s: Dict) {
   return {
     heading: s.heading as string,
     body: s.body as string | undefined,
