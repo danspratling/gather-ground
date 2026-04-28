@@ -36,7 +36,7 @@ export const contentIconFeature = defineType({
       title: 'Icon name',
       type: 'string',
       description:
-        'The name of a Untitled UI icon (e.g. "MessageChatCircle"). Ask a developer for the list of available names.',
+        'The name of an Untitled UI icon (e.g. "MessageChatCircle"). Ask a developer for the list of available names.',
     }),
     defineField({
       name: 'heading',
@@ -111,7 +111,7 @@ export const contentSection = defineType({
       title: 'Icon name',
       type: 'string',
       description:
-        'The name of a Untitled UI icon (e.g. "ZapFast"). Ask a developer for the list of available names. Optional.',
+        'The name of an Untitled UI icon (e.g. "ZapFast"). Ask a developer for the list of available names. Optional.',
       hidden: ({ parent }) =>
         parent?.variant !== 'simple' && parent?.variant !== 'alternating',
     }),

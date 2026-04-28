@@ -68,10 +68,10 @@ export const link = defineType({
           const parent = context.parent as { type?: string } | undefined;
           if (parent?.type !== 'anchor') return true;
           if (typeof value !== 'string' || value.trim() === '') {
-            return 'Anchor ID is required when link type is Anchor';
+            return 'Please enter the section name to jump to';
           }
           if (value.trim().startsWith('#')) {
-            return 'Anchor ID must not start with #';
+            return 'Don\u2019t include the # symbol \u2014 just the section name (e.g. "about-us")';
           }
           return true;
         }),
