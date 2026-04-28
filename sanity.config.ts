@@ -134,20 +134,13 @@ export default defineConfig({
       // Documents
       pages,
       blogPage,
-<<<<<<< HEAD
       blogPosts,
       productPage,
       products,
       authors,
       faqs,
       testimonials,
-=======
-      blogPost,
-      author,
-      faq,
-      testimonial,
       legalPage,
->>>>>>> e0acdc6 (feat(legal): add cookie banner, privacy + terms pages — Closes GG-74 GG-75)
       // Page section objects
       heroSection,
       productsSection,
