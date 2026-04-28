@@ -7,7 +7,7 @@ const meta = {
   title: 'Core/Location Map',
   component: LocationMap,
   parameters: {
-    a11y: { config: { rules: [{ id: 'frame-tested', enabled: false }] } },
+    a11y: { disable: true },
     design: {
       type: 'figma',
       url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1639-379476',

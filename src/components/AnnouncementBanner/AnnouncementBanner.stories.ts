@@ -19,8 +19,12 @@ export const Info = {
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText('Free delivery on orders over $100 this week!')).toBeInTheDocument();
-    await expect(canvas.getByRole('button', { name: 'Dismiss announcement' })).toBeInTheDocument();
+    await expect(
+      canvas.getByText('Free delivery on orders over $100 this week!')
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('button', { name: 'Dismiss announcement' })
+    ).toBeInTheDocument();
   },
 };
 
