@@ -78,7 +78,7 @@ export const productPage = defineType({
             },
             {
               name: 'cta',
-              title: 'Call to Action',
+              title: 'Action',
               of: ['callToAction'],
             },
           ],
