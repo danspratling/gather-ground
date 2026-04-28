@@ -111,6 +111,14 @@ export const bodySectionsProjection = `body[]{
     image { asset->, alt }
   },
 
+  // contactSection
+  _type == "contactSection" => {
+    heading,
+    body,
+    mapEmbedUrl,
+    mapTitle
+  },
+
   // contentSection
   _type == "contentSection" => {
     variant,

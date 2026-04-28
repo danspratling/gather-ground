@@ -62,6 +62,7 @@ export const pages = defineType({
         defineArrayMember({ type: 'faqSection' }),
         defineArrayMember({ type: 'blogSection' }),
         defineArrayMember({ type: 'callToAction' }),
+        defineArrayMember({ type: 'contactSection' }),
         defineArrayMember({ type: 'contentSection' }),
       ],
     }),

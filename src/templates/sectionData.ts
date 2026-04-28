@@ -234,3 +234,12 @@ export function contentSectionProps(s: Dict): ContentProps {
     })),
   };
 }
+
+export function contactSectionProps(s: Dict) {
+  return {
+    heading: s.heading as string,
+    body: s.body as string | undefined,
+    embedUrl: (s.mapEmbedUrl as string) ?? '',
+    mapTitle: (s.mapTitle as string) ?? 'Our location',
+  };
+}
