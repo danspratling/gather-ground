@@ -1,0 +1,39 @@
+---
+import type { ClarityProps } from './Clarity.types';
+
+type Props = ClarityProps;
+
+const { projectId } = Astro.props;
+---
+
+<script define:vars={{ projectId }}>
+  function initClarity() {
+    (function (c, l, a, r, i, t, y) {
+      c[a] =
+        c[a] ||
+        function () {
+          (c[a].q = c[a].q || []).push(arguments);
+        };
+      t = l.createElement(r);
+      t.async = 1;
+      t.src = 'https://www.clarity.ms/tag/' + i;
+      y = l.getElementsByTagName(r)[0];
+      y.parentNode.insertBefore(t, y);
+    })(window, document, 'clarity', 'script', projectId);
+  }
+
+  let alreadyAccepted = false;
+  try {
+    alreadyAccepted = localStorage.getItem('cookie-consent') === 'accepted';
+  } catch {
+    // localStorage blocked (privacy mode) — treat as not accepted
+  }
+
+  if (alreadyAccepted) {
+    initClarity();
+  } else {
+    window.addEventListener('cookie-consent-accepted', initClarity, {
+      once: true,
+    });
+  }
+</script>
