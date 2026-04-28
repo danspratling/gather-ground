@@ -1,5 +1,6 @@
 // @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
 // See: https://storybook-astro.org/writing-stories/
+import { expect, within } from 'storybook/test';
 import AnnouncementBanner from './AnnouncementBanner.astro';
 
 const meta = {
@@ -15,6 +16,11 @@ export const Info = {
     ctaLabel: 'Shop now',
     ctaHref: '/shop',
     variant: 'info',
+  },
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('Free delivery on orders over $100 this week!')).toBeInTheDocument();
+    await expect(canvas.getByRole('button', { name: 'Dismiss announcement' })).toBeInTheDocument();
   },
 };
 

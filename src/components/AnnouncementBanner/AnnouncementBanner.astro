@@ -7,7 +7,7 @@ type Props = AnnouncementBannerProps;
 const { message, ctaLabel, ctaHref, variant = 'info' } = Astro.props;
 
 const variantClasses: Record<string, string> = {
-  info: 'bg-blue-50 text-blue-700 border-blue-light-200',
+  info: 'bg-blue-50 text-blue-700 border-blue-200',
   warning: 'bg-warning-50 text-warning-700 border-warning-200',
   success: 'bg-success-50 text-success-700 border-success-200',
 };
@@ -33,6 +33,7 @@ const classes = variantClasses[variant] ?? variantClasses.info;
     }
     <button
       id="dismiss-banner"
+      type="button"
       aria-label="Dismiss announcement"
       class="ml-auto cursor-pointer opacity-70 hover:opacity-100"
     >
@@ -46,12 +47,20 @@ const classes = variantClasses[variant] ?? variantClasses.info;
   const btn = document.getElementById('dismiss-banner');
   const key = 'announcement-dismissed';
 
-  if (sessionStorage.getItem(key)) {
-    banner?.remove();
+  try {
+    if (sessionStorage.getItem(key)) {
+      banner?.remove();
+    }
+  } catch {
+    // Ignore storage access failures (private browsing, quota, permissions).
   }
 
   btn?.addEventListener('click', () => {
-    sessionStorage.setItem(key, '1');
+    try {
+      sessionStorage.setItem(key, '1');
+    } catch {
+      // Ignore storage access failures so dismissal still works for current page view.
+    }
     banner?.remove();
   });
 </script>
