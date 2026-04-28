@@ -7,6 +7,7 @@
  * the template body stays free of TypeScript generics, which
  * the .astro JSX parser treats ambiguously.
  */
+import ContactHero from '@/components/ContactHero/ContactHero.astro';
 import HeroSection from '@/components/HeroSection/HeroSection.astro';
 import ProductsSection from '@/components/ProductsSection/ProductsSection.astro';
 import TestimonialsSection from '@/components/TestimonialsSection/TestimonialsSection';
@@ -17,6 +18,7 @@ import Content from '@/components/Content/Content.astro';
 import {
   blogSectionProps,
   callToActionProps,
+  contactHeroProps,
   contentSectionProps,
   faqSectionProps,
   heroSectionProps,
@@ -52,6 +54,8 @@ const { sections } = Astro.props;
         return <BlogSection {...blogSectionProps(section)} />;
       case 'callToAction':
         return <CallToAction {...callToActionProps(section)} />;
+      case 'contactHero':
+        return <ContactHero {...contactHeroProps(section)} />;
       case 'contentSection':
         return <Content {...contentSectionProps(section)} />;
       default:

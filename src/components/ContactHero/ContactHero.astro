@@ -1,0 +1,101 @@
+---
+import Button from '@/components/Forms/Button/Button.astro';
+import Input from '@/components/Forms/Input/Input.astro';
+import LocationMap from '@/components/LocationMap/LocationMap.astro';
+import type { ContactHeroProps } from './ContactHero.types';
+
+type Props = ContactHeroProps;
+
+const { heading, body, embedUrl, mapTitle = 'Our location' } = Astro.props;
+---
+
+<section class="bg-off-white py-24">
+  <div class="container flex flex-col gap-16 lg:flex-row lg:items-stretch">
+    <!-- Form column -->
+    <div class="flex flex-1 flex-col gap-8">
+      <div class="flex flex-col gap-4">
+        <h2
+          class="text-display-md font-semibold tracking-display-md text-brand-900"
+        >
+          {heading}
+        </h2>
+        {body && <p class="text-xl text-brand-400">{body}</p>}
+      </div>
+
+      <!-- TODO(GG-63): wire up form submission when forms-email is merged -->
+      <form class="flex flex-col gap-6" novalidate>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <Input
+            name="firstName"
+            label="First name"
+            placeholder="Jane"
+            required
+          />
+          <Input
+            name="lastName"
+            label="Last name"
+            placeholder="Smith"
+            required
+          />
+        </div>
+        <Input
+          name="email"
+          type="email"
+          label="Email"
+          placeholder="jane@example.com"
+          required
+        />
+        <Input
+          name="phone"
+          type="tel"
+          label="Phone number"
+          placeholder="+1 (555) 000-0000"
+        />
+
+        <div class="flex flex-col gap-1.5">
+          <label for="message" class="text-sm font-medium text-brand-700"
+            >Message</label
+          >
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            required
+            placeholder="Leave us a message..."
+            class="w-full rounded-lg border border-brand-100 bg-off-white px-3.5 py-2.5 text-sm text-brand-900 shadow-xs transition-colors placeholder:text-brand-300 focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700"
+          ></textarea>
+        </div>
+
+        <div class="flex items-start gap-3">
+          <input
+            id="consent"
+            name="consent"
+            type="checkbox"
+            required
+            aria-describedby="consent-hint"
+            class="mt-0.5 size-4 shrink-0 cursor-pointer rounded border-brand-300 text-brand-600"
+          />
+          <label for="consent" class="text-sm text-brand-600">
+            I agree to the
+            <a
+              href="/privacy"
+              class="font-medium underline underline-offset-2 hover:no-underline"
+            >
+              privacy policy
+            </a>
+          </label>
+        </div>
+        <p id="consent-hint" class="sr-only">
+          You must agree to the privacy policy before submitting.
+        </p>
+
+        <Button label="Send message" type="button" size="lg" class="w-full" />
+      </form>
+    </div>
+
+    <!-- Map column -->
+    <div class="flex-1">
+      <LocationMap embedUrl={embedUrl} title={mapTitle} />
+    </div>
+  </div>
+</section>

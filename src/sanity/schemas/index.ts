@@ -25,6 +25,7 @@ export { testimonialsSection } from './testimonialsSection';
 export { faqSection } from './faqSection';
 export { blogSection } from './blogSection';
 export { callToAction } from './callToAction';
+export { contactHero } from './contactHero';
 export {
   contentSection,
   contentFeatureItem,

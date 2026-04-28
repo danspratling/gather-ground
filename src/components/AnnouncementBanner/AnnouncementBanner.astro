@@ -1,0 +1,66 @@
+---
+import { XClose } from '@untitledui-pro/icons/line';
+import type { AnnouncementBannerProps } from './AnnouncementBanner.types';
+
+type Props = AnnouncementBannerProps;
+
+const { message, ctaLabel, ctaHref, variant = 'info' } = Astro.props;
+
+const variantClasses: Record<string, string> = {
+  info: 'bg-blue-50 text-blue-700 border-blue-200',
+  warning: 'bg-warning-50 text-warning-700 border-warning-200',
+  success: 'bg-success-50 text-success-700 border-success-200',
+};
+const classes = variantClasses[variant] ?? variantClasses.info;
+---
+
+<div
+  id="announcement-banner"
+  class={`w-full border-b px-4 py-2.5 text-center text-sm font-medium ${classes}`}
+  role="banner"
+>
+  <div class="container flex items-center justify-center gap-3">
+    <span>{message}</span>
+    {
+      ctaLabel && ctaHref && (
+        <a
+          href={ctaHref}
+          class="font-semibold underline underline-offset-2 hover:no-underline"
+        >
+          {ctaLabel}
+        </a>
+      )
+    }
+    <button
+      id="dismiss-banner"
+      type="button"
+      aria-label="Dismiss announcement"
+      class="ml-auto cursor-pointer opacity-70 hover:opacity-100"
+    >
+      <XClose size={16} />
+    </button>
+  </div>
+</div>
+
+<script>
+  const banner = document.getElementById('announcement-banner');
+  const btn = document.getElementById('dismiss-banner');
+  const key = 'announcement-dismissed';
+
+  try {
+    if (sessionStorage.getItem(key)) {
+      banner?.remove();
+    }
+  } catch {
+    // Ignore storage access failures (private browsing, quota, permissions).
+  }
+
+  btn?.addEventListener('click', () => {
+    try {
+      sessionStorage.setItem(key, '1');
+    } catch {
+      // Ignore storage access failures so dismissal still works for current page view.
+    }
+    banner?.remove();
+  });
+</script>

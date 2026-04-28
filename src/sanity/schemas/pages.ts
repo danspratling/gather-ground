@@ -57,13 +57,41 @@ export const pages = defineType({
       group: 'content',
       of: [
         defineArrayMember({ type: 'heroSection' }),
-        defineArrayMember({ type: 'productsSection' }),
-        defineArrayMember({ type: 'testimonialsSection' }),
-        defineArrayMember({ type: 'faqSection' }),
-        defineArrayMember({ type: 'blogSection' }),
-        defineArrayMember({ type: 'callToAction' }),
+        defineArrayMember({ type: 'contactHero' }),
         defineArrayMember({ type: 'contentSection' }),
+        defineArrayMember({ type: 'productsSection' }),
+        defineArrayMember({ type: 'blogSection' }),
+        defineArrayMember({ type: 'faqSection' }),
+        defineArrayMember({ type: 'testimonialsSection' }),
+        defineArrayMember({ type: 'callToAction' }),
       ],
+      options: {
+        insertMenu: {
+          groups: [
+            {
+              name: 'hero',
+              title: 'Hero',
+              of: ['heroSection', 'contactHero'],
+            },
+            {
+              name: 'content',
+              title: 'Content',
+              of: [
+                'contentSection',
+                'productsSection',
+                'blogSection',
+                'faqSection',
+                'testimonialsSection',
+              ],
+            },
+            {
+              name: 'cta',
+              title: 'Action',
+              of: ['callToAction'],
+            },
+          ],
+        },
+      },
     }),
   ],
   preview: {

@@ -1,0 +1,21 @@
+---
+import type { LocationMapProps } from './LocationMap.types';
+
+type Props = LocationMapProps;
+
+const { embedUrl, title = 'Our location' } = Astro.props;
+---
+
+<div class="h-full w-full overflow-hidden rounded-2xl">
+  <iframe
+    src={embedUrl}
+    title={title}
+    width="100%"
+    height="100%"
+    class="block min-h-[400px] border-0"
+    sandbox="allow-scripts allow-same-origin"
+    allow="fullscreen"
+    allowfullscreen
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
