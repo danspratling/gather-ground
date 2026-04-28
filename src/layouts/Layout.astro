@@ -156,10 +156,12 @@ const headerProps = {
     ? resolveSanityLink(siteSettings.headerCtaLink)
     : undefined,
   footerLinks: siteSettings?.footerLegalLinks
-    ? siteSettings.footerLegalLinks.map((l) => ({
-        label: l.label,
-        href: resolveSanityLink(l.link),
-      }))
+    ? siteSettings.footerLegalLinks
+        .map((l) => ({
+          label: l.label,
+          href: resolveSanityLink(l.link),
+        }))
+        .filter((l) => l.href)
     : [],
 };
 
@@ -179,10 +181,12 @@ const footerProps = {
   linkGroups: siteSettings?.footerLinkGroups
     ? siteSettings.footerLinkGroups.map((group) => ({
         heading: group.heading,
-        links: group.links.map((l) => ({
-          label: l.label,
-          href: resolveSanityLink(l.link),
-        })),
+        links: group.links
+          .map((l) => ({
+            label: l.label,
+            href: resolveSanityLink(l.link),
+          }))
+          .filter((l) => l.href),
       }))
     : [],
   newsletterHeading: 'Stay up to date',
@@ -190,10 +194,12 @@ const footerProps = {
     siteSettings?.copyrightText ??
     `© ${new Date().getFullYear()} Gather Ground`,
   legalLinks: siteSettings?.footerLegalLinks
-    ? siteSettings.footerLegalLinks.map((l) => ({
-        label: l.label,
-        href: resolveSanityLink(l.link),
-      }))
+    ? siteSettings.footerLegalLinks
+        .map((l) => ({
+          label: l.label,
+          href: resolveSanityLink(l.link),
+        }))
+        .filter((l) => l.href)
     : [],
 };
 ---
