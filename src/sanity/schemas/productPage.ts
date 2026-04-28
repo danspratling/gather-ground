@@ -20,33 +20,36 @@ export const productPage = defineType({
     }),
     defineField({
       name: 'metaTitle',
-      title: 'Meta title',
+      title: 'Search engine title (optional)',
       type: 'string',
       description:
-        'Overrides the auto-generated page title. Leave blank to use the page title + site name.',
+        'A custom title shown in Google results and the browser tab. Leave blank to use the page title automatically.',
       group: 'seo',
     }),
     defineField({
       name: 'metaDescription',
-      title: 'Meta description',
+      title: 'Search engine description (optional)',
       type: 'text',
       rows: 3,
       description:
-        'Overrides the auto-generated description. Leave blank to use the first hero sub-copy. Recommended maximum: 160 characters.',
+        'A short summary shown in Google results. Keep it under 160 characters. Leave blank for the auto-generated version.',
       validation: (Rule) => Rule.max(160),
       group: 'seo',
     }),
     defineField({
       name: 'ogImage',
-      title: 'Social share image',
+      title: 'Social sharing image (optional)',
       type: 'image',
-      description: 'Image used for Open Graph / Twitter cards.',
+      description:
+        'The image shown when someone shares this page on social media. Recommended: 1200 × 630 px.',
       group: 'seo',
     }),
     defineField({
       name: 'body',
-      title: 'Body sections',
+      title: 'Page sections',
       type: 'array',
+      description:
+        'Build the products landing page by adding sections. Click + to add a new section.',
       group: 'content',
       of: [
         defineArrayMember({ type: 'heroSection' }),

@@ -14,14 +14,18 @@ export const authors = defineType({
     }),
     defineField({
       name: 'avatar',
-      title: 'Avatar',
+      title: 'Photo',
       type: 'image',
+      description:
+        'A headshot or profile picture. Recommended: square, at least 200 × 200 px.',
       options: { hotspot: true },
     }),
     defineField({
       name: 'role',
-      title: 'Role / title',
+      title: 'Role or title (optional)',
       type: 'string',
+      description:
+        'e.g. "Founder", "Head of Marketing". Shown below the name on blog posts.',
     }),
   ],
   preview: {

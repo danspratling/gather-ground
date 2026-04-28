@@ -11,14 +11,15 @@ export const link = defineType({
   fields: [
     {
       name: 'type',
-      title: 'Type',
+      title: 'Link type',
       type: 'string',
+      description: 'Choose how this link should work.',
       options: {
         list: [
-          { title: 'URL', value: 'url' },
-          { title: 'Internal page', value: 'internal' },
-          { title: 'Email', value: 'email' },
-          { title: 'Anchor', value: 'anchor' },
+          { title: 'Web address (URL)', value: 'url' },
+          { title: 'Page on this site', value: 'internal' },
+          { title: 'Email address', value: 'email' },
+          { title: 'Jump to section', value: 'anchor' },
         ],
         layout: 'radio',
       },
@@ -26,16 +27,19 @@ export const link = defineType({
     },
     {
       name: 'url',
-      title: 'URL',
+      title: 'Web address',
       type: 'url',
+      description:
+        'Full URL including https:// — or a relative path like /about.',
       validation: (Rule) =>
         Rule.uri({ allowRelative: true, scheme: ['http', 'https'] }),
       hidden: ({ parent }) => parent?.type !== 'url',
     },
     {
       name: 'internalLink',
-      title: 'Internal page',
+      title: 'Page on this site',
       type: 'reference',
+      description: 'Pick an existing page. The URL is generated automatically.',
       to: [
         { type: 'pages' },
         { type: 'blogPosts' },
@@ -49,14 +53,15 @@ export const link = defineType({
       name: 'email',
       title: 'Email address',
       type: 'string',
+      description: 'e.g. hello@gatherground.co.uk',
       hidden: ({ parent }) => parent?.type !== 'email',
     },
     {
       name: 'anchor',
-      title: 'Anchor ID',
+      title: 'Section to jump to',
       type: 'string',
       description:
-        'The ID of the section to scroll to, without the # (e.g. "about-us")',
+        'The section name to scroll to — without the # symbol (e.g. "about-us"). Ask a developer if you\'re unsure of the section name.',
       hidden: ({ parent }) => parent?.type !== 'anchor',
       validation: (Rule) =>
         Rule.custom((value, context) => {

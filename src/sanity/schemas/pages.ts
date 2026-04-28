@@ -19,41 +19,46 @@ export const pages = defineType({
     }),
     defineField({
       name: 'slug',
-      title: 'Slug',
+      title: 'URL path',
       type: 'slug',
+      description:
+        'The web address for this page — click Generate to create it from the title.',
       options: { source: 'title' },
       validation: (Rule) => Rule.required(),
       group: 'content',
     }),
     defineField({
       name: 'metaTitle',
-      title: 'Meta title',
+      title: 'Search engine title (optional)',
       type: 'string',
       description:
-        'Overrides the auto-generated page title. Leave blank to use the content title + site name.',
+        'A custom title shown in Google results and the browser tab. Leave blank to use the page title automatically.',
       group: 'seo',
     }),
     defineField({
       name: 'metaDescription',
-      title: 'Meta description',
+      title: 'Search engine description (optional)',
       type: 'text',
       rows: 3,
       description:
-        'SEO description shown in search results and social cards. Recommended maximum: 160 characters.',
+        'A short summary shown in Google results. Keep it under 160 characters. Leave blank for the auto-generated version.',
       validation: (Rule) => Rule.max(160),
       group: 'seo',
     }),
     defineField({
       name: 'ogImage',
-      title: 'Social share image',
+      title: 'Social sharing image (optional)',
       type: 'image',
-      description: 'Image used for Open Graph / Twitter cards.',
+      description:
+        'The image shown when someone shares this page on social media. Recommended: 1200 × 630 px.',
       group: 'seo',
     }),
     defineField({
       name: 'body',
-      title: 'Body sections',
+      title: 'Page sections',
       type: 'array',
+      description:
+        'Build the page by adding sections. Click + to add a new section.',
       group: 'content',
       of: [
         defineArrayMember({ type: 'heroSection' }),

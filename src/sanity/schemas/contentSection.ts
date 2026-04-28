@@ -14,7 +14,7 @@ export const contentFeatureItem = defineType({
     }),
     defineField({
       name: 'body',
-      title: 'Body',
+      title: 'Description',
       type: 'text',
       rows: 2,
       validation: (Rule) => Rule.required(),
@@ -36,7 +36,7 @@ export const contentIconFeature = defineType({
       title: 'Icon name',
       type: 'string',
       description:
-        'Name of icon from @untitledui-pro/icons/line (e.g. MessageChatCircle)',
+        'The name of a Untitled UI icon (e.g. "MessageChatCircle"). Ask a developer for the list of available names.',
     }),
     defineField({
       name: 'heading',
@@ -46,7 +46,7 @@ export const contentIconFeature = defineType({
     }),
     defineField({
       name: 'body',
-      title: 'Body',
+      title: 'Description',
       type: 'text',
       rows: 2,
       validation: (Rule) => Rule.required(),
@@ -68,14 +68,29 @@ export const contentSection = defineType({
   fields: [
     defineField({
       name: 'variant',
-      title: 'Variant',
+      title: 'Layout style',
       type: 'string',
+      description: 'Choose how this section is arranged on the page.',
       options: {
         list: [
-          { title: 'Simple', value: 'simple' },
-          { title: 'Alternating', value: 'alternating' },
-          { title: 'Icons with Featured Image', value: 'icons-featured-image' },
-          { title: 'Title', value: 'title' },
+          {
+            title: 'Simple — heading, text, and a list of features',
+            value: 'simple',
+          },
+          {
+            title: 'Alternating — text on one side, image on the other',
+            value: 'alternating',
+          },
+          {
+            title:
+              'Icons with large image — icon features above a full-width image',
+            value: 'icons-featured-image',
+          },
+          {
+            title:
+              'Title only — a heading and text block (no features or images)',
+            value: 'title',
+          },
         ],
       },
       initialValue: 'simple',
@@ -83,8 +98,10 @@ export const contentSection = defineType({
     }),
     defineField({
       name: 'eyebrow',
-      title: 'Eyebrow',
+      title: 'Tag line',
       type: 'string',
+      description:
+        'A short label shown above the heading in small text (e.g. "Why choose us"). Optional.',
       hidden: ({ parent }) =>
         parent?.variant !== 'icons-featured-image' &&
         parent?.variant !== 'title',
@@ -94,7 +111,7 @@ export const contentSection = defineType({
       title: 'Icon name',
       type: 'string',
       description:
-        'Name of icon from @untitledui-pro/icons/line (e.g. ZapFast)',
+        'The name of a Untitled UI icon (e.g. "ZapFast"). Ask a developer for the list of available names. Optional.',
       hidden: ({ parent }) =>
         parent?.variant !== 'simple' && parent?.variant !== 'alternating',
     }),
@@ -106,7 +123,7 @@ export const contentSection = defineType({
     }),
     defineField({
       name: 'body',
-      title: 'Body',
+      title: 'Description',
       type: 'text',
       rows: 3,
       validation: (Rule) => Rule.required(),
@@ -115,13 +132,17 @@ export const contentSection = defineType({
       name: 'features',
       title: 'Features',
       type: 'array',
+      description:
+        'A list of feature highlights, each with a heading and short description.',
       of: [defineArrayMember({ type: 'contentFeatureItem' })],
       hidden: ({ parent }) => parent?.variant !== 'simple',
     }),
     defineField({
       name: 'iconFeatures',
-      title: 'Icon Features',
+      title: 'Icon features',
       type: 'array',
+      description:
+        'Up to 2 features, each with an icon, heading, and description.',
       of: [defineArrayMember({ type: 'contentIconFeature' })],
       validation: (Rule) => Rule.max(2),
       hidden: ({ parent }) => parent?.variant !== 'icons-featured-image',
@@ -130,13 +151,16 @@ export const contentSection = defineType({
       name: 'checklistItems',
       title: 'Checklist items',
       type: 'text',
-      description: 'One item per line. Each line becomes a checklist entry.',
+      description:
+        'Type one item per line. Each line becomes a tick-mark item on the page.',
       hidden: ({ parent }) => parent?.variant !== 'alternating',
     }),
     defineField({
       name: 'image',
       title: 'Image',
       type: 'image',
+      description:
+        'Recommended: at least 800 × 600 px. Use the hotspot to control the focal point when cropped.',
       options: { hotspot: true },
       hidden: ({ parent }) =>
         parent?.variant !== 'alternating' &&
@@ -146,6 +170,7 @@ export const contentSection = defineType({
       name: 'imagePosition',
       title: 'Image position',
       type: 'string',
+      description: 'Which side the image appears on.',
       options: {
         list: [
           { title: 'Left', value: 'left' },
@@ -157,12 +182,12 @@ export const contentSection = defineType({
     }),
     defineField({
       name: 'align',
-      title: 'Alignment',
+      title: 'Text alignment',
       type: 'string',
       options: {
         list: [
           { title: 'Left', value: 'left' },
-          { title: 'Center', value: 'center' },
+          { title: 'Centre', value: 'center' },
         ],
       },
       initialValue: 'left',
@@ -170,8 +195,10 @@ export const contentSection = defineType({
     }),
     defineField({
       name: 'dark',
-      title: 'Dark variant',
+      title: 'Dark background',
       type: 'boolean',
+      description:
+        'Turn this on to show the section with a dark background and light text.',
       initialValue: false,
     }),
   ],

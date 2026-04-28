@@ -14,15 +14,18 @@ export const testimonialsSection = defineType({
     }),
     defineField({
       name: 'subCopy',
-      title: 'Sub-copy',
+      title: 'Supporting text',
       type: 'text',
       rows: 3,
+      description: 'A short paragraph shown below the heading.',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'testimonials',
       title: 'Testimonials',
       type: 'array',
+      description:
+        'Pick existing testimonials. Create new ones under Testimonials in the sidebar.',
       of: [
         defineArrayMember({
           type: 'reference',

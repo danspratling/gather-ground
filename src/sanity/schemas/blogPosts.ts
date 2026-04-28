@@ -19,8 +19,10 @@ export const blogPosts = defineType({
     }),
     defineField({
       name: 'slug',
-      title: 'Slug',
+      title: 'URL path',
       type: 'slug',
+      description:
+        'The part of the web address after /blog/ — click Generate to create it from the title.',
       options: { source: 'title' },
       group: 'content',
       validation: (Rule) =>
@@ -40,22 +42,28 @@ export const blogPosts = defineType({
       name: 'image',
       title: 'Cover image',
       type: 'image',
+      description:
+        'The main image shown at the top of the post and on cards. Recommended: at least 1200 × 630 px, landscape.',
       options: { hotspot: true },
       validation: (Rule) => Rule.required(),
       group: 'content',
     }),
     defineField({
       name: 'excerpt',
-      title: 'Excerpt',
+      title: 'Short summary',
       type: 'text',
       rows: 3,
+      description:
+        'Shown on blog cards and in search results. Keep it to 1–2 sentences.',
       validation: (Rule) => Rule.required(),
       group: 'content',
     }),
     defineField({
       name: 'categories',
-      title: 'Categories',
+      title: 'Tags',
       type: 'array',
+      description:
+        'Add tags to help visitors filter posts (e.g. "Recipes", "Farm news"). Type and press Enter to add.',
       of: [defineArrayMember({ type: 'string' })],
       options: { layout: 'tags' },
       group: 'content',
@@ -69,25 +77,27 @@ export const blogPosts = defineType({
     }),
     defineField({
       name: 'publishedAt',
-      title: 'Published at',
+      title: 'Published date',
       type: 'datetime',
+      description:
+        'When the post was published. Used for ordering and shown on the post page.',
       group: 'content',
     }),
     defineField({
       name: 'metaTitle',
-      title: 'Meta title',
+      title: 'Search engine title (optional)',
       type: 'string',
       description:
-        'Overrides the auto-generated page title. Leave blank to use the post title + site name.',
+        'A custom title shown in Google results. Leave blank to use the post title automatically.',
       group: 'seo',
     }),
     defineField({
       name: 'metaDescription',
-      title: 'Meta description',
+      title: 'Search engine description (optional)',
       type: 'text',
       rows: 3,
       description:
-        'Overrides the auto-generated description. Leave blank to use the excerpt. Recommended maximum: 160 characters.',
+        'A custom description shown in Google results. Leave blank to use the short summary. Keep it under 160 characters.',
       validation: (Rule) => Rule.max(160),
       group: 'seo',
     }),

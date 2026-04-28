@@ -12,50 +12,53 @@ export const blogPage = defineType({
   fields: [
     defineField({
       name: 'metaTitle',
-      title: 'Meta title',
+      title: 'Search engine title (optional)',
       type: 'string',
       description:
-        'Overrides the auto-generated page title. Leave blank to use "Blog | {site name}".',
+        'A custom title shown in Google results. Leave blank to use "Blog | site name" automatically.',
       group: 'seo',
     }),
     defineField({
       name: 'metaDescription',
-      title: 'Meta description',
+      title: 'Search engine description (optional)',
       type: 'text',
       rows: 3,
       description:
-        'Overrides the auto-generated description. Leave blank to use the hero sub-copy. Recommended maximum: 160 characters.',
+        'A short summary shown in Google results. Leave blank to use the hero text. Keep it under 160 characters.',
       validation: (Rule) => Rule.max(160),
       group: 'seo',
     }),
     defineField({
       name: 'heroEyebrow',
-      title: 'Hero eyebrow',
+      title: 'Tag line',
       type: 'string',
+      description:
+        'A short label shown in small text above the heading (e.g. "Blog").',
       initialValue: 'Blog',
       group: 'content',
     }),
     defineField({
       name: 'heroHeading',
-      title: 'Hero heading',
+      title: 'Heading',
       type: 'string',
       validation: (Rule) => Rule.required(),
       group: 'content',
     }),
     defineField({
       name: 'heroSubCopy',
-      title: 'Hero sub-copy',
+      title: 'Supporting text',
       type: 'text',
       rows: 3,
+      description: 'A short paragraph shown below the heading.',
       validation: (Rule) => Rule.required(),
       group: 'content',
     }),
     defineField({
       name: 'heroPrivacyPolicyLink',
-      title: 'Privacy policy page',
+      title: 'Email signup privacy page',
       type: 'link',
       description:
-        'When set, an email capture form is shown in the hero. Leave blank to hide the form.',
+        'When set, an email signup form is shown in the hero area with a link to this privacy page. Leave blank to hide the form.',
       group: 'content',
     }),
   ],

@@ -14,16 +14,18 @@ export const contactHero = defineType({
     }),
     defineField({
       name: 'body',
-      title: 'Body text',
+      title: 'Description (optional)',
       type: 'text',
       rows: 3,
+      description:
+        'A short paragraph shown below the heading. Leave blank to hide.',
     }),
     defineField({
       name: 'mapEmbedUrl',
-      title: 'Map embed URL',
+      title: 'Google Maps embed link',
       type: 'url',
       description:
-        'Google Maps embed URL (from Share → Embed a map → copy src attribute)',
+        'To get this: open Google Maps → find the location → click Share → Embed a map → copy the URL from the src="…" part of the code.',
       validation: (Rule) =>
         Rule.required()
           .uri({ scheme: ['https'] })
@@ -31,14 +33,15 @@ export const contactHero = defineType({
             if (!val) return true;
             if (val.startsWith('https://www.google.com/maps/embed'))
               return true;
-            return 'Must be a Google Maps embed URL (https://www.google.com/maps/embed...)';
+            return 'This must be a Google Maps embed link (starts with https://www.google.com/maps/embed…)';
           }),
     }),
     defineField({
       name: 'mapTitle',
-      title: 'Map title',
+      title: 'Map label for screen readers',
       type: 'string',
-      description: 'Accessible label for the map iframe',
+      description:
+        'A short description of what the map shows, for visitors using screen readers (e.g. "Our farm location").',
       initialValue: 'Our location',
     }),
   ],
