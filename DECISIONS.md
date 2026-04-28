@@ -590,6 +590,7 @@ When you make a decision that future-you (or Claude Code) might question, add it
 **Reasoning:** Storybook is a component visualiser. A story for a non-UI component renders a blank canvas — it tests nothing, documents nothing, and adds noise to the story list. If behaviour testing is needed for a non-UI component, a unit test (`vitest`) is the appropriate tool.
 
 **Rules:**
+
 1. No `.stories.ts` file for any component whose rendered output is invisible (e.g. `<script>`, `<link>`, `<meta>`, empty `<div>`).
 2. If logic in a non-UI component warrants testing, write a Vitest unit test instead.
 3. PR reviewers should reject stories for non-UI components.
@@ -608,13 +609,18 @@ When you make a decision that future-you (or Claude Code) might question, add it
 **Decision:** Analytics components check `localStorage` on page load and also listen for the `cookie-consent-accepted` window event. Initialisation happens whichever comes first — no page reload is required after late consent.
 
 **Implementation pattern (Clarity.astro):**
+
 ```js
-function initClarity() { /* inject script tag */ }
+function initClarity() {
+  /* inject script tag */
+}
 
 if (localStorage.getItem('cookie-consent') === 'accepted') {
   initClarity();
 } else {
-  window.addEventListener('cookie-consent-accepted', initClarity, { once: true });
+  window.addEventListener('cookie-consent-accepted', initClarity, {
+    once: true,
+  });
 }
 ```
 

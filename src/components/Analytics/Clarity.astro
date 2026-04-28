@@ -22,10 +22,14 @@ const { projectId } = Astro.props;
     })(window, document, 'clarity', 'script', projectId);
   }
 
-  if (
-    typeof localStorage !== 'undefined' &&
-    localStorage.getItem('cookie-consent') === 'accepted'
-  ) {
+  let alreadyAccepted = false;
+  try {
+    alreadyAccepted = localStorage.getItem('cookie-consent') === 'accepted';
+  } catch {
+    // localStorage blocked (privacy mode) — treat as not accepted
+  }
+
+  if (alreadyAccepted) {
     initClarity();
   } else {
     window.addEventListener('cookie-consent-accepted', initClarity, {
