@@ -3,7 +3,7 @@
 import LocationMap from './LocationMap.astro';
 
 const meta = {
-  title: 'Sections/Location Map',
+  title: 'Core/Location Map',
   component: LocationMap,
   parameters: {
     design: {
