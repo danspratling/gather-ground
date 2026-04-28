@@ -2,7 +2,7 @@ import { defineField, defineType, defineArrayMember } from 'sanity';
 
 export const legalPages = defineType({
   name: 'legalPages',
-  title: 'Legal Page',
+  title: 'Legal Pages',
   type: 'document',
   fields: [
     defineField({
