@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity';
+import { defineField, defineType, defineArrayMember } from 'sanity';
 
 export const legalPage = defineType({
   name: 'legalPage',
@@ -16,13 +16,22 @@ export const legalPage = defineType({
       title: 'Slug',
       type: 'slug',
       options: { source: 'title' },
-      validation: (r) => r.required(),
+      validation: (r) =>
+        r.required().custom((value) => {
+          const slug = value?.current;
+          if (!slug) return true;
+          if (slug.includes('/')) return 'Slug must not contain slashes.';
+          return true;
+        }),
     }),
     defineField({
       name: 'body',
       title: 'Body',
       type: 'array',
-      of: [{ type: 'block' }],
+      of: [defineArrayMember({ type: 'block' })],
+      validation: (r) => r.required(),
     }),
   ],
 });
+
+export default null;

@@ -6,8 +6,15 @@ const meta: Meta<typeof CookieBanner> = {
   component: CookieBanner,
   parameters: {
     renderer: 'react',
-    design: { type: 'figma', url: '' },
   },
+  decorators: [
+    (Story) => {
+      try {
+        localStorage.removeItem('cookie-consent');
+      } catch {}
+      return <Story />;
+    },
+  ],
 };
 
 export default meta;

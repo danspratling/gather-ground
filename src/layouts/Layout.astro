@@ -310,7 +310,7 @@ const footerProps = {
     <Footer {...footerProps} />
     {/* body-end: cookie banner, analytics */}
     <slot name="body-end" />
-    <CookieBanner client:load />
+    <CookieBanner client:visible />
     <VisualEditing enabled={visualEditingEnabled} />
     {visualEditingEnabled && previewDoc && <PreviewBanner doc={previewDoc} />}
   </body>
