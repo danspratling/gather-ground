@@ -36,6 +36,10 @@ Architecture decision log for the Gather Ground website. Read this before changi
 | ADR-030 | storyblokEditable + mkcert for Visual Editor      | CMS          | Superseded by ADR-032 |
 | ADR-031 | Variant mapper stories use the mapper component   | Storybook    | Active                |
 | ADR-032 | Migrate from Storyblok to Sanity                  | CMS          | Active                |
+| ADR-033 | Sanity document type names — singular/plural      | CMS          | Active                |
+| ADR-034 | Internal links must use CMS page references       | CMS          | Active                |
+| ADR-035 | Storybook stories only for components with UI     | Storybook    | Active                |
+| ADR-036 | Analytics consent-gated via event listener        | Analytics    | Active                |
 
 ---
 
@@ -573,3 +577,47 @@ When you make a decision that future-you (or Claude Code) might question, add it
 4. Social link fields (e.g. `siteSettings.socialLinks`) are the exception — they are always external URLs and use a plain `type: 'url'` field directly.
 
 **Consequence:** Developers adding new link fields to any Sanity schema must use `type: 'link'` rather than `type: 'string'`. PR reviewers should reject schemas that use typed string fields for internal navigation.
+
+## ADR-035: Storybook stories only for components with visible UI
+
+**Status:** Accepted
+**Date:** 2026-04-28
+
+**Context:** Some components exist solely to inject markup into `<head>` or load third-party scripts — they have no rendered visual output. Examples: `StructuredData.astro` (emits `<script type="application/ld+json">`), `Clarity.astro` (injects a tracking script). The agent-generated codebase initially gave these components Storybook stories.
+
+**Decision:** A component must only have a Storybook story if it produces visible UI output. Components that exist purely to inject scripts, meta tags, or other non-visual markup do not get stories.
+
+**Reasoning:** Storybook is a component visualiser. A story for a non-UI component renders a blank canvas — it tests nothing, documents nothing, and adds noise to the story list. If behaviour testing is needed for a non-UI component, a unit test (`vitest`) is the appropriate tool.
+
+**Rules:**
+1. No `.stories.ts` file for any component whose rendered output is invisible (e.g. `<script>`, `<link>`, `<meta>`, empty `<div>`).
+2. If logic in a non-UI component warrants testing, write a Vitest unit test instead.
+3. PR reviewers should reject stories for non-UI components.
+
+**Consequence:** `StructuredData` and `Clarity` do not have stories. Future analytics, SEO, or script-injection components follow the same rule.
+
+---
+
+## ADR-036: Analytics initialisation consent-gated via event listener
+
+**Status:** Accepted
+**Date:** 2026-04-28
+
+**Context:** Microsoft Clarity (and any future analytics) must not run until the user accepts cookies, to comply with GDPR/PECR. The `CookieBanner` component stores the user's choice in `localStorage` under the key `cookie-consent` and dispatches a `cookie-consent-accepted` event on `window` when the user accepts.
+
+**Decision:** Analytics components check `localStorage` on page load and also listen for the `cookie-consent-accepted` window event. Initialisation happens whichever comes first — no page reload is required after late consent.
+
+**Implementation pattern (Clarity.astro):**
+```js
+function initClarity() { /* inject script tag */ }
+
+if (localStorage.getItem('cookie-consent') === 'accepted') {
+  initClarity();
+} else {
+  window.addEventListener('cookie-consent-accepted', initClarity, { once: true });
+}
+```
+
+**Reasoning:** Checking only on page load would miss users who accept cookies mid-session without refreshing. Listening only for the event would miss returning visitors who already accepted. Both cases must be handled.
+
+**Consequence:** Any new analytics or tracking script added to the site must follow this two-path pattern. The `cookie-consent-accepted` event name is the contract between `CookieBanner` and all analytics components — do not rename it without updating all listeners.
