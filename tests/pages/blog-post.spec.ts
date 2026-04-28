@@ -33,7 +33,7 @@ async function getFirstPostUrl(baseURL: string): Promise<string | null> {
     }
 
     const html = await res.text();
-    const match = html.match(/href="(\/blog\/[^"]+)"/);
+    const match = html.match(/href="(\/blog\/(?!rss\.xml)[^"]+)"/);
     return match ? match[1] : null;
   } catch (error) {
     if (

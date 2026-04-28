@@ -13,6 +13,7 @@ const {
   ogUrl,
   twitterCard = 'summary_large_image',
   twitterImage,
+  showRssFeed = false,
 } = Astro.props;
 
 const title = stegaClean(rawTitle);
@@ -33,6 +34,16 @@ const resolvedCanonical =
 <title>{title}</title>
 {description && <meta name="description" content={description} />}
 <link rel="canonical" href={resolvedCanonical} />
+{
+  showRssFeed && (
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Gather Ground Blog"
+      href="/blog/rss.xml"
+    />
+  )
+}
 <meta property="og:type" content={ogType} />
 <meta property="og:title" content={title} />
 <meta property="og:site_name" content="Gather Ground" />
