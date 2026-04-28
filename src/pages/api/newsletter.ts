@@ -4,18 +4,21 @@ import { verifyTurnstile } from '@/lib/turnstile';
 
 export const prerender = false;
 
-/** Parse the request body from either JSON or form-urlencoded. */
+/** Parse the request body from JSON or application/x-www-form-urlencoded. */
 async function parseBody(request: Request): Promise<Record<string, unknown>> {
   const contentType = request.headers.get('content-type') ?? '';
   if (contentType.includes('application/json')) {
     return (await request.json()) as Record<string, unknown>;
   }
-  const formData = await request.formData();
-  const obj: Record<string, unknown> = {};
-  formData.forEach((value, key) => {
-    obj[key] = value;
-  });
-  return obj;
+  if (contentType.includes('application/x-www-form-urlencoded')) {
+    const formData = await request.formData();
+    const obj: Record<string, unknown> = {};
+    formData.forEach((value, key) => {
+      obj[key] = value;
+    });
+    return obj;
+  }
+  throw new Error(`Unsupported Content-Type: ${contentType}`);
 }
 
 const jsonHeaders = { 'Content-Type': 'application/json' };
