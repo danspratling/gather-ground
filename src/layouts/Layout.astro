@@ -195,6 +195,7 @@ const headerProps = {
   ctaHref: siteSettings?.headerCtaLink
     ? resolveSanityLink(siteSettings.headerCtaLink)
     : '/signup',
+  actions: siteSettings?.headerCtaLabel ? 'buttons' : 'icons',
   loginLabel: 'Log in',
   loginHref: '/login',
   accountHref: '/account',
