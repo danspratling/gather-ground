@@ -25,11 +25,13 @@ export const contactHero = defineType({
       description:
         'Google Maps embed URL (from Share → Embed a map → copy src attribute)',
       validation: (Rule) =>
-        Rule.uri({ scheme: ['https'] }).custom((val) => {
-          if (!val) return true;
-          if (val.startsWith('https://www.google.com/maps/embed')) return true;
-          return 'Must be a Google Maps embed URL (https://www.google.com/maps/embed...)';
-        }),
+        Rule.required()
+          .uri({ scheme: ['https'] })
+          .custom((val) => {
+            if (!val) return true;
+            if (val.startsWith('https://www.google.com/maps/embed')) return true;
+            return 'Must be a Google Maps embed URL (https://www.google.com/maps/embed...)';
+          }),
     }),
     defineField({
       name: 'mapTitle',
