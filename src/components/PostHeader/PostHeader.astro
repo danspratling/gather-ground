@@ -61,7 +61,12 @@ const {
       src={heroImage}
       alt={heroImageAlt}
       class="w-full aspect-[4/3] lg:aspect-[1216/640] object-cover block rounded-xl"
+      width={1216}
+      height={640}
       loading="eager"
+      decoding="async"
+      fetchpriority="high"
+      sizes="(max-width: 768px) 100vw, 1216px"
     />
   </div>
 

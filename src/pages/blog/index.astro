@@ -58,14 +58,20 @@ const posts = (rawPosts ?? []).map((post) => {
       })
     : '';
   return {
-    image: sanityImageSrc(post.image as { asset?: { _ref: string } }),
+    image: sanityImageSrc(post.image as { asset?: { _ref: string } }, {
+      width: 824,
+      quality: 80,
+    }),
     imageAlt: sanityImageAlt(post.image, post.title),
     title: post.title,
     excerpt: post.excerpt,
     date,
     authorName: post.author?.name ?? '',
     authorImage: post.author?.avatar
-      ? sanityImageSrc(post.author.avatar as { asset?: { _ref: string } })
+      ? sanityImageSrc(post.author.avatar as { asset?: { _ref: string } }, {
+          width: 96,
+          quality: 80,
+        })
       : '',
     authorImageAlt: post.author?.name ?? '',
     href: `/blog/${post.slug}`,

@@ -47,7 +47,10 @@ export default function BlogCard({
             'w-full object-cover transition-transform duration-300 group-hover:scale-105',
             variant === 'homepage' ? 'h-56' : 'h-48'
           )}
+          width={600}
+          height={variant === 'homepage' ? 224 : 192}
           loading="lazy"
+          decoding="async"
         />
       </div>
       <div className="flex flex-col gap-3">
@@ -57,6 +60,10 @@ export default function BlogCard({
               src={authorImage}
               alt={authorImageAlt ?? authorName}
               className="size-8 rounded-full object-cover"
+              width={32}
+              height={32}
+              loading="lazy"
+              decoding="async"
             />
             <div className="flex flex-col">
               <span className="text-sm font-semibold text-brand-700">

@@ -47,7 +47,12 @@ const { headline, subCopy, primaryCta, secondaryCta, image } = Astro.props;
             src={image.src}
             alt={image.alt}
             class="w-full aspect-[4/3] lg:aspect-[1216/516] object-cover rounded-2xl"
+            width={1216}
+            height={516}
             loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            sizes="(max-width: 768px) 100vw, 1216px"
           />
         </div>
       )

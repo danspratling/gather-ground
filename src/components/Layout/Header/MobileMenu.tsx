@@ -73,7 +73,13 @@ export default function MobileMenu({
               aria-label={logoAlt}
               className="flex items-center gap-2"
             >
-              <img src={logoSrc} alt={logoAlt} className="h-8 w-auto" />
+              <img
+                src={logoSrc}
+                alt={logoAlt}
+                className="h-8 w-auto"
+                width={120}
+                height={32}
+              />
             </a>
             <button
               type="button"
