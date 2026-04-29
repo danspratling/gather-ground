@@ -2,7 +2,8 @@ import { type QueryParams } from 'sanity';
 import { sanityClient } from 'sanity:client';
 
 const visualEditingEnabled =
-  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true';
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true' ||
+  import.meta.env.PROD === false;
 const token = import.meta.env.SANITY_API_READ_TOKEN;
 
 /**

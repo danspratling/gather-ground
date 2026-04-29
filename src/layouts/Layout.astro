@@ -16,8 +16,12 @@ import { resolveSanityLink } from '@/lib/sanityLink';
 import { buildOrganization, buildWebPage } from '@/lib/structuredData';
 import '@/styles/global.css';
 
+// Visual editing is on when explicitly enabled OR when running in a non-production environment
+// (Vercel preview deploys, local dev). Production static builds never hydrate the overlay.
 const visualEditingEnabled =
-  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true';
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true' ||
+  import.meta.env.PROD === false ||
+  (typeof process !== 'undefined' && process.env.VERCEL_ENV === 'preview');
 
 interface Props {
   title: string;

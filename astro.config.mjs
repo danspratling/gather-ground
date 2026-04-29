@@ -9,12 +9,20 @@ import mkcert from 'vite-plugin-mkcert';
 
 import sitemap from '@astrojs/sitemap';
 
-const env = loadEnv('', process.cwd(), ['SANITY', 'PUBLIC_SANITY']);
+const env = loadEnv('', process.cwd(), [
+  'SANITY',
+  'PUBLIC_SANITY',
+  'PUBLIC_STUDIO',
+]);
+
+// Vercel sets VERCEL_ENV to 'production', 'preview', or 'development'.
+// Locally it's undefined — treat the same as preview (SSR + Studio).
+const isProduction = process.env.VERCEL_ENV === 'production';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://gatherground.co.uk',
-  output: 'static',
+  output: isProduction ? 'static' : 'server',
   adapter: vercel(),
   vite: {
     plugins: [tailwindcss(), mkcert()],
@@ -46,8 +54,8 @@ export default defineConfig({
     sanity({
       projectId: env.SANITY_PROJECT_ID,
       dataset: env.SANITY_DATASET || 'production',
-      useCdn: false, // Static build — no CDN needed at request time
-      studioBasePath: '/studio',
+      useCdn: isProduction, // CDN for static prod, live API for preview/dev
+      ...(isProduction ? {} : { studioBasePath: '/studio' }),
     }),
     sitemap({
       filter: (page) => !page.includes('/studio'),
