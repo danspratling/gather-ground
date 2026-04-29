@@ -36,7 +36,7 @@ const TestimonialCard = ({
     <blockquote className="text-base font-normal text-gray-900">
       &ldquo;{quote}&rdquo;
     </blockquote>
-    <p className="text-sm font-medium text-gray-600">{author}</p>
+    <p className="text-sm font-medium text-brand-500">{author}</p>
   </article>
 );
 

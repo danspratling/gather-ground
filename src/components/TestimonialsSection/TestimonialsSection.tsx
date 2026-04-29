@@ -77,7 +77,7 @@ export default function TestimonialsSection({
           <h2 className="text-display-md font-semibold tracking-display-md text-gray-900">
             {heading}
           </h2>
-          <p className="text-xl text-gray-600">{subCopy}</p>
+          <p className="text-xl text-brand-500">{subCopy}</p>
         </div>
         <div className="lg:flex-1">
           <ShadcnCarousel
@@ -108,7 +108,7 @@ export default function TestimonialsSection({
                       </div>
                     ) : (
                       testimonial.platform && (
-                        <p className="text-sm font-medium text-gray-600">
+                        <p className="text-sm font-medium text-brand-500">
                           {platformLabel[testimonial.platform]}
                         </p>
                       )
@@ -133,7 +133,7 @@ export default function TestimonialsSection({
                           {testimonial.author.name}
                         </span>
                         {testimonial.author.secondary && (
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm text-brand-500">
                             {testimonial.author.secondary}
                           </span>
                         )}
