@@ -32,6 +32,10 @@ function ProductImageCard({
             src={image}
             alt=""
             className="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105 group-focus:scale-105"
+            width={600}
+            height={256}
+            loading="lazy"
+            decoding="async"
           />
         </div>
         <div className="flex items-center justify-between gap-4 p-4">

@@ -41,6 +41,10 @@ const { heading, body, primaryCta, secondaryCta, image } = Astro.props;
       src={image.src}
       alt={image.alt}
       class="w-full lg:flex-1 rounded-2xl object-cover aspect-square"
+      width={800}
+      height={800}
+      loading="lazy"
+      decoding="async"
     />
   </div>
 </section>

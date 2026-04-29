@@ -31,7 +31,12 @@ const {
       src={image}
       alt={imageAlt}
       class="h-64 w-full object-cover transition-transform duration-300 hover:scale-105 lg:h-full lg:aspect-[824/412]"
+      width={824}
+      height={412}
       loading="eager"
+      decoding="async"
+      fetchpriority="high"
+      sizes="(max-width: 1024px) 100vw, 60vw"
     />
   </a>
   <div class="flex flex-col gap-6 lg:flex-[2_0_0] lg:min-w-0 lg:max-w-[360px]">
@@ -55,6 +60,10 @@ const {
         src={authorImage}
         alt={authorImageAlt}
         class="size-10 rounded-full object-cover border border-black/5"
+        width={40}
+        height={40}
+        loading="lazy"
+        decoding="async"
       />
       <div class="flex flex-col">
         <span class="text-sm font-semibold text-brand-900">{authorName}</span>

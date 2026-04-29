@@ -24,9 +24,16 @@ function arr(value: unknown): Dict[] {
   return (Array.isArray(value) ? value : []) as Dict[];
 }
 
-function img(image: unknown, fallbackAlt?: string) {
+function img(
+  image: unknown,
+  fallbackAlt?: string,
+  options?: { width?: number; height?: number; quality?: number }
+) {
   return {
-    src: sanityImageSrc(image as { asset?: { _ref: string } }),
+    src: sanityImageSrc(
+      image as { asset?: { _ref: string } },
+      options ?? { width: 800, quality: 80 }
+    ),
     alt: sanityImageAlt(image as { alt?: string }, fallbackAlt),
   };
 }
@@ -55,7 +62,9 @@ export function heroSectionProps(s: Dict) {
       href: resolveSanityLink(s.primaryCtaHref),
     },
     secondaryCta: cta(s.secondaryCtaLabel, s.secondaryCtaHref),
-    image: s.image ? img(s.image) : undefined,
+    image: s.image
+      ? img(s.image, undefined, { width: 1216, quality: 80 })
+      : undefined,
   };
 }
 
@@ -67,7 +76,10 @@ export function productsSectionProps(s: Dict) {
     heading: s.heading as string,
     subCopy: s.subCopy as string,
     products: arr(s.products).map((p) => ({
-      image: sanityImageSrc(p.image as { asset?: { _ref: string } }),
+      image: sanityImageSrc(p.image as { asset?: { _ref: string } }, {
+        width: 600,
+        quality: 80,
+      }),
       imageAlt: sanityImageAlt(p.image as { alt?: string }),
       title: p.title as string,
       description:
@@ -88,7 +100,10 @@ export function testimonialsSectionProps(s: Dict) {
           (t.platform as TestimonialsSectionTestimonial['platform']) ||
           undefined,
         author: {
-          src: sanityImageSrc(t.authorImage as { asset?: { _ref: string } }),
+          src: sanityImageSrc(t.authorImage as { asset?: { _ref: string } }, {
+            width: 96,
+            quality: 80,
+          }),
           alt: sanityImageAlt(t.authorImage as { alt?: string }),
           name: t.authorName as string,
           secondary: (t.authorSecondary as string) || undefined,
@@ -142,7 +157,10 @@ export function blogSectionProps(s: Dict) {
     posts: arr(s.posts).map((p) => {
       const author = p.author as Dict | undefined;
       return {
-        image: sanityImageSrc(p.image as { asset?: { _ref: string } }),
+        image: sanityImageSrc(p.image as { asset?: { _ref: string } }, {
+          width: 600,
+          quality: 80,
+        }),
         imageAlt: sanityImageAlt(
           p.image as { alt?: string },
           p.title as string
@@ -152,7 +170,10 @@ export function blogSectionProps(s: Dict) {
         date: formatDate(p.publishedAt as string),
         authorName: (author?.name as string) ?? '',
         authorImage: author?.avatar
-          ? sanityImageSrc(author.avatar as { asset?: { _ref: string } })
+          ? sanityImageSrc(author.avatar as { asset?: { _ref: string } }, {
+              width: 96,
+              quality: 80,
+            })
           : '',
         authorImageAlt: (author?.name as string) ?? '',
         href: '/blog/' + (p.slug as string),

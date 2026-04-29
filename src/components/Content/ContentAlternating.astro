@@ -105,7 +105,10 @@ const IconComponent = icon ? icons[icon as keyof typeof icons] : null;
         src={image.src}
         alt={image.alt}
         class="w-full rounded-2xl object-cover aspect-4/3 lg:aspect-auto lg:h-full"
+        width={800}
+        height={600}
         loading="lazy"
+        decoding="async"
       />
     </div>
   </div>

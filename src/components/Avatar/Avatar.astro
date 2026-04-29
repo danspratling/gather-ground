@@ -29,6 +29,10 @@ const borderClasses = {
 <img
   src={src}
   alt={alt}
+  width={48}
+  height={48}
+  loading="lazy"
+  decoding="async"
   class={cn(
     'rounded-full object-cover border-black/8 shrink-0',
     sizeClasses[size],

@@ -34,17 +34,21 @@ export function sanityImageUrl(source: {
  * to the latter.
  */
 export function sanityImageSrc(
-  source: { asset?: { _ref?: string; _id?: string } } | undefined
+  source: { asset?: { _ref?: string; _id?: string } } | undefined,
+  options?: { width?: number; height?: number; quality?: number }
 ): string {
   const cleaned = stegaClean(source) as
     | { asset?: { _ref?: string; _id?: string } }
     | undefined;
   const id = cleaned?.asset?._ref ?? cleaned?.asset?._id;
   if (!id) return '';
-  return builder
+  let urlBuilder = builder
     .image(cleaned as { asset: { _ref: string } })
-    .auto('format')
-    .url();
+    .auto('format');
+  if (options?.width) urlBuilder = urlBuilder.width(options.width);
+  if (options?.height) urlBuilder = urlBuilder.height(options.height);
+  if (options?.quality) urlBuilder = urlBuilder.quality(options.quality);
+  return urlBuilder.url();
 }
 
 /**

@@ -13,14 +13,20 @@ interface Props {
 }
 
 const { node } = Astro.props;
-const src = sanityImageSrc(node);
+const src = sanityImageSrc(node, { width: 720, quality: 80 });
 const alt = sanityImageAlt(node, '');
 ---
 
 {
   src && (
     <figure class="my-8">
-      <img src={src} alt={alt} loading="lazy" class="w-full rounded-lg" />
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        class="w-full rounded-lg"
+      />
       {node.caption && (
         <figcaption class="text-secondary mt-2 text-sm">
           {node.caption}

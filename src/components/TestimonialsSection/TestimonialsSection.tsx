@@ -122,6 +122,10 @@ export default function TestimonialsSection({
                           src={testimonial.author.src}
                           alt={testimonial.author.alt ?? ''}
                           className="size-10 rounded-full object-cover"
+                          width={40}
+                          height={40}
+                          loading="lazy"
+                          decoding="async"
                         />
                       )}
                       <div className="flex flex-col">
