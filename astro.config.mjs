@@ -16,13 +16,19 @@ const env = loadEnv('', process.cwd(), [
 ]);
 
 // Vercel sets VERCEL_ENV to 'production', 'preview', or 'development'.
-// Locally it's undefined — treat the same as preview (SSR + Studio).
+// Only preview deployments use SSR (for live Studio + visual editing).
+// Everything else (production, CI, local dev server) uses static output.
+// The local `astro dev` command always SSR's regardless of this setting.
+const isPreview = process.env.VERCEL_ENV === 'preview';
 const isProduction = process.env.VERCEL_ENV === 'production';
+// CI sets CI=true; production Vercel sets VERCEL_ENV=production.
+// Mount Studio everywhere except production builds and CI.
+const mountStudio = !isProduction && !process.env.CI;
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://gatherground.co.uk',
-  output: isProduction ? 'static' : 'server',
+  output: isPreview ? 'server' : 'static',
   adapter: vercel(),
   vite: {
     plugins: [tailwindcss(), mkcert()],
@@ -54,8 +60,8 @@ export default defineConfig({
     sanity({
       projectId: env.SANITY_PROJECT_ID,
       dataset: env.SANITY_DATASET || 'production',
-      useCdn: isProduction, // CDN for static prod, live API for preview/dev
-      ...(isProduction ? {} : { studioBasePath: '/studio' }),
+      useCdn: isProduction, // CDN for production static, live API elsewhere
+      ...(mountStudio ? { studioBasePath: '/studio' } : {}),
     }),
     sitemap({
       filter: (page) => !page.includes('/studio'),
