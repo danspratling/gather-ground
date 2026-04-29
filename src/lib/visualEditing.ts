@@ -6,8 +6,10 @@
  *  2. Running on the Astro dev server (import.meta.env.PROD === false), OR
  *  3. Running in a Vercel preview deployment (VERCEL_ENV === "preview").
  *
- * Production builds on Vercel (VERCEL_ENV === "production") do not enable this
- * so the public site never ships stega strings or editing overlays.
+ * Production builds on Vercel (VERCEL_ENV === "production") are disabled by
+ * default, unless PUBLIC_SANITY_VISUAL_EDITING_ENABLED is explicitly set to
+ * "true". That keeps the public site from shipping stega strings or editing
+ * overlays unless production visual editing is intentionally enabled.
  */
 export const isVisualEditingEnabled =
   import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true' ||

@@ -24,7 +24,7 @@ export default defineConfig({
   webServer: {
     // Both CI and local use the dev server.
     // CI skips mkcert (see astro.config.mjs) so it runs plain HTTP.
-    command: 'npm run dev',
+    command: 'npm run dev -- --port 4321 --host localhost',
     url: baseURL,
     ignoreHTTPSErrors: true,
     reuseExistingServer: !isCI,
