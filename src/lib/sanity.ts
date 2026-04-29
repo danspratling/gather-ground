@@ -1,8 +1,7 @@
 import { type QueryParams } from 'sanity';
 import { sanityClient } from 'sanity:client';
+import { isVisualEditingEnabled as visualEditingEnabled } from '@/lib/visualEditing';
 
-const visualEditingEnabled =
-  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true';
 const token = import.meta.env.SANITY_API_READ_TOKEN;
 
 /**

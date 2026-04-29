@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/studio/:path*",
+      "destination": "https://gather-ground.vercel.app/studio/:path*",
+      "statusCode": 307,
+      "has": [
+        {
+          "type": "host",
+          "value": "gatherground.co.uk"
+        }
+      ]
+    }
+  ]
+}

@@ -14,10 +14,8 @@ import { loadQuery } from '@/lib/sanity';
 import { siteSettingsQuery } from '@/lib/queries';
 import { resolveSanityLink } from '@/lib/sanityLink';
 import { buildOrganization, buildWebPage } from '@/lib/structuredData';
+import { isVisualEditingEnabled as visualEditingEnabled } from '@/lib/visualEditing';
 import '@/styles/global.css';
-
-const visualEditingEnabled =
-  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true';
 
 interface Props {
   title: string;

@@ -9,12 +9,26 @@ import mkcert from 'vite-plugin-mkcert';
 
 import sitemap from '@astrojs/sitemap';
 
-const env = loadEnv('', process.cwd(), ['SANITY', 'PUBLIC_SANITY']);
+const env = loadEnv('', process.cwd(), [
+  'SANITY',
+  'PUBLIC_SANITY',
+  'PUBLIC_STUDIO',
+]);
+
+// Vercel sets VERCEL_ENV to 'production', 'preview', or 'development'.
+// Only preview deployments use SSR (for live Studio + visual editing).
+// Everything else (production, CI, local dev server) uses static output.
+// The local `astro dev` command always SSR's regardless of this setting.
+const isPreview = process.env.VERCEL_ENV === 'preview';
+const isProduction = process.env.VERCEL_ENV === 'production';
+// CI sets CI=true; production Vercel sets VERCEL_ENV=production.
+// Mount Studio everywhere except production builds and CI.
+const mountStudio = !isProduction && !process.env.CI;
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://gatherground.co.uk',
-  output: 'static',
+  output: isPreview ? 'server' : 'static',
   adapter: vercel(),
   vite: {
     plugins: [tailwindcss(), mkcert()],
@@ -46,8 +60,8 @@ export default defineConfig({
     sanity({
       projectId: env.SANITY_PROJECT_ID,
       dataset: env.SANITY_DATASET || 'production',
-      useCdn: false, // Static build — no CDN needed at request time
-      studioBasePath: '/studio',
+      useCdn: isProduction, // CDN for production static, live API elsewhere
+      ...(mountStudio ? { studioBasePath: '/studio' } : {}),
     }),
     sitemap({
       filter: (page) => !page.includes('/studio'),
