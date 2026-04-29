@@ -130,3 +130,28 @@ jobs:
 
       - name: Astro component + a11y tests (happy-dom)
         run: npm run test-storybook:astro
+
+  lighthouse:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          UNTITLEDUI_TOKEN: ${{ secrets.UNTITLEDUI_TOKEN }}
+
+      - name: Lighthouse CI
+        run: npx @lhci/cli autorun
+        env:
+          SANITY_PROJECT_ID: mrz1ftls
+          SANITY_DATASET: production
+          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
