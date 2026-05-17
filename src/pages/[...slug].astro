@@ -30,10 +30,20 @@ const { data: page } = await loadQuery<{
   autoDescription?: string;
   autoOgImage?: string;
   body: Array<Record<string, unknown> & { _type: string; _key: string }>;
-}>({
+} | null>({
   query: pageBySlugQuery,
   params: { slug: pageSlug },
 });
+
+// Slug not found (e.g. on-demand SSR for unknown URL, or draft/published
+// mismatch during Visual Editing). Render the 404 page with a real 404
+// status — Astro.rewrite serves the /404 route's content at the current
+// URL without issuing a redirect, and Astro.response.status sets the
+// HTTP status code returned to the client.
+if (!page) {
+  Astro.response.status = 404;
+  return Astro.rewrite('/404');
+}
 ---
 
 <Layout

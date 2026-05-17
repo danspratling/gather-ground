@@ -6,11 +6,28 @@
  * like `Array<Record<string, unknown>>` are ambiguous with JSX
  * inside an .astro template body.
  */
+import { stegaClean } from '@sanity/client/stega';
 import type { CallToActionProps } from '@/components/CallToAction/CallToAction.types';
 import type { ContentProps } from '@/components/Content/Content.types';
 import type { TestimonialsSectionTestimonial } from '@/components/TestimonialsSection/TestimonialsSection.types';
 import { resolveSanityLink } from '@/lib/sanityLink';
 import { sanityImageSrc, sanityImageAlt } from '@/lib/sanityImage';
+
+/**
+ * Strip stega-encoded invisible Unicode from a string value.
+ *
+ * Sanity's Visual Editing stega encoding appends invisible characters to
+ * every string field so the overlay can map rendered text back to its source
+ * field. That's fine for user-facing copy (heading, body), but it breaks any
+ * value used for control flow — `'right' + stega chars !== 'right'`, so
+ * equality checks and dispatch-key lookups fail silently.
+ *
+ * Always run enum-like / discriminator values (variant, position, alignment,
+ * icon names, etc.) through this helper before using them.
+ */
+function enumClean<T extends string>(value: T | undefined): T | undefined {
+  return value != null ? (stegaClean(value) as T) : undefined;
+}
 
 export type SanitySection = Record<string, unknown> & {
   _type: string;
@@ -69,7 +86,7 @@ export function heroSectionProps(s: Dict) {
 }
 
 export function productsSectionProps(s: Dict) {
-  const variant = (s.variant as 'cards' | 'carousel') ?? 'cards';
+  const variant = enumClean(s.variant as 'cards' | 'carousel') ?? 'cards';
   return {
     variant,
     eyebrow: s.eyebrow as string,
@@ -97,7 +114,7 @@ export function testimonialsSectionProps(s: Dict) {
       (t) => ({
         quote: t.quote as string,
         platform:
-          (t.platform as TestimonialsSectionTestimonial['platform']) ||
+          enumClean(t.platform as TestimonialsSectionTestimonial['platform']) ||
           undefined,
         author: {
           src: sanityImageSrc(t.authorImage as { asset?: { _ref: string } }, {
@@ -184,7 +201,7 @@ export function blogSectionProps(s: Dict) {
 
 export function callToActionProps(s: Dict): CallToActionProps {
   const variant =
-    (s.variant as CallToActionProps['variant']) ?? 'simple-centered';
+    enumClean(s.variant as CallToActionProps['variant']) ?? 'simple-centered';
   const base = {
     heading: s.heading as string,
     body: s.body as string,
@@ -200,8 +217,11 @@ export function callToActionProps(s: Dict): CallToActionProps {
   return { variant, ...base };
 }
 
-export function contentSectionProps(s: Dict): ContentProps {
-  const variant = (s.variant as ContentProps['variant']) ?? 'simple';
+export function contentSectionProps(
+  s: Dict,
+  resolvedImagePosition?: 'left' | 'right'
+): ContentProps {
+  const variant = enumClean(s.variant as ContentProps['variant']) ?? 'simple';
   const heading = s.heading as string;
   const body = s.body as string;
   const dark = (s.dark as boolean) ?? false;
@@ -212,10 +232,19 @@ export function contentSectionProps(s: Dict): ContentProps {
       heading,
       body,
       dark,
-      icon: s.icon as string | undefined,
+      icon: enumClean(s.icon as string | undefined),
       checklistItems: s.checklistItems as string | undefined,
       image: img(s.image),
-      imagePosition: (s.imagePosition as 'left' | 'right') ?? 'right',
+      // Position is resolved at the page level by
+      // resolveAlternatingPositions() so consecutive alternating sections
+      // auto-flip. Fall back to the raw value (or 'right') for callers
+      // that don't precompute — e.g. Storybook stories.
+      imagePosition:
+        resolvedImagePosition ??
+        (() => {
+          const raw = enumClean(s.imagePosition as string | undefined);
+          return raw === 'left' || raw === 'right' ? raw : 'right';
+        })(),
     };
   }
   if (variant === 'icons-featured-image') {
@@ -227,7 +256,7 @@ export function contentSectionProps(s: Dict): ContentProps {
       eyebrow: (s.eyebrow as string) ?? '',
       image: img(s.image),
       features: arr(s.iconFeatures).map((f) => ({
-        icon: f.icon as string,
+        icon: enumClean(f.icon as string) ?? '',
         heading: f.heading as string,
         body: f.body as string,
       })),
@@ -240,7 +269,7 @@ export function contentSectionProps(s: Dict): ContentProps {
       body,
       dark,
       eyebrow: (s.eyebrow as string) ?? '',
-      align: (s.align as 'left' | 'center') ?? 'left',
+      align: enumClean(s.align as 'left' | 'center') ?? 'left',
     };
   }
   return {
@@ -248,7 +277,7 @@ export function contentSectionProps(s: Dict): ContentProps {
     heading,
     body,
     dark,
-    icon: s.icon as string | undefined,
+    icon: enumClean(s.icon as string | undefined),
     features: arr(s.features).map((f) => ({
       heading: f.heading as string,
       body: f.body as string,
@@ -263,4 +292,50 @@ export function contactHeroProps(s: Dict) {
     embedUrl: (s.mapEmbedUrl as string) ?? '',
     mapTitle: (s.mapTitle as string) ?? 'Our location',
   };
+}
+
+/**
+ * Resolve image positions for every alternating `contentSection` on a page.
+ *
+ * Behaviour:
+ *  - The first alternating section defaults to image on the right.
+ *  - Each subsequent alternating section flips to the opposite side of the
+ *    previous one (sections of other types in between do not reset it).
+ *  - An explicit `left` or `right` override wins and becomes the new
+ *    baseline that following `auto` sections continue alternating from.
+ *
+ * Returned as a `Map` keyed by Sanity `_key` so the mapper can look the
+ * resolved value up at render time without re-walking the array.
+ */
+export function resolveAlternatingPositions(
+  sections: SanitySection[]
+): Map<string, 'left' | 'right'> {
+  const resolved = new Map<string, 'left' | 'right'>();
+  let last: 'left' | 'right' | null = null;
+
+  for (const section of sections) {
+    if (section._type !== 'contentSection') continue;
+    if (enumClean(section.variant as string | undefined) !== 'alternating') {
+      continue;
+    }
+
+    const override = enumClean(section.imagePosition as string | undefined);
+    let position: 'left' | 'right';
+
+    if (override === 'left' || override === 'right') {
+      position = override;
+    } else if (last === 'right') {
+      position = 'left';
+    } else if (last === 'left') {
+      position = 'right';
+    } else {
+      // First alternating section on the page — start on the right.
+      position = 'right';
+    }
+
+    resolved.set(section._key, position);
+    last = position;
+  }
+
+  return resolved;
 }
