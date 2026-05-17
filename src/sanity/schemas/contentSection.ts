@@ -178,6 +178,8 @@ export const contentSection = defineType({
           { title: 'Left', value: 'left' },
           { title: 'Right', value: 'right' },
         ],
+        layout: 'radio',
+        direction: 'horizontal',
       },
       initialValue: 'auto',
       hidden: ({ parent }) => parent?.variant !== 'alternating',
