@@ -30,10 +30,16 @@ const { data: page } = await loadQuery<{
   autoDescription?: string;
   autoOgImage?: string;
   body: Array<Record<string, unknown> & { _type: string; _key: string }>;
-}>({
+} | null>({
   query: pageBySlugQuery,
   params: { slug: pageSlug },
 });
+
+// Slug not found (e.g. on-demand SSR for unknown URL, or draft/published
+// mismatch during Visual Editing). Return a real 404 instead of throwing.
+if (!page) {
+  return Astro.redirect('/404');
+}
 ---
 
 <Layout
