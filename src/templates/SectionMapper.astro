@@ -23,6 +23,7 @@ import {
   faqSectionProps,
   heroSectionProps,
   productsSectionProps,
+  resolveAlternatingPositions,
   testimonialsSectionProps,
   type SanitySection,
 } from './sectionData';
@@ -32,6 +33,10 @@ interface Props {
 }
 
 const { sections } = Astro.props;
+
+// Pre-compute resolved left/right placement for every alternating
+// contentSection on the page so they auto-flip across the layout.
+const alternatingPositions = resolveAlternatingPositions(sections);
 ---
 
 {
@@ -57,7 +62,14 @@ const { sections } = Astro.props;
       case 'contactHero':
         return <ContactHero {...contactHeroProps(section)} />;
       case 'contentSection':
-        return <Content {...contentSectionProps(section)} />;
+        return (
+          <Content
+            {...contentSectionProps(
+              section,
+              alternatingPositions.get(section._key)
+            )}
+          />
+        );
       default:
         console.warn('[SectionMapper] Unknown section type: ' + section._type);
         return null;

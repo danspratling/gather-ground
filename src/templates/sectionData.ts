@@ -217,7 +217,10 @@ export function callToActionProps(s: Dict): CallToActionProps {
   return { variant, ...base };
 }
 
-export function contentSectionProps(s: Dict): ContentProps {
+export function contentSectionProps(
+  s: Dict,
+  resolvedImagePosition?: 'left' | 'right'
+): ContentProps {
   const variant = enumClean(s.variant as ContentProps['variant']) ?? 'simple';
   const heading = s.heading as string;
   const body = s.body as string;
@@ -232,7 +235,16 @@ export function contentSectionProps(s: Dict): ContentProps {
       icon: enumClean(s.icon as string | undefined),
       checklistItems: s.checklistItems as string | undefined,
       image: img(s.image),
-      imagePosition: enumClean(s.imagePosition as 'left' | 'right') ?? 'right',
+      // Position is resolved at the page level by
+      // resolveAlternatingPositions() so consecutive alternating sections
+      // auto-flip. Fall back to the raw value (or 'right') for callers
+      // that don't precompute — e.g. Storybook stories.
+      imagePosition:
+        resolvedImagePosition ??
+        (() => {
+          const raw = enumClean(s.imagePosition as string | undefined);
+          return raw === 'left' || raw === 'right' ? raw : 'right';
+        })(),
     };
   }
   if (variant === 'icons-featured-image') {
@@ -280,4 +292,50 @@ export function contactHeroProps(s: Dict) {
     embedUrl: (s.mapEmbedUrl as string) ?? '',
     mapTitle: (s.mapTitle as string) ?? 'Our location',
   };
+}
+
+/**
+ * Resolve image positions for every alternating `contentSection` on a page.
+ *
+ * Behaviour:
+ *  - The first alternating section defaults to image on the right.
+ *  - Each subsequent alternating section flips to the opposite side of the
+ *    previous one (sections of other types in between do not reset it).
+ *  - An explicit `left` or `right` override wins and becomes the new
+ *    baseline that following `auto` sections continue alternating from.
+ *
+ * Returned as a `Map` keyed by Sanity `_key` so the mapper can look the
+ * resolved value up at render time without re-walking the array.
+ */
+export function resolveAlternatingPositions(
+  sections: SanitySection[]
+): Map<string, 'left' | 'right'> {
+  const resolved = new Map<string, 'left' | 'right'>();
+  let last: 'left' | 'right' | null = null;
+
+  for (const section of sections) {
+    if (section._type !== 'contentSection') continue;
+    if (enumClean(section.variant as string | undefined) !== 'alternating') {
+      continue;
+    }
+
+    const override = enumClean(section.imagePosition as string | undefined);
+    let position: 'left' | 'right';
+
+    if (override === 'left' || override === 'right') {
+      position = override;
+    } else if (last === 'right') {
+      position = 'left';
+    } else if (last === 'left') {
+      position = 'right';
+    } else {
+      // First alternating section on the page — start on the right.
+      position = 'right';
+    }
+
+    resolved.set(section._key, position);
+    last = position;
+  }
+
+  return resolved;
 }

@@ -170,14 +170,16 @@ export const contentSection = defineType({
       name: 'imagePosition',
       title: 'Image position',
       type: 'string',
-      description: 'Which side the image appears on.',
+      description:
+        'Automatic: alternates with previous alternating-content sections on the page (first one starts on the right). Use Left or Right to override; following Automatic sections will continue alternating from your chosen side.',
       options: {
         list: [
+          { title: 'Automatic', value: 'auto' },
           { title: 'Left', value: 'left' },
           { title: 'Right', value: 'right' },
         ],
       },
-      initialValue: 'right',
+      initialValue: 'auto',
       hidden: ({ parent }) => parent?.variant !== 'alternating',
     }),
     defineField({
