@@ -31,19 +31,33 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const input = canvas.getByRole('textbox', { name: /email address/i });
-    const button = canvas.getByRole('button', { name: /subscribe/i });
+    // The component submits to /api/newsletter, which doesn't exist in the
+    // static Storybook sandbox (Chromatic). Stub fetch so the success branch
+    // renders deterministically.
+    const originalFetch = window.fetch;
+    window.fetch = async () =>
+      new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-    await expect(input).toBeInTheDocument();
-    await expect(button).toBeInTheDocument();
+    try {
+      const input = canvas.getByRole('textbox', { name: /email address/i });
+      const button = canvas.getByRole('button', { name: /subscribe/i });
 
-    await userEvent.type(input, 'hello@example.com');
-    await expect(input).toHaveValue('hello@example.com');
+      await expect(input).toBeInTheDocument();
+      await expect(button).toBeInTheDocument();
 
-    await userEvent.click(button);
+      await userEvent.type(input, 'hello@example.com');
+      await expect(input).toHaveValue('hello@example.com');
 
-    const successMessage = await canvas.findByTestId('success-message');
-    await expect(successMessage).toBeInTheDocument();
+      await userEvent.click(button);
+
+      const successMessage = await canvas.findByTestId('success-message');
+      await expect(successMessage).toBeInTheDocument();
+    } finally {
+      window.fetch = originalFetch;
+    }
   },
 };
 
