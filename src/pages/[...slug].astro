@@ -36,9 +36,13 @@ const { data: page } = await loadQuery<{
 });
 
 // Slug not found (e.g. on-demand SSR for unknown URL, or draft/published
-// mismatch during Visual Editing). Return a real 404 instead of throwing.
+// mismatch during Visual Editing). Render the 404 page with a real 404
+// status — Astro.rewrite serves the /404 route's content at the current
+// URL without issuing a redirect, and Astro.response.status sets the
+// HTTP status code returned to the client.
 if (!page) {
-  return Astro.redirect('/404');
+  Astro.response.status = 404;
+  return Astro.rewrite('/404');
 }
 ---
 
