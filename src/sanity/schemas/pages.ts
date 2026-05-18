@@ -68,6 +68,7 @@ export const pages = defineType({
         defineArrayMember({ type: 'blogSection' }),
         defineArrayMember({ type: 'faqSection' }),
         defineArrayMember({ type: 'testimonialsSection' }),
+        defineArrayMember({ type: 'instagramFeedSection' }),
         defineArrayMember({ type: 'callToAction' }),
       ],
       options: {
@@ -87,6 +88,7 @@ export const pages = defineType({
                 'blogSection',
                 'faqSection',
                 'testimonialsSection',
+                'instagramFeedSection',
               ],
             },
             {

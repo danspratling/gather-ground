@@ -111,6 +111,14 @@ export const bodySectionsProjection = `body[]{
     image { asset->, alt }
   },
 
+  // instagramFeedSection
+  _type == "instagramFeedSection" => {
+    eyebrow,
+    heading,
+    subCopy,
+    viewAllLabel
+  },
+
   // contactHero
   _type == "contactHero" => {
     heading,
@@ -271,6 +279,8 @@ export const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   siteDescription,
   logoAlt,
   "logo": logo.asset->url,
+  instagramHandle,
+  beholdFeedId,
   defaultMetaTitle,
   defaultMetaDescription,
   "defaultOgImage": defaultOgImage.asset->url,

@@ -26,6 +26,7 @@ export { faqSection } from './faqSection';
 export { blogSection } from './blogSection';
 export { callToAction } from './callToAction';
 export { contactHero } from './contactHero';
+export { instagramFeedSection } from './instagramFeedSection';
 export {
   contentSection,
   contentFeatureItem,

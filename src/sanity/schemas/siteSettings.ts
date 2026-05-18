@@ -8,6 +8,7 @@ export const siteSettings = defineType({
     { name: 'general', title: 'General', default: true },
     { name: 'navigation', title: 'Navigation' },
     { name: 'footer', title: 'Footer' },
+    { name: 'widgets', title: 'Widgets' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
@@ -43,6 +44,22 @@ export const siteSettings = defineType({
       description:
         'Describes the logo for visitors who can\'t see it (e.g. "Gather Ground logo").',
       group: 'general',
+    }),
+    defineField({
+      name: 'instagramHandle',
+      title: 'Instagram handle',
+      type: 'string',
+      description:
+        'Your Instagram username (without the @). Used by the Instagram Feed section for the "Follow on Instagram" link.',
+      group: 'widgets',
+    }),
+    defineField({
+      name: 'beholdFeedId',
+      title: 'Behold.so feed ID',
+      type: 'string',
+      description:
+        'The ID for your Behold.so Instagram feed — the part after https://feeds.behold.so/ in the dashboard. Required for the Instagram Feed section to display posts. Sign up free at behold.so.',
+      group: 'widgets',
     }),
     defineField({
       name: 'primaryNav',

@@ -294,6 +294,15 @@ export function contactHeroProps(s: Dict) {
   };
 }
 
+export function instagramFeedSectionProps(s: Dict) {
+  return {
+    eyebrow: (s.eyebrow as string) || undefined,
+    heading: s.heading as string,
+    subCopy: (s.subCopy as string) || undefined,
+    viewAllLabel: (s.viewAllLabel as string) || undefined,
+  };
+}
+
 /**
  * Resolve image positions for every alternating `contentSection` on a page.
  *

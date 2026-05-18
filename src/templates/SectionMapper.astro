@@ -9,6 +9,7 @@
  */
 import ContactHero from '@/components/ContactHero/ContactHero.astro';
 import HeroSection from '@/components/HeroSection/HeroSection.astro';
+import InstagramFeedSection from '@/components/InstagramFeedSection/InstagramFeedSection.astro';
 import ProductsSection from '@/components/ProductsSection/ProductsSection.astro';
 import TestimonialsSection from '@/components/TestimonialsSection/TestimonialsSection';
 import FaqSection from '@/components/FaqSection/FaqSection.astro';
@@ -22,6 +23,7 @@ import {
   contentSectionProps,
   faqSectionProps,
   heroSectionProps,
+  instagramFeedSectionProps,
   productsSectionProps,
   resolveAlternatingPositions,
   testimonialsSectionProps,
@@ -61,6 +63,8 @@ const alternatingPositions = resolveAlternatingPositions(sections);
         return <CallToAction {...callToActionProps(section)} />;
       case 'contactHero':
         return <ContactHero {...contactHeroProps(section)} />;
+      case 'instagramFeedSection':
+        return <InstagramFeedSection {...instagramFeedSectionProps(section)} />;
       case 'contentSection':
         return (
           <Content

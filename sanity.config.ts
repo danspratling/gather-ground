@@ -24,6 +24,7 @@ import {
   contentSection,
   contentFeatureItem,
   contentIconFeature,
+  instagramFeedSection,
   siteSettings,
 } from './src/sanity/schemas';
 
@@ -154,6 +155,7 @@ export default defineConfig({
       contentSection,
       contentFeatureItem,
       contentIconFeature,
+      instagramFeedSection,
     ],
   },
   document: {
