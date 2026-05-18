@@ -28,6 +28,14 @@ module.exports = {
       settings: {
         chromeFlags: '--headless=new --no-sandbox',
         preset: 'desktop',
+        // Vercel adds `x-robots-tag: noindex` to every preview deployment
+        // so they don't appear in search results. That's the correct
+        // behaviour for previews but it drops the `is-crawlable` audit to
+        // 0, which pulls the SEO category score down to 0.69. Production
+        // (gatherground.co.uk) does not send this header, so skip just
+        // this individual audit when auditing the preview rather than
+        // weakening the overall SEO threshold.
+        ...(isRemote ? { skipAudits: ['is-crawlable'] } : {}),
       },
     },
     assert: {
