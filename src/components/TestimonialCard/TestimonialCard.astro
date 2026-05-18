@@ -21,7 +21,9 @@ const platformLabel: Record<NonNullable<typeof platform>, string> = {
 >
   {
     platform && (
-      <p class="text-sm font-medium text-gray-600">{platformLabel[platform]}</p>
+      <p class="text-sm font-medium text-brand-500">
+        {platformLabel[platform]}
+      </p>
     )
   }
   <blockquote class="text-base font-normal text-gray-900">

@@ -135,7 +135,7 @@ export default function MobileMenu({
                                   {item.label}
                                 </span>
                                 {item.description && (
-                                  <span className="text-xs text-gray-600">
+                                  <span className="text-xs text-brand-500">
                                     {item.description}
                                   </span>
                                 )}
@@ -168,7 +168,7 @@ export default function MobileMenu({
                         <a
                           href={link.href}
                           onClick={closeAll}
-                          className="text-sm text-gray-600 hover:text-gray-900"
+                          className="text-sm text-brand-500 hover:text-gray-900"
                         >
                           {link.label}
                         </a>
@@ -181,7 +181,7 @@ export default function MobileMenu({
                         <a
                           href={link.href}
                           onClick={closeAll}
-                          className="text-sm text-gray-600 hover:text-gray-900"
+                          className="text-sm text-brand-500 hover:text-gray-900"
                         >
                           {link.label}
                         </a>

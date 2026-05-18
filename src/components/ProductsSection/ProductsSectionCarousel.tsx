@@ -91,7 +91,7 @@ export default function ProductsSectionCarousel({
                 {heading}
               </h2>
             </div>
-            <p className="text-xl text-gray-600">{subCopy}</p>
+            <p className="text-xl text-brand-500">{subCopy}</p>
           </div>
           <div className="hidden shrink-0 gap-6 md:flex">
             <button

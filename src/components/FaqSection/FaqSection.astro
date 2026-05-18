@@ -20,7 +20,7 @@ const { heading, subCopy, items, cta } = Astro.props;
         >
           {heading}
         </h2>
-        <p class="text-xl text-gray-600">{subCopy}</p>
+        <p class="text-xl text-brand-500">{subCopy}</p>
       </div>
       <Accordion client:visible items={items} />
     </div>
@@ -40,7 +40,7 @@ const { heading, subCopy, items, cta } = Astro.props;
               weight="semibold"
               text={cta.heading}
             />
-            <Body size="md" text={cta.body} class="text-gray-600" />
+            <Body size="md" text={cta.body} class="text-brand-500" />
           </div>
           <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
             {cta.secondaryButton && (
