@@ -16,6 +16,10 @@ export default defineConfig({
   site: 'https://gatherground.co.uk',
   output: 'server',
   adapter: vercel(),
+  // Disable the Astro dev toolbar in CI — its audit hooks log a noisy
+  // `TypeError: Failed to fetch` error to the console under Playwright's
+  // headless Chromium, which trips the `no console errors on load` assertions.
+  devToolbar: { enabled: !process.env.CI },
   vite: {
     plugins: [tailwindcss(), ...(process.env.CI ? [] : [mkcert()])],
     resolve: {
