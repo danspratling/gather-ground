@@ -53,7 +53,7 @@ const SOCIAL_ICONS: Record<SocialPlatform, typeof InstagramIcon> = {
           />
         </a>
         <p class="text-base text-brand-100">{description}</p>
-        <div class="flex items-center gap-6" aria-label="Social media links">
+        <nav class="flex items-center gap-6" aria-label="Social media links">
           {
             socialLinks.map((link) => {
               const Icon = SOCIAL_ICONS[link.platform];
@@ -68,7 +68,7 @@ const SOCIAL_ICONS: Record<SocialPlatform, typeof InstagramIcon> = {
               );
             })
           }
-        </div>
+        </nav>
       </div>
 
       <!-- Link groups and newsletter -->

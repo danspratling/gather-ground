@@ -32,7 +32,7 @@ export default function Accordion({ items, class: className }: AccordionProps) {
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionContent>
-            <p className="pb-6 text-base font-normal text-gray-600">
+            <p className="pb-6 text-base font-normal text-brand-500">
               {item.detail}
             </p>
           </AccordionContent>

@@ -27,7 +27,7 @@
 }
 
 .rt blockquote p:last-child {
-  @apply text-base font-normal text-gray-600 mb-0;
+  @apply text-base font-normal text-brand-500 mb-0;
 }
 
 .rt ul {
@@ -66,5 +66,5 @@
 }
 
 .rt figcaption {
-  @apply flex items-center gap-1.5 mt-4 text-sm text-gray-600;
+  @apply flex items-center gap-1.5 mt-4 text-sm text-brand-500;
 }
