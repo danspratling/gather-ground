@@ -44,6 +44,8 @@ const { sections, instagramHandle, beholdFeedId } = Astro.props;
 // contentSection on the page so they auto-flip across the layout.
 const alternatingPositions = resolveAlternatingPositions(sections);
 
+const BEHOLD_WIDGET_SCRIPT = 'https://w.behold.so/widget.js';
+
 // Emit the Behold widget script once if any instagramFeedSection on this
 // page will render with a feed ID — prevents duplicate script injection
 // when multiple Instagram sections appear on the same page.
@@ -96,4 +98,4 @@ const needsBeholdScript =
   })
 }
 
-{needsBeholdScript && <script is:inline type="module" src="https://w.behold.so/widget.js" />}
+{needsBeholdScript && <script is:inline type="module" src={BEHOLD_WIDGET_SCRIPT} />}

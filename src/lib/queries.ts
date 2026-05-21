@@ -326,7 +326,12 @@ export const siteSettingsQuery = `*[_id == "siteSettings"][0]{
  * so the handle and feed ID are available to the section without an
  * extra query inside the component.
  */
-export const instagramWidgetQuery = `*[_id == "siteSettings"][0]{ instagramHandle, beholdFeedId }`;
+export const instagramWidgetQuery = `
+  *[_id == "siteSettings"][0]{
+    instagramHandle,
+    beholdFeedId
+  }
+`;
 
 // ─── Legal Pages ────────────────────────────────────────────────────
 
