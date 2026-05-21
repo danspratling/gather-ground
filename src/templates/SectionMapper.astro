@@ -79,7 +79,11 @@ const needsBeholdScript =
       case 'instagramFeedSection':
         return (
           <InstagramFeedSection
-            {...instagramFeedSectionProps(section, instagramHandle, beholdFeedId)}
+            {...instagramFeedSectionProps(
+              section,
+              instagramHandle,
+              beholdFeedId
+            )}
           />
         );
       case 'contentSection':
@@ -98,4 +102,8 @@ const needsBeholdScript =
   })
 }
 
-{needsBeholdScript && <script is:inline type="module" src={BEHOLD_WIDGET_SCRIPT} />}
+{
+  needsBeholdScript && (
+    <script is:inline type="module" src={BEHOLD_WIDGET_SCRIPT} />
+  )
+}

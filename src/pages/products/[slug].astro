@@ -2,7 +2,11 @@
 import Layout from '@/layouts/Layout.astro';
 import SectionMapper from '@/templates/SectionMapper.astro';
 import { loadQuery } from '@/lib/sanity';
-import { allProductSlugsQuery, productBySlugQuery, instagramWidgetQuery } from '@/lib/queries';
+import {
+  allProductSlugsQuery,
+  productBySlugQuery,
+  instagramWidgetQuery,
+} from '@/lib/queries';
 
 export async function getStaticPaths() {
   const { data: products } = await loadQuery<Array<{ slug: string }>>({

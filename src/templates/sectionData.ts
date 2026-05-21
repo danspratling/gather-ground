@@ -304,8 +304,12 @@ export function instagramFeedSectionProps(
     heading: s.heading as string,
     subCopy: (s.subCopy as string) || undefined,
     viewAllLabel: (s.viewAllLabel as string) || undefined,
-    handle: instagramHandle != null ? (stegaClean(instagramHandle) as string) : undefined,
-    feedId: beholdFeedId != null ? (stegaClean(beholdFeedId) as string) : undefined,
+    handle:
+      instagramHandle != null
+        ? (stegaClean(instagramHandle) as string)
+        : undefined,
+    feedId:
+      beholdFeedId != null ? (stegaClean(beholdFeedId) as string) : undefined,
   };
 }
 
