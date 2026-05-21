@@ -9,36 +9,9 @@ const {
   heading,
   subCopy,
   viewAllLabel = 'Follow on Instagram',
-  handle: handleProp,
-  feedId: feedIdProp,
+  handle,
+  feedId,
 } = Astro.props;
-
-// Storybook signal: when the caller passes the `feedId` (or `handle`)
-// directly we're rendering outside the Astro/Sanity runtime — skip the
-// siteSettings query, which would try to import the `sanity:client`
-// virtual module and crash. The dynamic import below makes sure that
-// module is only resolved when we actually need it.
-const isStandalone = feedIdProp !== undefined || handleProp !== undefined;
-
-let handle = handleProp;
-let feedId = feedIdProp;
-
-if (!isStandalone) {
-  try {
-    const { loadQuery } = await import('@/lib/sanity');
-    const { data } = await loadQuery<{
-      instagramHandle?: string;
-      beholdFeedId?: string;
-    } | null>({
-      query: `*[_id == "siteSettings"][0]{ instagramHandle, beholdFeedId }`,
-    });
-    handle = handle ?? data?.instagramHandle;
-    feedId = feedId ?? data?.beholdFeedId;
-  } catch {
-    // siteSettings unavailable (e.g. preview without Sanity creds) —
-    // fall through and render only what we have.
-  }
-}
 
 const profileUrl = handle
   ? `https://www.instagram.com/${handle.replace(/^@/, '')}/`
@@ -83,9 +56,3 @@ const profileUrl = handle
     {feedId && <behold-widget feed-id={feedId} />}
   </div>
 </section>
-
-{
-  feedId && (
-    <script is:inline type="module" src="https://w.behold.so/widget.js" />
-  )
-}

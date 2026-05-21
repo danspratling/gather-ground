@@ -21,10 +21,6 @@ const meta = {
 
 export default meta;
 
-// Real Behold feed id for @gathergroundfarm — the widget hydrates with
-// live Instagram posts when its script loads in the story preview.
-const FEED_ID = 'SZ2qZFKvuM9vIPXnQEq9';
-
 export const Default = {
   args: {
     eyebrow: 'Instagram',
@@ -33,7 +29,6 @@ export const Default = {
       "The latest from the farm — what we're growing, raising, and making.",
     viewAllLabel: 'Follow on Instagram',
     handle: 'gathergroundfarm',
-    feedId: FEED_ID,
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
@@ -56,7 +51,6 @@ export const WithoutHandle = {
     eyebrow: 'Instagram',
     heading: 'Follow along on Instagram',
     subCopy: 'When the handle is not set, the Follow button is hidden.',
-    feedId: FEED_ID,
   },
 };
 
@@ -67,5 +61,22 @@ export const WithoutFeed = {
     subCopy:
       'When no Behold feed id is configured, only the section header renders.',
     handle: 'gathergroundfarm',
+  },
+};
+
+// Loads the live Behold widget — kept as a manual story only so that
+// Chromatic snapshots are not affected by third-party content changes.
+export const WithFeed = {
+  args: {
+    eyebrow: 'Instagram',
+    heading: 'Follow along on Instagram',
+    subCopy:
+      "The latest from the farm — what we're growing, raising, and making.",
+    viewAllLabel: 'Follow on Instagram',
+    handle: 'gathergroundfarm',
+    feedId: 'SZ2qZFKvuM9vIPXnQEq9',
+  },
+  parameters: {
+    chromatic: { disableSnapshot: true },
   },
 };

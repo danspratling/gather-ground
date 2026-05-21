@@ -1,10 +1,9 @@
 import { defineType, defineField } from 'sanity';
 
 /**
- * Instagram Feed Section — pulls the latest posts from the Instagram
- * account configured by the `INSTAGRAM_ACCESS_TOKEN` env var. The
- * public handle for the "View on Instagram" link is configured once
- * in Site Settings → General → Instagram handle.
+ * Instagram Feed Section — displays the live feed from the Behold.so widget.
+ * The Behold feed ID and the Instagram handle used for the "Follow" button
+ * are both configured once in Site Settings → Widgets.
  */
 export const instagramFeedSection = defineType({
   name: 'instagramFeedSection',

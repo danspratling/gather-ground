@@ -294,12 +294,18 @@ export function contactHeroProps(s: Dict) {
   };
 }
 
-export function instagramFeedSectionProps(s: Dict) {
+export function instagramFeedSectionProps(
+  s: Dict,
+  handle?: string,
+  feedId?: string
+) {
   return {
     eyebrow: (s.eyebrow as string) || undefined,
     heading: s.heading as string,
     subCopy: (s.subCopy as string) || undefined,
     viewAllLabel: (s.viewAllLabel as string) || undefined,
+    handle: handle != null ? (stegaClean(handle) as string) : undefined,
+    feedId: feedId != null ? (stegaClean(feedId) as string) : undefined,
   };
 }
 

@@ -32,13 +32,24 @@ import {
 
 interface Props {
   sections: SanitySection[];
+  /** Instagram handle (no @) from Site Settings — used by instagramFeedSection. */
+  instagramHandle?: string;
+  /** Behold.so feed ID from Site Settings — used by instagramFeedSection. */
+  beholdFeedId?: string;
 }
 
-const { sections } = Astro.props;
+const { sections, instagramHandle, beholdFeedId } = Astro.props;
 
 // Pre-compute resolved left/right placement for every alternating
 // contentSection on the page so they auto-flip across the layout.
 const alternatingPositions = resolveAlternatingPositions(sections);
+
+// Emit the Behold widget script once if any instagramFeedSection on this
+// page will render with a feed ID — prevents duplicate script injection
+// when multiple Instagram sections appear on the same page.
+const needsBeholdScript =
+  beholdFeedId != null &&
+  sections.some((s) => s._type === 'instagramFeedSection');
 ---
 
 {
@@ -64,7 +75,11 @@ const alternatingPositions = resolveAlternatingPositions(sections);
       case 'contactHero':
         return <ContactHero {...contactHeroProps(section)} />;
       case 'instagramFeedSection':
-        return <InstagramFeedSection {...instagramFeedSectionProps(section)} />;
+        return (
+          <InstagramFeedSection
+            {...instagramFeedSectionProps(section, instagramHandle, beholdFeedId)}
+          />
+        );
       case 'contentSection':
         return (
           <Content
@@ -80,3 +95,5 @@ const alternatingPositions = resolveAlternatingPositions(sections);
     }
   })
 }
+
+{needsBeholdScript && <script is:inline type="module" src="https://w.behold.so/widget.js" />}

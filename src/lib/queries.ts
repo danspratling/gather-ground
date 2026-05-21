@@ -318,6 +318,16 @@ export const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   }
 }`;
 
+// ─── Instagram / Behold widget settings ────────────────────────────
+
+/**
+ * Fetch only the Behold widget fields from Site Settings.
+ * Used by page templates that may render an `instagramFeedSection`
+ * so the handle and feed ID are available to the section without an
+ * extra query inside the component.
+ */
+export const instagramWidgetQuery = `*[_id == "siteSettings"][0]{ instagramHandle, beholdFeedId }`;
+
 // ─── Legal Pages ────────────────────────────────────────────────────
 
 /** Fetch a single legal page by slug. */
