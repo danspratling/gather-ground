@@ -20,4 +20,8 @@ export interface TestimonialsSectionProps {
   ctaSecondary?: TestimonialsSectionCta;
 }
 
+export interface TestimonialsCarouselProps {
+  testimonials: TestimonialsSectionTestimonial[];
+}
+
 export default null;

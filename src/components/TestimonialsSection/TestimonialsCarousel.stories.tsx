@@ -1,30 +1,27 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import TestimonialsSection from '@/components/TestimonialsSection/TestimonialsSection';
+import TestimonialsCarousel from '@/components/TestimonialsSection/TestimonialsCarousel';
 
 const meta = {
-  title: 'Sections/Testimonials Section',
-  component: TestimonialsSection,
+  title: 'Sections/Testimonials Section/Carousel',
+  component: TestimonialsCarousel,
   tags: ['autodocs'],
   parameters: {
     renderer: 'react',
-    layout: 'fullscreen',
+    layout: 'padded',
     a11y: { disable: false },
-    chromatic: { viewports: [375, 1440] },
     design: {
       type: 'figma',
       url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=1647-392096',
     },
   },
-} satisfies Meta<typeof TestimonialsSection>;
+} satisfies Meta<typeof TestimonialsCarousel>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    heading: 'Wall of love',
-    subCopy: 'Hear first-hand from our incredible community of customers.',
     testimonials: [
       {
         quote:
@@ -66,19 +63,5 @@ export const Default: Story = {
         },
       },
     ],
-  },
-};
-
-export const WithCtas: Story = {
-  args: {
-    ...Default.args!,
-    ctaPrimary: {
-      label: 'Read more reviews on Trustpilot',
-      href: 'https://www.trustpilot.com/review/gatherground.co.uk',
-    },
-    ctaSecondary: {
-      label: 'Leave a review',
-      href: 'https://www.trustpilot.com/evaluate/gatherground.co.uk',
-    },
   },
 };

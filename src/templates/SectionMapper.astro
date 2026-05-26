@@ -10,7 +10,7 @@
 import ContactHero from '@/components/ContactHero/ContactHero.astro';
 import HeroSection from '@/components/HeroSection/HeroSection.astro';
 import ProductsSection from '@/components/ProductsSection/ProductsSection.astro';
-import TestimonialsSection from '@/components/TestimonialsSection/TestimonialsSection';
+import TestimonialsSection from '@/components/TestimonialsSection/TestimonialsSection.astro';
 import FaqSection from '@/components/FaqSection/FaqSection.astro';
 import BlogSection from '@/components/BlogSection/BlogSection.astro';
 import CallToAction from '@/components/CallToAction/CallToAction.astro';
@@ -47,12 +47,7 @@ const alternatingPositions = resolveAlternatingPositions(sections);
       case 'productsSection':
         return <ProductsSection {...productsSectionProps(section)} />;
       case 'testimonialsSection':
-        return (
-          <TestimonialsSection
-            client:visible
-            {...testimonialsSectionProps(section)}
-          />
-        );
+        return <TestimonialsSection {...testimonialsSectionProps(section)} />;
       case 'faqSection':
         return <FaqSection {...faqSectionProps(section)} />;
       case 'blogSection':
