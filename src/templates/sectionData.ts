@@ -89,9 +89,9 @@ export function productsSectionProps(s: Dict) {
   const variant = enumClean(s.variant as 'cards' | 'carousel') ?? 'cards';
   return {
     variant,
-    eyebrow: s.eyebrow as string,
+    eyebrow: s.eyebrow as string | undefined,
     heading: s.heading as string,
-    subCopy: s.subCopy as string,
+    subCopy: s.subCopy as string | undefined,
     products: arr(s.products).map((p) => ({
       image: sanityImageSrc(p.image as { asset?: { _ref: string } }, {
         width: 600,

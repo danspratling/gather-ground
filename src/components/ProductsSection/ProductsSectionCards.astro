@@ -14,7 +14,13 @@ const { eyebrow, heading, subCopy, products } = Astro.props;
   <div class="container flex flex-col gap-16">
     <div class="flex flex-col items-center gap-5 text-center">
       <div class="flex flex-col gap-3 max-w-[768px] w-full">
-        <Label size="sm" class="text-brand-700">{eyebrow}</Label>
+        {
+          eyebrow && (
+            <Label size="sm" class="text-brand-700">
+              {eyebrow}
+            </Label>
+          )
+        }
         <Heading
           size="display-md"
           weight="semibold"
@@ -23,7 +29,13 @@ const { eyebrow, heading, subCopy, products } = Astro.props;
           {heading}
         </Heading>
       </div>
-      <Body size="xl" class="max-w-[768px] text-brand-500">{subCopy}</Body>
+      {
+        subCopy && (
+          <Body size="xl" class="max-w-[768px] text-brand-500">
+            {subCopy}
+          </Body>
+        )
+      }
     </div>
     <ul
       class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
