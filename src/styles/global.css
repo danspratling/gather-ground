@@ -1,12 +1,21 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
-@import '@fontsource-variable/dm-sans';
+@import '@fontsource-variable/raleway';
 @import '../components/RichText/RichText.css';
 
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
+
+/* Fibre — brand display font for headings. Self-hosted: woff only (one weight). */
+@font-face {
+  font-family: 'Fibre';
+  src: url('/fonts/fibre.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* Gather Ground design tokens — literal values */
 @theme {
@@ -115,20 +124,25 @@
   --color-gray-blue-200: #d5d9eb;
   --color-gray-blue-700: #363f72;
 
-  /* Typography — DM Sans */
-  --font-sans: 'DM Sans Variable', sans-serif;
+  /* Typography
+   * Raleway = body / UI (Google Fonts via fontsource-variable)
+   * Fibre  = brand display, headings only (self-hosted, single weight)
+   */
+  --font-sans: 'Raleway Variable', sans-serif;
 
-  /* Display text sizes (not in Tailwind defaults) */
-  --text-display-xs: 1.5rem; /* 24px */
-  --text-display-xs--line-height: 2rem; /* 32px */
-  --text-display-sm: 1.875rem; /* 30px */
-  --text-display-sm--line-height: 2.375rem; /* 38px */
-  --text-display-md: 2.25rem; /* 36px */
-  --text-display-md--line-height: 2.75rem; /* 44px */
-  --text-display-lg: 3rem; /* 48px */
-  --text-display-lg--line-height: 3.75rem; /* 60px */
-  --text-display-xl: 3.75rem; /* 60px */
-  --text-display-xl--line-height: 4.5rem; /* 72px */
+  /* Display text sizes (not in Tailwind defaults)
+   * Bumped ~1.3x from the original DM Sans scale because Fibre is a display
+   * face designed to be set large; the previous sizes felt undersized. */
+  --text-display-xs: 1.875rem; /* 30px */
+  --text-display-xs--line-height: 2.375rem; /* 38px */
+  --text-display-sm: 2.375rem; /* 38px */
+  --text-display-sm--line-height: 2.875rem; /* 46px */
+  --text-display-md: 3rem; /* 48px */
+  --text-display-md--line-height: 3.75rem; /* 60px */
+  --text-display-lg: 3.75rem; /* 60px */
+  --text-display-lg--line-height: 4.5rem; /* 72px */
+  --text-display-xl: 4.75rem; /* 76px */
+  --text-display-xl--line-height: 5.5rem; /* 88px */
 
   /* Letter spacing for display sizes */
   --tracking-display-md: -0.045rem; /* -0.72px */
@@ -141,7 +155,7 @@
 
 /* Shadcn semantic tokens — map to Gather Ground palette */
 @theme inline {
-  --font-heading: var(--font-sans);
+  --font-heading: 'Fibre', var(--font-sans), sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -275,5 +289,27 @@
   }
   html {
     @apply font-sans;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    /* Headings default to body font (Raleway). Fibre is reserved for
+       display-sized text below — small headings like FAQ titles, CTA
+       headings, footer headings etc. stay in Raleway. */
+    @apply font-sans;
+  }
+  .text-display-xs,
+  .text-display-sm,
+  .text-display-md,
+  .text-display-lg,
+  .text-display-xl {
+    @apply font-heading;
+    /* Fibre ships as a single weight (400). Block fake-bold synthesis so
+       `font-semibold` / `font-medium` on display text don't produce a
+       smeared browser-bold; the typeface stays true to its drawn weight. */
+    font-synthesis-weight: none;
   }
 }
