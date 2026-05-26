@@ -1,0 +1,61 @@
+---
+import type { TestimonialsSectionProps } from '@/components/TestimonialsSection/TestimonialsSection.types';
+import Button from '@/components/Forms/Button/Button.astro';
+import TestimonialsCarousel from './TestimonialsCarousel';
+
+type Props = TestimonialsSectionProps;
+
+const { heading, subCopy, testimonials, ctaPrimary, ctaSecondary } =
+  Astro.props;
+
+function externalAttrs(href: string) {
+  // Review platforms (Trustpilot etc.) are external — open in a new tab so
+  // visitors don't lose the page they were reading.
+  const isExternal = /^https?:\/\//.test(href);
+  return isExternal
+    ? { target: '_blank', rel: 'noopener noreferrer' }
+    : undefined;
+}
+---
+
+<section class="py-12 lg:py-24">
+  <div
+    class="container flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-16"
+  >
+    <div class="flex flex-col gap-5 lg:w-2/5 lg:shrink-0">
+      <h2
+        class="text-display-md font-semibold tracking-display-md text-gray-900"
+      >
+        {heading}
+      </h2>
+      <p class="text-xl text-brand-500">{subCopy}</p>
+      {
+        (ctaPrimary || ctaSecondary) && (
+          <div class="mt-3 flex flex-wrap gap-3">
+            {ctaPrimary && (
+              <Button
+                label={ctaPrimary.label}
+                href={ctaPrimary.href}
+                variant="default"
+                size="lg"
+                {...externalAttrs(ctaPrimary.href)}
+              />
+            )}
+            {ctaSecondary && (
+              <Button
+                label={ctaSecondary.label}
+                href={ctaSecondary.href}
+                variant="outline"
+                size="lg"
+                {...externalAttrs(ctaSecondary.href)}
+              />
+            )}
+          </div>
+        )
+      }
+    </div>
+    <div class="lg:flex-1">
+      <TestimonialsCarousel client:visible testimonials={testimonials} />
+    </div>
+  </div>
+</section>

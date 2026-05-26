@@ -107,6 +107,10 @@ export function productsSectionProps(s: Dict) {
 }
 
 export function testimonialsSectionProps(s: Dict) {
+  const ctaPrimaryHref = resolveSanityLink(s.ctaPrimaryHref);
+  const ctaPrimaryLabel = (s.ctaPrimaryLabel as string) || '';
+  const ctaSecondaryHref = resolveSanityLink(s.ctaSecondaryHref);
+  const ctaSecondaryLabel = (s.ctaSecondaryLabel as string) || '';
   return {
     heading: s.heading as string,
     subCopy: s.subCopy as string,
@@ -129,6 +133,14 @@ export function testimonialsSectionProps(s: Dict) {
         },
       })
     ),
+    ctaPrimary:
+      ctaPrimaryLabel && ctaPrimaryHref
+        ? { label: ctaPrimaryLabel, href: ctaPrimaryHref }
+        : undefined,
+    ctaSecondary:
+      ctaSecondaryLabel && ctaSecondaryHref
+        ? { label: ctaSecondaryLabel, href: ctaSecondaryHref }
+        : undefined,
   };
 }
 
