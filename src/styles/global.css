@@ -130,17 +130,19 @@
    */
   --font-sans: 'Raleway Variable', sans-serif;
 
-  /* Display text sizes (not in Tailwind defaults) */
-  --text-display-xs: 1.5rem; /* 24px */
-  --text-display-xs--line-height: 2rem; /* 32px */
-  --text-display-sm: 1.875rem; /* 30px */
-  --text-display-sm--line-height: 2.375rem; /* 38px */
-  --text-display-md: 2.25rem; /* 36px */
-  --text-display-md--line-height: 2.75rem; /* 44px */
-  --text-display-lg: 3rem; /* 48px */
-  --text-display-lg--line-height: 3.75rem; /* 60px */
-  --text-display-xl: 3.75rem; /* 60px */
-  --text-display-xl--line-height: 4.5rem; /* 72px */
+  /* Display text sizes (not in Tailwind defaults)
+   * Bumped ~1.3x from the original DM Sans scale because Fibre is a display
+   * face designed to be set large; the previous sizes felt undersized. */
+  --text-display-xs: 1.875rem; /* 30px */
+  --text-display-xs--line-height: 2.375rem; /* 38px */
+  --text-display-sm: 2.375rem; /* 38px */
+  --text-display-sm--line-height: 2.875rem; /* 46px */
+  --text-display-md: 3rem; /* 48px */
+  --text-display-md--line-height: 3.75rem; /* 60px */
+  --text-display-lg: 3.75rem; /* 60px */
+  --text-display-lg--line-height: 4.5rem; /* 72px */
+  --text-display-xl: 4.75rem; /* 76px */
+  --text-display-xl--line-height: 5.5rem; /* 88px */
 
   /* Letter spacing for display sizes */
   --tracking-display-md: -0.045rem; /* -0.72px */
