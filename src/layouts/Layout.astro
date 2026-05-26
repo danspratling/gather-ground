@@ -10,6 +10,7 @@ import PreviewBanner from '@/components/PreviewBanner/PreviewBanner.astro';
 import type { PreviewDoc } from '@/components/PreviewBanner/PreviewBanner.types';
 import StructuredData from '@/components/StructuredData/StructuredData.astro';
 import { VisualEditing } from '@sanity/astro/visual-editing';
+import { stegaClean } from '@sanity/client/stega';
 import { loadQuery } from '@/lib/sanity';
 import { siteSettingsQuery } from '@/lib/queries';
 import { resolveSanityLink } from '@/lib/sanityLink';
@@ -169,12 +170,15 @@ const footerProps = {
   description: siteSettings?.footerDescription ?? '',
   socialLinks: siteSettings?.socialLinks
     ? siteSettings.socialLinks
-        .filter((l) => SUPPORTED_PLATFORMS.has(l.platform as SocialPlatform))
         .map((l) => ({
-          platform: l.platform as SocialPlatform,
+          // Visual Editing stega encoding appends invisible Unicode characters
+          // to every string, which breaks the SUPPORTED_PLATFORMS Set lookup
+          // below — clean the discriminator before using it for control flow.
+          platform: stegaClean(l.platform) as SocialPlatform,
           href: l.url,
           label: l.label,
         }))
+        .filter((l) => SUPPORTED_PLATFORMS.has(l.platform))
     : [],
   linkGroups: siteSettings?.footerLinkGroups
     ? siteSettings.footerLinkGroups.map((group) => ({
