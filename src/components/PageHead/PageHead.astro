@@ -13,6 +13,7 @@ const {
   ogUrl,
   twitterCard = 'summary_large_image',
   twitterImage,
+  favicon,
   showRssFeed = false,
 } = Astro.props;
 
@@ -27,7 +28,7 @@ const resolvedCanonical =
 ---
 
 <meta charset="utf-8" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/svg+xml" href={favicon ?? '/favicon.svg'} />
 <link rel="icon" href="/favicon.ico" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />

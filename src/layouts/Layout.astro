@@ -42,6 +42,7 @@ interface SiteSettingsData {
   siteDescription?: string;
   logo?: string;
   logoAlt?: string;
+  favicon?: string;
   primaryNav?: Array<{
     label: string;
     link?: SanityLinkData;
@@ -214,6 +215,7 @@ const footerProps = {
       ogImage={seoOgImage}
       ogType={ogType}
       canonicalUrl={canonicalUrl}
+      favicon={siteSettings?.favicon}
       showRssFeed={showRssFeed}
     >
       <StructuredData data={organizationSD} slot="head-extras" />
