@@ -50,7 +50,7 @@ export default function NewsletterForm({ heading }: NewsletterFormProps) {
               placeholder="Enter your email"
               required
               aria-label="Email address"
-              className="min-w-0 flex-1 rounded-lg border border-brand-100 bg-off-white px-3.5 py-2.5 text-base text-gray-950 shadow-xs placeholder:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+              className="min-w-0 flex-1 rounded-lg border border-brand-100 bg-off-white px-3.5 py-2.5 text-base text-gray-950 shadow-xs placeholder:text-brand-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
             />
             <button
               type="submit"

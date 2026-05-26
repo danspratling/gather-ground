@@ -3,7 +3,7 @@ import type { BlogCardProps } from '@/components/BlogCard/BlogCard.types';
 
 // Mirrors the pill colour palette from Badge.astro for use inside React islands.
 const pillColorClasses: Record<string, string> = {
-  gray: 'bg-off-white border-gray-200 text-brand-400',
+  gray: 'bg-off-white border-gray-200 text-brand-700',
   brand: 'bg-off-white border-brand-50 text-brand-700',
   error: 'bg-error-50 border-error-200 text-error-700',
   warning: 'bg-warning-50 border-warning-200 text-warning-700',

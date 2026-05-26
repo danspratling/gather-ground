@@ -99,7 +99,7 @@ export default function ProductsSectionCarousel({
               onClick={() => api?.scrollPrev()}
               disabled={!canScrollPrev}
               aria-label="Previous slide"
-              className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-gray-700 hover:bg-brand-25 disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-brand-700 hover:bg-brand-25 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronLeft className="size-5" aria-hidden="true" />
             </button>
@@ -108,7 +108,7 @@ export default function ProductsSectionCarousel({
               onClick={() => api?.scrollNext()}
               disabled={!canScrollNext}
               aria-label="Next slide"
-              className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-gray-700 hover:bg-brand-25 disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-brand-700 hover:bg-brand-25 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronRight className="size-5" aria-hidden="true" />
             </button>
