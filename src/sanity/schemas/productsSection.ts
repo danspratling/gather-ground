@@ -73,9 +73,15 @@ export const productsSection = defineType({
       title: 'Tag line',
       type: 'string',
       description:
-        'A short label shown in small text above the heading (e.g. "Products").',
+        'A short label shown in small text above the heading (e.g. "Products"). Required for the "Category cards" layout, optional for "Image carousel".',
       initialValue: 'Products',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const variant = (context.parent as { variant?: string } | undefined)
+            ?.variant;
+          if (variant !== 'carousel' && !value) return 'Tag line is required';
+          return true;
+        }),
     }),
     defineField({
       name: 'heading',
@@ -88,8 +94,16 @@ export const productsSection = defineType({
       title: 'Supporting text',
       type: 'text',
       rows: 3,
-      description: 'A short paragraph shown below the heading.',
-      validation: (Rule) => Rule.required(),
+      description:
+        'A short paragraph shown below the heading. Required for the "Category cards" layout, optional for "Image carousel".',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const variant = (context.parent as { variant?: string } | undefined)
+            ?.variant;
+          if (variant !== 'carousel' && !value)
+            return 'Supporting text is required';
+          return true;
+        }),
     }),
     defineField({
       name: 'products',

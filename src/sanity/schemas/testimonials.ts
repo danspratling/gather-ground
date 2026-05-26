@@ -32,12 +32,11 @@ export const testimonials = defineType({
     }),
     defineField({
       name: 'authorImage',
-      title: 'Author photo',
+      title: 'Author photo (optional)',
       type: 'image',
       description:
-        'A headshot or profile picture. Recommended: square, at least 200 × 200 px.',
+        'A headshot or profile picture. Recommended: square, at least 200 × 200 px. Leave blank to show just the name.',
       options: { hotspot: true },
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'authorName',

@@ -89,9 +89,9 @@ export function productsSectionProps(s: Dict) {
   const variant = enumClean(s.variant as 'cards' | 'carousel') ?? 'cards';
   return {
     variant,
-    eyebrow: s.eyebrow as string,
+    eyebrow: s.eyebrow as string | undefined,
     heading: s.heading as string,
-    subCopy: s.subCopy as string,
+    subCopy: s.subCopy as string | undefined,
     products: arr(s.products).map((p) => ({
       image: sanityImageSrc(p.image as { asset?: { _ref: string } }, {
         width: 600,
@@ -121,11 +121,12 @@ export function testimonialsSectionProps(s: Dict) {
           enumClean(t.platform as TestimonialsSectionTestimonial['platform']) ||
           undefined,
         author: {
-          src: sanityImageSrc(t.authorImage as { asset?: { _ref: string } }, {
-            width: 96,
-            quality: 80,
-          }),
-          alt: sanityImageAlt(t.authorImage as { alt?: string }),
+          src:
+            sanityImageSrc(t.authorImage as { asset?: { _ref: string } }, {
+              width: 96,
+              quality: 80,
+            }) || undefined,
+          alt: sanityImageAlt(t.authorImage as { alt?: string }) || undefined,
           name: t.authorName as string,
           secondary: (t.authorSecondary as string) || undefined,
           secondaryIsHandle: (t.authorSecondaryIsHandle as boolean) ?? false,

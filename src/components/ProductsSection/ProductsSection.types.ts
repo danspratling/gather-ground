@@ -10,9 +10,9 @@ export interface ProductsSectionProduct {
 
 export interface ProductsSectionProps {
   variant: ProductsSectionVariant;
-  eyebrow: string;
+  eyebrow?: string;
   heading: string;
-  subCopy: string;
+  subCopy?: string;
   products: ProductsSectionProduct[];
 }
 

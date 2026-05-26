@@ -86,12 +86,16 @@ export default function ProductsSectionCarousel({
         <div className="flex items-end justify-between gap-8">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-3">
-              <p className="text-sm font-semibold text-brand-700">{eyebrow}</p>
+              {eyebrow && (
+                <p className="text-sm font-semibold text-brand-700">
+                  {eyebrow}
+                </p>
+              )}
               <h2 className="text-display-md font-semibold tracking-display-md text-gray-900">
                 {heading}
               </h2>
             </div>
-            <p className="text-xl text-brand-500">{subCopy}</p>
+            {subCopy && <p className="text-xl text-brand-500">{subCopy}</p>}
           </div>
           <div className="hidden shrink-0 gap-6 md:flex">
             <button
