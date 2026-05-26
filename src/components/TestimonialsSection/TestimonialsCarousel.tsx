@@ -77,6 +77,7 @@ export default function TestimonialsCarousel({
               <article className="flex h-full flex-col gap-6 rounded-xl bg-secondary-50 p-8">
                 {testimonial.rating ? (
                   <div
+                    role="img"
                     className="flex gap-0.5 text-amber-400"
                     aria-label={`${testimonial.rating} out of 5 stars`}
                   >
