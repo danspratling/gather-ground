@@ -74,7 +74,7 @@ export default function TestimonialsCarousel({
         <CarouselContent className="-ml-6">
           {testimonials.map((testimonial, i) => (
             <CarouselItem key={i} className="basis-full pl-6 md:basis-1/2">
-              <article className="flex h-full flex-col gap-6 rounded-xl bg-secondary-50 p-8">
+              <article className="flex h-full flex-col gap-6 rounded-xl bg-secondary-100 p-8">
                 {testimonial.rating ? (
                   <div
                     role="img"
