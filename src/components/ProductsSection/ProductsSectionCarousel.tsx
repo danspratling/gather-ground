@@ -93,26 +93,30 @@ export default function ProductsSectionCarousel({
             </div>
             <p className="text-xl text-brand-500">{subCopy}</p>
           </div>
-          <div className="hidden shrink-0 gap-6 md:flex">
-            <button
-              type="button"
-              onClick={() => api?.scrollPrev()}
-              disabled={!canScrollPrev}
-              aria-label="Previous slide"
-              className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-brand-700 hover:bg-brand-25 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <ChevronLeft className="size-5" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              onClick={() => api?.scrollNext()}
-              disabled={!canScrollNext}
-              aria-label="Next slide"
-              className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-brand-700 hover:bg-brand-25 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <ChevronRight className="size-5" aria-hidden="true" />
-            </button>
-          </div>
+          {(canScrollPrev || canScrollNext) && (
+            <div className="hidden shrink-0 gap-6 md:flex">
+              {canScrollPrev && (
+                <button
+                  type="button"
+                  onClick={() => api?.scrollPrev()}
+                  aria-label="Previous slide"
+                  className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-brand-700 hover:bg-brand-25"
+                >
+                  <ChevronLeft className="size-5" aria-hidden="true" />
+                </button>
+              )}
+              {canScrollNext && (
+                <button
+                  type="button"
+                  onClick={() => api?.scrollNext()}
+                  aria-label="Next slide"
+                  className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-brand-700 hover:bg-brand-25"
+                >
+                  <ChevronRight className="size-5" aria-hidden="true" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <div className="container overflow-visible">
