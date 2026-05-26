@@ -14,6 +14,8 @@ function CarouselButtons() {
   const { scrollPrev, scrollNext, canScrollPrev, canScrollNext } =
     useCarousel();
 
+  if (!canScrollPrev && !canScrollNext) return null;
+
   return (
     <div className="mb-8 flex justify-end gap-6">
       <button
