@@ -296,10 +296,20 @@
   h4,
   h5,
   h6 {
+    /* Headings default to body font (Raleway). Fibre is reserved for
+       display-sized text below — small headings like FAQ titles, CTA
+       headings, footer headings etc. stay in Raleway. */
+    @apply font-sans;
+  }
+  .text-display-xs,
+  .text-display-sm,
+  .text-display-md,
+  .text-display-lg,
+  .text-display-xl {
     @apply font-heading;
     /* Fibre ships as a single weight (400). Block fake-bold synthesis so
-       `font-semibold` / `font-medium` on headings don't produce a smeared
-       browser-bold; the typeface stays true to its drawn weight. */
+       `font-semibold` / `font-medium` on display text don't produce a
+       smeared browser-bold; the typeface stays true to its drawn weight. */
     font-synthesis-weight: none;
   }
 }
