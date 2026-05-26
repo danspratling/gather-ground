@@ -8,8 +8,8 @@ export interface AvatarProps {
 }
 
 export interface AvatarLabelGroupProps {
-  src: string;
-  alt: string;
+  src?: string;
+  alt?: string;
   name: string;
   secondary?: string;
   secondaryIsHandle?: boolean;

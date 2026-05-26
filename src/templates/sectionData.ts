@@ -121,11 +121,12 @@ export function testimonialsSectionProps(s: Dict) {
           enumClean(t.platform as TestimonialsSectionTestimonial['platform']) ||
           undefined,
         author: {
-          src: sanityImageSrc(t.authorImage as { asset?: { _ref: string } }, {
-            width: 96,
-            quality: 80,
-          }),
-          alt: sanityImageAlt(t.authorImage as { alt?: string }),
+          src:
+            sanityImageSrc(t.authorImage as { asset?: { _ref: string } }, {
+              width: 96,
+              quality: 80,
+            }) || undefined,
+          alt: sanityImageAlt(t.authorImage as { alt?: string }) || undefined,
           name: t.authorName as string,
           secondary: (t.authorSecondary as string) || undefined,
           secondaryIsHandle: (t.authorSecondaryIsHandle as boolean) ?? false,
