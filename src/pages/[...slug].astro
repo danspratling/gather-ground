@@ -2,7 +2,11 @@
 import Layout from '@/layouts/Layout.astro';
 import SectionMapper from '@/templates/SectionMapper.astro';
 import { loadQuery } from '@/lib/sanity';
-import { allPageSlugsQuery, pageBySlugQuery } from '@/lib/queries';
+import {
+  allPageSlugsQuery,
+  pageBySlugQuery,
+  instagramWidgetQuery,
+} from '@/lib/queries';
 
 export async function getStaticPaths() {
   const { data: pages } = await loadQuery<Array<{ slug: string }>>({
@@ -17,23 +21,28 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const pageSlug = slug ?? '/';
 
-const { data: page } = await loadQuery<{
-  _id: string;
-  _type: string;
-  _updatedAt?: string;
-  _originalId?: string;
-  title: string;
-  slug: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  ogImage?: string;
-  autoDescription?: string;
-  autoOgImage?: string;
-  body: Array<Record<string, unknown> & { _type: string; _key: string }>;
-} | null>({
-  query: pageBySlugQuery,
-  params: { slug: pageSlug },
-});
+const [{ data: page }, { data: widgets }] = await Promise.all([
+  loadQuery<{
+    _id: string;
+    _type: string;
+    _updatedAt?: string;
+    _originalId?: string;
+    title: string;
+    slug: string;
+    metaTitle?: string;
+    metaDescription?: string;
+    ogImage?: string;
+    autoDescription?: string;
+    autoOgImage?: string;
+    body: Array<Record<string, unknown> & { _type: string; _key: string }>;
+  } | null>({
+    query: pageBySlugQuery,
+    params: { slug: pageSlug },
+  }),
+  loadQuery<{ instagramHandle?: string; beholdFeedId?: string } | null>({
+    query: instagramWidgetQuery,
+  }),
+]);
 
 // Slug not found (e.g. on-demand SSR for unknown URL, or draft/published
 // mismatch during Visual Editing). Render the 404 page with a real 404
@@ -59,6 +68,10 @@ if (!page) {
   }}
 >
   <main>
-    <SectionMapper sections={page.body ?? []} />
+    <SectionMapper
+      sections={page.body ?? []}
+      instagramHandle={widgets?.instagramHandle}
+      beholdFeedId={widgets?.beholdFeedId}
+    />
   </main>
 </Layout>

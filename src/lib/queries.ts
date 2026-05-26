@@ -115,6 +115,14 @@ export const bodySectionsProjection = `body[]{
     image { asset->, alt }
   },
 
+  // instagramFeedSection
+  _type == "instagramFeedSection" => {
+    eyebrow,
+    heading,
+    subCopy,
+    viewAllLabel
+  },
+
   // contactHero
   _type == "contactHero" => {
     heading,
@@ -275,6 +283,8 @@ export const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   siteDescription,
   logoAlt,
   "logo": logo.asset->url,
+  instagramHandle,
+  beholdFeedId,
   defaultMetaTitle,
   defaultMetaDescription,
   "defaultOgImage": defaultOgImage.asset->url,
@@ -311,6 +321,21 @@ export const siteSettingsQuery = `*[_id == "siteSettings"][0]{
     variant
   }
 }`;
+
+// ─── Instagram / Behold widget settings ────────────────────────────
+
+/**
+ * Fetch only the Behold widget fields from Site Settings.
+ * Used by page templates that may render an `instagramFeedSection`
+ * so the handle and feed ID are available to the section without an
+ * extra query inside the component.
+ */
+export const instagramWidgetQuery = `
+  *[_id == "siteSettings"][0]{
+    instagramHandle,
+    beholdFeedId
+  }
+`;
 
 // ─── Legal Pages ────────────────────────────────────────────────────
 

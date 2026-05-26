@@ -2,23 +2,28 @@
 import Layout from '@/layouts/Layout.astro';
 import SectionMapper from '@/templates/SectionMapper.astro';
 import { loadQuery } from '@/lib/sanity';
-import { productPageQuery } from '@/lib/queries';
+import { productPageQuery, instagramWidgetQuery } from '@/lib/queries';
 
-const { data: page } = await loadQuery<{
-  _id: string;
-  _type: string;
-  _updatedAt?: string;
-  _originalId?: string;
-  title: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  ogImage?: string;
-  autoDescription?: string;
-  autoOgImage?: string;
-  body: Array<Record<string, unknown> & { _type: string; _key: string }>;
-} | null>({
-  query: productPageQuery,
-});
+const [{ data: page }, { data: widgets }] = await Promise.all([
+  loadQuery<{
+    _id: string;
+    _type: string;
+    _updatedAt?: string;
+    _originalId?: string;
+    title: string;
+    metaTitle?: string;
+    metaDescription?: string;
+    ogImage?: string;
+    autoDescription?: string;
+    autoOgImage?: string;
+    body: Array<Record<string, unknown> & { _type: string; _key: string }>;
+  } | null>({
+    query: productPageQuery,
+  }),
+  loadQuery<{ instagramHandle?: string; beholdFeedId?: string } | null>({
+    query: instagramWidgetQuery,
+  }),
+]);
 ---
 
 <Layout
@@ -36,6 +41,10 @@ const { data: page } = await loadQuery<{
     : undefined}
 >
   <main>
-    <SectionMapper sections={page?.body ?? []} />
+    <SectionMapper
+      sections={page?.body ?? []}
+      instagramHandle={widgets?.instagramHandle}
+      beholdFeedId={widgets?.beholdFeedId}
+    />
   </main>
 </Layout>

@@ -9,6 +9,7 @@
  */
 import ContactHero from '@/components/ContactHero/ContactHero.astro';
 import HeroSection from '@/components/HeroSection/HeroSection.astro';
+import InstagramFeedSection from '@/components/InstagramFeedSection/InstagramFeedSection.astro';
 import ProductsSection from '@/components/ProductsSection/ProductsSection.astro';
 import TestimonialsSection from '@/components/TestimonialsSection/TestimonialsSection.astro';
 import FaqSection from '@/components/FaqSection/FaqSection.astro';
@@ -22,6 +23,7 @@ import {
   contentSectionProps,
   faqSectionProps,
   heroSectionProps,
+  instagramFeedSectionProps,
   productsSectionProps,
   resolveAlternatingPositions,
   testimonialsSectionProps,
@@ -30,13 +32,26 @@ import {
 
 interface Props {
   sections: SanitySection[];
+  /** Instagram handle (no @) from Site Settings — used by instagramFeedSection. */
+  instagramHandle?: string;
+  /** Behold.so feed ID from Site Settings — used by instagramFeedSection. */
+  beholdFeedId?: string;
 }
 
-const { sections } = Astro.props;
+const { sections, instagramHandle, beholdFeedId } = Astro.props;
 
 // Pre-compute resolved left/right placement for every alternating
 // contentSection on the page so they auto-flip across the layout.
 const alternatingPositions = resolveAlternatingPositions(sections);
+
+const BEHOLD_WIDGET_SCRIPT = 'https://w.behold.so/widget.js';
+
+// Emit the Behold widget script once if any instagramFeedSection on this
+// page will render with a feed ID — prevents duplicate script injection
+// when multiple Instagram sections appear on the same page.
+const needsBeholdScript =
+  beholdFeedId != null &&
+  sections.some((s) => s._type === 'instagramFeedSection');
 ---
 
 {
@@ -56,6 +71,16 @@ const alternatingPositions = resolveAlternatingPositions(sections);
         return <CallToAction {...callToActionProps(section)} />;
       case 'contactHero':
         return <ContactHero {...contactHeroProps(section)} />;
+      case 'instagramFeedSection':
+        return (
+          <InstagramFeedSection
+            {...instagramFeedSectionProps(
+              section,
+              instagramHandle,
+              beholdFeedId
+            )}
+          />
+        );
       case 'contentSection':
         return (
           <Content
@@ -70,4 +95,10 @@ const alternatingPositions = resolveAlternatingPositions(sections);
         return null;
     }
   })
+}
+
+{
+  needsBeholdScript && (
+    <script is:inline type="module" src={BEHOLD_WIDGET_SCRIPT} />
+  )
 }

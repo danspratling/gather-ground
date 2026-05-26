@@ -306,6 +306,25 @@ export function contactHeroProps(s: Dict) {
   };
 }
 
+export function instagramFeedSectionProps(
+  s: Dict,
+  instagramHandle?: string,
+  beholdFeedId?: string
+) {
+  return {
+    eyebrow: (s.eyebrow as string) || undefined,
+    heading: s.heading as string,
+    subCopy: (s.subCopy as string) || undefined,
+    viewAllLabel: (s.viewAllLabel as string) || undefined,
+    handle:
+      instagramHandle != null
+        ? (stegaClean(instagramHandle) as string)
+        : undefined,
+    feedId:
+      beholdFeedId != null ? (stegaClean(beholdFeedId) as string) : undefined,
+  };
+}
+
 /**
  * Resolve image positions for every alternating `contentSection` on a page.
  *
