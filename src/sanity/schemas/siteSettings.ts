@@ -46,6 +46,15 @@ export const siteSettings = defineType({
       group: 'general',
     }),
     defineField({
+      name: 'favicon',
+      title: 'Favicon (SVG)',
+      type: 'image',
+      description:
+        'The small icon shown in browser tabs. SVG only. If left blank, the built-in favicon is used.',
+      options: { accept: 'image/svg+xml' },
+      group: 'general',
+    }),
+    defineField({
       name: 'instagramHandle',
       title: 'Instagram handle',
       type: 'string',

@@ -283,6 +283,7 @@ export const siteSettingsQuery = `*[_id == "siteSettings"][0]{
   siteDescription,
   logoAlt,
   "logo": logo.asset->url,
+  "favicon": favicon.asset->url,
   instagramHandle,
   beholdFeedId,
   defaultMetaTitle,
