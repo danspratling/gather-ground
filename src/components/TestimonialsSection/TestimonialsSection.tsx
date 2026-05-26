@@ -4,6 +4,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
+import { buttonClasses } from '@/components/Forms/Button/buttonClasses';
 import { cn } from '@/lib/utils';
 import type { TestimonialsSectionProps } from './TestimonialsSection.types';
 
@@ -70,7 +71,7 @@ function CtaLink({
 }: {
   label: string;
   href: string;
-  variant: 'primary' | 'secondary';
+  variant: 'default' | 'outline';
 }) {
   // Trustpilot / other review platforms are external — open externally so
   // visitors don't lose the page they were reading.
@@ -80,12 +81,7 @@ function CtaLink({
       href={href}
       target={isExternal ? '_blank' : undefined}
       rel={isExternal ? 'noopener noreferrer' : undefined}
-      className={cn(
-        'inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border px-4.5 py-3 text-base font-semibold whitespace-nowrap transition-colors',
-        variant === 'primary'
-          ? 'border-brand-600 bg-brand-700 text-brand-25 hover:bg-brand-600'
-          : 'border-border bg-background text-foreground hover:bg-muted'
-      )}
+      className={buttonClasses({ variant, size: 'lg' })}
     >
       {label}
     </a>
@@ -115,14 +111,14 @@ export default function TestimonialsSection({
                 <CtaLink
                   label={ctaPrimary.label}
                   href={ctaPrimary.href}
-                  variant="primary"
+                  variant="default"
                 />
               )}
               {ctaSecondary && (
                 <CtaLink
                   label={ctaSecondary.label}
                   href={ctaSecondary.href}
-                  variant="secondary"
+                  variant="outline"
                 />
               )}
             </div>
