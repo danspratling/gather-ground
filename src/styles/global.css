@@ -11,7 +11,7 @@
 /* Gather Ground design tokens — literal values */
 @theme {
   /* Brand palette */
-  --color-off-white: #fffff8;
+  --color-off-white: #f5f1e8;
   --color-brand-25: #f5f5f5;
   --color-brand-50: #e6e6e6;
   --color-brand-100: #cccccc;
@@ -47,6 +47,32 @@
   --color-secondary-800: #8b7a56;
   --color-secondary-900: #75633b;
   --color-secondary-950: #5f4c20;
+
+  /* Sage palette — brand accent (base = sage-400 #a9b9a3) */
+  --color-sage-25: #f8faf7;
+  --color-sage-50: #f0f4ee;
+  --color-sage-100: #e2eadd;
+  --color-sage-200: #c4d4be;
+  --color-sage-300: #b7c8b1;
+  --color-sage-400: #a9b9a3;
+  --color-sage-500: #8ca185;
+  --color-sage-600: #6f876a;
+  --color-sage-700: #586d52;
+  --color-sage-800: #44543e;
+  --color-sage-900: #2f3c2b;
+
+  /* Terracotta palette — brand accent (base = terracotta-500 #a0654a) */
+  --color-terracotta-25: #fbf6f3;
+  --color-terracotta-50: #f7ede7;
+  --color-terracotta-100: #eed9cd;
+  --color-terracotta-200: #dfb8a3;
+  --color-terracotta-300: #c89679;
+  --color-terracotta-400: #b47b5e;
+  --color-terracotta-500: #a0654a;
+  --color-terracotta-600: #87523c;
+  --color-terracotta-700: #6c4030;
+  --color-terracotta-800: #523024;
+  --color-terracotta-900: #3a2218;
 
   /* Semantic status palette — used by Badge and status indicators */
   --color-error-50: #fef3f2;
@@ -172,11 +198,11 @@
 }
 
 :root {
-  --background: #fffff8;
+  --background: #f5f1e8;
   --foreground: #202020;
   --card: #faf7ef;
   --card-foreground: #202020;
-  --popover: #fffff8;
+  --popover: #f5f1e8;
   --popover-foreground: #202020;
   --primary: #3b3b3b;
   --primary-foreground: #f5f5f5;
