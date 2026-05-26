@@ -11,7 +11,7 @@
 /* Gather Ground design tokens — literal values */
 @theme {
   /* Brand palette */
-  --color-off-white: #f5f1e8;
+  --color-off-white: #faf6ed;
   --color-brand-25: #f5f5f5;
   --color-brand-50: #e6e6e6;
   --color-brand-100: #cccccc;
@@ -198,11 +198,11 @@
 }
 
 :root {
-  --background: #f5f1e8;
+  --background: #faf6ed;
   --foreground: #202020;
   --card: #faf7ef;
   --card-foreground: #202020;
-  --popover: #f5f1e8;
+  --popover: #faf6ed;
   --popover-foreground: #202020;
   --primary: #3b3b3b;
   --primary-foreground: #f5f5f5;
