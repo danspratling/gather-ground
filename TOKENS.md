@@ -12,7 +12,7 @@ These are the **preferred** colours for all primary brand assets. Use these as t
 
 | Token            | Hex       | Tailwind class                              | Usage                               |
 | ---------------- | --------- | ------------------------------------------- | ----------------------------------- |
-| `off-white`      | `#FAF6ED` | `bg-off-white` / `text-off-white`           | Page background (warm cream)        |
+| `off-white`      | `#FCFAF2` | `bg-off-white` / `text-off-white`           | Page background (warm cream)        |
 | `sage-400`       | `#A9B9A3` | `bg-sage-400` / `text-sage-400`             | Sage accent — base                  |
 | `terracotta-500` | `#A0654A` | `bg-terracotta-500` / `text-terracotta-500` | Terracotta accent — base            |
 | `brand-700`      | `#3B3B3B` | `bg-brand-700` / `text-brand-700`           | Charcoal — primary text & button bg |
@@ -120,7 +120,7 @@ These map Shadcn UI's semantic color system to the Gather Ground palette. Use th
 
 | Semantic token         | Maps to                   |
 | ---------------------- | ------------------------- |
-| `background`           | `off-white` (#FAF6ED)     |
+| `background`           | `off-white` (#FCFAF2)     |
 | `foreground`           | `brand-900` (#202020)     |
 | `primary`              | `brand-700` (#3B3B3B)     |
 | `primary-foreground`   | `brand-25` (#F5F5F5)      |
@@ -180,7 +180,7 @@ All defined in `global.css`. Font weights 400/500/600 are standard Tailwind util
 
 ## Design observations
 
-- **Page background** is `off-white` (#FAF6ED) — warm cream, not pure white
+- **Page background** is `off-white` (#FCFAF2) — warm cream, not pure white
 - **Cards** use `secondary-50` (#FAF7EF) — lighter warm cream
 - **Footer** bg is `gray-950` (#171717) with light text
 - **Primary buttons**: `bg-brand-700 text-brand-25 rounded-full` — pill shape
