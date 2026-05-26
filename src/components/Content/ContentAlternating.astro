@@ -37,23 +37,23 @@ const IconComponent = icon ? icons[icon as keyof typeof icons] : null;
     <!-- Content column -->
     <div class="flex flex-col gap-5 flex-1 min-w-0">
       <div class="flex flex-col gap-6 items-start">
-        <div
-          class:list={[
-            'flex items-center justify-center rounded-[10px] size-14',
-            dark ? 'bg-brand-600' : 'bg-brand-50',
-          ]}
-        >
-          {
-            IconComponent && (
+        {
+          IconComponent && (
+            <div
+              class:list={[
+                'flex items-center justify-center rounded-[10px] size-14',
+                dark ? 'bg-brand-600' : 'bg-brand-50',
+              ]}
+            >
               <IconComponent
                 className={
                   dark ? 'size-7 text-brand-50' : 'size-7 text-brand-600'
                 }
                 aria-hidden="true"
               />
-            )
-          }
-        </div>
+            </div>
+          )
+        }
         <h2
           class:list={[
             'text-display-md font-semibold tracking-display-md',
