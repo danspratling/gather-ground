@@ -7,10 +7,17 @@ export interface TestimonialsSectionTestimonial {
   author: AvatarLabelGroupProps;
 }
 
+export interface TestimonialsSectionCta {
+  label: string;
+  href: string;
+}
+
 export interface TestimonialsSectionProps {
   heading: string;
   subCopy: string;
   testimonials: TestimonialsSectionTestimonial[];
+  ctaPrimary?: TestimonialsSectionCta;
+  ctaSecondary?: TestimonialsSectionCta;
 }
 
 export default null;

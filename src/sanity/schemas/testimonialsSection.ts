@@ -33,6 +33,29 @@ export const testimonialsSection = defineType({
         }),
       ],
     }),
+    defineField({
+      name: 'ctaPrimaryLabel',
+      title: 'Primary button text (optional)',
+      type: 'string',
+      description:
+        'Shown below the heading. Useful for linking out to a reviews platform like Trustpilot.',
+    }),
+    defineField({
+      name: 'ctaPrimaryHref',
+      title: 'Primary button link',
+      type: 'link',
+    }),
+    defineField({
+      name: 'ctaSecondaryLabel',
+      title: 'Secondary button text (optional)',
+      type: 'string',
+      description: 'Leave blank to show only one button.',
+    }),
+    defineField({
+      name: 'ctaSecondaryHref',
+      title: 'Secondary button link',
+      type: 'link',
+    }),
   ],
   preview: {
     select: { title: 'heading' },

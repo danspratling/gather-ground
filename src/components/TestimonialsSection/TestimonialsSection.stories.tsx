@@ -68,3 +68,17 @@ export const Default: Story = {
     ],
   },
 };
+
+export const WithCtas: Story = {
+  args: {
+    ...Default.args!,
+    ctaPrimary: {
+      label: 'Read more reviews on Trustpilot',
+      href: 'https://www.trustpilot.com/review/gatherground.co.uk',
+    },
+    ctaSecondary: {
+      label: 'Leave a review',
+      href: 'https://www.trustpilot.com/evaluate/gatherground.co.uk',
+    },
+  },
+};

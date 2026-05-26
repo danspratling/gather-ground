@@ -63,10 +63,41 @@ function CarouselDots({
 
 type CarouselApi = import('embla-carousel-react').UseEmblaCarouselType[1];
 
+function CtaLink({
+  label,
+  href,
+  variant,
+}: {
+  label: string;
+  href: string;
+  variant: 'primary' | 'secondary';
+}) {
+  // Trustpilot / other review platforms are external — open externally so
+  // visitors don't lose the page they were reading.
+  const isExternal = /^https?:\/\//.test(href);
+  return (
+    <a
+      href={href}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      className={cn(
+        'inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border px-4.5 py-3 text-base font-semibold whitespace-nowrap transition-colors',
+        variant === 'primary'
+          ? 'border-brand-600 bg-brand-700 text-brand-25 hover:bg-brand-600'
+          : 'border-border bg-background text-foreground hover:bg-muted'
+      )}
+    >
+      {label}
+    </a>
+  );
+}
+
 export default function TestimonialsSection({
   heading,
   subCopy,
   testimonials,
+  ctaPrimary,
+  ctaSecondary,
 }: TestimonialsSectionProps) {
   const [api, setApi] = React.useState<CarouselApi>(undefined);
 
@@ -78,6 +109,24 @@ export default function TestimonialsSection({
             {heading}
           </h2>
           <p className="text-xl text-brand-500">{subCopy}</p>
+          {(ctaPrimary || ctaSecondary) && (
+            <div className="mt-3 flex flex-wrap gap-3">
+              {ctaPrimary && (
+                <CtaLink
+                  label={ctaPrimary.label}
+                  href={ctaPrimary.href}
+                  variant="primary"
+                />
+              )}
+              {ctaSecondary && (
+                <CtaLink
+                  label={ctaSecondary.label}
+                  href={ctaSecondary.href}
+                  variant="secondary"
+                />
+              )}
+            </div>
+          )}
         </div>
         <div className="lg:flex-1">
           <ShadcnCarousel

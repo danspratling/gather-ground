@@ -58,7 +58,11 @@ export const bodySectionsProjection = `body[]{
       authorName,
       authorSecondary,
       authorSecondaryIsHandle
-    }
+    },
+    ctaPrimaryLabel,
+    ctaPrimaryHref ${linkProjection},
+    ctaSecondaryLabel,
+    ctaSecondaryHref ${linkProjection}
   },
 
   // faqSection
