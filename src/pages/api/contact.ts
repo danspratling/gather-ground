@@ -18,21 +18,45 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  const { name, email, message, marketingOptIn, turnstileToken } = body;
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    message,
+    consent,
+    marketingOptIn,
+    turnstileToken,
+  } = body;
 
   if (
-    !name ||
-    !email ||
-    !message ||
-    typeof name !== 'string' ||
+    typeof firstName !== 'string' ||
+    typeof lastName !== 'string' ||
     typeof email !== 'string' ||
-    typeof message !== 'string'
+    typeof message !== 'string' ||
+    !firstName.trim() ||
+    !lastName.trim() ||
+    !email.trim() ||
+    !message.trim()
   ) {
     return new Response(
       JSON.stringify({ success: false, error: 'Missing required fields' }),
       { status: 400, headers: jsonHeaders }
     );
   }
+
+  if (consent !== true) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: 'You must agree to the privacy policy',
+      }),
+      { status: 400, headers: jsonHeaders }
+    );
+  }
+
+  const phoneStr =
+    typeof phone === 'string' && phone.trim() ? phone.trim() : undefined;
 
   const secretKey = import.meta.env.TURNSTILE_SECRET_KEY;
   if (secretKey) {
@@ -52,7 +76,13 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
-    await sendContactEmail({ name, email, message });
+    await sendContactEmail({
+      firstName,
+      lastName,
+      email,
+      phone: phoneStr,
+      message,
+    });
   } catch (err) {
     console.error('Contact email failed:', err);
     return new Response(
@@ -63,12 +93,11 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (marketingOptIn === true) {
     try {
-      const [firstName, ...rest] = name.trim().split(/\s+/);
       await addBrevoContact({
         email,
         attributes: {
           FIRSTNAME: firstName,
-          LASTNAME: rest.join(' ') || undefined,
+          LASTNAME: lastName,
         },
         listIds: getNewsletterListIds(),
       });

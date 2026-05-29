@@ -1,5 +1,6 @@
 export interface ContactFormProps {
-  // No required props — form is self-contained
+  /** Where the "privacy policy" link in the consent checkbox points to. */
+  privacyHref?: string;
 }
 
 export default null;
