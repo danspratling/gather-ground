@@ -69,7 +69,6 @@ export default function NewsletterForm({ heading }: NewsletterFormProps) {
           {siteKey && (
             <Turnstile
               siteKey={siteKey}
-              options={{ appearance: 'interaction-only', size: 'flexible' }}
               onSuccess={(token) => {
                 turnstileToken.current = token;
               }}
