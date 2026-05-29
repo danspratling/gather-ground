@@ -118,6 +118,7 @@ export default function ContactForm(_props: ContactFormProps) {
       {siteKey && (
         <Turnstile
           siteKey={siteKey}
+          options={{ appearance: 'interaction-only' }}
           onSuccess={(token) => {
             turnstileToken.current = token;
           }}
