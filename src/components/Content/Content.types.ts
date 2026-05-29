@@ -26,6 +26,7 @@ export interface ContentAlternatingProps {
   checklistItems?: string[] | string;
   image: { src: string; alt: string };
   imagePosition?: 'left' | 'right';
+  imageLayout?: 'inline-separated' | 'inline-overlapping' | 'full-bleed';
   dark?: boolean;
 }
 

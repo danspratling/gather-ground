@@ -65,12 +65,17 @@ export const contentSection = defineType({
   name: 'contentSection',
   title: 'Content Section',
   type: 'object',
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'settings', title: 'Settings' },
+  ],
   fields: [
     defineField({
       name: 'variant',
       title: 'Layout style',
       type: 'string',
       description: 'Choose how this section is arranged on the page.',
+      group: 'settings',
       options: {
         list: [
           {
@@ -78,7 +83,8 @@ export const contentSection = defineType({
             value: 'simple',
           },
           {
-            title: 'Alternating — text on one side, image on the other',
+            title:
+              'Alternating — text alternating left or right, with an image',
             value: 'alternating',
           },
           {
@@ -102,6 +108,7 @@ export const contentSection = defineType({
       type: 'string',
       description:
         'A short label shown above the heading in small text (e.g. "Why choose us"). Optional.',
+      group: 'content',
       hidden: ({ parent }) =>
         parent?.variant !== 'icons-featured-image' &&
         parent?.variant !== 'title',
@@ -112,6 +119,7 @@ export const contentSection = defineType({
       type: 'string',
       description:
         'The name of an Untitled UI icon (e.g. "ZapFast"). Ask a developer for the list of available names. Optional.',
+      group: 'content',
       hidden: ({ parent }) =>
         parent?.variant !== 'simple' && parent?.variant !== 'alternating',
     }),
@@ -119,6 +127,7 @@ export const contentSection = defineType({
       name: 'heading',
       title: 'Heading',
       type: 'string',
+      group: 'content',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -126,6 +135,7 @@ export const contentSection = defineType({
       title: 'Description',
       type: 'text',
       rows: 3,
+      group: 'content',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -135,6 +145,7 @@ export const contentSection = defineType({
       description:
         'A list of feature highlights, each with a heading and short description.',
       of: [defineArrayMember({ type: 'contentFeatureItem' })],
+      group: 'content',
       hidden: ({ parent }) => parent?.variant !== 'simple',
     }),
     defineField({
@@ -144,6 +155,7 @@ export const contentSection = defineType({
       description:
         'Up to 2 features, each with an icon, heading, and description.',
       of: [defineArrayMember({ type: 'contentIconFeature' })],
+      group: 'content',
       validation: (Rule) => Rule.max(2),
       hidden: ({ parent }) => parent?.variant !== 'icons-featured-image',
     }),
@@ -153,6 +165,7 @@ export const contentSection = defineType({
       type: 'text',
       description:
         'Type one item per line. Each line becomes a tick-mark item on the page.',
+      group: 'content',
       hidden: ({ parent }) => parent?.variant !== 'alternating',
     }),
     defineField({
@@ -162,6 +175,7 @@ export const contentSection = defineType({
       description:
         'Recommended: at least 800 × 600 px. Use the hotspot to control the focal point when cropped.',
       options: { hotspot: true },
+      group: 'content',
       hidden: ({ parent }) =>
         parent?.variant !== 'alternating' &&
         parent?.variant !== 'icons-featured-image',
@@ -182,6 +196,26 @@ export const contentSection = defineType({
         direction: 'horizontal',
       },
       initialValue: 'auto',
+      group: 'settings',
+      hidden: ({ parent }) => parent?.variant !== 'alternating',
+    }),
+    defineField({
+      name: 'imageLayout',
+      title: 'Image layout',
+      type: 'string',
+      description:
+        'How the image and content card are arranged. Inline separated: text on one side, image card on the other. Inline overlapping: image fills the container, content card sits over it on one side. Full-bleed: image spans the full viewport width with the content card overlaid.',
+      options: {
+        list: [
+          { title: 'Inline, separated', value: 'inline-separated' },
+          { title: 'Inline, overlapping', value: 'inline-overlapping' },
+          { title: 'Full-bleed', value: 'full-bleed' },
+        ],
+        layout: 'radio',
+        direction: 'vertical',
+      },
+      initialValue: 'inline-separated',
+      group: 'settings',
       hidden: ({ parent }) => parent?.variant !== 'alternating',
     }),
     defineField({
@@ -195,6 +229,7 @@ export const contentSection = defineType({
         ],
       },
       initialValue: 'left',
+      group: 'settings',
       hidden: ({ parent }) => parent?.variant !== 'title',
     }),
     defineField({
@@ -204,6 +239,7 @@ export const contentSection = defineType({
       description:
         'Turn this on to show the section with a dark background and light text.',
       initialValue: false,
+      group: 'settings',
     }),
   ],
   preview: {

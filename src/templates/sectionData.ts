@@ -258,6 +258,14 @@ export function contentSectionProps(
           const raw = enumClean(s.imagePosition as string | undefined);
           return raw === 'left' || raw === 'right' ? raw : 'right';
         })(),
+      imageLayout:
+        enumClean(
+          s.imageLayout as
+            | 'inline-separated'
+            | 'inline-overlapping'
+            | 'full-bleed'
+            | undefined
+        ) ?? 'inline-separated',
     };
   }
   if (variant === 'icons-featured-image') {

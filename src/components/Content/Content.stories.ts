@@ -120,6 +120,52 @@ export const AlternatingDark = {
   },
 };
 
+export const AlternatingInlineOverlapping = {
+  args: {
+    ...Alternating.args,
+    imageLayout: 'inline-overlapping' as const,
+  },
+};
+
+export const AlternatingInlineOverlappingImageLeft = {
+  args: {
+    ...Alternating.args,
+    imageLayout: 'inline-overlapping' as const,
+    imagePosition: 'left' as const,
+  },
+};
+
+export const AlternatingInlineOverlappingDark = {
+  args: {
+    ...Alternating.args,
+    imageLayout: 'inline-overlapping' as const,
+    dark: true,
+  },
+};
+
+export const AlternatingFullBleed = {
+  args: {
+    ...Alternating.args,
+    imageLayout: 'full-bleed' as const,
+  },
+};
+
+export const AlternatingFullBleedImageLeft = {
+  args: {
+    ...Alternating.args,
+    imageLayout: 'full-bleed' as const,
+    imagePosition: 'left' as const,
+  },
+};
+
+export const AlternatingFullBleedDark = {
+  args: {
+    ...Alternating.args,
+    imageLayout: 'full-bleed' as const,
+    dark: true,
+  },
+};
+
 const mockIconFeatures = [
   {
     icon: 'MessageChatCircle',
