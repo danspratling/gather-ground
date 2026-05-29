@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { Turnstile } from '@marsidev/react-turnstile';
 
 import type { NewsletterFormProps } from '@/components/NewsletterForm/NewsletterForm.types';
 
@@ -7,6 +8,7 @@ type Status = 'idle' | 'submitting' | 'success' | 'error';
 export default function NewsletterForm({ heading }: NewsletterFormProps) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<Status>('idle');
+  const turnstileToken = useRef<string>('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -15,7 +17,7 @@ export default function NewsletterForm({ heading }: NewsletterFormProps) {
       const resp = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, turnstileToken: turnstileToken.current }),
       });
       const data = (await resp.json()) as { success: boolean };
       if (data.success) {
@@ -28,6 +30,10 @@ export default function NewsletterForm({ heading }: NewsletterFormProps) {
       setStatus('error');
     }
   };
+
+  const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as
+    | string
+    | undefined;
 
   return (
     <div className="flex flex-col gap-4">
@@ -60,6 +66,15 @@ export default function NewsletterForm({ heading }: NewsletterFormProps) {
               {status === 'submitting' ? 'Subscribing…' : 'Subscribe'}
             </button>
           </form>
+          {siteKey && (
+            <Turnstile
+              siteKey={siteKey}
+              options={{ appearance: 'interaction-only' }}
+              onSuccess={(token) => {
+                turnstileToken.current = token;
+              }}
+            />
+          )}
           {status === 'error' && (
             <p className="text-sm text-error-700">
               Something went wrong. Please try again.

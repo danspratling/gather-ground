@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { sendContactEmail } from '@/lib/email';
+import { addBrevoContact, getNewsletterListIds } from '@/lib/brevo';
 import { verifyTurnstile } from '@/lib/turnstile';
 
 export const prerender = false;
@@ -17,7 +18,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  const { name, email, message, turnstileToken } = body;
+  const { name, email, message, marketingOptIn, turnstileToken } = body;
 
   if (
     !name ||
@@ -58,6 +59,23 @@ export const POST: APIRoute = async ({ request }) => {
       JSON.stringify({ success: false, error: 'Failed to send email' }),
       { status: 502, headers: jsonHeaders }
     );
+  }
+
+  if (marketingOptIn === true) {
+    try {
+      const [firstName, ...rest] = name.trim().split(/\s+/);
+      await addBrevoContact({
+        email,
+        attributes: {
+          FIRSTNAME: firstName,
+          LASTNAME: rest.join(' ') || undefined,
+        },
+        listIds: getNewsletterListIds(),
+      });
+    } catch (err) {
+      // Don't fail the request — the message was delivered. Just log it.
+      console.error('Brevo subscription from contact form failed:', err);
+    }
   }
 
   return new Response(JSON.stringify({ success: true }), {

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { sendNewsletterWelcome } from '@/lib/email';
+import { addBrevoContact, getNewsletterListIds } from '@/lib/brevo';
 import { verifyTurnstile } from '@/lib/turnstile';
 
 export const prerender = false;
@@ -61,11 +61,14 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
-    await sendNewsletterWelcome(email);
+    await addBrevoContact({
+      email,
+      listIds: getNewsletterListIds(),
+    });
   } catch (err) {
-    console.error('Newsletter email failed:', err);
+    console.error('Newsletter subscription failed:', err);
     return new Response(
-      JSON.stringify({ success: false, error: 'Failed to send email' }),
+      JSON.stringify({ success: false, error: 'Failed to subscribe' }),
       { status: 502, headers: jsonHeaders }
     );
   }
