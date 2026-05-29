@@ -18,6 +18,7 @@ export default function ContactForm(_props: ContactFormProps) {
     const name = formData.get('name') as string;
     const email = formData.get('email') as string;
     const message = formData.get('message') as string;
+    const marketingOptIn = formData.get('marketingOptIn') === 'on';
 
     try {
       const resp = await fetch('/api/contact', {
@@ -27,6 +28,7 @@ export default function ContactForm(_props: ContactFormProps) {
           name,
           email,
           message,
+          marketingOptIn,
           turnstileToken: turnstileToken.current,
         }),
       });
@@ -121,6 +123,17 @@ export default function ContactForm(_props: ContactFormProps) {
           }}
         />
       )}
+      <label className="flex items-start gap-2 text-sm text-gray-700">
+        <input
+          type="checkbox"
+          name="marketingOptIn"
+          className="mt-1 h-4 w-4 cursor-pointer rounded border-gray-300 text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+        />
+        <span>
+          I'd like to receive occasional emails from Gather Ground about farm
+          news, recipes, and seasonal produce. You can unsubscribe at any time.
+        </span>
+      </label>
       {status === 'error' && (
         <p className="text-sm text-error-700">{errorMessage}</p>
       )}

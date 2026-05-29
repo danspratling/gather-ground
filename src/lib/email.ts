@@ -22,18 +22,4 @@ export async function sendContactEmail(data: ContactFormData): Promise<void> {
   });
 }
 
-export async function sendNewsletterWelcome(email: string): Promise<void> {
-  if (!resend) {
-    throw new Error(
-      'RESEND_API_KEY not set — cannot send newsletter welcome email'
-    );
-  }
-  await resend.emails.send({
-    from: import.meta.env.RESEND_FROM_EMAIL ?? 'hello@gatherground.co.uk',
-    to: email,
-    subject: 'Welcome to Gather Ground!',
-    text: "Thanks for subscribing to the Gather Ground newsletter. We'll keep you updated with farm news, recipes, and seasonal produce.",
-  });
-}
-
 export default null;
