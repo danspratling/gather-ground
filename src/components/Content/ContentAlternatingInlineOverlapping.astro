@@ -1,0 +1,62 @@
+---
+import type { ContentAlternatingProps } from './Content.types';
+import ContentAlternatingCard from './ContentAlternatingCard.astro';
+
+type Props = Omit<ContentAlternatingProps, 'variant' | 'imageLayout'>;
+
+const {
+  icon,
+  heading,
+  body,
+  checklistItems: rawChecklistItems = [],
+  image,
+  imagePosition = 'right',
+  dark = false,
+} = Astro.props;
+
+const checklistItems = Array.isArray(rawChecklistItems)
+  ? rawChecklistItems
+  : typeof rawChecklistItems === 'string'
+    ? rawChecklistItems
+        .split('\n')
+        .map((item) => item.trim())
+        .filter(Boolean)
+    : [];
+---
+
+<section class:list={[dark ? 'bg-brand-900' : 'bg-off-white', 'py-24']}>
+  <div class="container">
+    <div class="relative overflow-hidden rounded-3xl">
+      <img
+        src={image.src}
+        alt={image.alt}
+        class="aspect-4/3 w-full object-cover lg:aspect-video lg:min-h-140"
+        width={1600}
+        height={900}
+        loading="lazy"
+        decoding="async"
+      />
+      <div
+        class:list={[
+          'relative flex p-6 lg:absolute lg:inset-0 lg:items-center lg:p-12',
+          imagePosition === 'left' ? 'lg:justify-start' : 'lg:justify-end',
+        ]}
+      >
+        <div
+          class:list={[
+            'flex w-full max-w-md flex-col rounded-2xl p-8 lg:p-10',
+            dark ? 'bg-brand-900' : 'bg-off-white',
+          ]}
+        >
+          <ContentAlternatingCard
+            icon={icon}
+            heading={heading}
+            body={body}
+            checklistItems={checklistItems}
+            dark={dark}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
