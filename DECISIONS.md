@@ -40,6 +40,7 @@ Architecture decision log for the Gather Ground website. Read this before changi
 | ADR-034 | Internal links must use CMS page references       | CMS          | Active                |
 | ADR-035 | Storybook stories only for components with UI     | Storybook    | Active                |
 | ADR-036 | Analytics consent-gated via event listener        | Analytics    | Active                |
+| ADR-037 | Sanity-first editor + one-way Commerce Layer sync | Commerce     | Active                |
 
 ---
 
@@ -627,3 +628,48 @@ if (localStorage.getItem('cookie-consent') === 'accepted') {
 **Reasoning:** Checking only on page load would miss users who accept cookies mid-session without refreshing. Listening only for the event would miss returning visitors who already accepted. Both cases must be handled.
 
 **Consequence:** Any new analytics or tracking script added to the site must follow this two-path pattern. The `cookie-consent-accepted` event name is the contract between `CookieBanner` and all analytics components — do not rename it without updating all listeners.
+
+---
+
+## ADR-037: Sanity-first editor + one-way Commerce Layer sync
+
+**Status:** Accepted
+**Date:** 2026-06-17
+**Category:** Commerce
+
+**Context:** The ecommerce MVP integrates Sanity as the editorial CMS with Commerce Layer as the backend for orders and inventory. Commerce Layer is a powerful managed commerce platform, but it introduces two architectural decisions: (1) where editorial work happens, and (2) the direction of data flow between systems.
+
+**Decision:** Sanity is the single source of truth for all product content (descriptions, images, pricing, attributes, variants). Commerce Layer is the order/payment engine and inventory manager. Data flows one-way: **Sanity → Commerce Layer only**. Commerce Layer never writes product data back to Sanity. Editors work exclusively in Sanity; they do not log into Commerce Layer.
+
+**Reasoning:**
+
+1. **Editorial source of truth:** Product content (name, description, hero image, variant specifications, pricing structure) is inherently editorial and belongs in the CMS. Sanity's rich text, asset management, and versioning/publishing workflow are built for editors. Commerce Layer's SKU/price data model is designed for operations, not editorial — it has no draft states or content scheduling.
+
+2. **One-way data flow prevents conflicts:** If both systems could write product data, you'd need reconciliation logic, conflict resolution, and eventual consistency handling. One-way sync eliminates that complexity. Sanity writes product data to CL on publish. CL is read-only from Sanity's perspective.
+
+3. **Commerce Layer emits events, not product mutations:** CL's role is to emit **stock events** (inventory updates from sales/restocking) and **order events** (payments, fulfillment). These flow back to Sanity as read-only intelligence for reporting, but they don't mutate product documents themselves.
+
+4. **Editors don't need CL:** Editors have no reason to log into Commerce Layer. They don't manage stock (that's operations via CL's dashboard or ERP integrations), they don't process orders (that's also CL's responsibility). Their job is to describe and organize products in Sanity.
+
+5. **CMS schema and API keys:** Sanity is home to all editorial schemas (`products`, `productVariants`, `productCategories`, `pricing`). Commerce Layer holds operational references (SKU identifiers, price metadata, inventory state). The API integration is: on publish in Sanity → sync product structure to CL via CL API → CL returns authoritative stock/pricing for cart/checkout.
+
+**Constraints on the Commerce Layer data model:**
+
+- Product hierarchies and variant relationships must mirror Sanity's schema. If a product has variants in Sanity (e.g., color + size), CL's SKU structure must support that relationship.
+- Pricing in CL is derived from Sanity pricing rules, not independent. If you change a price in CL, it gets overwritten on the next Sanity sync.
+- Product slug URLs and asset URLs originate from Sanity — CL stores references to these, not the canonical values.
+- Attributes (color, size, material, etc.) are defined in Sanity and propagated to CL as SKU metadata — not the reverse.
+
+**Sync mechanism (deferred to later tickets):**
+
+- Sanity publish webhook → Lambda/serverless function → CL Product API
+- On product publish in Sanity, the sync function: creates/updates products and SKUs in CL, respecting the variant hierarchy
+- Stock and order events from CL are exposed via CL Webhooks and logged for dashboard/reporting (not synced back to Sanity documents)
+
+**Consequence:**
+
+1. Product content lives in Sanity schemas — never in CL. All editorial workflows (drafting, scheduling, preview, localization, versioning) happen in Sanity.
+2. Commerce Layer is treated as a managed backend service, not a CMS. Its data model is shaped by Sanity's schema, not the reverse.
+3. Developers integrating new product types or attributes must: (a) define the schema in Sanity, (b) ensure the CL sync function handles the new structure, (c) never create product data directly in CL expecting editors to use it.
+4. Analytics and reporting queries pull stock/order events from CL webhooks, not from mutating Sanity product documents.
+5. Future expansion into multi-currency, localization, or regional pricing is driven by Sanity's editorial model, with CL adapting to support it.
