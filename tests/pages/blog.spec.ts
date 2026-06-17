@@ -9,8 +9,6 @@
 
 import { expect, test } from '@playwright/test';
 
-import { isAppError } from '../helpers/consoleErrors';
-
 // ─── Layer 1: Structural ──────────────────────────────────────────────────────
 
 test.describe('blog page structure', () => {
@@ -52,9 +50,9 @@ test.describe('blog page structure', () => {
   test('no console errors on load', async ({ page }) => {
     const errors: string[] = [];
     page.on('console', (msg) => {
-      if (isAppError(msg)) errors.push(msg.text());
+      if (msg.type() === 'error') errors.push(msg.text());
     });
-    await page.goto('/blog', { waitUntil: 'networkidle' });
+    await page.goto('/blog');
     expect(errors).toHaveLength(0);
   });
 });
