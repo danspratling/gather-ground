@@ -10,9 +10,13 @@ const GATED_ROUTE_PATTERNS = [
 const isGatedPath = (pathname: string): boolean =>
   GATED_ROUTE_PATTERNS.some((pattern) => pattern.test(pathname));
 
-export const onRequest = defineMiddleware((context, next) => {
+export const onRequest = defineMiddleware(async (context, next) => {
   if (!isCommerceEnabled() && isGatedPath(context.url.pathname)) {
-    return new Response(null, { status: 404 });
+    const response = await context.rewrite('/404');
+    return new Response(response.body, {
+      status: 404,
+      headers: response.headers,
+    });
   }
 
   return next();

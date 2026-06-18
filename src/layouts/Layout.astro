@@ -128,8 +128,7 @@ const headerProps: HeaderProps = {
   logoSrc: siteSettings?.logo ?? '/favicon.svg',
   logoAlt: siteSettings?.logoAlt ?? 'Gather Ground',
   navLinks: siteSettings?.primaryNav
-    ? (siteSettings.primaryNav.flatMap(
-        (item): HeaderProps['navLinks'] => {
+    ? (siteSettings.primaryNav.flatMap((item): HeaderProps['navLinks'] => {
         const menu = item.menu
           ?.map((m) => {
             const href = resolveSanityLink(m.link);
@@ -153,8 +152,7 @@ const headerProps: HeaderProps = {
 
         const href = item.link ? resolveSanityLink(item.link) : '';
         return href ? [{ label: item.label, href }] : [];
-      }
-      ) as HeaderProps['navLinks'])
+      }) as HeaderProps['navLinks'])
     : [],
   ctaLabel: siteSettings?.headerCtaLabel,
   ctaHref: siteSettings?.headerCtaLink
