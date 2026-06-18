@@ -87,13 +87,50 @@ function getMarketScope(): string {
 }
 
 /**
+ * Default token TTL when CL doesn't surface one. CL's default is 2 hours.
+ */
+const DEFAULT_TOKEN_TTL_SECONDS = 60 * 60 * 2;
+
+/**
+ * Compute the absolute expiry (unix seconds) of an auth response, falling
+ * back to `now + DEFAULT_TOKEN_TTL_SECONDS` if neither `expires` nor
+ * `expiresIn` / `expires_in` is present.
+ */
+function expiresAtFromAuth(auth: unknown): number {
+  const a = auth as {
+    expires?: Date | string | null;
+    expiresIn?: number | null;
+    expires_in?: number | null;
+  };
+
+  if (a.expires) {
+    const ms =
+      a.expires instanceof Date
+        ? a.expires.getTime()
+        : new Date(a.expires).getTime();
+    if (Number.isFinite(ms)) {
+      return Math.floor(ms / 1000);
+    }
+  }
+
+  const ttl =
+    typeof a.expiresIn === 'number'
+      ? a.expiresIn
+      : typeof a.expires_in === 'number'
+        ? a.expires_in
+        : DEFAULT_TOKEN_TTL_SECONDS;
+  return Math.floor(Date.now() / 1000) + ttl;
+}
+
+/**
  * Authenticate a customer using their email + password.
- * Returns a customer-scoped access token and the customer profile.
+ * Returns a customer-scoped access token, the customer profile, and the
+ * unix-seconds timestamp at which the access token expires.
  */
 export async function login(
   email: string,
   password: string
-): Promise<{ token: string; customer: Customer }> {
+): Promise<{ token: string; customer: Customer; expiresAt: number }> {
   const auth = await authenticate('password', {
     clientId: getSalesChannelClientId(),
     scope: getMarketScope(),
@@ -120,7 +157,11 @@ export async function login(
     );
   }
 
-  return { token: auth.accessToken, customer: mapCustomer(profile) };
+  return {
+    token: auth.accessToken,
+    customer: mapCustomer(profile),
+    expiresAt: expiresAtFromAuth(auth),
+  };
 }
 
 /**
@@ -131,7 +172,7 @@ export async function register(
   password: string,
   firstName: string,
   lastName: string
-): Promise<{ token: string; customer: Customer }> {
+): Promise<{ token: string; customer: Customer; expiresAt: number }> {
   const integration = await getIntegrationClient();
 
   await integration.customers.create({
@@ -188,10 +229,14 @@ export async function confirmPasswordReset(
 /**
  * Refresh a customer session by re-fetching the profile from the existing token.
  * If the token has expired, CL returns 401 and the caller should re-login.
+ *
+ * CL access tokens are opaque and we don't have their original `expires_in`
+ * available here, so callers should treat `expiresAt` as an upper bound
+ * (`now + DEFAULT_TOKEN_TTL_SECONDS`) and re-login on the next 401.
  */
 export async function refreshSession(
   currentToken: string
-): Promise<{ token: string; customer: Customer }> {
+): Promise<{ token: string; customer: Customer; expiresAt: number }> {
   if (!currentToken) {
     throw new Error('Token required to refresh session');
   }
@@ -207,7 +252,11 @@ export async function refreshSession(
     throw new Error('Session refresh failed: customer profile not found');
   }
 
-  return { token: currentToken, customer: mapCustomer(profile) };
+  return {
+    token: currentToken,
+    customer: mapCustomer(profile),
+    expiresAt: Math.floor(Date.now() / 1000) + DEFAULT_TOKEN_TTL_SECONDS,
+  };
 }
 
 export default null;

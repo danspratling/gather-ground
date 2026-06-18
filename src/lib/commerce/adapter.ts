@@ -28,12 +28,14 @@ export interface CommerceAdapter {
    */
 
   /**
-   * Log in a user with email and password
+   * Log in a user with email and password.
+   * `expiresAt` is a unix-seconds timestamp marking when the access token
+   * itself expires (independent of the session cookie's rolling 30-day TTL).
    */
   login(
     email: string,
     password: string
-  ): Promise<{ token: string; customer: Customer }>;
+  ): Promise<{ token: string; customer: Customer; expiresAt: number }>;
 
   /**
    * Register a new user
@@ -43,7 +45,7 @@ export interface CommerceAdapter {
     password: string,
     firstName: string,
     lastName: string
-  ): Promise<{ token: string; customer: Customer }>;
+  ): Promise<{ token: string; customer: Customer; expiresAt: number }>;
 
   /**
    * Log out the current user (revoke token)
@@ -61,9 +63,12 @@ export interface CommerceAdapter {
   confirmPasswordReset(code: string, newPassword: string): Promise<void>;
 
   /**
-   * Refresh an expired session token
+   * Refresh an expired session token. `expiresAt` is a unix-seconds timestamp
+   * for the returned token (independent of the session cookie's rolling TTL).
    */
-  refreshSession(token: string): Promise<{ token: string; customer: Customer }>;
+  refreshSession(
+    token: string
+  ): Promise<{ token: string; customer: Customer; expiresAt: number }>;
 
   /**
    * CATALOG
