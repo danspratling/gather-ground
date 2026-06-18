@@ -12,6 +12,7 @@ export interface HeaderProps {
   logoSrc: string;
   logoAlt: string;
   navLinks: HeaderNavLink[];
+  showCommerceSlots?: boolean;
   ctaLabel?: string;
   ctaHref?: string;
   footerLinks?: { label: string; href: string }[];
