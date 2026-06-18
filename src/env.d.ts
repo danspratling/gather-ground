@@ -56,4 +56,10 @@ interface ImportMetaEnv {
   readonly SANITY_DATASET: string;
   readonly SANITY_API_READ_TOKEN: string;
   readonly PUBLIC_SANITY_VISUAL_EDITING_ENABLED: string;
+  readonly COMMERCELAYER_ORGANIZATION: string;
+  readonly COMMERCELAYER_INTEGRATION_CLIENT_ID: string;
+  readonly COMMERCELAYER_INTEGRATION_CLIENT_SECRET: string;
+  readonly COMMERCELAYER_SALES_CHANNEL_CLIENT_ID: string;
+  readonly COMMERCELAYER_WEBHOOK_SECRET: string;
+  readonly COMMERCELAYER_MARKET_ID: string;
 }
