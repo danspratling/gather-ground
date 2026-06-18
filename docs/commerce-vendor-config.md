@@ -47,9 +47,9 @@ Reference values for Commerce Layer + Stripe sandbox/production environments.
 ## Stripe
 
 - **Test publishable key:** stored in `STRIPE_PUBLISHABLE_KEY` (Vercel Preview env)
-- **Test restricted secret:** stored in `STRIPE_SECRET_KEY` (Vercel Preview env)
-- **Live keys:** added during pre-launch (see `GG-E55-E`)
-- **Apple Pay domains:** `gather-ground.com` (added in `GG-E42-A`)
+- **Test restricted key:** stored in `STRIPE_SECRET_KEY` (Vercel Preview env)
+- **Live keys:** added during pre-launch (see `[GG-E55-E]`)
+- **Apple Pay domains:** `gather-ground.com` (added in `[GG-E42-A]`)
 
 ## Environment variable mapping
 
