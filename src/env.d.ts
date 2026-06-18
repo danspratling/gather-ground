@@ -63,4 +63,5 @@ interface ImportMetaEnv {
   readonly COMMERCELAYER_SALES_CHANNEL_CLIENT_ID: string;
   readonly COMMERCELAYER_WEBHOOK_SECRET: string;
   readonly COMMERCELAYER_MARKET_ID: string;
+  readonly SESSION_SECRET: string;
 }
