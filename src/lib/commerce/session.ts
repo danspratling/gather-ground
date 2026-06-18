@@ -41,9 +41,25 @@ function isProduction(): boolean {
   return import.meta.env.PROD === true;
 }
 
+function isValidSessionShape(data: unknown): data is SessionData {
+  if (!data || typeof data !== 'object') return false;
+  const d = data as Record<string, unknown>;
+  if (typeof d.customerId !== 'string' || d.customerId.length === 0)
+    return false;
+  if (typeof d.accessToken !== 'string' || d.accessToken.length === 0)
+    return false;
+  if (typeof d.expiresAt !== 'number' || !Number.isFinite(d.expiresAt))
+    return false;
+  if (d.refreshToken !== undefined && typeof d.refreshToken !== 'string')
+    return false;
+  return true;
+}
+
 /**
  * Read and verify the session cookie.
  * Returns `null` if the cookie is absent, malformed, expired, or unsealing fails.
+ * Throws if `SESSION_SECRET` is missing or invalid — that's a config error,
+ * not a runtime auth failure, and must surface.
  */
 export async function getSession(
   cookies: AstroCookies
@@ -53,22 +69,21 @@ export async function getSession(
     return null;
   }
 
+  // Read the secret outside the try/catch so config errors aren't swallowed
+  // as a missing-session.
+  const password = getSessionSecret();
+
+  let data: unknown;
   try {
-    const data = await unsealData<SessionData>(raw, {
-      password: getSessionSecret(),
+    data = await unsealData<unknown>(raw, {
+      password,
       ttl: SESSION_MAX_AGE_SECONDS,
     });
-    if (
-      !data ||
-      typeof data.accessToken !== 'string' ||
-      typeof data.customerId !== 'string'
-    ) {
-      return null;
-    }
-    return data;
   } catch {
     return null;
   }
+
+  return isValidSessionShape(data) ? data : null;
 }
 
 /**

@@ -32,8 +32,14 @@ interface StoredCookie {
 function createMockCookies(): {
   cookies: AstroCookies;
   store: Map<string, StoredCookie>;
+  deleteSpy: ReturnType<typeof vi.fn>;
 } {
   const store = new Map<string, StoredCookie>();
+  const deleteSpy = vi.fn(
+    (name: string, _options?: Record<string, unknown>) => {
+      store.delete(name);
+    }
+  );
 
   const cookies = {
     get(name: string) {
@@ -43,12 +49,10 @@ function createMockCookies(): {
     set(name: string, value: string, options?: Record<string, unknown>) {
       store.set(name, { value, options });
     },
-    delete(name: string) {
-      store.delete(name);
-    },
+    delete: deleteSpy,
   } as unknown as AstroCookies;
 
-  return { cookies, store };
+  return { cookies, store, deleteSpy };
 }
 
 const validSecret = 'a'.repeat(48);
@@ -95,13 +99,16 @@ describe('setSession + getSession round-trip', () => {
     expect(round).toEqual(validSession);
   });
 
-  it('applies HttpOnly + SameSite=Lax + Path=/ + Max-Age cookie attributes', async () => {
+  it('applies HttpOnly + Secure(false in non-prod) + SameSite=Lax + Path=/ + Max-Age cookie attributes', async () => {
     const { cookies, store } = createMockCookies();
     await setSession(cookies, validSession);
 
     const stored = store.get(SESSION_COOKIE_NAME);
     expect(stored?.options).toMatchObject({
       httpOnly: true,
+      // Tests don't run with import.meta.env.PROD === true, so Secure must be false.
+      // This locks in the "Secure (prod only)" behaviour against regressions.
+      secure: false,
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 30,
@@ -125,6 +132,15 @@ describe('clearSession', () => {
 
     clearSession(cookies);
     expect(store.has(SESSION_COOKIE_NAME)).toBe(false);
+  });
+
+  it('calls cookies.delete with Path=/ so the cookie set with Path=/ is actually cleared', () => {
+    const { cookies, deleteSpy } = createMockCookies();
+    clearSession(cookies);
+    expect(deleteSpy).toHaveBeenCalledWith(
+      SESSION_COOKIE_NAME,
+      expect.objectContaining({ path: '/' })
+    );
   });
 });
 
