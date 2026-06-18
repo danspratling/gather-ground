@@ -105,6 +105,9 @@ describe('Commerce Layer Auth Adapter', () => {
       expect(result.customer.email).toBe('test@example.com');
       expect(result.customer.firstName).toBe('Test');
       expect(result.customer.lastName).toBe('User');
+      const nowSeconds = Math.floor(Date.now() / 1000);
+      expect(result.expiresAt).toBeGreaterThan(nowSeconds);
+      expect(result.expiresAt).toBeLessThanOrEqual(nowSeconds + 7201);
     });
 
     it('throws when CL returns auth errors', async () => {
