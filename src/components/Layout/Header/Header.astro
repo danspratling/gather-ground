@@ -9,6 +9,7 @@ const {
   logoSrc,
   logoAlt,
   navLinks,
+  showCommerceSlots = false,
   ctaLabel,
   ctaHref,
   footerLinks = [],
@@ -62,6 +63,17 @@ const {
 
     <!-- Right zone: desktop CTA -->
     <div class="flex grow shrink-0 basis-0 items-center justify-end">
+      {
+        showCommerceSlots && (
+          <div
+            class="hidden items-center gap-2 md:flex"
+            data-testid="header-commerce-slot"
+          >
+            <slot name="commerce-account" />
+            <slot name="commerce-cart" />
+          </div>
+        )
+      }
       {
         ctaLabel && ctaHref && (
           <div class="hidden items-center gap-3 md:flex">

@@ -51,6 +51,7 @@ declare module '@vitejs/plugin-vue-jsx' {
 }
 
 interface ImportMetaEnv {
+  readonly PUBLIC_COMMERCE_ENABLED: 'true' | 'false';
   readonly SANITY_PROJECT_ID: string;
   readonly SANITY_DATASET: string;
   readonly SANITY_API_READ_TOKEN: string;
