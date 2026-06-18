@@ -172,6 +172,31 @@ describe('Commerce Layer Auth Adapter', () => {
       expect(result.token).toBe('any-token');
       expect(result.customer.email).toBe('newuser@example.com');
     });
+
+    it('throws when CL rejects the customer create call', async () => {
+      server.use(
+        http.post(mockAuthUrl, () =>
+          HttpResponse.json(tokenResponse('integration-token'))
+        ),
+        http.post(`${mockApiUrl}/customers`, () =>
+          HttpResponse.json(
+            {
+              errors: [
+                {
+                  code: 'VALIDATION_ERROR',
+                  detail: 'email has already been taken',
+                },
+              ],
+            },
+            { status: 422 }
+          )
+        )
+      );
+
+      await expect(
+        authAdapter.register('taken@example.com', 'password123', 'A', 'B')
+      ).rejects.toThrow();
+    });
   });
 
   describe('requestPasswordReset', () => {
@@ -202,6 +227,24 @@ describe('Commerce Layer Auth Adapter', () => {
       ).resolves.toBeUndefined();
       expect(resetCalled).toBe(true);
     });
+
+    it('throws when CL returns an error', async () => {
+      server.use(
+        http.post(mockAuthUrl, () =>
+          HttpResponse.json(tokenResponse('integration-token'))
+        ),
+        http.post(`${mockApiUrl}/customer_password_resets`, () =>
+          HttpResponse.json(
+            { errors: [{ code: 'NOT_FOUND', detail: 'Customer not found' }] },
+            { status: 404 }
+          )
+        )
+      );
+
+      await expect(
+        authAdapter.requestPasswordReset('missing@example.com')
+      ).rejects.toThrow();
+    });
   });
 
   describe('confirmPasswordReset', () => {
@@ -228,6 +271,28 @@ describe('Commerce Layer Auth Adapter', () => {
         authAdapter.confirmPasswordReset('reset-123', 'new-password')
       ).resolves.toBeUndefined();
       expect(updateCalled).toBe(true);
+    });
+
+    it('throws when CL rejects the reset token', async () => {
+      server.use(
+        http.post(mockAuthUrl, () =>
+          HttpResponse.json(tokenResponse('integration-token'))
+        ),
+        http.patch(`${mockApiUrl}/customer_password_resets/expired-token`, () =>
+          HttpResponse.json(
+            {
+              errors: [
+                { code: 'INVALID_TOKEN', detail: 'Reset token expired' },
+              ],
+            },
+            { status: 422 }
+          )
+        )
+      );
+
+      await expect(
+        authAdapter.confirmPasswordReset('expired-token', 'new-password')
+      ).rejects.toThrow();
     });
   });
 
