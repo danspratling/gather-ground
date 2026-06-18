@@ -673,3 +673,41 @@ if (localStorage.getItem('cookie-consent') === 'accepted') {
 3. Developers integrating new product types or attributes must: (a) define the schema in Sanity, (b) ensure the CL sync function handles the new structure, (c) never create product data directly in CL expecting editors to use it.
 4. Analytics and reporting queries pull stock/order events from CL webhooks, not from mutating Sanity product documents.
 5. Future expansion into multi-currency, localization, or regional pricing is driven by Sanity's editorial model, with CL adapting to support it.
+
+## ADR-038: Commerce adapter boundary — vendor-neutral interface, hidden implementations
+
+**Status:** Accepted
+**Date:** 2026-06-18
+**Category:** Commerce
+
+**Context:** The ecommerce MVP uses Commerce Layer as the order/payment backend, but the architecture must allow swapping the vendor (e.g. to Shopify) without rewriting consumer code. Pages, API routes, and React islands need a single, stable surface to call commerce methods against, regardless of which vendor is wired up underneath. Without a strict boundary, vendor types leak into UI code, and a future vendor swap becomes a rewrite rather than a config change.
+
+**Decision:** All commerce functionality is exposed through a vendor-neutral `CommerceAdapter` interface defined in `src/lib/commerce/adapter.ts`. A singleton `commerce: CommerceAdapter` is exported from `src/lib/commerce/index.ts` and selected at import time via the `COMMERCE_PROVIDER` env var (default `commercelayer`). Every consumer — pages, API routes, React islands, server utilities — imports `commerce` from `src/lib/commerce` and **never** from a vendor folder. The vendor implementations (`src/lib/commerce/commercelayer/`, `src/lib/commerce/shopify/`) are private implementation details. This boundary is enforced by ESLint `no-restricted-imports`.
+
+**Reasoning:**
+
+1. **Vendor types must not leak.** If a page imports `commerceLayerAdapter` directly, or if a method returns a CL-shaped `Order` object, the vendor's shape is now baked into UI code. Swapping vendors means rewriting every call site. The adapter returns vendor-neutral types from `src/lib/commerce/types.ts` (`Customer`, `Cart`, `Order`, `Money`, etc.); each vendor implementation is responsible for mapping its own shapes onto those types.
+
+2. **A single import path keeps the contract obvious.** `import { commerce } from '@/lib/commerce'` is the only way to reach commerce functionality. Any other import is a violation that surfaces as a lint error. This is preferable to convention-only enforcement because the rule fires immediately in editors and in CI, before review.
+
+3. **The selector resolves once at import time, not per call.** `COMMERCE_PROVIDER` is read when `src/lib/commerce/index.ts` is first imported. There is one adapter instance per process. This avoids per-request env reads, eliminates any chance of partial swaps mid-render, and makes mocking trivial in tests (just swap the import).
+
+4. **Stubs prove the abstraction holds.** `src/lib/commerce/shopify/index.ts` ships as a complete `CommerceAdapter` implementation where every method throws "not implemented". This is not dead code — it forces the interface to compile against more than one vendor, catching any case where the CL implementation accidentally relies on a vendor-specific signature. When Shopify support lands, the stub becomes the real implementation.
+
+5. **The interface is the contract.** Adding a new method to `CommerceAdapter` is a contract change that affects every vendor. New methods must be added to `src/lib/commerce/adapter.ts` first, then implemented (or stubbed) in every vendor folder. Vendor-specific helpers that don't belong on the interface stay inside the vendor folder and are never exported beyond it.
+
+**Constraints:**
+
+- Consumers import from `src/lib/commerce` only. ESLint blocks `src/lib/commerce/commercelayer/**` and `src/lib/commerce/shopify/**` imports from anywhere outside `src/lib/commerce/`.
+- Adapter methods return vendor-neutral types only. No CL SDK types, no Shopify Storefront types, no JSON:API resource objects in return values.
+- Vendor folders own their env vars (`COMMERCELAYER_*`, future `SHOPIFY_*`). The selector reads only `COMMERCE_PROVIDER`. Vendor-specific env is read inside the vendor's own modules.
+- Errors thrown by adapter methods are plain `Error` instances with messages safe to surface to logs. Vendor-specific error codes are translated or wrapped — they do not bubble out of the adapter unchanged.
+- The selector throws on unknown `COMMERCE_PROVIDER` values at startup, not lazily on first call.
+
+**Consequence:**
+
+1. Swapping vendors is a config change plus implementing the methods in the vendor folder. No consumer code changes.
+2. Tests against the adapter are vendor-agnostic — mock the `commerce` singleton, assert on the neutral types. Vendor-specific tests live inside the vendor folder using MSW against the vendor's HTTP API.
+3. When implementing a new commerce feature, the order is: (a) decide the vendor-neutral shape in `types.ts`, (b) add the method signature to `CommerceAdapter`, (c) implement in `commercelayer/`, (d) stub in `shopify/`, (e) wire up the consumer using the `commerce` singleton.
+4. Anyone touching commerce code must understand that the vendor folder is a sealed unit. Direct vendor SDK calls from a page or route is the single most damaging anti-pattern this ADR exists to prevent — the ESLint rule and this document are both deliberate friction.
+5. The Shopify stub stays in the tree until Shopify is genuinely deprecated as an option. Removing it would weaken the proof that the boundary holds.
