@@ -14,30 +14,26 @@ function CarouselButtons() {
   const { scrollPrev, scrollNext, canScrollPrev, canScrollNext } =
     useCarousel();
 
-  if (!canScrollPrev && !canScrollNext) return null;
-
   return (
     <div className="mb-8 flex justify-end gap-6">
-      {canScrollPrev && (
-        <button
-          type="button"
-          onClick={scrollPrev}
-          aria-label="Previous slide"
-          className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-brand-700 hover:bg-brand-25"
-        >
-          <ChevronLeft className="size-5" aria-hidden="true" />
-        </button>
-      )}
-      {canScrollNext && (
-        <button
-          type="button"
-          onClick={scrollNext}
-          aria-label="Next slide"
-          className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-brand-700 hover:bg-brand-25"
-        >
-          <ChevronRight className="size-5" aria-hidden="true" />
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={scrollPrev}
+        disabled={!canScrollPrev}
+        aria-label="Previous slide"
+        className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-brand-700 hover:bg-brand-25 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-off-white"
+      >
+        <ChevronLeft className="size-5" aria-hidden="true" />
+      </button>
+      <button
+        type="button"
+        onClick={scrollNext}
+        disabled={!canScrollNext}
+        aria-label="Next slide"
+        className="flex items-center justify-center rounded-full border border-brand-50 bg-off-white p-3.5 text-brand-700 hover:bg-brand-25 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-off-white"
+      >
+        <ChevronRight className="size-5" aria-hidden="true" />
+      </button>
     </div>
   );
 }
