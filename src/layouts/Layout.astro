@@ -5,6 +5,7 @@ import Clarity from '@/components/Analytics/Clarity.astro';
 import Footer from '@/components/Layout/Footer/Footer.astro';
 import type { SocialPlatform } from '@/components/Layout/Footer/Footer.types';
 import Header from '@/components/Layout/Header/Header.astro';
+import type { HeaderProps } from '@/components/Layout/Header/Header.types';
 import PageHead from '@/components/PageHead/PageHead.astro';
 import PreviewBanner from '@/components/PreviewBanner/PreviewBanner.astro';
 import type { PreviewDoc } from '@/components/PreviewBanner/PreviewBanner.types';
@@ -15,6 +16,7 @@ import { loadQuery } from '@/lib/sanity';
 import { siteSettingsQuery } from '@/lib/queries';
 import { resolveSanityLink } from '@/lib/sanityLink';
 import { buildOrganization, buildWebPage } from '@/lib/structuredData';
+import { isCommerceEnabled } from '@/lib/commerce/featureFlag';
 import { isVisualEditingEnabled as visualEditingEnabled } from '@/lib/visualEditing';
 import '@/styles/global.css';
 
@@ -107,6 +109,7 @@ const organizationSD = buildOrganization(
 );
 const resolvedPageUrl =
   canonicalUrl || new URL(Astro.url.pathname, siteUrl).toString();
+const commerceEnabled = isCommerceEnabled();
 const webPageSD = buildWebPage({
   title: seoTitle,
   description: seoDescription,
@@ -121,11 +124,11 @@ const SUPPORTED_PLATFORMS = new Set<SocialPlatform>([
   'linkedin',
 ]);
 
-const headerProps = {
+const headerProps: HeaderProps = {
   logoSrc: siteSettings?.logo ?? '/favicon.svg',
   logoAlt: siteSettings?.logoAlt ?? 'Gather Ground',
   navLinks: siteSettings?.primaryNav
-    ? siteSettings.primaryNav.flatMap((item) => {
+    ? (siteSettings.primaryNav.flatMap((item): HeaderProps['navLinks'] => {
         const menu = item.menu
           ?.map((m) => {
             const href = resolveSanityLink(m.link);
@@ -139,7 +142,7 @@ const headerProps = {
             ): menuItem is {
               label: string;
               href: string;
-              description?: string;
+              description: string | undefined;
             } => menuItem !== null
           );
 
@@ -149,7 +152,7 @@ const headerProps = {
 
         const href = item.link ? resolveSanityLink(item.link) : '';
         return href ? [{ label: item.label, href }] : [];
-      })
+      }) as HeaderProps['navLinks'])
     : [],
   ctaLabel: siteSettings?.headerCtaLabel,
   ctaHref: siteSettings?.headerCtaLink
@@ -241,7 +244,7 @@ const footerProps = {
           />
         )
     }
-    <Header {...headerProps} />
+    <Header {...headerProps} showCommerceSlots={commerceEnabled} />
     <slot />
     <Footer {...footerProps} />
     {/* body-end: cookie banner, analytics */}
