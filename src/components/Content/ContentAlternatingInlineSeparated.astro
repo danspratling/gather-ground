@@ -3,7 +3,7 @@ import type { ContentAlternatingProps } from './Content.types';
 import * as icons from '@untitledui-pro/icons/line';
 import { CheckCircle } from '@untitledui-pro/icons/line';
 
-type Props = Omit<ContentAlternatingProps, 'variant'>;
+type Props = Omit<ContentAlternatingProps, 'variant' | 'imageLayout'>;
 
 const {
   icon,
@@ -66,7 +66,7 @@ const IconComponent = icon ? icons[icon as keyof typeof icons] : null;
       <p
         class:list={[
           'text-xl font-normal',
-          dark ? 'text-brand-200' : 'text-brand-400',
+          dark ? 'text-brand-200' : 'text-brand-600',
         ]}
       >
         {body}

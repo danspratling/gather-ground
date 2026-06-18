@@ -190,7 +190,6 @@ All defined in `global.css`. Font weights 400/500/600 are standard Tailwind util
 - **Section headings**: `text-gray-900 text-display-md font-semibold tracking-display-md`
 - **Supporting text**: `text-gray-600 text-xl font-normal`
 
-
 ## Accessibility notes
 
 Text colours that **fail WCAG AA (4.5:1)** on `off-white` backgrounds — do not use for body copy:
