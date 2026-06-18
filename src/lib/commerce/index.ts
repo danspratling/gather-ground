@@ -53,3 +53,10 @@ export type {
   Order,
   Customer,
 } from './types';
+export {
+  SESSION_COOKIE_NAME,
+  getSession,
+  setSession,
+  clearSession,
+  type SessionData,
+} from './session';
