@@ -79,8 +79,7 @@ export const productsSection = defineType({
         Rule.custom((value, context) => {
           const variant = (context.parent as { variant?: string } | undefined)
             ?.variant;
-          if (variant === 'carousel') return true;
-          if (typeof value !== 'string' || value.trim() === '')
+          if (variant !== 'carousel' && !value?.trim())
             return 'Tag line is required';
           return true;
         }),
@@ -102,8 +101,7 @@ export const productsSection = defineType({
         Rule.custom((value, context) => {
           const variant = (context.parent as { variant?: string } | undefined)
             ?.variant;
-          if (variant === 'carousel') return true;
-          if (typeof value !== 'string' || value.trim() === '')
+          if (variant !== 'carousel' && !value?.trim())
             return 'Supporting text is required';
           return true;
         }),
