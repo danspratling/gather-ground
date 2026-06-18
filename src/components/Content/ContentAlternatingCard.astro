@@ -1,0 +1,78 @@
+---
+import * as icons from '@untitledui-pro/icons/line';
+import { CheckCircle } from '@untitledui-pro/icons/line';
+
+interface Props {
+  icon?: string;
+  heading: string;
+  body: string;
+  checklistItems?: string[];
+  dark?: boolean;
+}
+
+const { icon, heading, body, checklistItems = [], dark = false } = Astro.props;
+
+const IconComponent = icon ? icons[icon as keyof typeof icons] : null;
+---
+
+<div class="flex flex-col items-start gap-5">
+  <div class="flex flex-col items-start gap-6">
+    {
+      IconComponent && (
+        <div
+          class:list={[
+            'flex size-14 items-center justify-center rounded-[10px]',
+            dark ? 'bg-brand-600' : 'bg-brand-50',
+          ]}
+        >
+          <IconComponent
+            className={dark ? 'size-7 text-brand-50' : 'size-7 text-brand-600'}
+            aria-hidden="true"
+          />
+        </div>
+      )
+    }
+    <h2
+      class:list={[
+        'text-display-md font-semibold tracking-display-md',
+        dark ? 'text-off-white' : 'text-brand-900',
+      ]}
+    >
+      {heading}
+    </h2>
+  </div>
+  <p
+    class:list={[
+      'text-xl font-normal',
+      dark ? 'text-brand-200' : 'text-brand-400',
+    ]}
+  >
+    {body}
+  </p>
+  {
+    checklistItems.length > 0 && (
+      <ul class="mt-3 flex flex-col gap-4">
+        {checklistItems.map((item) => (
+          <li class="flex items-start gap-3">
+            <CheckCircle
+              className={
+                dark
+                  ? 'mt-0.5 size-6 shrink-0 text-brand-300'
+                  : 'mt-0.5 size-6 shrink-0 text-brand-600'
+              }
+              aria-hidden="true"
+            />
+            <span
+              class:list={[
+                'text-md font-normal',
+                dark ? 'text-brand-300' : 'text-brand-600',
+              ]}
+            >
+              {item}
+            </span>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</div>
