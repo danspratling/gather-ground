@@ -10,7 +10,6 @@
 
 import type {
   Money,
-  Product,
   Variant,
   InventoryStatus,
   Cart,
@@ -19,7 +18,6 @@ import type {
   ShippingMethod,
   PaymentMethod,
   Order,
-  OrderStatus,
   Customer,
 } from './types';
 
@@ -60,7 +58,7 @@ export interface CommerceAdapter {
   /**
    * Confirm password reset with code
    */
-  confirmPasswordReset(token: string, newPassword: string): Promise<void>;
+  confirmPasswordReset(code: string, newPassword: string): Promise<void>;
 
   /**
    * Refresh an expired session token
