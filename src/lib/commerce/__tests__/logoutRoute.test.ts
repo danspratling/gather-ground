@@ -69,14 +69,16 @@ function makeCtx(): APIContext {
 
 describe('POST /api/commerce/auth/logout', () => {
   it('clears the session cookie and calls the adapter when a session exists', async () => {
+    logoutMock.mockResolvedValueOnce(undefined);
     const ctx = makeCtx();
     await setSession(ctx.cookies, sessionFixture);
 
     const response = await POST(ctx);
 
     expect(response.status).toBe(200);
-    logoutMock.mockResolvedValueOnce(undefined);
     expect(ctx.cookies.get(SESSION_COOKIE_NAME)).toBeUndefined();
+    expect(logoutMock).toHaveBeenCalledTimes(1);
+    expect(logoutMock).toHaveBeenCalledWith(sessionFixture.accessToken);
   });
 
   it('returns 200 and clears cookie even when there is no session', async () => {
@@ -97,15 +99,5 @@ describe('POST /api/commerce/auth/logout', () => {
 
     expect(response.status).toBe(200);
     expect(ctx.cookies.get(SESSION_COOKIE_NAME)).toBeUndefined();
-  });
-
-  it('passes the session access token to commerce.logout', async () => {
-    logoutMock.mockResolvedValueOnce(undefined);
-    const ctx = makeCtx();
-    await setSession(ctx.cookies, sessionFixture);
-
-    await POST(ctx);
-
-    expect(logoutMock).toHaveBeenCalledWith(sessionFixture.accessToken);
   });
 });
