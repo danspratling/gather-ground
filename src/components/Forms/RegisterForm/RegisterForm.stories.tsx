@@ -47,11 +47,15 @@ export const WithErrors: Story = {
     ).toHaveTextContent(/required/i);
 
     // Now fill enough to move past required checks but with a too-short
-    // password to hit the length branch.
+    // password to hit the length branch. selector:'input' disambiguates the
+    // password input from the progressbar's aria-label='Password strength'.
     await userEvent.type(canvas.getByLabelText(/first name/i), 'Jane');
     await userEvent.type(canvas.getByLabelText(/last name/i), 'Smith');
     await userEvent.type(canvas.getByLabelText(/email/i), 'jane@example.com');
-    await userEvent.type(canvas.getByLabelText(/^password/i), 'short');
+    await userEvent.type(
+      canvas.getByLabelText(/^password/i, { selector: 'input' }),
+      'short'
+    );
     await userEvent.click(
       canvas.getByRole('button', { name: /create account/i })
     );
@@ -78,7 +82,12 @@ export const Loading: Story = {
       await userEvent.type(canvas.getByLabelText(/first name/i), 'Jane');
       await userEvent.type(canvas.getByLabelText(/last name/i), 'Smith');
       await userEvent.type(canvas.getByLabelText(/email/i), 'jane@example.com');
-      await userEvent.type(canvas.getByLabelText(/^password/i), 'hunter22!');
+      // selector:'input' disambiguates the password input from the
+      // progressbar's aria-label='Password strength'.
+      await userEvent.type(
+        canvas.getByLabelText(/^password/i, { selector: 'input' }),
+        'hunter22!'
+      );
       await userEvent.click(
         canvas.getByRole('button', { name: /create account/i })
       );

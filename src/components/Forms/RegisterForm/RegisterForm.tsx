@@ -82,6 +82,16 @@ const strengthBarColour: Record<PasswordStrength['score'], string> = {
   4: 'bg-brand-700',
 };
 
+// Score maps 1:1 onto discrete Tailwind widths so we avoid an inline
+// style={{ width: ... }} attribute (repo styling rule).
+const strengthBarWidth: Record<PasswordStrength['score'], string> = {
+  0: 'w-0',
+  1: 'w-1/4',
+  2: 'w-1/2',
+  3: 'w-3/4',
+  4: 'w-full',
+};
+
 export default function RegisterForm({
   redirectTo,
   privacyHref = '/privacy',
@@ -336,8 +346,7 @@ export default function RegisterForm({
               aria-label="Password strength"
             >
               <div
-                className={`h-full rounded-full transition-all ${strengthBarColour[strength.score]}`}
-                style={{ width: `${(strength.score / 4) * 100}%` }}
+                className={`h-full rounded-full transition-all ${strengthBarColour[strength.score]} ${strengthBarWidth[strength.score]}`}
               />
             </div>
             {strength.label && (
