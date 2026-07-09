@@ -49,9 +49,11 @@ export const WithErrors: Story = {
     // Now fill enough to move past required checks but with a too-short
     // password to hit the length branch. selector:'input' disambiguates the
     // password input from the progressbar's aria-label='Password strength'.
-    await userEvent.type(canvas.getByLabelText(/first name/i), 'Jane');
-    await userEvent.type(canvas.getByLabelText(/last name/i), 'Smith');
-    await userEvent.type(canvas.getByLabelText(/email/i), 'jane@example.com');
+    // '^' anchors avoid matching the marketing opt-in checkbox's label, which
+    // contains the substring 'emails'.
+    await userEvent.type(canvas.getByLabelText(/^first name/i), 'Jane');
+    await userEvent.type(canvas.getByLabelText(/^last name/i), 'Smith');
+    await userEvent.type(canvas.getByLabelText(/^email/i), 'jane@example.com');
     await userEvent.type(
       canvas.getByLabelText(/^password/i, { selector: 'input' }),
       'short'
@@ -79,11 +81,15 @@ export const Loading: Story = {
     window.fetch = hangingFetch;
 
     try {
-      await userEvent.type(canvas.getByLabelText(/first name/i), 'Jane');
-      await userEvent.type(canvas.getByLabelText(/last name/i), 'Smith');
-      await userEvent.type(canvas.getByLabelText(/email/i), 'jane@example.com');
-      // selector:'input' disambiguates the password input from the
-      // progressbar's aria-label='Password strength'.
+      // '^' anchors avoid matching the marketing opt-in checkbox's label,
+      // which contains the substring 'emails'. selector:'input' disambiguates
+      // the password input from the progressbar's aria-label='Password strength'.
+      await userEvent.type(canvas.getByLabelText(/^first name/i), 'Jane');
+      await userEvent.type(canvas.getByLabelText(/^last name/i), 'Smith');
+      await userEvent.type(
+        canvas.getByLabelText(/^email/i),
+        'jane@example.com'
+      );
       await userEvent.type(
         canvas.getByLabelText(/^password/i, { selector: 'input' }),
         'hunter22!'
