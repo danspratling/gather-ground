@@ -13,6 +13,7 @@
 
 import type { CommerceAdapter } from '../adapter';
 import * as auth from './auth';
+import * as customer from './customer';
 
 /**
  * Commerce Layer adapter implementation
@@ -65,9 +66,7 @@ export const commerceLayerAdapter: CommerceAdapter = {
   // CUSTOMER ===============================================================
   // Implemented in GG-E32-API-01, GG-E33-API-01, GG-E34-API-01
 
-  getCustomer: async () => {
-    throw new Error('Not yet implemented (GG-E32-API-01)');
-  },
+  getCustomer: customer.getCustomer,
 
   updateCustomer: async () => {
     throw new Error('Not yet implemented (GG-E34-API-01)');
