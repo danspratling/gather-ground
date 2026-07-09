@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import type { LoginFormProps } from './LoginForm.types';
 
 type Status = 'idle' | 'submitting' | 'success';
@@ -49,7 +49,7 @@ export default function LoginForm({ redirectTo }: LoginFormProps) {
     return errors;
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormError('');
 
@@ -77,7 +77,11 @@ export default function LoginForm({ redirectTo }: LoginFormProps) {
       }
 
       if (resp.status === 429) {
-        const retryAfter = Number(resp.headers.get('Retry-After') ?? '60');
+        // Retry-After may be missing, empty, or a HTTP-date; parseInt tolerates
+        // trailing garbage and returns NaN on failure. Fall back to 60s and
+        // clamp to >=1 so the user never sees 'in 0 seconds' or 'NaN seconds'.
+        const parsed = parseInt(resp.headers.get('Retry-After') ?? '', 10);
+        const retryAfter = Number.isFinite(parsed) && parsed > 0 ? parsed : 60;
         setFormError(
           `Too many attempts. Please try again in ${retryAfter} seconds.`
         );

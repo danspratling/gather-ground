@@ -53,7 +53,11 @@ export const Loading: Story = {
     const canvas = within(canvasElement);
 
     const originalFetch = window.fetch;
-    window.fetch = () => new Promise(() => {});
+    // Match the real fetch signature so TypeScript stays happy in strict
+    // projects. The promise never resolves — the assertion below only cares
+    // that the button locks into its 'Signing in…' state.
+    const hangingFetch: typeof window.fetch = () => new Promise(() => {});
+    window.fetch = hangingFetch;
 
     try {
       await userEvent.type(canvas.getByLabelText(/email/i), 'jane@example.com');
