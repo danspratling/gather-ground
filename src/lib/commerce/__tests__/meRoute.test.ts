@@ -82,11 +82,13 @@ function makeCtx(): APIContext {
 }
 
 describe('GET /api/commerce/auth/me', () => {
-  it('returns 401 when there is no session cookie', async () => {
+  it('returns 401 with "Not authenticated" when there is no session cookie', async () => {
     const ctx = makeCtx();
     const response = await GET(ctx);
 
     expect(response.status).toBe(401);
+    const json = (await response.json()) as { error?: string };
+    expect(json.error).toBe('Not authenticated');
     expect(getCustomerMock).not.toHaveBeenCalled();
     expect(refreshSessionMock).not.toHaveBeenCalled();
   });
@@ -141,7 +143,6 @@ describe('GET /api/commerce/auth/me', () => {
       customer: sampleCustomer,
       expiresAt: refreshedExpiry,
     });
-    getCustomerMock.mockResolvedValueOnce(sampleCustomer);
 
     const ctx = makeCtx();
     await setSession(ctx.cookies, {
@@ -154,14 +155,16 @@ describe('GET /api/commerce/auth/me', () => {
     expect(response.status).toBe(200);
 
     expect(refreshSessionMock).toHaveBeenCalledWith('cl-token-old');
-    expect(getCustomerMock).toHaveBeenCalledWith(refreshedToken);
+    // refreshSession already returns the customer, so getCustomer must not be
+    // called again on the refresh path.
+    expect(getCustomerMock).not.toHaveBeenCalled();
 
     const stored = await getSession(ctx.cookies);
     expect(stored?.accessToken).toBe(refreshedToken);
     expect(stored?.expiresAt).toBe(refreshedExpiry);
   });
 
-  it('clears the cookie and returns 401 when refresh throws', async () => {
+  it('returns 401 with "Session expired" when refresh throws', async () => {
     refreshSessionMock.mockRejectedValueOnce(new Error('CL refresh 401'));
     const ctx = makeCtx();
     await setSession(ctx.cookies, {
@@ -173,11 +176,13 @@ describe('GET /api/commerce/auth/me', () => {
     const response = await GET(ctx);
 
     expect(response.status).toBe(401);
+    const json = (await response.json()) as { error?: string };
+    expect(json.error).toBe('Session expired');
     expect(ctx.cookies.get(SESSION_COOKIE_NAME)).toBeUndefined();
     expect(getCustomerMock).not.toHaveBeenCalled();
   });
 
-  it('clears the cookie and returns 401 when getCustomer throws', async () => {
+  it('returns 401 with "Session expired" when getCustomer throws', async () => {
     getCustomerMock.mockRejectedValueOnce(new Error('CL 401'));
     const ctx = makeCtx();
     await setSession(ctx.cookies, {
@@ -189,6 +194,8 @@ describe('GET /api/commerce/auth/me', () => {
     const response = await GET(ctx);
 
     expect(response.status).toBe(401);
+    const json = (await response.json()) as { error?: string };
+    expect(json.error).toBe('Session expired');
     expect(ctx.cookies.get(SESSION_COOKIE_NAME)).toBeUndefined();
   });
 

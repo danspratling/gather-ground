@@ -5,9 +5,12 @@ import { hydrateSession } from '@/lib/commerce/sessionHydrate';
 export const prerender = false;
 
 export const GET: APIRoute = async ({ cookies }) => {
-  const { customer } = await hydrateSession(cookies);
+  const { customer, sessionExpired } = await hydrateSession(cookies);
   if (!customer) {
-    return jsonResponse(401, { success: false, error: 'Not authenticated' });
+    return jsonResponse(401, {
+      success: false,
+      error: sessionExpired ? 'Session expired' : 'Not authenticated',
+    });
   }
 
   return jsonResponse(200, {

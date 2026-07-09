@@ -21,7 +21,10 @@ const ACCOUNT_PUBLIC_PATHS = new Set([
 ]);
 
 const isProtectedAccountPath = (pathname: string): boolean => {
-  if (!pathname.startsWith('/account')) return false;
+  // Match `/account` exactly or `/account/...`, not `/accounting` etc.
+  if (pathname !== '/account' && !pathname.startsWith('/account/')) {
+    return false;
+  }
   if (ACCOUNT_PUBLIC_PATHS.has(pathname)) return false;
   return true;
 };

@@ -15,11 +15,11 @@
 import type { AstroCookies } from 'astro';
 import {
   clearSession,
+  commerce,
   getSession,
   setSession,
   type SessionData,
-} from './session';
-import { commerce } from './index';
+} from '@/lib/commerce';
 import type { Customer } from './types';
 
 /**
@@ -32,6 +32,12 @@ export const REFRESH_LEEWAY_SECONDS = 60;
 export interface HydratedSession {
   session: SessionData | null;
   customer: Customer | null;
+  /**
+   * `true` when a `gg_session` cookie was present but hydration failed
+   * (refresh threw, or `getCustomer` threw). Distinguishes "logged out"
+   * from "session went bad" so callers can render a different message.
+   */
+  sessionExpired: boolean;
 }
 
 export interface HydrateOptions {
@@ -45,33 +51,39 @@ export async function hydrateSession(
 ): Promise<HydratedSession> {
   const existing = await getSession(cookies);
   if (!existing) {
-    return { session: null, customer: null };
+    return { session: null, customer: null, sessionExpired: false };
   }
 
   let token = existing.accessToken;
   let expiresAt = existing.expiresAt;
-  let refreshed = false;
+  let refreshedCustomer: Customer | null = null;
 
   if (expiresAt - now() < REFRESH_LEEWAY_SECONDS) {
     try {
       const refreshResult = await commerce.refreshSession(existing.accessToken);
       token = refreshResult.token;
       expiresAt = refreshResult.expiresAt;
-      refreshed = true;
+      refreshedCustomer = refreshResult.customer;
     } catch (err) {
       console.error('Commerce refreshSession failed:', err);
       clearSession(cookies);
-      return { session: null, customer: null };
+      return { session: null, customer: null, sessionExpired: true };
     }
   }
 
+  // Reuse the customer returned by refreshSession when we just refreshed;
+  // only call getCustomer when the existing token was still valid.
   let customer: Customer;
-  try {
-    customer = await commerce.getCustomer(token);
-  } catch (err) {
-    console.error('Commerce getCustomer failed:', err);
-    clearSession(cookies);
-    return { session: null, customer: null };
+  if (refreshedCustomer) {
+    customer = refreshedCustomer;
+  } else {
+    try {
+      customer = await commerce.getCustomer(token);
+    } catch (err) {
+      console.error('Commerce getCustomer failed:', err);
+      clearSession(cookies);
+      return { session: null, customer: null, sessionExpired: true };
+    }
   }
 
   const nextSession: SessionData = {
@@ -81,9 +93,11 @@ export async function hydrateSession(
     ...(existing.refreshToken ? { refreshToken: existing.refreshToken } : {}),
   };
 
-  if (refreshed) {
+  if (refreshedCustomer) {
     await setSession(cookies, nextSession);
   }
 
-  return { session: nextSession, customer };
+  return { session: nextSession, customer, sessionExpired: false };
 }
+
+export default null;

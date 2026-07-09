@@ -175,7 +175,6 @@ describe('middleware — session hydration', () => {
       customer: sampleCustomer,
       expiresAt: refreshedExpiry,
     });
-    getCustomerMock.mockResolvedValueOnce(sampleCustomer);
 
     const { cookies } = createMockCookies();
     await setSession(cookies, {
@@ -188,7 +187,9 @@ describe('middleware — session hydration', () => {
     await onRequest(ctx, passthrough);
 
     expect(refreshSessionMock).toHaveBeenCalledWith('cl-token-old');
-    expect(getCustomerMock).toHaveBeenCalledWith(refreshedToken);
+    // refreshSession returns the customer, so getCustomer must not be called
+    // again — that would be a redundant CL request.
+    expect(getCustomerMock).not.toHaveBeenCalled();
     expect((locals.session as SessionData).accessToken).toBe(refreshedToken);
     expect((locals.session as SessionData).expiresAt).toBe(refreshedExpiry);
     const stored = await getSession(cookies);
@@ -253,6 +254,19 @@ describe('middleware — /account route guard', () => {
     const { ctx, redirect } = makeCtx({
       url: 'https://example.com/account',
       cookies,
+    });
+
+    const response = await run(ctx);
+
+    expect(response.status).toBe(200);
+    expect(redirect).not.toHaveBeenCalled();
+    expect(passthrough).toHaveBeenCalled();
+  });
+
+  it('does not redirect paths that only look like /account (e.g. /accounting)', async () => {
+    passthrough.mockClear();
+    const { ctx, redirect } = makeCtx({
+      url: 'https://example.com/accounting',
     });
 
     const response = await run(ctx);
