@@ -3,14 +3,17 @@ import { commerce, setSession, type SessionData } from '@/lib/commerce';
 import { checkRateLimit } from '@/lib/commerce/rateLimit';
 import {
   clientKey,
+  isNonEmptyString,
   isValidEmail,
+  isValidPassword,
   jsonResponse,
+  MIN_PASSWORD_LENGTH,
   parseJsonBody,
 } from '@/lib/commerce/apiHelpers';
 
 export const prerender = false;
 
-const LOGIN_RATE_LIMIT = { maxAttempts: 10, windowMs: 60_000 };
+const REGISTER_RATE_LIMIT = { maxAttempts: 5, windowMs: 60_000 };
 
 export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
   const body = await parseJsonBody(request);
@@ -18,21 +21,27 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
     return jsonResponse(400, { success: false, error: 'Invalid request body' });
   }
 
-  const { email, password } = body;
+  const { email, password, firstName, lastName } = body;
 
   if (!isValidEmail(email)) {
     return jsonResponse(400, { success: false, error: 'Invalid email' });
   }
-  if (typeof password !== 'string' || password.length === 0) {
+  if (!isValidPassword(password)) {
     return jsonResponse(400, {
       success: false,
-      error: 'Password is required',
+      error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+    });
+  }
+  if (!isNonEmptyString(firstName) || !isNonEmptyString(lastName)) {
+    return jsonResponse(400, {
+      success: false,
+      error: 'First name and last name are required',
     });
   }
 
   const limit = checkRateLimit(
-    `login:${clientKey(request, clientAddress)}`,
-    LOGIN_RATE_LIMIT
+    `register:${clientKey(request, clientAddress)}`,
+    REGISTER_RATE_LIMIT
   );
   if (!limit.allowed) {
     return jsonResponse(
@@ -42,14 +51,21 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
     );
   }
 
-  let result: Awaited<ReturnType<typeof commerce.login>>;
+  let result: Awaited<ReturnType<typeof commerce.register>>;
   try {
-    result = await commerce.login(email, password);
+    result = await commerce.register(
+      email,
+      password,
+      firstName.trim(),
+      lastName.trim()
+    );
   } catch (err) {
-    console.error('Commerce login failed:', err);
-    return jsonResponse(401, {
+    console.error('Commerce register failed:', err);
+    // Generic 409 — we don't reveal whether the email is already taken,
+    // matching CL's behaviour and avoiding account enumeration.
+    return jsonResponse(409, {
       success: false,
-      error: 'Invalid email or password',
+      error: 'Could not create account',
     });
   }
 
@@ -60,7 +76,7 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
   };
   await setSession(cookies, session);
 
-  return jsonResponse(200, {
+  return jsonResponse(201, {
     success: true,
     customer: {
       id: result.customer.id,
