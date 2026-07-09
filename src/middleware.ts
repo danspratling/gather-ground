@@ -1,5 +1,6 @@
 import { defineMiddleware } from 'astro:middleware';
 import { isCommerceEnabled } from '@/lib/commerce/featureFlag';
+import { hydrateSession } from '@/lib/commerce/sessionHydrate';
 
 const GATED_ROUTE_PATTERNS = [
   /^\/checkout(?:\/.*)?$/,
@@ -10,13 +11,47 @@ const GATED_ROUTE_PATTERNS = [
 const isGatedPath = (pathname: string): boolean =>
   GATED_ROUTE_PATTERNS.some((pattern) => pattern.test(pathname));
 
+// Account routes that must remain reachable without a session so a logged-out
+// visitor can actually log in / register / reset a password.
+const ACCOUNT_PUBLIC_PATHS = new Set([
+  '/account/login',
+  '/account/register',
+  '/account/password-reset',
+  '/account/password-reset/confirm',
+]);
+
+const isProtectedAccountPath = (pathname: string): boolean => {
+  if (!pathname.startsWith('/account')) return false;
+  if (ACCOUNT_PUBLIC_PATHS.has(pathname)) return false;
+  return true;
+};
+
 export const onRequest = defineMiddleware(async (context, next) => {
-  if (!isCommerceEnabled() && isGatedPath(context.url.pathname)) {
-    const response = await context.rewrite('/404');
-    return new Response(response.body, {
-      status: 404,
-      headers: response.headers,
-    });
+  const { pathname } = context.url;
+
+  if (!isCommerceEnabled()) {
+    if (isGatedPath(pathname)) {
+      const response = await context.rewrite('/404');
+      return new Response(response.body, {
+        status: 404,
+        headers: response.headers,
+      });
+    }
+    context.locals.session = null;
+    context.locals.customer = null;
+    return next();
+  }
+
+  const { session, customer } = await hydrateSession(context.cookies);
+  context.locals.session = session;
+  context.locals.customer = customer;
+
+  if (!session && isProtectedAccountPath(pathname)) {
+    const nextUrl = `${pathname}${context.url.search}`;
+    return context.redirect(
+      `/account/login?next=${encodeURIComponent(nextUrl)}`,
+      302
+    );
   }
 
   return next();

@@ -65,3 +65,10 @@ interface ImportMetaEnv {
   readonly COMMERCELAYER_MARKET_ID: string;
   readonly SESSION_SECRET: string;
 }
+
+declare namespace App {
+  interface Locals {
+    session: import('@/lib/commerce/session').SessionData | null;
+    customer: import('@/lib/commerce/types').Customer | null;
+  }
+}
