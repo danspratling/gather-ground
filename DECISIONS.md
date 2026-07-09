@@ -711,3 +711,48 @@ if (localStorage.getItem('cookie-consent') === 'accepted') {
 3. When implementing a new commerce feature, the order is: (a) decide the vendor-neutral shape in `types.ts`, (b) add the method signature to `CommerceAdapter`, (c) implement in `commercelayer/`, (d) stub in `shopify/`, (e) wire up the consumer using the `commerce` singleton.
 4. Anyone touching commerce code must understand that the vendor folder is a sealed unit. Direct vendor SDK calls from a page or route is the single most damaging anti-pattern this ADR exists to prevent — the ESLint rule and this document are both deliberate friction.
 5. The Shopify stub stays in the tree until Shopify is genuinely deprecated as an option. Removing it would weaken the proof that the boundary holds.
+
+## ADR-039: Customer authentication — Commerce Layer OAuth + sealed server cookie + middleware refresh
+
+**Status:** Accepted
+**Date:** 2026-07-09
+**Category:** Commerce
+
+**Context:** Ecommerce customers need to sign in, stay signed in across visits, place orders scoped to their account, and manage addresses/orders/profile. The application is Astro in `output: 'server'` mode on Vercel with React islands for interactive UI. Commerce Layer is the identity source of truth (customer records, password hashes, order ownership all live in CL). We need a session model that (a) keeps the CL access token off the client, (b) refreshes tokens before they expire without user-visible disruption, (c) exposes a stable `locals.session` / `locals.customer` API to server code, and (d) does not couple UI code to CL specifics. We also need to decide up front what auth features are explicitly out of scope for the MVP so we don't drift into scope creep.
+
+**Decision:** Customer auth is a three-layer stack: (1) the Commerce Layer adapter owns OAuth `password`-grant login, registration, refresh, password reset, and logout against CL; (2) `src/lib/commerce/session.ts` wraps `iron-session` to seal the session payload into a single `httpOnly` cookie named `gg_session`; (3) `src/middleware.ts` hydrates `locals.session` and `locals.customer` on every request via `hydrateSession`, proactively refreshes the CL access token when it's within 60s of expiry, and guards `/account/*` behind auth. React islands never see the access token — they call the `/api/commerce/auth/*` endpoints, which are the only code paths that read or write the cookie. Third-party/social login (Google, Apple, Facebook) is deliberately excluded from the MVP.
+
+**Reasoning:**
+
+1. **Commerce Layer owns identity.** Duplicating customer records in Sanity or a local database would create two sources of truth for password reset, email verification, and order ownership. CL already handles all of it, so the adapter simply forwards login/register/refresh/reset to CL and stores nothing customer-shaped in the application. The application caches only the CL access token and its expiry in the session cookie.
+
+2. **Sealed httpOnly cookie, not JWT in localStorage.** The CL access token is a bearer credential — anyone with the string can act as the customer until it expires. A `Secure; HttpOnly; SameSite=Lax; Path=/` cookie sealed with `iron-session` cannot be read by client JavaScript, cannot be exfiltrated by an XSS in a React island, and cannot be replayed cross-origin. `iron-session` uses AEAD-sealed payloads keyed by `SESSION_SECRET`, so a leaked cookie value cannot be forged without the server-side secret. This is strictly better than putting the raw CL token in `localStorage` where any injected script can read it.
+
+3. **Refresh happens in middleware, transparently to pages.** When a request arrives with an access token within 60s of expiry, `hydrateSession` calls `commerce.refreshSession`, rewrites the cookie with the new token + expiry, and continues rendering. Pages and API routes see a valid `locals.session` regardless of how close the token was to expiring. If refresh fails (token revoked upstream, CL 401, network error), the cookie is cleared and `locals.session` is null — the request continues to render as logged-out. This is the same pattern the `/api/commerce/auth/me` endpoint uses; both go through `hydrateSession` to avoid divergent refresh behaviour.
+
+4. **`locals.session` / `locals.customer` are the only server-side auth surface.** Astro pages and API routes read `Astro.locals.session` (contains `customerId`, `accessToken`, `expiresAt`) and `Astro.locals.customer` (vendor-neutral `Customer` from `types.ts`). They never call `getSession(cookies)` directly. This keeps refresh centralised in middleware, keeps the vendor-neutral boundary (ADR-038) intact, and means adding a new protected page is a one-line check on `locals.session`.
+
+5. **Client-side auth state via `/api/commerce/auth/me`.** React islands that need to know "am I logged in" hit `GET /api/commerce/auth/me`, which returns `{ success, customer }` (401 when logged out). The endpoint also uses `hydrateSession`, so it inherits the same refresh + cookie-rewrite behaviour. Islands never call CL directly and never see the access token.
+
+6. **Rate-limited auth endpoints.** Every `/api/commerce/auth/*` POST route is rate-limited per client IP: login 10/min, register 5/min, password-reset request 3/min, password-reset confirm 10/min. This is in-memory sliding-window (`src/lib/commerce/rateLimit.ts`), process-local. It's not a defence against a distributed attacker with many IPs — CL's own throttling handles that — but it stops a naive script from hammering any single serverless instance and drives account-enumeration protection at the edge.
+
+7. **Generic error messages by default.** Login returns `401 "Invalid email or password"` for both unknown-email and wrong-password. Register returns `409 "Could not create account"` without disclosing whether the email is already registered. Password-reset request returns `200` even on adapter throw. This is deliberate — leaking "email exists" via error responses is the primary account-enumeration vector, and every route treats it as a security constraint, not a UX concern.
+
+8. **No social login in the MVP.** Google/Apple/Facebook OAuth adds three additional identity providers to reason about, each with its own account-linking edge cases (existing email/password account trying to sign in via Google, email mismatch between OAuth provider and CL, provider-side account deletion). The MVP customer base is expected to accept email/password. If we add social login later, it lives inside the CL adapter — the middleware, cookie, and `locals` surface do not need to change.
+
+**Constraints:**
+
+- Session reads/writes go through `src/lib/commerce/session.ts` only — nothing else opens the `gg_session` cookie directly.
+- Access token never crosses the network boundary except in the sealed cookie. It is never rendered into HTML, never returned in a JSON body, never logged.
+- `SESSION_SECRET` must be at least 32 bytes; validation lives in `getSessionSecret()` and throws on startup if missing/short.
+- Middleware refresh runs on every request when commerce is enabled, but only calls CL when within the 60s expiry leeway. The overhead per request when no refresh is needed is one sealed-cookie decrypt.
+- Auth API routes always return JSON. HTML redirects on auth outcomes are the caller's responsibility (login form navigates on success, middleware issues the `/account/login?next=…` redirect on guard failure).
+- `/account/login`, `/account/register`, `/account/password-reset`, and `/account/password-reset/confirm` are the only `/account/*` paths reachable without a session. Adding a new public account path requires updating `ACCOUNT_PUBLIC_PATHS` in `src/middleware.ts`.
+
+**Consequence:**
+
+1. Building a new authenticated page requires no session boilerplate — read `Astro.locals.customer` and render. If it's null, the middleware already redirected the visitor.
+2. Building a new React island that needs auth state is one fetch to `/api/commerce/auth/me`. No token juggling, no refresh handling, no OAuth library.
+3. Swapping Commerce Layer for another vendor (per ADR-038) requires reimplementing `login`, `register`, `refreshSession`, `getCustomer`, `logout`, `requestPasswordReset`, `confirmPasswordReset` in the new vendor folder. The cookie shape, middleware, and `locals` API do not change.
+4. Adding social login later means adding new adapter methods (`loginWithGoogle`, etc.), new `/api/commerce/auth/*` routes, and new UI. The session-cookie + middleware layer is unchanged — a social-login success writes the same `gg_session` cookie as password login.
+5. Every auth endpoint has a rate limit, a generic error path, and a test that asserts the generic error is returned on adapter failure. Removing any of these is a regression, not a refactor.
