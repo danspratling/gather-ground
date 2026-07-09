@@ -60,14 +60,16 @@ export const Success: Story = {
     window.fetch = okFetch;
 
     try {
-      // Anchor both ends of the regex so /new password/ doesn't also match
-      // the "Confirm new password" input.
+      // Regexes anchored at the start (but not the end) so 'New password' only
+      // matches the first field, not the 'Confirm new password' field.
+      // Ending with '$' would fail because the label's textContent is
+      // 'New password *' (the asterisk is aria-hidden but still in textContent).
       await userEvent.type(
-        canvas.getByLabelText(/^new password$/i),
+        canvas.getByLabelText(/^new password/i),
         'newpass123!'
       );
       await userEvent.type(
-        canvas.getByLabelText(/^confirm new password$/i),
+        canvas.getByLabelText(/^confirm new password/i),
         'newpass123!'
       );
       await userEvent.click(
