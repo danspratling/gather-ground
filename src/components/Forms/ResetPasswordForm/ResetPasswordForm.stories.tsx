@@ -60,12 +60,14 @@ export const Success: Story = {
     window.fetch = okFetch;
 
     try {
+      // Anchor both ends of the regex so /new password/ doesn't also match
+      // the "Confirm new password" input.
       await userEvent.type(
-        canvas.getByLabelText(/new password/i),
+        canvas.getByLabelText(/^new password$/i),
         'newpass123!'
       );
       await userEvent.type(
-        canvas.getByLabelText(/confirm new password/i),
+        canvas.getByLabelText(/^confirm new password$/i),
         'newpass123!'
       );
       await userEvent.click(

@@ -19,26 +19,33 @@ const inputErrorClasses =
 const labelClasses = 'text-sm font-medium text-brand-700';
 
 /**
- * Reads the `?token=` query param on mount. Kept in an effect so the
- * component is safe to render server-side (`window` is undefined).
+ * Reads the `?token=` query param on mount. Returns both the token and a
+ * `checked` flag so callers can hold off rendering (no flash of the
+ * invalid-link panel) until the URL check has completed. Effect-based so
+ * the component is safe to render server-side.
  */
-function useTokenFromUrl(initial?: string): string {
+function useTokenFromUrl(initial?: string): {
+  token: string;
+  checked: boolean;
+} {
   const [token, setToken] = useState(initial ?? '');
+  const [checked, setChecked] = useState(!!initial);
   useEffect(() => {
     if (initial) return;
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     const fromUrl = params.get('token');
     if (fromUrl) setToken(fromUrl);
+    setChecked(true);
   }, [initial]);
-  return token;
+  return { token, checked };
 }
 
 export default function ResetPasswordForm({
   token: tokenProp,
   loginHref = '/account/login',
 }: ResetPasswordFormProps) {
-  const token = useTokenFromUrl(tokenProp);
+  const { token, checked } = useTokenFromUrl(tokenProp);
   const [status, setStatus] = useState<Status>('idle');
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string>('');
@@ -60,6 +67,10 @@ export default function ResetPasswordForm({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // Guard against re-entry via Enter key or other submit paths — the
+    // disabled button alone isn't enough because native form submission
+    // can bypass it.
+    if (status === 'submitting') return;
     setFormError('');
 
     const formData = new FormData(e.currentTarget);
@@ -107,6 +118,11 @@ export default function ResetPasswordForm({
       setStatus('idle');
     }
   };
+
+  // Wait for the URL token check to complete before deciding which state to
+  // render. Without this, a user with a valid ?token= in the URL briefly
+  // sees the invalid-link panel while the effect runs.
+  if (!checked) return null;
 
   // Missing token means the user hit /account/reset-password without a link.
   // Show a hard error rather than letting them fill in the form and submit —
