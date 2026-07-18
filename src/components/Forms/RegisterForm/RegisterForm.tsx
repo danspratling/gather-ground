@@ -1,5 +1,6 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { Turnstile } from '@marsidev/react-turnstile';
+import { isSafeRedirect, resolveRedirect } from '@/lib/utils';
 import type { RegisterFormProps } from './RegisterForm.types';
 
 type Status = 'idle' | 'submitting' | 'success';
@@ -21,19 +22,6 @@ const inputErrorClasses =
   'border-destructive focus:border-destructive focus:ring-destructive';
 
 const labelClasses = 'text-sm font-medium text-brand-700';
-
-const isSafeRedirect = (value: string): boolean =>
-  value.startsWith('/') && !value.startsWith('//');
-
-const resolveRedirect = (redirectTo?: string): string => {
-  if (redirectTo && isSafeRedirect(redirectTo)) return redirectTo;
-  if (typeof window !== 'undefined') {
-    const params = new URLSearchParams(window.location.search);
-    const next = params.get('next');
-    if (next && isSafeRedirect(next)) return next;
-  }
-  return '/account';
-};
 
 /**
  * Coarse-grained password strength indicator. Not a security control — the
@@ -159,6 +147,9 @@ export default function RegisterForm({
           lastName,
           email,
           password: pwd,
+          // marketingOptIn and turnstileToken are sent today but not yet
+          // processed server-side. Future tickets will wire up Brevo opt-in
+          // and Turnstile CAPTCHA verification on the register route.
           marketingOptIn,
           turnstileToken,
         }),
@@ -338,7 +329,7 @@ export default function RegisterForm({
             className="flex items-center gap-2"
           >
             <div
-              className="h-1 flex-1 rounded-full bg-brand-100"
+              className={`h-1 flex-1 rounded-full transition-colors ${strength.score > 0 ? 'bg-brand-50' : ''}`}
               role="progressbar"
               aria-valuemin={0}
               aria-valuemax={4}
