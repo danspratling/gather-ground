@@ -18,3 +18,27 @@ const twMerge = extendTailwindMerge({
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+/**
+ * Returns true only for same-origin absolute paths (starts with `/` but not
+ * `//`). Used in auth form redirect logic to prevent open-redirect attacks via
+ * crafted `?next=https://evil.example` query params.
+ */
+export const isSafeRedirect = (value: string): boolean =>
+  value.startsWith('/') && !value.startsWith('//');
+
+/**
+ * Resolves the post-auth redirect target in priority order:
+ * 1. `redirectTo` prop (same-origin only)
+ * 2. `?next=` query param (same-origin only)
+ * 3. `/account`
+ */
+export const resolveRedirect = (redirectTo?: string): string => {
+  if (redirectTo && isSafeRedirect(redirectTo)) return redirectTo;
+  if (typeof window !== 'undefined') {
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get('next');
+    if (next && isSafeRedirect(next)) return next;
+  }
+  return '/account';
+};
