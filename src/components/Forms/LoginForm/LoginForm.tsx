@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { isSafeRedirect, resolveRedirect } from '@/lib/utils';
 import type { LoginFormProps } from './LoginForm.types';
 
 type Status = 'idle' | 'submitting' | 'success';
@@ -17,19 +18,6 @@ const inputErrorClasses =
 const labelClasses = 'text-sm font-medium text-brand-700';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const isSafeRedirect = (value: string): boolean =>
-  value.startsWith('/') && !value.startsWith('//');
-
-const resolveRedirect = (redirectTo?: string): string => {
-  if (redirectTo && isSafeRedirect(redirectTo)) return redirectTo;
-  if (typeof window !== 'undefined') {
-    const params = new URLSearchParams(window.location.search);
-    const next = params.get('next');
-    if (next && isSafeRedirect(next)) return next;
-  }
-  return '/account';
-};
 
 export default function LoginForm({ redirectTo }: LoginFormProps) {
   const [status, setStatus] = useState<Status>('idle');
