@@ -64,10 +64,10 @@ export function scorePassword(password: string): PasswordStrength {
 
 const strengthBarColour: Record<PasswordStrength['score'], string> = {
   0: 'bg-brand-100',
-  1: 'bg-destructive',
-  2: 'bg-brand-400',
-  3: 'bg-brand-600',
-  4: 'bg-brand-700',
+  1: 'bg-destructive', // Weak — red
+  2: 'bg-brand-300', // Fair — light gray
+  3: 'bg-success-200', // Good — light green
+  4: 'bg-success-700', // Strong — dark green
 };
 
 // Score maps 1:1 onto discrete Tailwind widths so we avoid an inline

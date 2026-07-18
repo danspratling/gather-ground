@@ -121,10 +121,14 @@ export async function register(
   await integration.customers.create({
     email,
     password,
-    metadata: {
-      first_name: firstName,
-      last_name: lastName,
-    },
+    // Commerce Layer's customer resource has no first_name/last_name fields.
+    // We store them in metadata so the mapCustomer mapper can read them back.
+    // The SDK types restrict metadata to Record<string,unknown> which TypeScript
+    // infers as incompatible with the concrete shape we need — cast to satisfy it.
+    metadata: { first_name: firstName, last_name: lastName } as Record<
+      string,
+      unknown
+    >,
   });
 
   return login(email, password);
