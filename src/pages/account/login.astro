@@ -3,12 +3,12 @@ export const prerender = false;
 
 import Layout from '@/layouts/Layout.astro';
 import LoginForm from '@/components/Forms/LoginForm/LoginForm';
+import { isSafeRedirect } from '@/lib/utils';
 
 const customer = Astro.locals.customer;
 if (customer) {
   const next = Astro.url.searchParams.get('next');
-  const safeDest =
-    next && next.startsWith('/') && !next.startsWith('//') ? next : '/account';
+  const safeDest = next && isSafeRedirect(next) ? next : '/account';
   return Astro.redirect(safeDest, 302);
 }
 
@@ -17,7 +17,7 @@ const redirectTo = Astro.url.searchParams.get('next') ?? undefined;
 
 <Layout title="Sign in" description="Sign in to your Gather Ground account.">
   <meta name="robots" content="noindex" slot="head-extras" />
-  <main class="flex min-h-[60vh] items-center justify-center px-4 py-16">
+  <main class="flex min-h-screen items-center justify-center px-4 py-16">
     <div class="w-full max-w-md">
       <h1 class="mb-8 text-display-xs font-bold text-brand-900">Sign in</h1>
       <LoginForm client:load redirectTo={redirectTo} />
