@@ -1,0 +1,26 @@
+---
+export const prerender = false;
+
+import Layout from '@/layouts/Layout.astro';
+import RegisterForm from '@/components/Forms/RegisterForm/RegisterForm';
+
+const customer = Astro.locals.customer;
+if (customer) {
+  return Astro.redirect('/account', 302);
+}
+---
+
+<Layout
+  title="Create account"
+  description="Create a Gather Ground account to place orders and manage your details."
+>
+  <meta name="robots" content="noindex" slot="head-extras" />
+  <main class="flex min-h-[60vh] items-center justify-center px-4 py-16">
+    <div class="w-full max-w-md">
+      <h1 class="mb-8 text-display-xs font-bold text-brand-900">
+        Create account
+      </h1>
+      <RegisterForm client:load loginHref="/account/login" />
+    </div>
+  </main>
+</Layout>
