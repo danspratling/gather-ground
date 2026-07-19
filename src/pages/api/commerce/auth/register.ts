@@ -68,7 +68,8 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
     // matching CL's behaviour and avoiding account enumeration.
     return jsonResponse(409, {
       success: false,
-      error: 'Could not create account',
+      error:
+        'We couldn’t create your account. If you already have an account, try signing in instead.',
     });
   }
 

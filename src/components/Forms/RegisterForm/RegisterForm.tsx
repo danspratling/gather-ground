@@ -178,8 +178,14 @@ export default function RegisterForm({
           `Too many attempts. Please try again in ${retryAfter} seconds.`
         );
       } else if (resp.status === 409) {
-        // Generic — API does not disclose whether the email already exists.
-        setFormError('Could not create account. Please try again.');
+        // Read the message from the API — it's already generic/friendly.
+        const data = (await resp.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        setFormError(
+          data.error ??
+            'We couldn\u2019t create your account. If you already have an account, try signing in instead.'
+        );
       } else {
         const data = (await resp.json().catch(() => ({}))) as {
           error?: string;
@@ -400,7 +406,21 @@ export default function RegisterForm({
           data-testid="register-form-error"
           className="text-sm text-destructive"
         >
-          {formError}
+          {formError.includes('try signing in') ? (
+            <>
+              We couldn&rsquo;t create your account. If you already have an
+              account,{' '}
+              <a
+                href={loginHref}
+                className="underline underline-offset-2 hover:no-underline"
+              >
+                try signing in instead
+              </a>
+              .
+            </>
+          ) : (
+            formError
+          )}
         </p>
       )}
 
