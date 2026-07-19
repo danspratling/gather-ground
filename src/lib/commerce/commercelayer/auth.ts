@@ -197,6 +197,9 @@ export async function confirmPasswordReset(
   await integration.customer_password_resets.update({
     id: reset.id,
     customer_password: newPassword,
+    // CL uses the underscore-prefixed name as the write-only verification
+    // field in the PATCH body (distinct from the read-side reset_password_token).
+    _reset_password_token: resetToken,
   } as Parameters<typeof integration.customer_password_resets.update>[0]);
 }
 
