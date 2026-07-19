@@ -19,6 +19,16 @@ import { http, HttpResponse } from 'msw';
 import * as authAdapter from '../auth';
 import { clearCLTokenCache } from '../client';
 
+// jwtDecode throws on non-JWT strings; stub it so tests can pass plain tokens.
+vi.mock('@commercelayer/js-auth', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('@commercelayer/js-auth')>();
+  return {
+    ...actual,
+    jwtDecode: () => ({ owner_id: 'cust-123' }),
+  };
+});
+
 const mockOrganization = 'test-org';
 const mockMarketId = 'XYZ';
 const mockAuthUrl = 'https://auth.commercelayer.io/oauth/token';
@@ -79,6 +89,8 @@ function tokenResponse(accessToken: string) {
     access_token: accessToken,
     token_type: 'bearer',
     expires_in: 7200,
+    // owner_id is returned by CL on password-grant responses; login() uses it.
+    owner_id: 'cust-123',
     scope: `market:id:${mockMarketId}`,
     created_at: Math.floor(Date.now() / 1000),
   };
@@ -91,11 +103,9 @@ describe('Commerce Layer Auth Adapter', () => {
         http.post(mockAuthUrl, () =>
           HttpResponse.json(tokenResponse('cust-token-abc'))
         ),
-        http.get(`${mockApiUrl}/customers`, () =>
-          HttpResponse.json({
-            data: [customerResource()],
-            meta: { record_count: 1 },
-          })
+        // login() now calls retrieve(ownerId) not list()
+        http.get(`${mockApiUrl}/customers/cust-123`, () =>
+          HttpResponse.json({ data: customerResource() })
         )
       );
 
@@ -151,15 +161,13 @@ describe('Commerce Layer Auth Adapter', () => {
             { status: 201 }
           );
         }),
-        http.get(`${mockApiUrl}/customers`, () =>
+        // login() after register calls retrieve(ownerId) not list()
+        http.get(`${mockApiUrl}/customers/cust-123`, () =>
           HttpResponse.json({
-            data: [
-              customerResource({
-                id: 'cust-456',
-                email: 'newuser@example.com',
-              }),
-            ],
-            meta: { record_count: 1 },
+            data: customerResource({
+              id: 'cust-456',
+              email: 'newuser@example.com',
+            }),
           })
         )
       );
@@ -314,11 +322,9 @@ describe('Commerce Layer Auth Adapter', () => {
   describe('refreshSession', () => {
     it('re-fetches the customer profile from the current token', async () => {
       server.use(
-        http.get(`${mockApiUrl}/customers`, () =>
-          HttpResponse.json({
-            data: [customerResource()],
-            meta: { record_count: 1 },
-          })
+        // refreshSession() calls retrieve(customerId) decoded from JWT
+        http.get(`${mockApiUrl}/customers/cust-123`, () =>
+          HttpResponse.json({ data: customerResource() })
         )
       );
 

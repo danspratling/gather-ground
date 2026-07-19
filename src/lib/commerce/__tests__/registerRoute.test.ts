@@ -124,8 +124,10 @@ describe('POST /api/commerce/auth/register', () => {
 
     expect(response.status).toBe(409);
     const json = (await response.json()) as { error: string };
-    expect(json.error).toBe('Could not create account');
-    expect(json.error.toLowerCase()).not.toContain('already');
+    // Must not confirm whether the email is taken — still safe after the
+    // message was updated to be friendlier.
+    expect(json.error).toContain('couldn');
+    expect(json.error.toLowerCase()).not.toContain('already taken');
   });
 
   it('does not write a session when register throws', async () => {

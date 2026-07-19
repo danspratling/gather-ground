@@ -18,6 +18,16 @@ import { http, HttpResponse } from 'msw';
 import * as customerAdapter from '../customer';
 import { clearCLTokenCache } from '../client';
 
+// jwtDecode throws on non-JWT strings; stub it so tests can pass plain tokens.
+vi.mock('@commercelayer/js-auth', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('@commercelayer/js-auth')>();
+  return {
+    ...actual,
+    jwtDecode: () => ({ owner_id: 'cust-me' }),
+  };
+});
+
 const mockOrganization = 'test-org';
 const mockApiUrl = `https://${mockOrganization}.commercelayer.io/api`;
 
@@ -75,11 +85,9 @@ describe('Commerce Layer customer.getCustomer', () => {
 
   it('returns a vendor-neutral Customer for the authenticated session', async () => {
     server.use(
-      http.get(`${mockApiUrl}/customers`, () =>
-        HttpResponse.json({
-          data: [customerResource()],
-          meta: { record_count: 1 },
-        })
+      // getCustomer() calls retrieve(customerId) decoded from JWT
+      http.get(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json({ data: customerResource() })
       )
     );
 
@@ -94,13 +102,17 @@ describe('Commerce Layer customer.getCustomer', () => {
 
   it('throws when the customer list comes back empty', async () => {
     server.use(
-      http.get(`${mockApiUrl}/customers`, () =>
-        HttpResponse.json({ data: [], meta: { record_count: 0 } })
+      // retrieve() returning 404 is treated as "not found"
+      http.get(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json(
+          { errors: [{ code: 'NOT_FOUND', detail: 'Customer not found' }] },
+          { status: 404 }
+        )
       )
     );
 
     await expect(customerAdapter.getCustomer('cust-token')).rejects.toThrow(
-      /not found/
+      /not found|Customer not found/i
     );
   });
 });

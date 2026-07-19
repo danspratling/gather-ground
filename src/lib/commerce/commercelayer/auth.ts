@@ -190,13 +190,23 @@ export async function refreshSession(
     throw new Error('Token required to refresh session');
   }
 
-  const client = getCustomerClient(currentToken);
-  const list = (await client.customers.list({
-    include: ['customer_addresses.address'],
-    pageSize: 1,
-  })) as unknown as { first: () => CLCustomerLike | undefined };
+  // Decode the JWT to get the customer ID, then retrieve directly.
+  // list() is not allowed with a customer-scoped token (CL 401).
+  const { jwtDecode } = await import('@commercelayer/js-auth');
+  const decoded = jwtDecode(currentToken);
+  const customerId =
+    'owner_id' in decoded
+      ? (decoded as { owner_id?: string }).owner_id
+      : undefined;
+  if (!customerId) {
+    throw new Error('Could not determine customer ID from access token');
+  }
 
-  const profile = list.first();
+  const client = getCustomerClient(currentToken);
+  const profile = (await client.customers.retrieve(customerId, {
+    include: ['customer_addresses.address'],
+  })) as unknown as CLCustomerLike;
+
   if (!profile) {
     throw new Error('Session refresh failed: customer profile not found');
   }
