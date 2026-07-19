@@ -747,7 +747,7 @@ if (localStorage.getItem('cookie-consent') === 'accepted') {
 - `SESSION_SECRET` must be at least 32 characters; validation lives in `getSessionSecret()` and throws the first time a session helper runs with a missing/short secret (there is no dedicated startup check yet).
 - Middleware refresh runs on every request when commerce is enabled, but only calls CL when within the 60s expiry leeway. The overhead per request when no refresh is needed is one sealed-cookie decrypt.
 - Auth API routes always return JSON. HTML redirects on auth outcomes are the caller's responsibility (login form navigates on success, middleware issues the `/account/login?next=…` redirect on guard failure).
-- `/account/login`, `/account/register`, `/account/password-reset`, and `/account/password-reset/confirm` are the only `/account/*` paths reachable without a session. Adding a new public account path requires updating `ACCOUNT_PUBLIC_PATHS` in `src/middleware.ts`.
+- `/account/login`, `/account/register`, `/account/forgot-password`, and `/account/reset-password` are the only `/account/*` paths reachable without a session. Adding a new public account path requires updating `ACCOUNT_PUBLIC_PATHS` in `src/middleware.ts`.
 
 **Consequence:**
 

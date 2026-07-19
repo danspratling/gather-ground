@@ -55,7 +55,8 @@ export interface CommerceAdapter {
   /**
    * Request a password reset email
    */
-  requestPasswordReset(email: string): Promise<void>;
+  /** Returns the reset token so the caller can send it in an email. */
+  requestPasswordReset(email: string): Promise<{ resetToken: string }>;
 
   /**
    * Confirm password reset with code

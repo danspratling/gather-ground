@@ -7,6 +7,7 @@ import {
   jsonResponse,
   parseJsonBody,
 } from '@/lib/commerce/apiHelpers';
+import { sendPasswordResetEmail } from '@/lib/commerce/passwordResetEmail';
 
 export const prerender = false;
 
@@ -41,7 +42,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   }
 
   try {
-    await commerce.requestPasswordReset(email);
+    const { resetToken } = await commerce.requestPasswordReset(email);
+    // Fire the email but don't await it on the critical path — the response
+    // must return 200 quickly regardless of email delivery status.
+    sendPasswordResetEmail({ email, resetToken }).catch((err) =>
+      console.error('sendPasswordResetEmail failed:', err)
+    );
   } catch (err) {
     // Log internally but never tell the client whether the email existed.
     console.error('Commerce requestPasswordReset failed:', err);

@@ -14,6 +14,14 @@ import {
 
 const requestResetMock = vi.fn();
 const confirmResetMock = vi.fn();
+const sendPasswordResetEmailMock = vi.fn();
+
+// Prevent Resend from being called in tests.
+vi.mock('@/lib/commerce/passwordResetEmail', () => ({
+  sendPasswordResetEmail: (...args: unknown[]) =>
+    sendPasswordResetEmailMock(...args),
+  default: null,
+}));
 
 vi.mock('@/lib/commerce', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/lib/commerce')>();
@@ -39,6 +47,8 @@ beforeAll(() => {
 beforeEach(() => {
   requestResetMock.mockReset();
   confirmResetMock.mockReset();
+  sendPasswordResetEmailMock.mockReset();
+  sendPasswordResetEmailMock.mockResolvedValue(undefined);
   resetRateLimit();
 });
 
@@ -53,7 +63,7 @@ const confirmUrl =
 
 describe('POST /api/commerce/auth/password-reset/request', () => {
   it('returns 200 success for a known email', async () => {
-    requestResetMock.mockResolvedValueOnce(undefined);
+    requestResetMock.mockResolvedValueOnce({ resetToken: 'tok-test' });
 
     const response = await requestPOST(
       makeJsonContext(requestUrl, { email: 'real@example.com' })
@@ -86,7 +96,7 @@ describe('POST /api/commerce/auth/password-reset/request', () => {
   });
 
   it('returns 429 after the rate limit is exceeded', async () => {
-    requestResetMock.mockResolvedValue(undefined);
+    requestResetMock.mockResolvedValue({ resetToken: 'tok-test' });
 
     for (let i = 0; i < 3; i++) {
       const r = await requestPOST(

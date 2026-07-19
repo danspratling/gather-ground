@@ -149,13 +149,22 @@ export async function logout(token: string): Promise<void> {
 }
 
 /**
- * Trigger a password-reset email for a customer.
+ * Trigger a password-reset for a customer.
+ * Returns the reset token from CL so the caller can send it in an email.
  */
-export async function requestPasswordReset(email: string): Promise<void> {
+export async function requestPasswordReset(
+  email: string
+): Promise<{ resetToken: string }> {
   const integration = await getIntegrationClient();
-  await integration.customer_password_resets.create({
+  const reset = await integration.customer_password_resets.create({
     customer_email: email,
   });
+  const resetToken = (reset as unknown as { reset_password_token?: string })
+    .reset_password_token;
+  if (!resetToken) {
+    throw new Error('CL did not return a reset_password_token');
+  }
+  return { resetToken };
 }
 
 /**

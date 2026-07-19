@@ -143,7 +143,7 @@ export default function ResetPasswordForm({
         </p>
         <p className="text-sm">
           <a
-            href="/account/password-reset"
+            href="/account/forgot-password"
             className="font-medium text-brand-700 underline underline-offset-2 hover:no-underline"
           >
             Request a new link

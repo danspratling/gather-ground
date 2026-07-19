@@ -225,7 +225,9 @@ describe('Commerce Layer Auth Adapter', () => {
               data: {
                 id: 'reset-123',
                 type: 'customer_password_resets',
-                attributes: {},
+                attributes: {
+                  reset_password_token: 'tok-abc123',
+                },
               },
             },
             { status: 201 }
@@ -233,10 +235,9 @@ describe('Commerce Layer Auth Adapter', () => {
         })
       );
 
-      await expect(
-        authAdapter.requestPasswordReset('test@example.com')
-      ).resolves.toBeUndefined();
+      const result = await authAdapter.requestPasswordReset('test@example.com');
       expect(resetCalled).toBe(true);
+      expect(result.resetToken).toBe('tok-abc123');
     });
 
     it('throws when CL returns an error', async () => {
