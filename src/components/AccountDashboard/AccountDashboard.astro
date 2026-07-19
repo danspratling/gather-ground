@@ -1,0 +1,78 @@
+---
+import type { AccountDashboardProps } from './AccountDashboard.types';
+import AddressCard from '@/components/AddressCard/AddressCard.astro';
+
+type Props = AccountDashboardProps;
+
+const { customerName, defaultAddress } = Astro.props;
+---
+
+<div class="space-y-8">
+  <!-- Greeting -->
+  <div>
+    <h1
+      class="text-display-md font-semibold tracking-display-md text-brand-900"
+    >
+      Welcome back, {customerName}
+    </h1>
+  </div>
+
+  <!-- Quick links -->
+  <section aria-labelledby="quick-links-heading">
+    <h2
+      id="quick-links-heading"
+      class="mb-4 text-lg font-semibold text-brand-900"
+    >
+      Quick links
+    </h2>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <a
+        href="/account/addresses"
+        class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 text-sm font-medium text-brand-900 hover:bg-gray-50"
+      >
+        <span>Manage addresses</span>
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+      <a
+        href="/account/profile"
+        class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 text-sm font-medium text-brand-900 hover:bg-gray-50"
+      >
+        <span>Edit profile</span>
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Default address -->
+  <section aria-labelledby="default-address-heading">
+    <h2
+      id="default-address-heading"
+      class="mb-4 text-lg font-semibold text-brand-900"
+    >
+      Default address
+    </h2>
+    {
+      defaultAddress ? (
+        <div class="max-w-sm">
+          <AddressCard address={defaultAddress} />
+        </div>
+      ) : (
+        <p class="text-sm text-gray-800">
+          No address saved.{' '}
+          <a
+            href="/account/addresses"
+            class="font-medium text-brand-900 underline underline-offset-2 hover:text-brand-700"
+          >
+            Add an address
+          </a>
+        </p>
+      )
+    }
+  </section>
+
+  <!-- Cart preview — pending GG-218 -->
+  <!-- TODO: GG-249 cart preview — awaiting GG-218 CartItemRow (E21 cart epic) -->
+
+  <!-- Recent orders — pending GG-242 -->
+  <!-- TODO: GG-249 orders preview — awaiting GG-242 OrderListItem (E32 orders epic) -->
+</div>
