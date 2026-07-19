@@ -88,12 +88,14 @@ export async function login(
   }
 
   const client = getCustomerClient(auth.accessToken);
-  const me = (await client.customers.list({
-    filters: { email_eq: email },
-    include: ['customer_addresses.address'],
-  })) as unknown as { first: () => CLCustomerLike | undefined };
 
-  const profile = me.first();
+  // auth.ownerId is the customer's CL ID from the password-grant response.
+  // Use retrieve() rather than list() — a customer-scoped token cannot list
+  // all customers, only access its own record (CL UNAUTHORIZED otherwise).
+  const profile = (await client.customers.retrieve(auth.ownerId, {
+    include: ['customer_addresses.address'],
+  })) as unknown as CLCustomerLike;
+
   if (!profile) {
     throw new Error(
       'Commerce Layer login succeeded but customer profile not found'
