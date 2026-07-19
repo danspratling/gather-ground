@@ -149,19 +149,32 @@ export async function logout(token: string): Promise<void> {
 }
 
 /**
- * Trigger a password-reset email for a customer.
+ * Trigger a password-reset for a customer.
+ * Returns the reset token from CL so the caller can send it in an email.
  */
-export async function requestPasswordReset(email: string): Promise<void> {
+export async function requestPasswordReset(
+  email: string
+): Promise<{ resetToken: string }> {
   const integration = await getIntegrationClient();
-  await integration.customer_password_resets.create({
+  const reset = await integration.customer_password_resets.create({
     customer_email: email,
   });
+  const resetToken = (reset as unknown as { reset_password_token?: string })
+    .reset_password_token;
+  if (!resetToken) {
+    throw new Error('CL did not return a reset_password_token');
+  }
+  return { resetToken };
 }
 
 /**
  * Complete a password reset using the token sent in the email and a new password.
  *
- * @param resetToken The reset token from the password-reset email.
+ * CL requires the resource UUID (id) in the URL path AND the reset_password_token
+ * in the body. Since the email URL only carries the token, we find the resource
+ * first with a filtered list, then PATCH it.
+ *
+ * @param resetToken The reset_password_token from the password-reset email link.
  * @param newPassword The new password to set.
  */
 export async function confirmPasswordReset(
@@ -169,10 +182,25 @@ export async function confirmPasswordReset(
   newPassword: string
 ): Promise<void> {
   const integration = await getIntegrationClient();
+
+  // Find the customer_password_reset resource by its token so we can get the
+  // resource ID needed for the PATCH URL.
+  const list = (await integration.customer_password_resets.list({
+    filters: { reset_password_token_eq: resetToken } as Record<string, string>,
+  })) as unknown as { first: () => { id: string } | undefined };
+
+  const reset = list.first();
+  if (!reset) {
+    throw new Error('Reset link is invalid or has expired');
+  }
+
   await integration.customer_password_resets.update({
-    id: resetToken,
+    id: reset.id,
     customer_password: newPassword,
-  });
+    // CL uses the underscore-prefixed name as the write-only verification
+    // field in the PATCH body (distinct from the read-side reset_password_token).
+    _reset_password_token: resetToken,
+  } as Parameters<typeof integration.customer_password_resets.update>[0]);
 }
 
 /**

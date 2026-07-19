@@ -16,8 +16,8 @@ const isGatedPath = (pathname: string): boolean =>
 const ACCOUNT_PUBLIC_PATHS = new Set([
   '/account/login',
   '/account/register',
-  '/account/password-reset',
-  '/account/password-reset/confirm',
+  '/account/forgot-password',
+  '/account/reset-password',
 ]);
 
 const isProtectedAccountPath = (pathname: string): boolean => {
