@@ -14,7 +14,8 @@ const SITE_URL = (() => {
   // Vercel sets VERCEL_URL on preview/production deployments.
   const vercelUrl = import.meta.env.VERCEL_URL;
   if (vercelUrl) return `https://${vercelUrl}`;
-  return 'http://localhost:4321';
+  // Local dev uses mkcert (vite-plugin-mkcert), so the server runs on HTTPS.
+  return 'https://localhost:4321';
 })();
 
 export interface PasswordResetEmailData {
