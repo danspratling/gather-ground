@@ -38,11 +38,21 @@ const labelClasses = 'text-sm font-medium text-brand-700';
  */
 export type PasswordStrength = {
   score: 0 | 1 | 2 | 3 | 4;
+  /**
+   * Label is empty for both 'no input' (score 0) and 'too short' (score 1
+   * with password.length < MIN_PASSWORD_LENGTH). The bar colour is shown but
+   * no grade is awarded until the password meets the minimum length.
+   */
   label: '' | 'Weak' | 'Fair' | 'Good' | 'Strong';
 };
 
 export function scorePassword(password: string): PasswordStrength {
   if (!password) return { score: 0, label: '' };
+
+  // Under minimum length: invalid — show the bar in red but give no grade label.
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return { score: 1, label: '' };
+  }
 
   const classes =
     (/[a-z]/.test(password) ? 1 : 0) +
@@ -50,7 +60,7 @@ export function scorePassword(password: string): PasswordStrength {
     (/\d/.test(password) ? 1 : 0) +
     (/[^A-Za-z0-9]/.test(password) ? 1 : 0);
 
-  if (password.length < MIN_PASSWORD_LENGTH || classes <= 1) {
+  if (classes <= 1) {
     return { score: 1, label: 'Weak' };
   }
   if (password.length >= 12 && classes >= 4) {
@@ -64,10 +74,10 @@ export function scorePassword(password: string): PasswordStrength {
 
 const strengthBarColour: Record<PasswordStrength['score'], string> = {
   0: 'bg-brand-100',
-  1: 'bg-destructive',
-  2: 'bg-brand-400',
-  3: 'bg-brand-600',
-  4: 'bg-brand-700',
+  1: 'bg-destructive', // Weak — red
+  2: 'bg-brand-300', // Fair — light gray
+  3: 'bg-success-200', // Good — light green
+  4: 'bg-success-700', // Strong — dark green
 };
 
 // Score maps 1:1 onto discrete Tailwind widths so we avoid an inline
@@ -168,8 +178,14 @@ export default function RegisterForm({
           `Too many attempts. Please try again in ${retryAfter} seconds.`
         );
       } else if (resp.status === 409) {
-        // Generic — API does not disclose whether the email already exists.
-        setFormError('Could not create account. Please try again.');
+        // Read the message from the API — it's already generic/friendly.
+        const data = (await resp.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        setFormError(
+          data.error ??
+            'We couldn\u2019t create your account. If you already have an account, try signing in instead.'
+        );
       } else {
         const data = (await resp.json().catch(() => ({}))) as {
           error?: string;
@@ -314,7 +330,7 @@ export default function RegisterForm({
             fieldErrors.password ? inputErrorClasses : ''
           }`}
         />
-        {fieldErrors.password ? (
+        {fieldErrors.password && (
           <p
             id="register-password-error"
             data-testid="register-password-error"
@@ -322,31 +338,38 @@ export default function RegisterForm({
           >
             {fieldErrors.password}
           </p>
-        ) : (
+        )}
+        {/* Always in DOM so the form doesn't jump when an error appears/clears */}
+        <div
+          id="register-password-strength"
+          data-testid="register-password-strength"
+          aria-hidden={strength.score === 0 ? 'true' : undefined}
+          className={`flex items-center gap-2 transition-opacity ${
+            strength.score === 0 ? 'opacity-0' : 'opacity-100'
+          }`}
+        >
           <div
-            id="register-password-strength"
-            data-testid="register-password-strength"
-            className="flex items-center gap-2"
+            className="h-1 flex-1 rounded-full bg-brand-100"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={4}
+            aria-valuenow={strength.score}
+            aria-label="Password strength"
           >
             <div
-              className={`h-1 flex-1 rounded-full transition-colors ${strength.score > 0 ? 'bg-brand-50' : ''}`}
-              role="progressbar"
-              aria-valuemin={0}
-              aria-valuemax={4}
-              aria-valuenow={strength.score}
-              aria-label="Password strength"
-            >
-              <div
-                className={`h-full rounded-full transition-all ${strengthBarColour[strength.score]} ${strengthBarWidth[strength.score]}`}
-              />
-            </div>
-            {strength.label && (
-              <span className="w-12 shrink-0 text-right text-xs text-brand-600">
-                {strength.label}
-              </span>
-            )}
+              className={`h-full rounded-full transition-all ${strengthBarColour[strength.score]} ${strengthBarWidth[strength.score]}`}
+            />
           </div>
-        )}
+          {strength.label ? (
+            <span className="w-12 shrink-0 text-right text-xs text-brand-600">
+              {strength.label}
+            </span>
+          ) : (
+            // Reserve the label column even when empty so the bar doesn't
+            // widen when the label appears.
+            <span className="w-12 shrink-0" aria-hidden="true" />
+          )}
+        </div>
       </div>
 
       <label className="flex items-start gap-3">
@@ -383,7 +406,21 @@ export default function RegisterForm({
           data-testid="register-form-error"
           className="text-sm text-destructive"
         >
-          {formError}
+          {formError.includes('try signing in') ? (
+            <>
+              We couldn&rsquo;t create your account. If you already have an
+              account,{' '}
+              <a
+                href={loginHref}
+                className="underline underline-offset-2 hover:no-underline"
+              >
+                try signing in instead
+              </a>
+              .
+            </>
+          ) : (
+            formError
+          )}
         </p>
       )}
 

@@ -88,12 +88,14 @@ export async function login(
   }
 
   const client = getCustomerClient(auth.accessToken);
-  const me = (await client.customers.list({
-    filters: { email_eq: email },
-    include: ['customer_addresses.address'],
-  })) as unknown as { first: () => CLCustomerLike | undefined };
 
-  const profile = me.first();
+  // auth.ownerId is the customer's CL ID from the password-grant response.
+  // Use retrieve() rather than list() — a customer-scoped token cannot list
+  // all customers, only access its own record (CL UNAUTHORIZED otherwise).
+  const profile = (await client.customers.retrieve(auth.ownerId, {
+    include: ['customer_addresses.address'],
+  })) as unknown as CLCustomerLike;
+
   if (!profile) {
     throw new Error(
       'Commerce Layer login succeeded but customer profile not found'
@@ -121,10 +123,14 @@ export async function register(
   await integration.customers.create({
     email,
     password,
-    metadata: {
-      first_name: firstName,
-      last_name: lastName,
-    },
+    // Commerce Layer's customer resource has no first_name/last_name fields.
+    // We store them in metadata so the mapCustomer mapper can read them back.
+    // The SDK types restrict metadata to Record<string,unknown> which TypeScript
+    // infers as incompatible with the concrete shape we need — cast to satisfy it.
+    metadata: { first_name: firstName, last_name: lastName } as Record<
+      string,
+      unknown
+    >,
   });
 
   return login(email, password);
@@ -184,13 +190,23 @@ export async function refreshSession(
     throw new Error('Token required to refresh session');
   }
 
-  const client = getCustomerClient(currentToken);
-  const list = (await client.customers.list({
-    include: ['customer_addresses.address'],
-    pageSize: 1,
-  })) as unknown as { first: () => CLCustomerLike | undefined };
+  // Decode the JWT to get the customer ID, then retrieve directly.
+  // list() is not allowed with a customer-scoped token (CL 401).
+  const { jwtDecode } = await import('@commercelayer/js-auth');
+  const decoded = jwtDecode(currentToken);
+  const customerId =
+    'owner_id' in decoded
+      ? (decoded as { owner_id?: string }).owner_id
+      : undefined;
+  if (!customerId) {
+    throw new Error('Could not determine customer ID from access token');
+  }
 
-  const profile = list.first();
+  const client = getCustomerClient(currentToken);
+  const profile = (await client.customers.retrieve(customerId, {
+    include: ['customer_addresses.address'],
+  })) as unknown as CLCustomerLike;
+
   if (!profile) {
     throw new Error('Session refresh failed: customer profile not found');
   }

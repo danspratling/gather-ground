@@ -60,12 +60,16 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
       lastName.trim()
     );
   } catch (err) {
-    console.error('Commerce register failed:', err);
+    // Log the full error so Vercel function logs (and local console) show the
+    // real CL rejection reason — check logs at vercel.com → Functions tab.
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('Commerce register failed:', message, err);
     // Generic 409 — we don't reveal whether the email is already taken,
     // matching CL's behaviour and avoiding account enumeration.
     return jsonResponse(409, {
       success: false,
-      error: 'Could not create account',
+      error:
+        'We couldn’t create your account. If you already have an account, try signing in instead.',
     });
   }
 
