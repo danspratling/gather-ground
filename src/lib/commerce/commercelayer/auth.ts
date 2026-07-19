@@ -197,7 +197,6 @@ export async function confirmPasswordReset(
   await integration.customer_password_resets.update({
     id: reset.id,
     customer_password: newPassword,
-    reset_password_token: resetToken,
   } as Parameters<typeof integration.customer_password_resets.update>[0]);
 }
 
