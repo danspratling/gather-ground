@@ -1,4 +1,5 @@
 ---
+import { Analytics } from '@vercel/analytics/astro';
 import AnnouncementBanner from '@/components/AnnouncementBanner/AnnouncementBanner.astro';
 import CookieBanner from '@/components/CookieBanner/CookieBanner';
 import Clarity from '@/components/Analytics/Clarity.astro';
@@ -225,6 +226,7 @@ const footerProps = {
       <StructuredData data={webPageSD} slot="head-extras" />
       <slot name="head-extras" slot="head-extras" />
     </PageHead>
+    <Analytics />
   </head>
   <body>
     {/* body-start: announcement banner, skip-to-content */}
