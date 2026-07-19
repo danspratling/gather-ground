@@ -267,6 +267,19 @@ describe('Commerce Layer Auth Adapter', () => {
         http.post(mockAuthUrl, () =>
           HttpResponse.json(tokenResponse('integration-token'))
         ),
+        // confirmPasswordReset first lists by token to get the resource ID
+        http.get(`${mockApiUrl}/customer_password_resets`, () =>
+          HttpResponse.json({
+            data: [
+              {
+                id: 'reset-123',
+                type: 'customer_password_resets',
+                attributes: { reset_password_token: 'tok-abc' },
+              },
+            ],
+            meta: { record_count: 1 },
+          })
+        ),
         http.patch(`${mockApiUrl}/customer_password_resets/reset-123`, () => {
           updateCalled = true;
           return HttpResponse.json({
@@ -280,31 +293,24 @@ describe('Commerce Layer Auth Adapter', () => {
       );
 
       await expect(
-        authAdapter.confirmPasswordReset('reset-123', 'new-password')
+        authAdapter.confirmPasswordReset('tok-abc', 'new-password')
       ).resolves.toBeUndefined();
       expect(updateCalled).toBe(true);
     });
 
-    it('throws when CL rejects the reset token', async () => {
+    it('throws when CL returns no matching reset resource', async () => {
       server.use(
         http.post(mockAuthUrl, () =>
           HttpResponse.json(tokenResponse('integration-token'))
         ),
-        http.patch(`${mockApiUrl}/customer_password_resets/expired-token`, () =>
-          HttpResponse.json(
-            {
-              errors: [
-                { code: 'INVALID_TOKEN', detail: 'Reset token expired' },
-              ],
-            },
-            { status: 422 }
-          )
+        http.get(`${mockApiUrl}/customer_password_resets`, () =>
+          HttpResponse.json({ data: [], meta: { record_count: 0 } })
         )
       );
 
       await expect(
         authAdapter.confirmPasswordReset('expired-token', 'new-password')
-      ).rejects.toThrow();
+      ).rejects.toThrow(/invalid or has expired/);
     });
   });
 
