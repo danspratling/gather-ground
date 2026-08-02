@@ -31,8 +31,8 @@ export async function getCustomer(token: string): Promise<Customer> {
   // network call. `jwtDecode` is synchronous and does not verify the signature.
   const decoded = jwtDecode(token);
   const customerId =
-    'owner_id' in decoded
-      ? (decoded as { owner_id?: string }).owner_id
+    decoded.payload && 'owner_id' in decoded.payload
+      ? (decoded.payload as { owner_id?: string }).owner_id
       : undefined;
   if (!customerId) {
     throw new Error('Could not determine customer ID from access token');
