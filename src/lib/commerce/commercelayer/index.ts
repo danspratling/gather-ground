@@ -55,33 +55,26 @@ export const commerceLayerAdapter: CommerceAdapter = {
 
   getCustomer: customer.getCustomer,
 
-  updateCustomer: async () => {
-    throw new Error('Not yet implemented (GG-E34-API-01)');
+  updateCustomer: async (token, updates) => {
+    await customer.updateProfile(token, {
+      firstName: updates.firstName,
+      lastName: updates.lastName,
+      email: updates.email,
+    });
+    return customer.getCustomer(token);
   },
 
-  changePassword: async () => {
-    throw new Error('Not yet implemented (GG-E34-API-01)');
-  },
+  changePassword: customer.changePassword,
 
-  listAddresses: async () => {
-    throw new Error('Not yet implemented (GG-E33-API-01)');
-  },
+  listAddresses: customer.listAddresses,
 
-  createAddress: async () => {
-    throw new Error('Not yet implemented (GG-E33-API-01)');
-  },
+  createAddress: customer.createAddress,
 
-  updateAddress: async () => {
-    throw new Error('Not yet implemented (GG-E33-API-01)');
-  },
+  updateAddress: customer.updateAddress,
 
-  deleteAddress: async () => {
-    throw new Error('Not yet implemented (GG-E33-API-01)');
-  },
+  deleteAddress: customer.deleteAddress,
 
-  setDefaultAddress: async () => {
-    throw new Error('Not yet implemented (GG-E33-API-01)');
-  },
+  setDefaultAddress: customer.setDefaultAddress,
 
   listOrders: async () => {
     throw new Error('Not yet implemented (GG-E32-API-01)');
