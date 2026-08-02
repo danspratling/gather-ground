@@ -1,29 +1,62 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import SectionMapper from '@/templates/SectionMapper.astro';
+import SectionDivider from '@/components/SectionDivider/SectionDivider.astro';
+import ProductCard from '@/components/ProductCard/ProductCard.astro';
 import { loadQuery } from '@/lib/sanity';
-import { productPageQuery, instagramWidgetQuery } from '@/lib/queries';
+import {
+  productPageQuery,
+  instagramWidgetQuery,
+  allProductsQuery,
+} from '@/lib/queries';
+import { sanityImageSrc, sanityImageAlt } from '@/lib/sanityImage';
 
-const [{ data: page }, { data: widgets }] = await Promise.all([
-  loadQuery<{
-    _id: string;
-    _type: string;
-    _updatedAt?: string;
-    _originalId?: string;
-    title: string;
-    metaTitle?: string;
-    metaDescription?: string;
-    ogImage?: string;
-    autoDescription?: string;
-    autoOgImage?: string;
-    body: Array<Record<string, unknown> & { _type: string; _key: string }>;
-  } | null>({
-    query: productPageQuery,
-  }),
-  loadQuery<{ instagramHandle?: string; beholdFeedId?: string } | null>({
-    query: instagramWidgetQuery,
-  }),
-]);
+const [{ data: page }, { data: widgets }, { data: rawProducts }] =
+  await Promise.all([
+    loadQuery<{
+      _id: string;
+      _type: string;
+      _updatedAt?: string;
+      _originalId?: string;
+      title: string;
+      metaTitle?: string;
+      metaDescription?: string;
+      ogImage?: string;
+      autoDescription?: string;
+      autoOgImage?: string;
+      body: Array<Record<string, unknown> & { _type: string; _key: string }>;
+    } | null>({
+      query: productPageQuery,
+    }),
+    loadQuery<{ instagramHandle?: string; beholdFeedId?: string } | null>({
+      query: instagramWidgetQuery,
+    }),
+    loadQuery<
+      Array<{
+        _id: string;
+        title: string;
+        slug: string;
+        image?: { asset?: { _ref?: string; _id?: string }; alt?: string };
+        metaDescription?: string;
+      }>
+    >({
+      query: allProductsQuery,
+    }),
+  ]);
+
+const products = (rawProducts ?? []).map((product) => ({
+  title: product.title,
+  href: `/products/${product.slug}`,
+  image: sanityImageSrc(
+    product.image as { asset?: { _ref?: string; _id?: string } },
+    {
+      width: 600,
+      quality: 80,
+    }
+  ),
+  imageAlt: sanityImageAlt(product.image, product.title),
+  description: product.metaDescription,
+}));
 ---
 
 <Layout
@@ -46,5 +79,27 @@ const [{ data: page }, { data: widgets }] = await Promise.all([
       instagramHandle={widgets?.instagramHandle}
       beholdFeedId={widgets?.beholdFeedId}
     />
+    {
+      products.length > 0 && (
+        <>
+          <SectionDivider />
+          <section class="container py-16">
+            <h2 class="mb-8 text-2xl font-bold text-brand-900">All Products</h2>
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {products.map((product) => (
+                <ProductCard
+                  variant="commerce"
+                  title={product.title}
+                  href={product.href}
+                  image={product.image}
+                  imageAlt={product.imageAlt}
+                  description={product.description}
+                />
+              ))}
+            </div>
+          </section>
+        </>
+      )
+    }
   </main>
 </Layout>
