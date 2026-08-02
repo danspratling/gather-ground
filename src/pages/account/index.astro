@@ -1,0 +1,23 @@
+---
+export const prerender = false;
+import Layout from '@/layouts/Layout.astro';
+import AccountLayout from '@/components/AccountLayout/AccountLayout.astro';
+import AccountDashboard from '@/components/AccountDashboard/AccountDashboard.astro';
+
+const customer = Astro.locals.customer!;
+// TODO: fetch defaultAddress from commerce adapter (GG-E33-API-01)
+const defaultAddress = undefined;
+---
+
+<Layout title="My Account" description="Manage your Gather Ground account.">
+  <meta name="robots" content="noindex" slot="head-extras" />
+  <AccountLayout
+    customerName={customer.firstName}
+    pathname={Astro.url.pathname}
+  >
+    <AccountDashboard
+      customerName={customer.firstName}
+      defaultAddress={defaultAddress}
+    />
+  </AccountLayout>
+</Layout>
