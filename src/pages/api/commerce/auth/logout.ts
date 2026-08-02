@@ -1,6 +1,5 @@
 import type { APIRoute } from 'astro';
 import { commerce, getSession, clearSession } from '@/lib/commerce';
-import { jsonResponse } from '@/lib/commerce/apiHelpers';
 
 export const prerender = false;
 
@@ -20,5 +19,8 @@ export const POST: APIRoute = async ({ cookies }) => {
     }
   }
 
-  return jsonResponse(200, { success: true });
+  return new Response(null, {
+    status: 302,
+    headers: { Location: '/' },
+  });
 };
