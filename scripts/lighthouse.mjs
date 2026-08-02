@@ -1,7 +1,7 @@
 /**
  * Lighthouse audit script — replaces @lhci/cli.
  *
- * Runs all pages in parallel using the lighthouse Node API + chrome-launcher.
+ * Runs all pages sequentially using the lighthouse Node API + chrome-launcher.
  * Intended for CI (against astro dev) and local developer feedback.
  *
  * Usage:
@@ -25,11 +25,14 @@ const PAGES = [
   { path: '/account/login', name: 'account-login' },
 ];
 
+// Performance scores are unreliable on a dev server (no minification, HMR injection).
+// SEO score of 1.0 requires fully-populated Sanity content; relax for local runs.
+// Only enforce stricter thresholds when auditing a remote/production URL.
 const THRESHOLDS = {
-  performance: 0.9,
+  ...(isRemote ? { performance: 0.9 } : {}),
   accessibility: 0.9,
   'best-practices': 0.95,
-  seo: 1,
+  seo: isRemote ? 1 : 0.9,
 };
 
 const CHROME_FLAGS = [
@@ -58,11 +61,17 @@ async function auditPage({ path, name }) {
   }
 }
 
-console.log(
-  `Auditing ${PAGES.length} pages in parallel against ${BASE_URL}…\n`
-);
+// Run pages sequentially — parallel Chrome instances exhaust CI runner resources.
+console.log(`Auditing ${PAGES.length} pages sequentially against ${BASE_URL}…\n`);
 
-const results = await Promise.allSettled(PAGES.map(auditPage));
+const results = [];
+for (const page of PAGES) {
+  try {
+    results.push({ status: 'fulfilled', value: await auditPage(page) });
+  } catch (err) {
+    results.push({ status: 'rejected', reason: err });
+  }
+}
 let passed = true;
 
 for (const result of results) {
