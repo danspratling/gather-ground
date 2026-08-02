@@ -1,4 +1,4 @@
-export type ProductCardVariant = 'category' | 'image-link';
+export type ProductCardVariant = 'category' | 'image-link' | 'commerce';
 
 export interface ProductCardProps {
   variant: ProductCardVariant;
@@ -7,6 +7,10 @@ export interface ProductCardProps {
   title: string;
   description?: string;
   href: string;
+  price?: string;
+  compareAtPrice?: string;
+  inventoryStatus?: 'in_stock' | 'low_stock' | 'out_of_stock';
+  badge?: string;
   class?: string;
 }
 

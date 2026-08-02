@@ -1,0 +1,85 @@
+---
+import { cn } from '@/lib/utils';
+import type { ProductCardProps } from '@/components/ProductCard/ProductCard.types';
+
+type Props = Omit<ProductCardProps, 'variant'>;
+
+const {
+  image,
+  imageAlt,
+  title,
+  price,
+  compareAtPrice,
+  inventoryStatus,
+  badge,
+  href,
+  class: className,
+} = Astro.props;
+
+const showBadge =
+  badge ||
+  inventoryStatus === 'low_stock' ||
+  inventoryStatus === 'out_of_stock';
+const badgeLabel =
+  badge ||
+  (inventoryStatus === 'out_of_stock'
+    ? 'Out of stock'
+    : inventoryStatus === 'low_stock'
+      ? 'Low stock'
+      : '');
+const badgeClass =
+  inventoryStatus === 'out_of_stock'
+    ? 'bg-error-50 text-error-700'
+    : inventoryStatus === 'low_stock'
+      ? 'bg-warning-50 text-warning-700'
+      : 'bg-secondary-100 text-brand-700';
+---
+
+<article
+  class={cn('group rounded-xl overflow-hidden bg-secondary-50', className)}
+>
+  <a href={href} class="flex flex-col">
+    <div class="relative overflow-hidden rounded-t-xl">
+      <img
+        src={image}
+        alt={imageAlt}
+        class="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105 group-focus:scale-105"
+        width={600}
+        height={256}
+        loading="lazy"
+        decoding="async"
+      />
+      {
+        showBadge && badgeLabel && (
+          <span
+            class={cn(
+              'absolute top-3 left-3 rounded-full px-2.5 py-0.5 text-xs font-medium',
+              badgeClass
+            )}
+          >
+            {badgeLabel}
+          </span>
+        )
+      }
+    </div>
+    <div class="flex flex-col gap-1.5 p-4">
+      <h3
+        class="text-base font-semibold text-gray-900 group-hover:underline group-focus:underline"
+      >
+        {title}
+      </h3>
+      {
+        price && (
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-semibold text-brand-700">{price}</span>
+            {compareAtPrice && (
+              <span class="text-sm font-normal text-brand-500 line-through">
+                {compareAtPrice}
+              </span>
+            )}
+          </div>
+        )
+      }
+    </div>
+  </a>
+</article>
