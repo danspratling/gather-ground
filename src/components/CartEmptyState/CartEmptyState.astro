@@ -1,0 +1,51 @@
+---
+import { cn } from '@/lib/utils';
+import type { CartEmptyStateProps } from '@/components/CartEmptyState/CartEmptyState.types';
+
+type Props = CartEmptyStateProps;
+
+const { class: className } = Astro.props;
+---
+
+<div
+  class={cn(
+    'flex flex-col items-center justify-center gap-6 px-6 py-16 text-center',
+    className
+  )}
+>
+  <span
+    class="flex size-16 items-center justify-center rounded-full bg-brand-50 text-brand-400"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="32"
+      height="32"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path
+        d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"
+      ></path>
+    </svg>
+  </span>
+
+  <div class="flex flex-col gap-2">
+    <h2 class="text-xl font-semibold text-brand-700">Your cart is empty</h2>
+    <p class="max-w-xs text-sm text-brand-500">
+      Looks like you haven't added anything yet. Browse our products to find
+      something you'll love.
+    </p>
+  </div>
+
+  <a
+    href="/products"
+    class="inline-flex items-center justify-center rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-brand-25 transition-colors hover:bg-brand-600"
+  >
+    Shop now
+  </a>
+</div>

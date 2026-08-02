@@ -109,3 +109,13 @@ export const NoCta = {
     ctaHref: undefined,
   },
 };
+
+export const WithCommerceSlots = {
+  args: {
+    ...base,
+    navLinks: withDropdowns,
+    showCommerceSlots: true,
+    ctaLabel: undefined,
+    ctaHref: undefined,
+  },
+};

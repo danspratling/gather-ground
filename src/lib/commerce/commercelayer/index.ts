@@ -13,6 +13,7 @@
 
 import type { CommerceAdapter } from '../adapter';
 import * as auth from './auth';
+import * as cart from './cart';
 import * as customer from './customer';
 
 /**
@@ -43,25 +44,11 @@ export const commerceLayerAdapter: CommerceAdapter = {
   // CART ===================================================================
   // Implemented in GG-E20-A
 
-  createCart: async () => {
-    throw new Error('Not yet implemented (GG-E20-A)');
-  },
-
-  getCart: async () => {
-    throw new Error('Not yet implemented (GG-E20-A)');
-  },
-
-  addLineItem: async () => {
-    throw new Error('Not yet implemented (GG-E20-A)');
-  },
-
-  updateLineItem: async () => {
-    throw new Error('Not yet implemented (GG-E20-A)');
-  },
-
-  removeLineItem: async () => {
-    throw new Error('Not yet implemented (GG-E20-A)');
-  },
+  createCart: cart.createCart,
+  getCart: cart.getCart,
+  addLineItem: cart.addLineItem,
+  updateLineItem: cart.updateLineItem,
+  removeLineItem: cart.removeLineItem,
 
   // CUSTOMER ===============================================================
   // Implemented in GG-E32-API-01, GG-E33-API-01, GG-E34-API-01
