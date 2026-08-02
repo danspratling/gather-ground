@@ -6,7 +6,14 @@
  * `customers` resource.
  */
 
-import type { Customer, LineItem, Money, Order, OrderStatus, OrderSummary } from '../types';
+import type {
+  Customer,
+  LineItem,
+  Money,
+  Order,
+  OrderStatus,
+  OrderSummary,
+} from '../types';
 
 export interface CLAddressLike {
   id?: string;
@@ -66,7 +73,6 @@ export function mapCustomer(clCustomer: CLCustomerLike): Customer {
   };
 }
 
-
 export interface CLLineItemLike {
   id: string;
   sku_code?: string | null;
@@ -112,9 +118,7 @@ function emptyAddress() {
   };
 }
 
-export function mapOrderStatus(
-  status: string | null | undefined
-): OrderStatus {
+export function mapOrderStatus(status: string | null | undefined): OrderStatus {
   switch (status) {
     case 'approved':
     case 'placed':

@@ -57,7 +57,6 @@ export async function getCustomer(token: string): Promise<Customer> {
   return mapCustomer(profile);
 }
 
-
 export async function listOrders(
   token: string,
   page: number = 1

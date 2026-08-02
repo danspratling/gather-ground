@@ -252,4 +252,3 @@ describe('Commerce Layer customer.getOrder', () => {
     expect(order!.lineItems).toHaveLength(0);
   });
 });
-
