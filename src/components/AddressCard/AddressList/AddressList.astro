@@ -1,0 +1,46 @@
+---
+import AddressCard from '@/components/AddressCard/AddressCard.astro';
+import type { AddressListProps } from './AddressList.types';
+
+type Props = AddressListProps;
+
+const { addresses } = Astro.props;
+---
+
+{
+  addresses.length === 0 ? (
+    <p class="text-sm text-brand-600">No saved addresses yet.</p>
+  ) : (
+    <ul
+      class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+      role="list"
+    >
+      {addresses.map((address) => (
+        <li>
+          <AddressCard address={address}>
+            <div slot="actions" class="flex gap-2">
+              <button
+                type="button"
+                data-action="edit-address"
+                data-address-id={address.id}
+                aria-label="Edit address"
+                class="rounded-md px-3 py-1.5 text-sm font-medium text-brand-700 ring-1 ring-brand-100 transition-colors hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-brand-700"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                data-action="delete-address"
+                data-address-id={address.id}
+                aria-label="Delete address"
+                class="rounded-md px-3 py-1.5 text-sm font-medium text-destructive ring-1 ring-gray-200 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-destructive"
+              >
+                Delete
+              </button>
+            </div>
+          </AddressCard>
+        </li>
+      ))}
+    </ul>
+  )
+}
