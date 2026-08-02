@@ -26,7 +26,7 @@ vi.mock('@commercelayer/js-auth', async (importOriginal) => {
     ...actual,
     jwtDecode: () => ({
       header: {},
-      payload: { owner_id: 'cust-me' },
+      payload: { owner: { id: 'cust-me' } },
       signature: '',
     }),
   };

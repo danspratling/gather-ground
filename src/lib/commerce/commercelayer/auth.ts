@@ -223,9 +223,12 @@ export async function refreshSession(
   const { jwtDecode } = await import('@commercelayer/js-auth');
   const decoded = jwtDecode(currentToken);
   const customerId =
-    decoded.payload && 'owner_id' in decoded.payload
-      ? (decoded.payload as { owner_id?: string }).owner_id
-      : undefined;
+    decoded.payload &&
+    'owner' in decoded.payload &&
+    (decoded.payload as { owner?: { id?: string } }).owner?.id;
+  if (!customerId) {
+    throw new Error('Could not determine customer ID from access token');
+  }
   if (!customerId) {
     throw new Error('Could not determine customer ID from access token');
   }
