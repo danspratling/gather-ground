@@ -22,8 +22,30 @@ const PAGES = [
   { path: '/', name: 'home' },
   { path: '/blog', name: 'blog' },
   { path: '/products', name: 'products' },
-  // account/login intentionally sets <meta name="robots" content="noindex">,
-  // which always fails is-crawlable. Omit it from Lighthouse audits.
+  // Account pages all set noindex — skip is-crawlable so the audit doesn't
+  // fail on the intentional SEO exclusion. Dashboard and profile require auth;
+  // Lighthouse will follow the redirect to /account/login and audit that.
+  {
+    path: '/account/login',
+    name: 'account/login',
+    skipAudits: ['is-crawlable'],
+  },
+  {
+    path: '/account/register',
+    name: 'account/register',
+    skipAudits: ['is-crawlable'],
+  },
+  {
+    path: '/account/forgot-password',
+    name: 'account/forgot-password',
+    skipAudits: ['is-crawlable'],
+  },
+  { path: '/account', name: 'account/dashboard', skipAudits: ['is-crawlable'] },
+  {
+    path: '/account/profile',
+    name: 'account/profile',
+    skipAudits: ['is-crawlable'],
+  },
 ];
 
 // All thresholds apply regardless of local vs remote — the preview server is a
@@ -43,7 +65,7 @@ const CHROME_FLAGS = [
   '--disable-dev-shm-usage',
 ];
 
-async function auditPage({ path, name }) {
+async function auditPage({ path, name, skipAudits: pageSkipAudits = [] }) {
   const url = `${BASE_URL}${path}`;
   const chrome = await chromeLauncher.launch({ chromeFlags: CHROME_FLAGS });
 
@@ -53,7 +75,7 @@ async function auditPage({ path, name }) {
       logLevel: 'error',
       output: 'json',
       onlyCategories: Object.keys(THRESHOLDS),
-      skipAudits: isRemote ? ['is-crawlable'] : [],
+      skipAudits: [...(isRemote ? ['is-crawlable'] : []), ...pageSkipAudits],
     };
 
     const runnerResult = await lighthouse(url, flags, desktopConfig);
