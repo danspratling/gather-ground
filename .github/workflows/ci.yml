@@ -156,6 +156,7 @@ jobs:
           SANITY_PROJECT_ID: mrz1ftls
           SANITY_DATASET: production
           SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+          PUBLIC_COMMERCE_ENABLED: 'true'
           CI: 'true'
 
       - name: Wait for dev server
@@ -163,10 +164,10 @@ jobs:
 
       - name: Warm up pages
         run: |
-          curl -sf http://localhost:4321/ -o /dev/null
-          curl -sf http://localhost:4321/blog -o /dev/null
-          curl -sf http://localhost:4321/products -o /dev/null
-          curl -sf http://localhost:4321/account/login -o /dev/null
+          curl -s http://localhost:4321/ -o /dev/null
+          curl -s http://localhost:4321/blog -o /dev/null
+          curl -s http://localhost:4321/products -o /dev/null
+          curl -s http://localhost:4321/account/login -o /dev/null
 
       - name: Lighthouse
         run: node scripts/lighthouse.mjs
