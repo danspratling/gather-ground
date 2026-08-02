@@ -7,7 +7,7 @@ import {
   jsonResponse,
   parseJsonBody,
 } from '@/lib/commerce/apiHelpers';
-import { updateProfile } from '@/lib/commerce/commercelayer/customer';
+import { commerce } from '@/lib/commerce';
 
 export const prerender = false;
 
@@ -56,7 +56,7 @@ export const PATCH: APIRoute = async ({ request, cookies }) => {
   }
 
   try {
-    await updateProfile(session.accessToken, fields);
+    await commerce.updateCustomer(session.accessToken, fields);
   } catch (err) {
     console.error('Profile update failed:', err);
     return jsonResponse(500, {

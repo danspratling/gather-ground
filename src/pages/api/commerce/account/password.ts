@@ -7,7 +7,7 @@ import {
   jsonResponse,
   parseJsonBody,
 } from '@/lib/commerce/apiHelpers';
-import { changePassword } from '@/lib/commerce/commercelayer/customer';
+import { commerce } from '@/lib/commerce';
 
 export const prerender = false;
 
@@ -48,7 +48,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   }
 
   try {
-    await changePassword(session.accessToken, currentPassword, newPassword);
+    await commerce.changePassword(
+      session.accessToken,
+      currentPassword,
+      newPassword
+    );
   } catch (err) {
     if (err instanceof Error && err.message === 'INVALID_CURRENT_PASSWORD') {
       return jsonResponse(422, {
