@@ -132,9 +132,8 @@ jobs:
         run: npm run test-storybook:astro
 
   lighthouse:
-    name: Lighthouse CI
+    name: Lighthouse
     runs-on: ubuntu-latest
-    # Audits the deployed Vercel preview, which only exists for PRs.
     if: github.event_name == 'pull_request'
 
     steps:
@@ -151,37 +150,23 @@ jobs:
         env:
           UNTITLEDUI_TOKEN: ${{ secrets.UNTITLEDUI_TOKEN }}
 
-      - name: Wait for Vercel preview deployment
-        id: vercel
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const sha = context.sha;
-            const maxWaitMs = 600_000;
-            const pollMs = 10_000;
-            const deadline = Date.now() + maxWaitMs;
-            while (Date.now() < deadline) {
-              const { data } = await github.rest.repos.listCommitStatusesForRef({
-                owner, repo, ref: sha, per_page: 100,
-              });
-              const vercel = data.find(s => s.context === 'Vercel' && s.state === 'success');
-              if (vercel?.target_url) {
-                core.setOutput('url', vercel.target_url);
-                console.log(`Vercel preview ready: ${vercel.target_url}`);
-                return;
-              }
-              const failed = data.find(s => s.context === 'Vercel' && s.state === 'failure');
-              if (failed) {
-                core.setFailed('Vercel deployment failed — skipping Lighthouse audit');
-                return;
-              }
-              console.log('Waiting for Vercel status check…');
-              await new Promise(r => setTimeout(r, pollMs));
-            }
-            core.setFailed('Timed out waiting for Vercel preview deployment');
-
-      - name: Lighthouse CI
-        run: npx @lhci/cli autorun
+      - name: Start dev server
+        run: npm run dev -- --port 4321 &
         env:
-          LHCI_BASE_URL: ${{ steps.vercel.outputs.url }}
+          SANITY_PROJECT_ID: mrz1ftls
+          SANITY_DATASET: production
+          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+          CI: 'true'
+
+      - name: Wait for dev server
+        run: npx --yes wait-on http://localhost:4321 --timeout 120000
+
+      - name: Warm up pages
+        run: |
+          curl -sf http://localhost:4321/ -o /dev/null
+          curl -sf http://localhost:4321/blog -o /dev/null
+          curl -sf http://localhost:4321/products -o /dev/null
+          curl -sf http://localhost:4321/account/login -o /dev/null
+
+      - name: Lighthouse
+        run: node scripts/lighthouse.mjs
