@@ -252,3 +252,197 @@ describe('Commerce Layer customer.getOrder', () => {
     expect(order!.lineItems).toHaveLength(0);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Address CRUD tests
+// ---------------------------------------------------------------------------
+
+const mockAddressAttrs = () => ({
+  first_name: 'Jane',
+  last_name: 'Doe',
+  line_1: '123 Main St',
+  line_2: null,
+  city: 'London',
+  state_code: null,
+  zip_code: 'SW1A 1AA',
+  country_code: 'GB',
+  phone: null,
+});
+
+const mockCustomerAddressResource = (
+  customerAddressId: string,
+  addrId: string
+) => ({
+  id: customerAddressId,
+  type: 'customer_addresses',
+  attributes: {},
+  relationships: {
+    address: { data: { type: 'addresses', id: addrId } },
+  },
+});
+
+describe('Commerce Layer customer.listAddresses', () => {
+  it('returns mapped addresses for the customer', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/customer_addresses`, () =>
+        HttpResponse.json({
+          data: [
+            {
+              id: 'ca-1',
+              type: 'customer_addresses',
+              attributes: {},
+              relationships: {
+                address: { data: { type: 'addresses', id: 'addr-1' } },
+              },
+            },
+          ],
+          included: [
+            {
+              id: 'addr-1',
+              type: 'addresses',
+              attributes: mockAddressAttrs(),
+            },
+          ],
+        })
+      )
+    );
+
+    const result = await customerAdapter.listAddresses('cust-token');
+
+    expect(result).toHaveLength(1);
+    expect(result[0]?.firstName).toBe('Jane');
+    expect(result[0]?.lastName).toBe('Doe');
+    expect(result[0]?.city).toBe('London');
+    expect(result[0]?.postalCode).toBe('SW1A 1AA');
+    expect(result[0]?.country).toBe('GB');
+  });
+
+  it('returns an empty array when the customer has no addresses', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/customer_addresses`, () =>
+        HttpResponse.json({ data: [] })
+      )
+    );
+
+    const result = await customerAdapter.listAddresses('cust-token');
+    expect(result).toEqual([]);
+  });
+});
+
+describe('Commerce Layer customer.createAddress', () => {
+  it('creates address and customer_address link and returns mapped address', async () => {
+    server.use(
+      http.post(`${mockApiUrl}/addresses`, () =>
+        HttpResponse.json({
+          data: {
+            id: 'addr-new',
+            type: 'addresses',
+            attributes: mockAddressAttrs(),
+          },
+        })
+      ),
+      http.post(`${mockApiUrl}/customer_addresses`, () =>
+        HttpResponse.json({
+          data: {
+            id: 'ca-new',
+            type: 'customer_addresses',
+            attributes: {},
+          },
+        })
+      )
+    );
+
+    const result = await customerAdapter.createAddress('cust-token', {
+      firstName: 'Jane',
+      lastName: 'Doe',
+      line1: '123 Main St',
+      city: 'London',
+      postalCode: 'SW1A 1AA',
+      country: 'GB',
+    });
+
+    expect(result.firstName).toBe('Jane');
+    expect(result.lastName).toBe('Doe');
+    expect(result.city).toBe('London');
+  });
+});
+
+describe('Commerce Layer customer.updateAddress', () => {
+  it('patches the address resource and returns the updated address', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/addresses/addr-1`, () =>
+        HttpResponse.json({
+          data: {
+            id: 'addr-1',
+            type: 'addresses',
+            attributes: { ...mockAddressAttrs(), city: 'Manchester' },
+          },
+        })
+      )
+    );
+
+    const result = await customerAdapter.updateAddress('cust-token', 'addr-1', {
+      city: 'Manchester',
+    });
+
+    expect(result.city).toBe('Manchester');
+  });
+});
+
+describe('Commerce Layer customer.deleteAddress', () => {
+  it('deletes the customer_address join record', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/customer_addresses`, () =>
+        HttpResponse.json({
+          data: [mockCustomerAddressResource('ca-1', 'addr-1')],
+        })
+      ),
+      http.delete(
+        `${mockApiUrl}/customer_addresses/ca-1`,
+        () => new HttpResponse(null, { status: 204 })
+      )
+    );
+
+    await expect(
+      customerAdapter.deleteAddress('cust-token', 'addr-1')
+    ).resolves.toBeUndefined();
+  });
+
+  it('throws when the address is not found', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/customer_addresses`, () =>
+        HttpResponse.json({ data: [] })
+      )
+    );
+
+    await expect(
+      customerAdapter.deleteAddress('cust-token', 'addr-missing')
+    ).rejects.toThrow(/not found/i);
+  });
+});
+
+describe('Commerce Layer customer.setDefaultAddress', () => {
+  it('updates the customer with default_shipping_address', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json({ data: { id: 'cust-me', type: 'customers' } })
+      )
+    );
+
+    await expect(
+      customerAdapter.setDefaultAddress('cust-token', 'addr-1', 'shipping')
+    ).resolves.toBeUndefined();
+  });
+
+  it('updates the customer with default_billing_address', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json({ data: { id: 'cust-me', type: 'customers' } })
+      )
+    );
+
+    await expect(
+      customerAdapter.setDefaultAddress('cust-token', 'addr-1', 'billing')
+    ).resolves.toBeUndefined();
+  });
+});
