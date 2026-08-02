@@ -1,0 +1,21 @@
+---
+import type { OrderStatusBadgeProps } from './OrderStatusBadge.types';
+import Badge from '@/components/Badge/Badge.astro';
+
+type Props = OrderStatusBadgeProps;
+const { status } = Astro.props;
+
+const statusMap: Record<
+  OrderStatusBadgeProps['status'],
+  { label: string; color: 'blue' | 'brand' | 'success' | 'error' }
+> = {
+  placed: { label: 'Placed', color: 'blue' },
+  approved: { label: 'Approved', color: 'brand' },
+  fulfilled: { label: 'Fulfilled', color: 'success' },
+  cancelled: { label: 'Cancelled', color: 'error' },
+};
+
+const { label, color } = statusMap[status];
+---
+
+<Badge label={label} color={color} size="sm" />
