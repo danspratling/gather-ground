@@ -132,7 +132,7 @@ export default function LoginForm({ redirectTo }: LoginFormProps) {
             </span>
           </label>
           <a
-            href="/account/password-reset"
+            href="/account/forgot-password"
             className="text-sm font-medium text-brand-700 underline underline-offset-2 hover:no-underline"
           >
             Forgot password?
