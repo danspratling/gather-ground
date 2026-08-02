@@ -44,7 +44,7 @@ export default function CartTrigger({
       {itemCount > 0 && (
         <span
           aria-hidden="true"
-          className="absolute right-0.5 top-0.5 isolate min-w-[1.125rem] px-1 text-center text-[10px] font-semibold leading-none text-off-white before:absolute before:inset-x-0 before:-inset-y-[3px] before:-z-10 before:rounded-full before:bg-terracotta-500 before:content-['']"
+          className="absolute right-0.5 top-0.5 isolate min-w-[1.125rem] px-1 text-center text-[10px] font-semibold leading-none text-off-white before:absolute before:inset-x-0 before:top-1/2 before:-z-10 before:h-[140%] before:-translate-y-[44%] before:rounded-full before:bg-terracotta-500 before:content-['']"
         >
           {itemCount > 99 ? '99+' : itemCount}
         </span>
