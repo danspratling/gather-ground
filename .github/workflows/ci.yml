@@ -132,9 +132,8 @@ jobs:
         run: npm run test-storybook:astro
 
   lighthouse:
-    name: Lighthouse CI
+    name: Lighthouse
     runs-on: ubuntu-latest
-    # Audits the deployed Vercel preview, which only exists for PRs.
     if: github.event_name == 'pull_request'
 
     steps:
@@ -151,14 +150,21 @@ jobs:
         env:
           UNTITLEDUI_TOKEN: ${{ secrets.UNTITLEDUI_TOKEN }}
 
-      - name: Wait for Vercel preview deployment
-        id: vercel
-        uses: patrickedqvist/wait-for-vercel-preview@v1.3.2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 600
-
-      - name: Lighthouse CI
-        run: npx @lhci/cli autorun
+      - name: Build (node adapter)
+        run: npm run build
         env:
-          LHCI_BASE_URL: ${{ steps.vercel.outputs.url }}
+          SANITY_PROJECT_ID: mrz1ftls
+          SANITY_DATASET: production
+          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+          PUBLIC_COMMERCE_ENABLED: 'true'
+          CI_LIGHTHOUSE: 'true'
+          CI: 'true'
+
+      - name: Start preview server
+        run: PORT=4321 node dist/server/entry.mjs &
+
+      - name: Wait for preview server
+        run: npx --yes wait-on http://localhost:4321 --timeout 60000
+
+      - name: Lighthouse
+        run: node scripts/lighthouse.mjs

@@ -3,6 +3,11 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import sanity from '@sanity/astro';
 import vercel from '@astrojs/vercel';
+// @astrojs/node is only loaded for Lighthouse CI builds — importing it
+// unconditionally registers adapter hooks that break the Storybook container.
+const node = process.env.CI_LIGHTHOUSE
+  ? (await import('@astrojs/node')).default
+  : null;
 import { loadEnv } from 'vite';
 import path from 'node:path';
 import mkcert from 'vite-plugin-mkcert';
@@ -15,11 +20,11 @@ const env = loadEnv('', process.cwd(), ['SANITY', 'PUBLIC_SANITY']);
 export default defineConfig({
   site: 'https://gatherground.co.uk',
   output: 'server',
-  adapter: vercel({
-    webAnalytics: {
-      enabled: true,
-    },
-  }),
+  // Use the Node.js standalone adapter in CI for Lighthouse so we can build
+  // and run `astro preview` locally without needing a Vercel deployment.
+  adapter: process.env.CI_LIGHTHOUSE
+    ? node({ mode: 'standalone' })
+    : vercel({ webAnalytics: { enabled: true } }),
   // Disable the Astro dev toolbar in CI — its audit hooks log a noisy
   // `TypeError: Failed to fetch` error to the console under Playwright's
   // headless Chromium, which trips the `no console errors on load` assertions.
