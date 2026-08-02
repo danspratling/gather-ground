@@ -1,3 +1,10 @@
 {
-  "buildCommand": "IS_STORYBOOK_BUILD=true npm run build-storybook && mkdir -p public/storybook && cp -r storybook-static/. public/storybook && npm run build"
+  "buildCommand": "IS_STORYBOOK_BUILD=true npm run build-storybook && mkdir -p public/storybook && cp -r storybook-static/. public/storybook && npm run build",
+  "redirects": [
+    {
+      "source": "/storybook",
+      "destination": "/storybook/",
+      "permanent": false
+    }
+  ]
 }
