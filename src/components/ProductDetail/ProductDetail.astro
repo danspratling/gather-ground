@@ -20,10 +20,13 @@ const defaultVariant =
   variants.find((v) => v.id === selectedVariantId) ?? variants[0];
 const initialPrice = defaultVariant?.price.formatted ?? '';
 const initialVariantId = defaultVariant?.id ?? '';
-const initialInventoryStatus = defaultVariant?.inventoryStatus ?? 'out_of_stock';
+const initialInventoryStatus =
+  defaultVariant?.inventoryStatus ?? 'out_of_stock';
 ---
 
-<div class:list={['grid grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-12', className]}>
+<div
+  class:list={['grid grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-12', className]}
+>
   {/* Image area — full width on mobile, 60% (3 of 5 columns) on desktop */}
   <div class="lg:col-span-3">
     {
@@ -53,17 +56,10 @@ const initialInventoryStatus = defaultVariant?.inventoryStatus ?? 'out_of_stock'
       >
         {title}
       </h1>
-      {
-        description && (
-          <p class="text-base text-brand-500">{description}</p>
-        )
-      }
+      {description && <p class="text-base text-brand-500">{description}</p>}
     </div>
 
-    <p
-      id="product-price"
-      class="text-display-xs font-semibold text-brand-900"
-    >
+    <p id="product-price" class="text-display-xs font-semibold text-brand-900">
       {initialPrice}
     </p>
 
