@@ -131,7 +131,12 @@ export default function AddressForm({
   const submitting = status === 'submitting';
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-4"
+      aria-label={addressId ? 'Edit address' : 'Add new address'}
+      noValidate
+    >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="address-firstName" className={labelClasses}>
@@ -364,27 +369,34 @@ export default function AddressForm({
         />
       </div>
 
-      <div className="flex flex-col gap-3">
-        <label className="flex cursor-pointer items-center gap-2.5">
-          <input
-            name="isDefaultShipping"
-            type="checkbox"
-            defaultChecked={initialValues?.isDefaultShipping ?? false}
-            className="h-4 w-4 rounded border-brand-100 accent-brand-700"
-          />
-          <span className={labelClasses}>Set as default shipping address</span>
-        </label>
+      <fieldset className="m-0 border-0 p-0">
+        <legend className="sr-only">Address defaults</legend>
+        <div className="flex flex-col gap-3">
+          <label className="flex cursor-pointer items-center gap-2.5">
+            <input
+              id="address-isDefaultShipping"
+              name="isDefaultShipping"
+              type="checkbox"
+              defaultChecked={initialValues?.isDefaultShipping ?? false}
+              className="h-4 w-4 rounded border-brand-100 accent-brand-700"
+            />
+            <span className={labelClasses}>
+              Set as default shipping address
+            </span>
+          </label>
 
-        <label className="flex cursor-pointer items-center gap-2.5">
-          <input
-            name="isDefaultBilling"
-            type="checkbox"
-            defaultChecked={initialValues?.isDefaultBilling ?? false}
-            className="h-4 w-4 rounded border-brand-100 accent-brand-700"
-          />
-          <span className={labelClasses}>Set as default billing address</span>
-        </label>
-      </div>
+          <label className="flex cursor-pointer items-center gap-2.5">
+            <input
+              id="address-isDefaultBilling"
+              name="isDefaultBilling"
+              type="checkbox"
+              defaultChecked={initialValues?.isDefaultBilling ?? false}
+              className="h-4 w-4 rounded border-brand-100 accent-brand-700"
+            />
+            <span className={labelClasses}>Set as default billing address</span>
+          </label>
+        </div>
+      </fieldset>
 
       {formError && (
         <p role="alert" className="text-sm text-destructive">
