@@ -1,1 +1,3 @@
-{}
+{
+  "buildCommand": "npm run build && IS_STORYBOOK_BUILD=true npm run build-storybook && mkdir -p .vercel/output/static/storybook && cp -r storybook-static/. .vercel/output/static/storybook"
+}
