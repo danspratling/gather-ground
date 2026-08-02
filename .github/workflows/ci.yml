@@ -153,10 +153,33 @@ jobs:
 
       - name: Wait for Vercel preview deployment
         id: vercel
-        uses: patrickedqvist/wait-for-vercel-preview@v1.3.2
+        uses: actions/github-script@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 600
+          script: |
+            const { owner, repo } = context.repo;
+            const sha = context.sha;
+            const maxWaitMs = 600_000;
+            const pollMs = 10_000;
+            const deadline = Date.now() + maxWaitMs;
+            while (Date.now() < deadline) {
+              const { data } = await github.rest.repos.listCommitStatusesForRef({
+                owner, repo, ref: sha, per_page: 100,
+              });
+              const vercel = data.find(s => s.context === 'Vercel' && s.state === 'success');
+              if (vercel?.target_url) {
+                core.setOutput('url', vercel.target_url);
+                console.log(`Vercel preview ready: ${vercel.target_url}`);
+                return;
+              }
+              const failed = data.find(s => s.context === 'Vercel' && s.state === 'failure');
+              if (failed) {
+                core.setFailed('Vercel deployment failed — skipping Lighthouse audit');
+                return;
+              }
+              console.log('Waiting for Vercel status check…');
+              await new Promise(r => setTimeout(r, pollMs));
+            }
+            core.setFailed('Timed out waiting for Vercel preview deployment');
 
       - name: Lighthouse CI
         run: npx @lhci/cli autorun
