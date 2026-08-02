@@ -2,7 +2,7 @@
  * Lighthouse audit script — replaces @lhci/cli.
  *
  * Runs all pages sequentially using the lighthouse Node API + chrome-launcher.
- * Intended for CI (against astro dev) and local developer feedback.
+ * Intended for CI (against astro preview with @astrojs/node) and local developer feedback.
  *
  * Usage:
  *   node scripts/lighthouse.mjs                    # local dev server on :4321
@@ -25,13 +25,14 @@ const PAGES = [
   { path: '/account/login', name: 'account-login' },
 ];
 
-// Performance scores are unreliable on a dev server (no minification, HMR injection).
-// SEO score of 1.0 requires fully-populated Sanity content; relax for local runs.
-// Only enforce stricter thresholds when auditing a remote/production URL.
+// All thresholds apply regardless of local vs remote — the preview server is a
+// real production build, so scores are comparable to production.
 const THRESHOLDS = {
-  ...(isRemote ? { performance: 0.9 } : {}),
+  performance: 0.9,
   accessibility: 0.9,
   'best-practices': 0.95,
+  // When BASE_URL is set (remote/preview URL) the page may be behind a CDN that
+  // blocks crawlers, so skip the is-crawlable audit in that context only.
   seo: isRemote ? 1 : 0.9,
 };
 
