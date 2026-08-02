@@ -10,8 +10,12 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('account page — unauthenticated', () => {
-  test('redirects to login when not signed in', async ({ page }) => {
-    await page.goto('/account');
-    expect(page.url()).toContain('/account/login');
+  test('is not accessible when not signed in', async ({ page }) => {
+    const response = await page.goto('/account');
+    // Commerce enabled + no session → middleware redirects to /account/login
+    // Commerce disabled → middleware rewrites to 404 (URL stays at /account)
+    const redirectedToLogin = page.url().includes('/account/login');
+    const commerceOff = response?.status() === 404;
+    expect(redirectedToLogin || commerceOff).toBe(true);
   });
 });

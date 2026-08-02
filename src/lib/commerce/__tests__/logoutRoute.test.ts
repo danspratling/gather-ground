@@ -75,17 +75,19 @@ describe('POST /api/commerce/auth/logout', () => {
 
     const response = await POST(ctx);
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(302);
+    expect(response.headers.get('Location')).toBe('/');
     expect(ctx.cookies.get(SESSION_COOKIE_NAME)).toBeUndefined();
     expect(logoutMock).toHaveBeenCalledTimes(1);
     expect(logoutMock).toHaveBeenCalledWith(sessionFixture.accessToken);
   });
 
-  it('returns 200 and clears cookie even when there is no session', async () => {
+  it('redirects to homepage and clears cookie even when there is no session', async () => {
     const ctx = makeCtx();
     const response = await POST(ctx);
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(302);
+    expect(response.headers.get('Location')).toBe('/');
     expect(logoutMock).not.toHaveBeenCalled();
     expect(await getSession(ctx.cookies)).toBeNull();
   });
@@ -97,7 +99,8 @@ describe('POST /api/commerce/auth/logout', () => {
 
     const response = await POST(ctx);
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(302);
+    expect(response.headers.get('Location')).toBe('/');
     expect(ctx.cookies.get(SESSION_COOKIE_NAME)).toBeUndefined();
   });
 });
