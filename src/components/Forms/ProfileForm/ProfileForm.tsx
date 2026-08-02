@@ -50,7 +50,7 @@ export default function ProfileForm({ initialValues }: ProfileFormProps) {
   const submitting = status === 'submitting';
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
+    <form onSubmit={handleSubmit} className="flex w-full min-w-80 flex-col gap-6" noValidate>
       {formError && (
         <div
           role="alert"
