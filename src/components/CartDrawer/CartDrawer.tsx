@@ -26,7 +26,9 @@ function EmptyCart() {
         </svg>
       </span>
       <div className="flex flex-col gap-2">
-        <p className="text-xl font-semibold text-brand-700">Your cart is empty</p>
+        <p className="text-xl font-semibold text-brand-700">
+          Your cart is empty
+        </p>
         <p className="max-w-xs text-sm text-brand-500">
           Looks like you haven&apos;t added anything yet.
         </p>
