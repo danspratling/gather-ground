@@ -19,7 +19,7 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['category', 'image-link'],
+      options: ['category', 'image-link', 'commerce'],
     },
   },
 };
@@ -76,5 +76,67 @@ export const CategoryNoDescription = {
     imageAlt: 'Free-range eggs',
     title: 'Eggs',
     href: '/products/eggs',
+  },
+};
+
+export const CommerceVariant = {
+  args: {
+    variant: 'commerce' as const,
+    image:
+      'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=600&q=80',
+    imageAlt: 'Grass-fed lamb shoulder',
+    title: 'Lamb Shoulder',
+    href: '/products/lamb-shoulder',
+    price: '£14.99',
+    compareAtPrice: '£19.99',
+    inventoryStatus: 'in_stock' as const,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=18580-6378',
+    },
+    chromatic: { viewports: [375, 1440] },
+  },
+};
+
+export const CommerceVariantLowStock = {
+  args: {
+    variant: 'commerce' as const,
+    image:
+      'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=600&q=80',
+    imageAlt: 'Grass-fed lamb shoulder',
+    title: 'Lamb Shoulder',
+    href: '/products/lamb-shoulder',
+    price: '£14.99',
+    compareAtPrice: '£19.99',
+    inventoryStatus: 'low_stock' as const,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=18580-6378',
+    },
+    chromatic: { viewports: [375, 1440] },
+  },
+};
+
+export const CommerceVariantOOS = {
+  args: {
+    variant: 'commerce' as const,
+    image:
+      'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=600&q=80',
+    imageAlt: 'Grass-fed lamb shoulder',
+    title: 'Lamb Shoulder',
+    href: '/products/lamb-shoulder',
+    price: '£14.99',
+    inventoryStatus: 'out_of_stock' as const,
+  },
+  parameters: {
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=18580-6378',
+    },
+    chromatic: { viewports: [375, 1440] },
   },
 };

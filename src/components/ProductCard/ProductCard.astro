@@ -1,6 +1,7 @@
 ---
 import type { ProductCardProps } from '@/components/ProductCard/ProductCard.types';
 import ProductCardCategory from '@/components/ProductCard/ProductCardCategory.astro';
+import ProductCardCommerce from '@/components/ProductCard/ProductCardCommerce.astro';
 import ProductCardImageLink from '@/components/ProductCard/ProductCardImageLink.astro';
 
 type Props = ProductCardProps;
@@ -11,6 +12,8 @@ const { variant, ...rest } = Astro.props;
 {
   variant === 'category' ? (
     <ProductCardCategory {...rest} />
+  ) : variant === 'commerce' ? (
+    <ProductCardCommerce {...rest} />
   ) : (
     <ProductCardImageLink {...rest} />
   )
