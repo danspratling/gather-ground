@@ -55,13 +55,16 @@ export const commerceLayerAdapter: CommerceAdapter = {
 
   getCustomer: customer.getCustomer,
 
-  updateCustomer: async () => {
-    throw new Error('Not yet implemented (GG-E34-API-01)');
+  updateCustomer: async (token, updates) => {
+    await customer.updateProfile(token, {
+      firstName: updates.firstName,
+      lastName: updates.lastName,
+      email: updates.email,
+    });
+    return customer.getCustomer(token);
   },
 
-  changePassword: async () => {
-    throw new Error('Not yet implemented (GG-E34-API-01)');
-  },
+  changePassword: customer.changePassword,
 
   listAddresses: customer.listAddresses,
 

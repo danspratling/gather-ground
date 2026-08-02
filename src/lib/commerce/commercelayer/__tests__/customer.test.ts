@@ -446,3 +446,119 @@ describe('Commerce Layer customer.setDefaultAddress', () => {
     ).resolves.toBeUndefined();
   });
 });
+
+describe('Commerce Layer customer.updateProfile', () => {
+  it('throws when no token is provided', async () => {
+    await expect(
+      customerAdapter.updateProfile('', { firstName: 'New' })
+    ).rejects.toThrow(/Token required/);
+  });
+
+  it('resolves when CL accepts the profile update', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json({ data: { id: 'cust-me', type: 'customers' } })
+      )
+    );
+
+    await expect(
+      customerAdapter.updateProfile('cust-token', { email: 'new@example.com' })
+    ).resolves.toBeUndefined();
+  });
+
+  it('sends metadata for firstName and lastName fields', async () => {
+    let capturedBody: unknown = null;
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, async ({ request }) => {
+        capturedBody = await request.json();
+        return HttpResponse.json({
+          data: { id: 'cust-me', type: 'customers' },
+        });
+      })
+    );
+
+    await customerAdapter.updateProfile('cust-token', {
+      firstName: 'Updated',
+      lastName: 'Name',
+    });
+
+    const body = capturedBody as {
+      data: { attributes: { metadata: Record<string, string> } };
+    };
+    expect(body?.data?.attributes?.metadata?.first_name).toBe('Updated');
+    expect(body?.data?.attributes?.metadata?.last_name).toBe('Name');
+  });
+
+  it('throws on CL API error', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json(
+          { errors: [{ status: '500', detail: 'Internal error' }] },
+          { status: 500 }
+        )
+      )
+    );
+
+    await expect(
+      customerAdapter.updateProfile('cust-token', { firstName: 'X' })
+    ).rejects.toThrow();
+  });
+});
+
+describe('Commerce Layer customer.changePassword', () => {
+  it('throws when no token is provided', async () => {
+    await expect(
+      customerAdapter.changePassword('', 'old', 'new')
+    ).rejects.toThrow(/Token required/);
+  });
+
+  it('resolves when CL accepts the password change', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json({ data: { id: 'cust-me', type: 'customers' } })
+      )
+    );
+
+    await expect(
+      customerAdapter.changePassword('cust-token', 'oldPass1', 'newPass1')
+    ).resolves.toBeUndefined();
+  });
+
+  it('throws INVALID_CURRENT_PASSWORD when CL returns 422', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json(
+          {
+            errors: [
+              {
+                status: '422',
+                code: 'VALIDATION_ERROR',
+                detail: 'Current password is not valid',
+              },
+            ],
+          },
+          { status: 422 }
+        )
+      )
+    );
+
+    await expect(
+      customerAdapter.changePassword('cust-token', 'wrongPass', 'newPass1')
+    ).rejects.toThrow('INVALID_CURRENT_PASSWORD');
+  });
+
+  it('re-throws non-422 CL errors', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json(
+          { errors: [{ status: '500', detail: 'Internal error' }] },
+          { status: 500 }
+        )
+      )
+    );
+
+    await expect(
+      customerAdapter.changePassword('cust-token', 'old', 'new')
+    ).rejects.toThrow();
+  });
+});
