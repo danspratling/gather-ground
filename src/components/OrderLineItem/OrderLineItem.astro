@@ -1,0 +1,60 @@
+---
+import type { OrderLineItemProps } from './OrderLineItem.types';
+
+type Props = OrderLineItemProps;
+const {
+  name,
+  variantDescription,
+  imageUrl,
+  imageAlt,
+  unitPriceFormatted,
+  quantity,
+  lineTotalFormatted,
+} = Astro.props;
+---
+
+<div class="flex items-start gap-4 py-4">
+  <!-- Product image -->
+  <div
+    class="h-16 w-16 shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-100"
+  >
+    {
+      imageUrl ? (
+        <img
+          src={imageUrl}
+          alt={imageAlt ?? name}
+          class="h-full w-full object-cover"
+          loading="lazy"
+        />
+      ) : (
+        <div
+          class="flex h-full w-full items-center justify-center text-xs text-gray-800"
+          aria-hidden="true"
+        >
+          No image
+        </div>
+      )
+    }
+  </div>
+
+  <!-- Product info -->
+  <div class="flex min-w-0 flex-1 flex-col gap-1">
+    <p class="truncate text-sm font-medium text-brand-900">{name}</p>
+    {
+      variantDescription && (
+        <p class="text-xs text-gray-800">{variantDescription}</p>
+      )
+    }
+    <p class="text-xs text-gray-800">Qty: {quantity}</p>
+  </div>
+
+  <!-- Pricing -->
+  <div class="shrink-0 text-right">
+    <p class="text-sm font-semibold text-brand-900">{lineTotalFormatted}</p>
+    {
+      quantity > 1 && (
+        <p class="text-xs text-gray-800">{unitPriceFormatted} each</p>
+      )
+    }
+  </div>
+</div>
