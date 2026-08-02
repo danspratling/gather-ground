@@ -174,4 +174,64 @@ export async function setDefaultAddress(
   ).update({ id: customerId, [field]: { type: 'addresses', id: addressId } });
 }
 
+// ---------------------------------------------------------------------------
+// Profile + password management
+// ---------------------------------------------------------------------------
+
+/**
+ * Update firstName, lastName, and/or email for the authenticated customer.
+ * firstName/lastName are stored in CL's metadata; email is a direct attribute.
+ */
+export async function updateProfile(
+  token: string,
+  fields: { firstName?: string; lastName?: string; email?: string }
+): Promise<void> {
+  if (!token) throw new Error('Token required to update profile');
+  const customerId = extractCustomerId(token);
+  const client = getCustomerClient(token);
+  const attrs: Record<string, unknown> = { id: customerId };
+  const metadata: Record<string, string> = {};
+  if (fields.firstName !== undefined) metadata.first_name = fields.firstName;
+  if (fields.lastName !== undefined) metadata.last_name = fields.lastName;
+  if (Object.keys(metadata).length > 0) attrs.metadata = metadata;
+  if (fields.email !== undefined) attrs.email = fields.email;
+  await (
+    client.customers as unknown as {
+      update: (attrs: Record<string, unknown>) => Promise<unknown>;
+    }
+  ).update(attrs);
+}
+
+/**
+ * Change the password for the authenticated customer.
+ * Throws `Error('INVALID_CURRENT_PASSWORD')` when CL rejects the current password (422).
+ */
+export async function changePassword(
+  token: string,
+  currentPassword: string,
+  newPassword: string
+): Promise<void> {
+  if (!token) throw new Error('Token required to change password');
+  const customerId = extractCustomerId(token);
+  const client = getCustomerClient(token);
+  try {
+    await (
+      client.customers as unknown as {
+        update: (attrs: Record<string, unknown>) => Promise<unknown>;
+      }
+    ).update({
+      id: customerId,
+      password: newPassword,
+      current_password: currentPassword,
+    });
+  } catch (err) {
+    // CL SDK's ApiError exposes `status` as a number; 422 = invalid current password
+    const maybeStatus = (err as { status?: number })?.status;
+    if (maybeStatus === 422) {
+      throw new Error('INVALID_CURRENT_PASSWORD');
+    }
+    throw err;
+  }
+}
+
 export default null;
