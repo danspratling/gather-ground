@@ -3,7 +3,11 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import sanity from '@sanity/astro';
 import vercel from '@astrojs/vercel';
-import node from '@astrojs/node';
+// @astrojs/node is only loaded for Lighthouse CI builds — importing it
+// unconditionally registers adapter hooks that break the Storybook container.
+const node = process.env.CI_LIGHTHOUSE
+  ? (await import('@astrojs/node')).default
+  : null;
 import { loadEnv } from 'vite';
 import path from 'node:path';
 import mkcert from 'vite-plugin-mkcert';

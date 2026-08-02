@@ -22,7 +22,8 @@ const PAGES = [
   { path: '/', name: 'home' },
   { path: '/blog', name: 'blog' },
   { path: '/products', name: 'products' },
-  { path: '/account/login', name: 'account-login' },
+  // account/login intentionally sets <meta name="robots" content="noindex">,
+  // which always fails is-crawlable. Omit it from Lighthouse audits.
 ];
 
 // All thresholds apply regardless of local vs remote — the preview server is a
@@ -63,7 +64,9 @@ async function auditPage({ path, name }) {
 }
 
 // Run pages sequentially — parallel Chrome instances exhaust CI runner resources.
-console.log(`Auditing ${PAGES.length} pages sequentially against ${BASE_URL}…\n`);
+console.log(
+  `Auditing ${PAGES.length} pages sequentially against ${BASE_URL}…\n`
+);
 
 const results = [];
 for (const page of PAGES) {
