@@ -49,7 +49,7 @@ export default function AddToCartButton({
             readOnly
             aria-label="Quantity"
             disabled={isOOS}
-            className="h-10 w-12 border-x border-secondary-400 bg-transparent text-center text-sm font-medium text-gray-900 disabled:opacity-40"
+            className="h-10 w-12 appearance-none border-x border-secondary-400 bg-transparent text-center text-sm font-medium text-gray-900 disabled:opacity-40"
           />
           <button
             type="button"
