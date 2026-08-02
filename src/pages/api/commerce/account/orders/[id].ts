@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { hydrateSession } from '@/lib/commerce/sessionHydrate';
 import { jsonResponse } from '@/lib/commerce/apiHelpers';
-import { getOrder } from '@/lib/commerce/commercelayer/customer';
+import { getOrder } from '@/lib/commerce';
 
 export const prerender = false;
 
@@ -34,6 +34,9 @@ export const GET: APIRoute = async ({ cookies, params }) => {
     return jsonResponse(200, { success: true, order });
   } catch (err) {
     console.error('Failed to fetch order:', err);
-    return jsonResponse(500, { success: false, error: 'Failed to fetch order' });
+    return jsonResponse(500, {
+      success: false,
+      error: 'Failed to fetch order',
+    });
   }
 };
