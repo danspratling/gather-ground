@@ -16,13 +16,15 @@ export default function QuantityStepper({
   const clamp = (n: number) => Math.min(Math.max(n, min), max);
 
   const handleDecrement = () => {
-    const next = clamp(value - 1);
+    const current = parseInt(inputValue, 10);
+    const next = clamp(Number.isNaN(current) ? min : current - 1);
     setInputValue(String(next));
     onChange(next);
   };
 
   const handleIncrement = () => {
-    const next = clamp(value + 1);
+    const current = parseInt(inputValue, 10);
+    const next = clamp(Number.isNaN(current) ? min : current + 1);
     setInputValue(String(next));
     onChange(next);
   };
@@ -50,7 +52,7 @@ export default function QuantityStepper({
         type="button"
         aria-label="Decrease quantity"
         onClick={handleDecrement}
-        disabled={disabled || value <= min}
+        disabled={disabled || parseInt(inputValue, 10) <= min}
         className="flex size-9 cursor-pointer items-center justify-center rounded-l-lg text-brand-700 transition-colors hover:bg-brand-50 disabled:cursor-not-allowed disabled:text-brand-300"
       >
         <Minus className="size-4" aria-hidden="true" />
@@ -73,7 +75,7 @@ export default function QuantityStepper({
         type="button"
         aria-label="Increase quantity"
         onClick={handleIncrement}
-        disabled={disabled || value >= max}
+        disabled={disabled || parseInt(inputValue, 10) >= max}
         className="flex size-9 cursor-pointer items-center justify-center rounded-r-lg text-brand-700 transition-colors hover:bg-brand-50 disabled:cursor-not-allowed disabled:text-brand-300"
       >
         <Plus className="size-4" aria-hidden="true" />
