@@ -1,5 +1,7 @@
 ---
 import AnnouncementBanner from '@/components/AnnouncementBanner/AnnouncementBanner.astro';
+import AccountCartPanel from '@/components/AccountCartPanel/AccountCartPanel';
+import CartTriggerPlaceholder from '@/components/CartTrigger/CartTriggerPlaceholder';
 import CookieBanner from '@/components/CookieBanner/CookieBanner';
 import Clarity from '@/components/Analytics/Clarity.astro';
 import Footer from '@/components/Layout/Footer/Footer.astro';
@@ -110,6 +112,7 @@ const organizationSD = buildOrganization(
 const resolvedPageUrl =
   canonicalUrl || new URL(Astro.url.pathname, siteUrl).toString();
 const commerceEnabled = isCommerceEnabled();
+const customer = Astro.locals.customer;
 const webPageSD = buildWebPage({
   title: seoTitle,
   description: seoDescription,
@@ -244,7 +247,22 @@ const footerProps = {
           />
         )
     }
-    <Header {...headerProps} showCommerceSlots={commerceEnabled} />
+    <Header {...headerProps} showCommerceSlots={commerceEnabled}>
+      {
+        commerceEnabled && customer && (
+          <AccountCartPanel
+            slot="commerce-account"
+            client:visible
+            customer={customer}
+          />
+        )
+      }
+      {
+        commerceEnabled && (
+          <CartTriggerPlaceholder slot="commerce-cart" client:visible />
+        )
+      }
+    </Header>
     <slot />
     <Footer {...footerProps} />
     {/* body-end: cookie banner, analytics */}
