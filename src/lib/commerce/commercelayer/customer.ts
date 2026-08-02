@@ -7,9 +7,16 @@
  */
 
 import { jwtDecode } from '@commercelayer/js-auth';
-import type { Customer } from '../types';
+import type { Customer, Order, OrderSummary } from '../types';
 import { getCustomerClient } from './client';
-import { mapCustomer, type CLCustomerLike } from './customerMappers';
+import {
+  mapCustomer,
+  mapOrderDetail,
+  mapOrderSummary,
+  type CLCustomerLike,
+  type CLOrderDetailLike,
+  type CLOrderLike,
+} from './customerMappers';
 
 /**
  * Fetch the authenticated customer's profile using their access token.
@@ -50,4 +57,74 @@ export async function getCustomer(token: string): Promise<Customer> {
   return mapCustomer(profile);
 }
 
+
+export async function listOrders(
+  token: string,
+  page: number = 1
+): Promise<{ orders: OrderSummary[]; total: number; page: number }> {
+  if (!token) throw new Error('Token required to list orders');
+
+  const decoded = jwtDecode(token);
+  const customerId =
+    decoded.payload &&
+    'owner' in decoded.payload &&
+    (decoded.payload as { owner?: { id?: string } }).owner?.id;
+  if (!customerId)
+    throw new Error('Could not determine customer ID from access token');
+
+  const client = getCustomerClient(token);
+  const PAGE_SIZE = 10;
+  const result = await client.orders.list({
+    filters: { customer_id_eq: customerId, status_not_in: 'pending,draft' },
+    sort: { placed_at: 'desc' },
+    pageNumber: page,
+    pageSize: PAGE_SIZE,
+  });
+
+  return {
+    orders: [...result].map((o) =>
+      mapOrderSummary(o as unknown as CLOrderLike)
+    ),
+    total: result.recordCount,
+    page,
+  };
+}
+
+export async function getOrder(
+  token: string,
+  orderId: string
+): Promise<Order | null> {
+  if (!token) throw new Error('Token required to get order');
+
+  const decoded = jwtDecode(token);
+  const customerId =
+    decoded.payload &&
+    'owner' in decoded.payload &&
+    (decoded.payload as { owner?: { id?: string } }).owner?.id;
+  if (!customerId)
+    throw new Error('Could not determine customer ID from access token');
+
+  const client = getCustomerClient(token);
+  let raw: unknown;
+  try {
+    raw = await client.orders.retrieve(orderId, {
+      include: ['line_items', 'shipping_address', 'billing_address'],
+    });
+  } catch (err: unknown) {
+    if (
+      err &&
+      typeof err === 'object' &&
+      'status' in err &&
+      (err as { status: number }).status === 404
+    ) {
+      return null;
+    }
+    throw err;
+  }
+
+  const order = raw as CLOrderDetailLike & { customer_id?: string };
+  if (order.customer_id && order.customer_id !== customerId) return null;
+
+  return mapOrderDetail(order);
+}
 export default null;
