@@ -1,4 +1,5 @@
 import { createImageUrlBuilder } from '@sanity/image-url';
+import type { SanityImageCrop, SanityImageHotspot } from '@sanity/image-url';
 import { stegaClean } from '@sanity/client/stega';
 
 // Read project config directly from env rather than importing `sanity:client`,
@@ -21,6 +22,8 @@ const builder = createImageUrlBuilder({ projectId, dataset });
  */
 export function sanityImageUrl(source: {
   asset: { _ref?: string; _id?: string };
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
 }) {
   return builder.image(source);
 }
@@ -34,16 +37,32 @@ export function sanityImageUrl(source: {
  * to the latter.
  */
 export function sanityImageSrc(
-  source: { asset?: { _ref?: string; _id?: string } } | undefined,
+  source:
+    | {
+        asset?: { _ref?: string; _id?: string };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+      }
+    | undefined,
   options?: { width?: number; height?: number; quality?: number }
 ): string {
   const cleaned = stegaClean(source) as
-    | { asset?: { _ref?: string; _id?: string } }
+    | {
+        asset?: { _ref?: string; _id?: string };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+      }
     | undefined;
   const id = cleaned?.asset?._ref ?? cleaned?.asset?._id;
   if (!id) return '';
   let urlBuilder = builder
-    .image(cleaned as { asset: { _ref: string } })
+    .image(
+      cleaned as {
+        asset: { _ref: string };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+      }
+    )
     .auto('format');
   if (options?.width) urlBuilder = urlBuilder.width(options.width);
   if (options?.height) urlBuilder = urlBuilder.height(options.height);
