@@ -194,7 +194,7 @@ export const allProductsQuery = `*[_type == "products" && defined(slug.current)]
   _id,
   title,
   "slug": slug.current,
-  "image": body[_type == "heroSection"][0].image { asset->, alt },
+  "image": coalesce(featuredImage { asset->, alt }, body[_type == "heroSection"][0].image { asset->, alt }),
   metaDescription
 }`;
 
