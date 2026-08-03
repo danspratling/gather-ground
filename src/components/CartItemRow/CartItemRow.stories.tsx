@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 import CartItemRow from '@/components/CartItemRow/CartItemRow';
 import type { LineItem } from '@/lib/commerce/types';
 
@@ -48,6 +48,21 @@ export const Default: Story = {
     onQuantityChange: fn(),
     onRemove: fn(),
   },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const increment = canvas.getByRole('button', {
+      name: /increase quantity/i,
+    });
+    const remove = canvas.getByRole('button', { name: /remove item/i });
+
+    // Increment quantity — fires onQuantityChange with item id and new qty
+    await userEvent.click(increment);
+    await expect(args.onQuantityChange).toHaveBeenCalledWith('line-item-1', 3);
+
+    // Click remove — fires onRemove with item id
+    await userEvent.click(remove);
+    await expect(args.onRemove).toHaveBeenCalledWith('line-item-1');
+  },
 };
 
 export const Updating: Story = {
@@ -56,6 +71,17 @@ export const Updating: Story = {
     onQuantityChange: fn(),
     onRemove: fn(),
     isUpdating: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const increment = canvas.getByRole('button', {
+      name: /increase quantity/i,
+    });
+    const remove = canvas.getByRole('button', { name: /remove item/i });
+
+    // All controls must be disabled while updating
+    await expect(increment).toBeDisabled();
+    await expect(remove).toBeDisabled();
   },
 };
 

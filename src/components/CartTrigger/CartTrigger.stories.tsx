@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 import CartTrigger from '@/components/CartTrigger/CartTrigger';
 
 const meta = {
@@ -23,16 +24,61 @@ export const Empty: Story = {
   args: {
     itemCount: 0,
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const openEvents: Event[] = [];
+    const handler = (e: Event) => openEvents.push(e);
+    window.addEventListener('cart:open', handler);
+
+    const button = canvas.getByRole('button', { name: /open cart/i });
+    await expect(button).toBeInTheDocument();
+    await userEvent.click(button);
+    await expect(openEvents).toHaveLength(1);
+
+    window.removeEventListener('cart:open', handler);
+  },
 };
 
 export const WithItems: Story = {
   args: {
     itemCount: 3,
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', {
+      name: /open cart, 3 items/i,
+    });
+    await expect(button).toBeInTheDocument();
+  },
+};
+
+export const LiveUpdate: Story = {
+  args: {
+    itemCount: 0,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Initially no badge
+    await expect(canvas.queryByText('5')).not.toBeInTheDocument();
+
+    // Simulate cart:updated event
+    window.dispatchEvent(
+      new CustomEvent('cart:updated', { detail: { itemCount: 5 } })
+    );
+
+    // Badge should now show the updated count
+    await expect(await canvas.findByText('5')).toBeVisible();
+  },
 };
 
 export const ManyItems: Story = {
   args: {
     itemCount: 99,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const badge = canvas.getByText('99');
+    await expect(badge).toBeVisible();
   },
 };

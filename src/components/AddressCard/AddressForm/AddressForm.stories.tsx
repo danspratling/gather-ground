@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from 'storybook/test';
 import AddressForm from './AddressForm';
 import type { AddressFormValues } from './AddressForm.types';
 
@@ -32,12 +33,43 @@ const sampleAddress: AddressFormValues = {
 
 export const Empty: Story = {
   args: {},
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Submit with no values — all required field errors should appear
+    await userEvent.click(
+      canvas.getByRole('button', { name: /save address/i })
+    );
+
+    await expect(
+      await canvas.findByRole('alert', { name: /first name/i })
+    ).toBeVisible();
+    await expect(
+      await canvas.findByRole('alert', { name: /last name/i })
+    ).toBeVisible();
+  },
 };
 
 export const EditMode: Story = {
   args: {
     addressId: 'addr-123',
     initialValues: sampleAddress,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Prefilled first name from initialValues
+    const firstNameInput = canvas.getByLabelText(/first name/i);
+    await expect(firstNameInput).toHaveValue('Jane');
+
+    // Clear first name and try to save — should show validation error
+    await userEvent.clear(firstNameInput);
+    await userEvent.click(
+      canvas.getByRole('button', { name: /update address/i })
+    );
+    await expect(
+      await canvas.findByRole('alert', { name: /first name/i })
+    ).toBeVisible();
   },
 };
 
@@ -48,5 +80,13 @@ export const WithDefaultsPreset: Story = {
       isDefaultShipping: true,
       isDefaultBilling: true,
     },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const defaultShipping = canvas.getByLabelText(/default shipping/i);
+    const defaultBilling = canvas.getByLabelText(/default billing/i);
+
+    await expect(defaultShipping).toBeChecked();
+    await expect(defaultBilling).toBeChecked();
   },
 };
