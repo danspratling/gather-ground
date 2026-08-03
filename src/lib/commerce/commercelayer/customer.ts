@@ -9,7 +9,7 @@
 
 import { jwtDecode } from '@commercelayer/js-auth';
 import type { Address, Customer, Order, OrderSummary } from '../types';
-import { getCustomerClient } from './client';
+import { getCustomerClient, getIntegrationClient } from './client';
 import {
   mapAddress,
   mapCustomer,
@@ -38,9 +38,13 @@ export async function getCustomer(token: string): Promise<Customer> {
     throw new Error('Could not determine customer ID from access token');
   }
 
-  const client = getCustomerClient(token);
+  const client = await getIntegrationClient();
   const profile = (await client.customers.retrieve(customerId, {
-    include: ['customer_addresses.address'],
+    include: [
+      'customer_addresses.address',
+      'default_shipping_address',
+      'default_billing_address',
+    ],
   })) as unknown as CLCustomerLike;
 
   if (!profile) {
@@ -166,7 +170,9 @@ export async function setDefaultAddress(
 ): Promise<void> {
   if (!token) throw new Error('Token required to set default address');
   const customerId = extractCustomerId(token);
-  const client = getCustomerClient(token);
+  // Customer-scoped tokens cannot patch default address relationships —
+  // use the integration client which has the required permissions.
+  const client = await getIntegrationClient();
   const types = Array.isArray(type) ? type : [type];
   const fields: Record<string, unknown> = { id: customerId };
   for (const t of types) {
