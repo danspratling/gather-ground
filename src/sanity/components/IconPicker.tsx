@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { FC, SVGProps } from 'react';
-import { set, unset } from 'sanity';
+import { PatchEvent, set, unset } from 'sanity';
 import type { StringInputProps } from 'sanity';
 import {
   Badge,
@@ -38,7 +38,7 @@ export function IconPicker(props: StringInputProps) {
   const visible = filtered.slice(0, MAX_VISIBLE);
 
   function handleSelect(name: string) {
-    onChange(value === name ? unset() : set(name));
+    onChange(PatchEvent.from(value === name ? unset() : set(name)));
   }
 
   const SelectedIcon = value
@@ -66,7 +66,7 @@ export function IconPicker(props: StringInputProps) {
             <Box flex={1} />
             <button
               type="button"
-              onClick={() => onChange(unset())}
+              onClick={() => onChange(PatchEvent.from(unset()))}
               style={{
                 background: 'transparent',
                 border: 'none',
