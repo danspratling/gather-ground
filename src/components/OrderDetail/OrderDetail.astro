@@ -1,0 +1,159 @@
+---
+import type { OrderDetailProps } from './OrderDetail.types';
+import OrderLineItem from '@/components/OrderLineItem/OrderLineItem.astro';
+import OrderStatusBadge from '@/components/OrderStatusBadge/OrderStatusBadge.astro';
+
+type Props = OrderDetailProps;
+const {
+  orderNumber,
+  status,
+  placedAt,
+  shippingAddress,
+  billingAddress,
+  lineItems,
+  subtotalFormatted,
+  shippingCostFormatted,
+  totalFormatted,
+} = Astro.props;
+
+const formattedDate = placedAt.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<div class="space-y-8">
+  <!-- Header -->
+  <div class="flex flex-wrap items-center gap-3">
+    <h1 class="text-2xl font-semibold text-brand-900">Order {orderNumber}</h1>
+    <OrderStatusBadge status={status} />
+    <span class="text-sm text-gray-800">{formattedDate}</span>
+  </div>
+
+  <!-- Line items -->
+  <section aria-labelledby="order-items-heading">
+    <h2
+      id="order-items-heading"
+      class="mb-4 text-lg font-semibold text-brand-900"
+    >
+      Items
+    </h2>
+    <div
+      class="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white px-4"
+    >
+      {
+        lineItems.map((item) => (
+          <OrderLineItem
+            name={item.name}
+            variantDescription={item.variantDescription}
+            imageUrl={item.imageUrl}
+            imageAlt={item.imageAlt}
+            unitPriceFormatted={item.unitPriceFormatted}
+            quantity={item.quantity}
+            lineTotalFormatted={item.lineTotalFormatted}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Addresses -->
+  <section aria-labelledby="order-addresses-heading">
+    <h2
+      id="order-addresses-heading"
+      class="mb-4 text-lg font-semibold text-brand-900"
+    >
+      Addresses
+    </h2>
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <!-- Shipping -->
+      <div class="rounded-lg border border-gray-200 bg-white p-4">
+        <h3 class="mb-2 text-sm font-semibold text-brand-900">
+          Shipping address
+        </h3>
+        <address class="not-italic text-sm text-gray-800 leading-relaxed">
+          <span>{shippingAddress.firstName} {shippingAddress.lastName}</span><br
+          />
+          <span>{shippingAddress.line1}</span><br />
+          {
+            shippingAddress.line2 && (
+              <>
+                <>
+                  <span>{shippingAddress.line2}</span>
+                  <br />
+                </>
+              </>
+            )
+          }
+          <span
+            >{shippingAddress.city}{
+              shippingAddress.state ? `, ${shippingAddress.state}` : ''
+            }</span
+          ><br />
+          <span>{shippingAddress.postalCode}</span><br />
+          <span>{shippingAddress.country}</span>
+        </address>
+      </div>
+      <!-- Billing -->
+      <div class="rounded-lg border border-gray-200 bg-white p-4">
+        <h3 class="mb-2 text-sm font-semibold text-brand-900">
+          Billing address
+        </h3>
+        <address class="not-italic text-sm text-gray-800 leading-relaxed">
+          <span>{billingAddress.firstName} {billingAddress.lastName}</span><br
+          />
+          <span>{billingAddress.line1}</span><br />
+          {
+            billingAddress.line2 && (
+              <>
+                <>
+                  <span>{billingAddress.line2}</span>
+                  <br />
+                </>
+              </>
+            )
+          }
+          <span
+            >{billingAddress.city}{
+              billingAddress.state ? `, ${billingAddress.state}` : ''
+            }</span
+          ><br />
+          <span>{billingAddress.postalCode}</span><br />
+          <span>{billingAddress.country}</span>
+        </address>
+      </div>
+    </div>
+  </section>
+
+  <!-- Totals -->
+  <section aria-labelledby="order-totals-heading">
+    <h2 id="order-totals-heading" class="sr-only">Order totals</h2>
+    <div
+      class="ml-auto max-w-xs space-y-2 rounded-lg border border-gray-200 bg-white p-4"
+    >
+      <div class="flex justify-between text-sm text-gray-800">
+        <span>Subtotal</span>
+        <span>{subtotalFormatted}</span>
+      </div>
+      <div class="flex justify-between text-sm text-gray-800">
+        <span>Shipping</span>
+        <span>{shippingCostFormatted}</span>
+      </div>
+      <div
+        class="flex justify-between border-t border-gray-200 pt-2 text-sm font-semibold text-brand-900"
+      >
+        <span>Total</span>
+        <span>{totalFormatted}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Back link -->
+  <a
+    href="/account/orders"
+    class="inline-flex items-center gap-1 text-sm font-medium text-brand-900 underline underline-offset-2 hover:text-brand-700"
+  >
+    &larr; Back to orders
+  </a>
+</div>
