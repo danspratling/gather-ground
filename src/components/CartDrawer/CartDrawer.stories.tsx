@@ -114,11 +114,6 @@ export const WithItems: Story = {
     return <WithItemsWrapper />;
   },
 };
-  play: async () => {
-    window.dispatchEvent(new CustomEvent('cart:open'));
-    await new Promise((r) => setTimeout(r, 300));
-  },
-};
 
 /** Drawer open with a loading overlay — e.g. quantity update in progress */
 export const Loading: Story = {
