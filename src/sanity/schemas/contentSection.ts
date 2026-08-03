@@ -36,7 +36,8 @@ export const contentIconFeature = defineType({
       name: 'icon',
       title: 'Icon',
       type: 'string',
-      description: 'Optional. Search and select an icon to display above the heading.',
+      description:
+        'Optional. Search and select an icon to display above the heading.',
       components: { input: IconPicker },
     }),
     defineField({
@@ -118,7 +119,8 @@ export const contentSection = defineType({
       name: 'icon',
       title: 'Icon',
       type: 'string',
-      description: 'Optional. Search and select an icon to display above the heading.',
+      description:
+        'Optional. Search and select an icon to display above the heading.',
       group: 'content',
       hidden: ({ parent }) =>
         parent?.variant !== 'simple' && parent?.variant !== 'alternating',

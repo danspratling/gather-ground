@@ -2,12 +2,25 @@ import { useMemo, useState } from 'react';
 import type { FC, SVGProps } from 'react';
 import { set, unset } from 'sanity';
 import type { StringInputProps } from 'sanity';
-import { Badge, Box, Card, Flex, Grid, Text, TextInput, Tooltip } from '@sanity/ui';
+import {
+  Badge,
+  Box,
+  Card,
+  Flex,
+  Grid,
+  Text,
+  TextInput,
+  Tooltip,
+} from '@sanity/ui';
 import * as icons from '@untitledui-pro/icons/line';
 
-type IconComponent = FC<SVGProps<SVGSVGElement> & { size?: number; color?: string }>;
+type IconComponent = FC<
+  SVGProps<SVGSVGElement> & { size?: number; color?: string }
+>;
 
-const ICON_NAMES = Object.keys(icons).filter((k) => k !== 'default') as (keyof typeof icons)[];
+const ICON_NAMES = Object.keys(icons).filter(
+  (k) => k !== 'default'
+) as (keyof typeof icons)[];
 
 const MAX_VISIBLE = 60;
 
@@ -17,7 +30,9 @@ export function IconPicker(props: StringInputProps) {
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
-    return q ? ICON_NAMES.filter((n) => n.toLowerCase().includes(q)) : ICON_NAMES;
+    return q
+      ? ICON_NAMES.filter((n) => n.toLowerCase().includes(q))
+      : ICON_NAMES;
   }, [query]);
 
   const visible = filtered.slice(0, MAX_VISIBLE);
@@ -26,7 +41,9 @@ export function IconPicker(props: StringInputProps) {
     onChange(value === name ? unset() : set(name));
   }
 
-  const SelectedIcon = value ? (icons[value as keyof typeof icons] as IconComponent | undefined) : undefined;
+  const SelectedIcon = value
+    ? (icons[value as keyof typeof icons] as IconComponent | undefined)
+    : undefined;
 
   return (
     <Box>
@@ -40,12 +57,7 @@ export function IconPicker(props: StringInputProps) {
 
       {/* Current selection */}
       {SelectedIcon && (
-        <Card
-          padding={3}
-          radius={2}
-          tone="primary"
-          style={{ marginBottom: 8 }}
-        >
+        <Card padding={3} radius={2} tone="primary" style={{ marginBottom: 8 }}>
           <Flex align="center" gap={3}>
             <SelectedIcon size={20} />
             <Text size={1} weight="semibold">
@@ -73,7 +85,12 @@ export function IconPicker(props: StringInputProps) {
       )}
 
       {/* Icon grid */}
-      <Card border radius={2} padding={2} style={{ maxHeight: 320, overflowY: 'auto' }}>
+      <Card
+        border
+        radius={2}
+        padding={2}
+        style={{ maxHeight: 320, overflowY: 'auto' }}
+      >
         <Grid columns={[6, 6, 8]} gap={1}>
           {visible.map((name) => {
             const Icon = icons[name] as IconComponent;
