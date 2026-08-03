@@ -451,7 +451,9 @@ describe('Commerce Layer customer.setDefaultAddress', () => {
     server.use(
       http.patch(`${mockApiUrl}/customers/cust-me`, async ({ request }) => {
         capturedBody = await request.json();
-        return HttpResponse.json({ data: { id: 'cust-me', type: 'customers' } });
+        return HttpResponse.json({
+          data: { id: 'cust-me', type: 'customers' },
+        });
       })
     );
 
