@@ -23,6 +23,7 @@ const defaultAddress: Address | undefined = defaultShipping
       postcode: (defaultShipping as CommerceAddress).postalCode,
       country: defaultShipping.country,
       isDefaultShipping: true,
+      isDefaultBilling: customer.defaultBillingAddressId === defaultShipping.id,
     }
   : undefined;
 ---
