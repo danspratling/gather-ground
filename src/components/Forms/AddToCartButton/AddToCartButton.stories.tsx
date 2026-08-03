@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import AddToCartButton from '@/components/Forms/AddToCartButton/AddToCartButton';
 
@@ -26,6 +26,7 @@ export const Default: Story = {
   args: {
     variantId: 'var-1',
     inventoryStatus: 'in_stock',
+    onAddToCart: fn(),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -57,6 +58,7 @@ export const OutOfStock: Story = {
   args: {
     variantId: 'var-1',
     inventoryStatus: 'out_of_stock',
+    onAddToCart: fn(),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -75,5 +77,13 @@ export const LowStock: Story = {
   args: {
     variantId: 'var-1',
     inventoryStatus: 'low_stock',
+    onAddToCart: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const addToCart = canvas.getByRole('button', { name: /add to cart/i });
+
+    // Low stock is still purchasable
+    await expect(addToCart).not.toBeDisabled();
   },
 };

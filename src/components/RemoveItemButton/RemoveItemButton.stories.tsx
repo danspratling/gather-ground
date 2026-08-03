@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 import RemoveItemButton from '@/components/RemoveItemButton/RemoveItemButton';
 
 const meta = {
@@ -24,11 +24,25 @@ export const Default: Story = {
   args: {
     onRemove: fn(),
   },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', { name: /remove item/i });
+
+    await expect(button).not.toBeDisabled();
+    await userEvent.click(button);
+    await expect(args.onRemove).toHaveBeenCalledOnce();
+  },
 };
 
 export const Loading: Story = {
   args: {
     onRemove: fn(),
     isLoading: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', { name: /remove item/i });
+
+    await expect(button).toBeDisabled();
   },
 };

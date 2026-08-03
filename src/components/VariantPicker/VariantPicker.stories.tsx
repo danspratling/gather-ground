@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from 'storybook/test';
 
 import VariantPicker from '@/components/VariantPicker/VariantPicker';
 
@@ -99,6 +100,19 @@ export const Default: Story = {
     variants: allVariants,
     selectedVariantId: 'var-m-red',
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // M is the initial selection — aria-pressed true
+    const mButton = canvas.getByRole('button', { name: 'M' });
+    await expect(mButton).toHaveAttribute('aria-pressed', 'true');
+
+    // Click L — selection updates
+    const lButton = canvas.getByRole('button', { name: 'L' });
+    await userEvent.click(lButton);
+    await expect(lButton).toHaveAttribute('aria-pressed', 'true');
+    await expect(mButton).toHaveAttribute('aria-pressed', 'false');
+  },
 };
 
 export const SingleOption: Story = {
@@ -132,6 +146,17 @@ export const SingleOption: Story = {
     ],
     selectedVariantId: 'var-m',
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const sButton = canvas.getByRole('button', { name: 'S' });
+    const mButton = canvas.getByRole('button', { name: 'M' });
+
+    await expect(mButton).toHaveAttribute('aria-pressed', 'true');
+
+    await userEvent.click(sButton);
+    await expect(sButton).toHaveAttribute('aria-pressed', 'true');
+    await expect(mButton).toHaveAttribute('aria-pressed', 'false');
+  },
 };
 
 export const WithOOSVariant: Story = {
@@ -143,5 +168,21 @@ export const WithOOSVariant: Story = {
         : v
     ),
     selectedVariantId: 'var-m-red',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Select L so the L/Red combo becomes relevant
+    await userEvent.click(canvas.getByRole('button', { name: 'L' }));
+
+    // L/Red is OOS — button is disabled
+    const redButton = canvas.getByRole('button', {
+      name: /red — out of stock/i,
+    });
+    await expect(redButton).toBeDisabled();
+
+    // L/Blue is still in stock — button is enabled
+    const blueButton = canvas.getByRole('button', { name: 'Blue' });
+    await expect(blueButton).not.toBeDisabled();
   },
 };

@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within } from 'storybook/test';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 import QuantityStepper from '@/components/QuantityStepper/QuantityStepper';
 
 const meta = {
@@ -60,6 +59,15 @@ export const AtMin: Story = {
     max: 99,
     onChange: fn(),
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const decrement = canvas.getByRole('button', {
+      name: /decrease quantity/i,
+    });
+
+    // Decrement button must be disabled at minimum
+    await expect(decrement).toBeDisabled();
+  },
 };
 
 export const AtMax: Story = {
@@ -68,6 +76,15 @@ export const AtMax: Story = {
     min: 1,
     max: 99,
     onChange: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const increment = canvas.getByRole('button', {
+      name: /increase quantity/i,
+    });
+
+    // Increment button must be disabled at maximum
+    await expect(increment).toBeDisabled();
   },
 };
 
@@ -78,5 +95,17 @@ export const Disabled: Story = {
     max: 99,
     disabled: true,
     onChange: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const increment = canvas.getByRole('button', {
+      name: /increase quantity/i,
+    });
+    const decrement = canvas.getByRole('button', {
+      name: /decrease quantity/i,
+    });
+
+    await expect(increment).toBeDisabled();
+    await expect(decrement).toBeDisabled();
   },
 };
