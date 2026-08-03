@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from 'storybook/test';
 
 import AddToCartButton from '@/components/Forms/AddToCartButton/AddToCartButton';
 
@@ -26,12 +27,47 @@ export const Default: Story = {
     variantId: 'var-1',
     inventoryStatus: 'in_stock',
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText('Quantity');
+    const increment = canvas.getByLabelText('Increase quantity');
+    const decrement = canvas.getByLabelText('Decrease quantity');
+
+    await expect(input).toHaveValue(1);
+    await expect(decrement).toBeDisabled();
+
+    // Step up twice — catches the state-fighting regression where second click was stuck
+    await userEvent.click(increment);
+    await expect(input).toHaveValue(2);
+
+    await userEvent.click(increment);
+    await expect(input).toHaveValue(3);
+
+    // Step down confirms decrement also keeps working
+    await userEvent.click(decrement);
+    await expect(input).toHaveValue(2);
+
+    // Add to cart button is enabled
+    const addBtn = canvas.getByRole('button', { name: /add to cart/i });
+    await expect(addBtn).not.toBeDisabled();
+  },
 };
 
 export const OutOfStock: Story = {
   args: {
     variantId: 'var-1',
     inventoryStatus: 'out_of_stock',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Stepper disabled in OOS state
+    await expect(canvas.getByLabelText('Increase quantity')).toBeDisabled();
+    await expect(canvas.getByLabelText('Decrease quantity')).toBeDisabled();
+
+    // Add to cart button is disabled and shows correct label
+    const addBtn = canvas.getByRole('button', { name: /out of stock/i });
+    await expect(addBtn).toBeDisabled();
   },
 };
 

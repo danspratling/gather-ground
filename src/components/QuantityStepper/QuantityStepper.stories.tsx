@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from 'storybook/test';
 import { fn } from 'storybook/test';
 import QuantityStepper from '@/components/QuantityStepper/QuantityStepper';
 
@@ -27,6 +28,28 @@ export const Default: Story = {
     min: 1,
     max: 99,
     onChange: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText('Quantity');
+    const increment = canvas.getByLabelText('Increase quantity');
+    const decrement = canvas.getByLabelText('Decrease quantity');
+
+    // Decrement is disabled at min
+    await expect(decrement).toBeDisabled();
+    await expect(input).toHaveValue(1);
+
+    // Increment once → 2
+    await userEvent.click(increment);
+    await expect(input).toHaveValue(2);
+
+    // Increment again → 3 (catches the stuck-at-2 regression)
+    await userEvent.click(increment);
+    await expect(input).toHaveValue(3);
+
+    // Decrement → 2
+    await userEvent.click(decrement);
+    await expect(input).toHaveValue(2);
   },
 };
 
