@@ -209,8 +209,9 @@ export const productBySlugQuery = `*[_type == "products" && slug.current == $slu
   metaTitle,
   metaDescription,
   "ogImage": ogImage.asset->url,
-  "autoDescription": body[_type == "heroSection"][0].subCopy,
-  "autoOgImage": body[_type == "heroSection"][0].image.asset->url,
+  "autoDescription": metaDescription,
+  "autoOgImage": featuredImage.asset->url,
+  featuredImage { asset->, alt },
   ${bodySectionsProjection}
 }`;
 

@@ -93,3 +93,54 @@ test.describe('products page grid', () => {
     }
   });
 });
+
+// ─── Layer 3: PDP ─────────────────────────────────────────────────────────────
+
+test.describe('/products/[slug] page', () => {
+  test('renders without error for a valid product slug', async ({ page }) => {
+    // Navigate to a product URL; if no product exists at this slug, Astro redirects
+    // to /products — in that case we still confirm no 404 title.
+    const cards = page.locator('a[href^="/products/"]');
+    await page.goto('/products');
+    const count = await cards.count();
+
+    if (count === 0) {
+      // No products in CMS — skip PDP tests gracefully
+      return;
+    }
+
+    const href = await cards.first().getAttribute('href');
+    await page.goto(href!);
+    await expect(page).not.toHaveTitle(/404/i);
+    await expect(page.getByRole('main')).toBeVisible();
+  });
+
+  test('shows ProductDetail heading structure', async ({ page }) => {
+    await page.goto('/products');
+    const cards = page.locator('a[href^="/products/"]');
+    const count = await cards.count();
+
+    if (count === 0) return;
+
+    const href = await cards.first().getAttribute('href');
+    await page.goto(href!);
+
+    // ProductDetail renders an h1 with the product title
+    await expect(page.locator('h1').first()).toBeVisible();
+  });
+
+  test('shows add to cart button', async ({ page }) => {
+    await page.goto('/products');
+    const cards = page.locator('a[href^="/products/"]');
+    const count = await cards.count();
+
+    if (count === 0) return;
+
+    const href = await cards.first().getAttribute('href');
+    await page.goto(href!);
+
+    await expect(
+      page.locator('button', { hasText: /add to cart|out of stock/i }).first()
+    ).toBeVisible();
+  });
+});
