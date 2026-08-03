@@ -174,12 +174,13 @@ export interface CommerceAdapter {
   deleteAddress(token: string, addressId: string): Promise<void>;
 
   /**
-   * Set the default shipping or billing address
+   * Set the default shipping or billing address.
+   * Pass an array to set both in a single round-trip.
    */
   setDefaultAddress(
     token: string,
     addressId: string,
-    type: 'shipping' | 'billing'
+    type: 'shipping' | 'billing' | Array<'shipping' | 'billing'>
   ): Promise<void>;
 
   /**

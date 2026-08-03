@@ -86,24 +86,21 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     });
   }
 
-  try {
-    if (isDefaultShipping && newAddress.id) {
+  const defaultTypes: Array<'shipping' | 'billing'> = [
+    ...(isDefaultShipping ? (['shipping'] as const) : []),
+    ...(isDefaultBilling ? (['billing'] as const) : []),
+  ];
+  if (defaultTypes.length > 0 && newAddress.id) {
+    try {
       await commerce.setDefaultAddress(
         session.accessToken,
         newAddress.id,
-        'shipping'
+        defaultTypes.length === 1 ? defaultTypes[0] : defaultTypes
       );
+    } catch (err) {
+      console.error('setDefaultAddress failed:', err);
+      // best-effort — address was created successfully
     }
-    if (isDefaultBilling && newAddress.id) {
-      await commerce.setDefaultAddress(
-        session.accessToken,
-        newAddress.id,
-        'billing'
-      );
-    }
-  } catch (err) {
-    console.error('setDefaultAddress failed:', err);
-    // Address was created successfully; default-setting is best-effort
   }
 
   return jsonResponse(201, { success: true, address: newAddress });
