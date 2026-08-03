@@ -120,6 +120,139 @@ describe('Commerce Layer customer.getCustomer', () => {
     );
   });
 });
+
+// ---------------------------------------------------------------------------
+// Helpers for order tests
+// ---------------------------------------------------------------------------
+
+function orderAttributes(overrides: Record<string, unknown> = {}) {
+  return {
+    number: '12345',
+    status: 'approved',
+    placed_at: '2026-01-15T10:00:00.000Z',
+    currency_code: 'GBP',
+    total_amount_with_taxes_float: 29.99,
+    formatted_total_amount: '£29.99',
+    skus_count: 2,
+    subtotal_amount_float: 24.99,
+    formatted_subtotal_amount: '£24.99',
+    shipping_amount_float: 5.0,
+    formatted_shipping_amount: '£5.00',
+    ...overrides,
+  };
+}
+
+function orderResource(overrides: Record<string, unknown> = {}) {
+  return {
+    id: 'ord-1',
+    type: 'orders',
+    attributes: orderAttributes(overrides),
+    relationships: {
+      line_items: { data: [] },
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// listOrders
+// ---------------------------------------------------------------------------
+
+describe('Commerce Layer customer.listOrders', () => {
+  it('throws when no token is provided', async () => {
+    await expect(customerAdapter.listOrders('')).rejects.toThrow(
+      /Token required/
+    );
+  });
+
+  it('returns an empty list when there are no orders', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/orders`, () =>
+        HttpResponse.json({
+          data: [],
+          meta: { record_count: 0, page_count: 0 },
+        })
+      )
+    );
+
+    const result = await customerAdapter.listOrders('cust-token');
+
+    expect(result.orders).toHaveLength(0);
+    expect(result.total).toBe(0);
+    expect(result.page).toBe(1);
+  });
+
+  it('returns mapped order summaries with correct shape', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/orders`, () =>
+        HttpResponse.json({
+          data: [orderResource()],
+          meta: { record_count: 1, page_count: 1 },
+        })
+      )
+    );
+
+    const result = await customerAdapter.listOrders('cust-token');
+
+    expect(result.orders).toHaveLength(1);
+    expect(result.total).toBe(1);
+    expect(result.page).toBe(1);
+
+    const order = result.orders[0];
+    expect(order.id).toBe('ord-1');
+    expect(order.number).toBe('12345');
+    expect(order.status).toBe('confirmed');
+    expect(order.total.amount).toBe(29.99);
+    expect(order.total.currency).toBe('GBP');
+    expect(order.lineItemCount).toBe(2);
+    expect(order.placedAt).toBeInstanceOf(Date);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getOrder
+// ---------------------------------------------------------------------------
+
+describe('Commerce Layer customer.getOrder', () => {
+  it('throws when no token is provided', async () => {
+    await expect(customerAdapter.getOrder('', 'ord-1')).rejects.toThrow(
+      /Token required/
+    );
+  });
+
+  it('returns null when the order is not found (404)', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/orders/ord-missing`, () =>
+        HttpResponse.json(
+          { errors: [{ code: 'NOT_FOUND', detail: 'Order not found' }] },
+          { status: 404 }
+        )
+      )
+    );
+
+    const result = await customerAdapter.getOrder('cust-token', 'ord-missing');
+    expect(result).toBeNull();
+  });
+
+  it('returns a mapped Order for a valid order ID', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/orders/ord-1`, () =>
+        HttpResponse.json({ data: orderResource() })
+      )
+    );
+
+    const order = await customerAdapter.getOrder('cust-token', 'ord-1');
+
+    expect(order).not.toBeNull();
+    expect(order!.id).toBe('ord-1');
+    expect(order!.number).toBe('12345');
+    expect(order!.status).toBe('confirmed');
+    expect(order!.total.amount).toBe(29.99);
+    expect(order!.subtotal.amount).toBe(24.99);
+    expect(order!.shippingCost?.amount).toBe(5.0);
+    expect(order!.lineItems).toHaveLength(0);
+  });
+});
+
 // ---------------------------------------------------------------------------
 // Address CRUD tests
 // ---------------------------------------------------------------------------
@@ -311,5 +444,121 @@ describe('Commerce Layer customer.setDefaultAddress', () => {
     await expect(
       customerAdapter.setDefaultAddress('cust-token', 'addr-1', 'billing')
     ).resolves.toBeUndefined();
+  });
+});
+
+describe('Commerce Layer customer.updateProfile', () => {
+  it('throws when no token is provided', async () => {
+    await expect(
+      customerAdapter.updateProfile('', { firstName: 'New' })
+    ).rejects.toThrow(/Token required/);
+  });
+
+  it('resolves when CL accepts the profile update', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json({ data: { id: 'cust-me', type: 'customers' } })
+      )
+    );
+
+    await expect(
+      customerAdapter.updateProfile('cust-token', { email: 'new@example.com' })
+    ).resolves.toBeUndefined();
+  });
+
+  it('sends metadata for firstName and lastName fields', async () => {
+    let capturedBody: unknown = null;
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, async ({ request }) => {
+        capturedBody = await request.json();
+        return HttpResponse.json({
+          data: { id: 'cust-me', type: 'customers' },
+        });
+      })
+    );
+
+    await customerAdapter.updateProfile('cust-token', {
+      firstName: 'Updated',
+      lastName: 'Name',
+    });
+
+    const body = capturedBody as {
+      data: { attributes: { metadata: Record<string, string> } };
+    };
+    expect(body?.data?.attributes?.metadata?.first_name).toBe('Updated');
+    expect(body?.data?.attributes?.metadata?.last_name).toBe('Name');
+  });
+
+  it('throws on CL API error', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json(
+          { errors: [{ status: '500', detail: 'Internal error' }] },
+          { status: 500 }
+        )
+      )
+    );
+
+    await expect(
+      customerAdapter.updateProfile('cust-token', { firstName: 'X' })
+    ).rejects.toThrow();
+  });
+});
+
+describe('Commerce Layer customer.changePassword', () => {
+  it('throws when no token is provided', async () => {
+    await expect(
+      customerAdapter.changePassword('', 'old', 'new')
+    ).rejects.toThrow(/Token required/);
+  });
+
+  it('resolves when CL accepts the password change', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json({ data: { id: 'cust-me', type: 'customers' } })
+      )
+    );
+
+    await expect(
+      customerAdapter.changePassword('cust-token', 'oldPass1', 'newPass1')
+    ).resolves.toBeUndefined();
+  });
+
+  it('throws INVALID_CURRENT_PASSWORD when CL returns 422', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json(
+          {
+            errors: [
+              {
+                status: '422',
+                code: 'VALIDATION_ERROR',
+                detail: 'Current password is not valid',
+              },
+            ],
+          },
+          { status: 422 }
+        )
+      )
+    );
+
+    await expect(
+      customerAdapter.changePassword('cust-token', 'wrongPass', 'newPass1')
+    ).rejects.toThrow('INVALID_CURRENT_PASSWORD');
+  });
+
+  it('re-throws non-422 CL errors', async () => {
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, () =>
+        HttpResponse.json(
+          { errors: [{ status: '500', detail: 'Internal error' }] },
+          { status: 500 }
+        )
+      )
+    );
+
+    await expect(
+      customerAdapter.changePassword('cust-token', 'old', 'new')
+    ).rejects.toThrow();
   });
 });
