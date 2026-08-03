@@ -64,15 +64,20 @@ export const PATCH: APIRoute = async ({ cookies, request, params }) => {
     updates
   );
 
-  if (isDefaultShipping) {
-    await commerce.setDefaultAddress(
-      session.accessToken,
-      addressId,
-      'shipping'
-    );
-  }
-  if (isDefaultBilling) {
-    await commerce.setDefaultAddress(session.accessToken, addressId, 'billing');
+  const defaultTypes: Array<'shipping' | 'billing'> = [
+    ...(isDefaultShipping ? (['shipping'] as const) : []),
+    ...(isDefaultBilling ? (['billing'] as const) : []),
+  ];
+  if (defaultTypes.length > 0) {
+    try {
+      await commerce.setDefaultAddress(
+        session.accessToken,
+        addressId,
+        defaultTypes.length === 1 ? defaultTypes[0] : defaultTypes
+      );
+    } catch (err) {
+      console.error('setDefaultAddress failed:', err);
+    }
   }
 
   return jsonResponse(200, { success: true, address: updatedAddress });

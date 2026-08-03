@@ -162,20 +162,24 @@ export async function deleteAddress(
 export async function setDefaultAddress(
   token: string,
   addressId: string,
-  type: 'shipping' | 'billing'
+  type: 'shipping' | 'billing' | Array<'shipping' | 'billing'>
 ): Promise<void> {
   if (!token) throw new Error('Token required to set default address');
   const customerId = extractCustomerId(token);
+  // CL has no first-class "default address" concept on the customer resource.
+  // Store the preference in customer metadata alongside first_name/last_name/phone.
   const client = getCustomerClient(token);
-  const field =
-    type === 'shipping'
-      ? 'default_shipping_address'
-      : 'default_billing_address';
+  const types = Array.isArray(type) ? type : [type];
+  const metadata: Record<string, string> = {};
+  if (types.includes('shipping'))
+    metadata.default_shipping_address_id = addressId;
+  if (types.includes('billing'))
+    metadata.default_billing_address_id = addressId;
   await (
     client.customers as unknown as {
       update: (attrs: Record<string, unknown>) => Promise<unknown>;
     }
-  ).update({ id: customerId, [field]: { type: 'addresses', id: addressId } });
+  ).update({ id: customerId, metadata });
 }
 
 // ---------------------------------------------------------------------------
