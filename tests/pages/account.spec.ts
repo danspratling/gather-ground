@@ -30,3 +30,12 @@ test.describe('account/profile page — unauthenticated', () => {
     expect(redirectedToLogin || commerceOff).toBe(true);
   });
 });
+
+test.describe('addresses page — unauthenticated', () => {
+  test('is not accessible when not signed in', async ({ page }) => {
+    const response = await page.goto('/account/addresses');
+    const redirectedToLogin = page.url().includes('/account/login');
+    const commerceOff = response?.status() === 404;
+    expect(redirectedToLogin || commerceOff).toBe(true);
+  });
+});

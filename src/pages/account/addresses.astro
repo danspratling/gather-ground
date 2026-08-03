@@ -1,0 +1,39 @@
+---
+export const prerender = false;
+import Layout from '@/layouts/Layout.astro';
+import AccountLayout from '@/components/AccountLayout/AccountLayout.astro';
+import AddressManager from '@/components/AddressCard/AddressManager/AddressManager';
+import type { Address as CommerceAddress } from '@/lib/commerce/types';
+import type { Address } from '@/components/AddressCard/AddressCard.types';
+
+const customer = Astro.locals.customer!;
+
+function toCardAddress(addr: CommerceAddress): Address {
+  return {
+    id: addr.id,
+    firstName: addr.firstName,
+    lastName: addr.lastName,
+    line1: addr.line1,
+    line2: addr.line2,
+    city: addr.city,
+    postcode: addr.postalCode,
+    country: addr.country,
+    isDefaultShipping:
+      addr.id != null && addr.id === customer.defaultShippingAddressId,
+    isDefaultBilling:
+      addr.id != null && addr.id === customer.defaultBillingAddressId,
+  };
+}
+
+const addresses = customer.addresses.map(toCardAddress);
+---
+
+<Layout title="My Addresses" description="Manage your saved addresses.">
+  <meta name="robots" content="noindex" slot="head-extras" />
+  <AccountLayout
+    customerName={customer.firstName}
+    pathname={Astro.url.pathname}
+  >
+    <AddressManager addresses={addresses} client:load />
+  </AccountLayout>
+</Layout>

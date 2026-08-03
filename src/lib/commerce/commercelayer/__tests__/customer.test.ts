@@ -445,6 +445,33 @@ describe('Commerce Layer customer.setDefaultAddress', () => {
       customerAdapter.setDefaultAddress('cust-token', 'addr-1', 'billing')
     ).resolves.toBeUndefined();
   });
+
+  it('stores both default address ids in metadata in one update', async () => {
+    let capturedBody: unknown = null;
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, async ({ request }) => {
+        capturedBody = await request.json();
+        return HttpResponse.json({ data: { id: 'cust-me', type: 'customers' } });
+      })
+    );
+
+    await expect(
+      customerAdapter.setDefaultAddress('cust-token', 'addr-1', [
+        'shipping',
+        'billing',
+      ])
+    ).resolves.toBeUndefined();
+
+    const body = capturedBody as {
+      data: { attributes: { metadata: Record<string, string> } };
+    };
+    expect(body?.data?.attributes?.metadata?.default_shipping_address_id).toBe(
+      'addr-1'
+    );
+    expect(body?.data?.attributes?.metadata?.default_billing_address_id).toBe(
+      'addr-1'
+    );
+  });
 });
 
 describe('Commerce Layer customer.updateProfile', () => {

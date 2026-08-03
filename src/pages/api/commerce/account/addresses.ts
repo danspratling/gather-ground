@@ -19,7 +19,12 @@ export const GET: APIRoute = async ({ cookies }) => {
   }
 
   const addresses = await commerce.listAddresses(session.accessToken);
-  return jsonResponse(200, { success: true, addresses });
+  return jsonResponse(200, {
+    success: true,
+    addresses,
+    defaultShippingAddressId: customer.defaultShippingAddressId ?? null,
+    defaultBillingAddressId: customer.defaultBillingAddressId ?? null,
+  });
 };
 
 export const POST: APIRoute = async ({ cookies, request }) => {
@@ -65,17 +70,26 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     });
   }
 
-  const newAddress = await commerce.createAddress(session.accessToken, {
-    firstName,
-    lastName,
-    line1,
-    line2: typeof line2 === 'string' ? line2 : undefined,
-    city,
-    state: typeof state === 'string' ? state : undefined,
-    postalCode,
-    country,
-    phone: typeof phone === 'string' ? phone : undefined,
-  });
+  let newAddress;
+  try {
+    newAddress = await commerce.createAddress(session.accessToken, {
+      firstName,
+      lastName,
+      line1,
+      line2: typeof line2 === 'string' ? line2 : undefined,
+      city,
+      state: typeof state === 'string' ? state : undefined,
+      postalCode,
+      country,
+      phone: typeof phone === 'string' ? phone : undefined,
+    });
+  } catch (err) {
+    console.error('createAddress failed:', err);
+    return jsonResponse(500, {
+      success: false,
+      error: 'Failed to save address. Please check your details and try again.',
+    });
+  }
 
   const defaultTypes: Array<'shipping' | 'billing'> = [
     ...(isDefaultShipping ? (['shipping'] as const) : []),

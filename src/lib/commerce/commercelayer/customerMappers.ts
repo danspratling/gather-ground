@@ -37,8 +37,12 @@ export interface CLCustomerLike {
     first_name?: string;
     last_name?: string;
     phone?: string;
+    default_shipping_address_id?: string;
+    default_billing_address_id?: string;
   } | null;
   customer_addresses?: Array<{ address?: CLAddressLike }>;
+  default_shipping_address?: { id?: string } | null;
+  default_billing_address?: { id?: string } | null;
 }
 
 export function mapAddress(addr: CLAddressLike) {
@@ -68,6 +72,8 @@ export function mapCustomer(clCustomer: CLCustomerLike): Customer {
       clCustomer.customer_addresses
         ?.map((rel) => (rel.address ? mapAddress(rel.address) : null))
         .filter((a): a is ReturnType<typeof mapAddress> => a !== null) ?? [],
+    defaultShippingAddressId: meta.default_shipping_address_id ?? undefined,
+    defaultBillingAddressId: meta.default_billing_address_id ?? undefined,
     createdAt: new Date(clCustomer.created_at),
     updatedAt: new Date(clCustomer.updated_at),
   };
