@@ -27,8 +27,8 @@ export interface OrderDetailProps {
   orderNumber: string;
   /** CL order status */
   status: CLOrderStatus;
-  /** Order placement date */
-  placedAt: Date;
+  /** Order placement date — accepts Date or ISO string (Storybook serialises Date args as strings) */
+  placedAt: Date | string;
   /** Shipping address */
   shippingAddress: OrderDetailAddress;
   /** Billing address */

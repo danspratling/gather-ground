@@ -16,7 +16,7 @@ const {
   totalFormatted,
 } = Astro.props;
 
-const formattedDate = placedAt.toLocaleDateString('en-GB', {
+const formattedDate = new Date(placedAt).toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
