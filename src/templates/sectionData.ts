@@ -7,6 +7,7 @@
  * inside an .astro template body.
  */
 import { stegaClean } from '@sanity/client/stega';
+import type { SanityImageCrop, SanityImageHotspot } from '@sanity/image-url';
 import type { CallToActionProps } from '@/components/CallToAction/CallToAction.types';
 import type { ContentProps } from '@/components/Content/Content.types';
 import type { TestimonialsSectionTestimonial } from '@/components/TestimonialsSection/TestimonialsSection.types';
@@ -39,8 +40,8 @@ type SanityImage =
   | {
       asset?: { _ref: string };
       alt?: string;
-      hotspot?: unknown;
-      crop?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
     }
   | undefined;
 
@@ -55,7 +56,11 @@ function img(
 ) {
   return {
     src: sanityImageSrc(
-      image as { asset?: { _ref: string }; hotspot?: unknown; crop?: unknown },
+      image as {
+        asset?: { _ref: string };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+      },
       options ?? { width: 800, height: 600, quality: 80 }
     ),
     alt: sanityImageAlt(image as { alt?: string }, fallbackAlt),
@@ -103,8 +108,8 @@ export function productsSectionProps(s: Dict) {
       image: sanityImageSrc(
         p.image as {
           asset?: { _ref: string };
-          hotspot?: unknown;
-          crop?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
         },
         {
           width: 600,
@@ -140,8 +145,8 @@ export function testimonialsSectionProps(s: Dict) {
             sanityImageSrc(
               t.authorImage as {
                 asset?: { _ref: string };
-                hotspot?: unknown;
-                crop?: unknown;
+                hotspot?: SanityImageHotspot;
+                crop?: SanityImageCrop;
               },
               {
                 width: 96,
@@ -213,8 +218,8 @@ export function blogSectionProps(s: Dict) {
         image: sanityImageSrc(
           p.image as {
             asset?: { _ref: string };
-            hotspot?: unknown;
-            crop?: unknown;
+            hotspot?: SanityImageHotspot;
+            crop?: SanityImageCrop;
           },
           {
             width: 600,
@@ -234,8 +239,8 @@ export function blogSectionProps(s: Dict) {
           ? sanityImageSrc(
               author.avatar as {
                 asset?: { _ref: string };
-                hotspot?: unknown;
-                crop?: unknown;
+                hotspot?: SanityImageHotspot;
+                crop?: SanityImageCrop;
               },
               {
                 width: 96,
