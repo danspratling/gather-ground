@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef } from 'react';
 import { cn } from '@/lib/utils';
 import QuantityStepper from '@/components/QuantityStepper/QuantityStepper';
 import type { AddToCartButtonProps } from '@/components/Forms/AddToCartButton/AddToCartButton.types';
@@ -9,21 +9,23 @@ export default function AddToCartButton({
   onAddToCart,
   class: className,
 }: AddToCartButtonProps) {
-  const [quantity, setQuantity] = useState(1);
+  const quantityRef = useRef(1);
   const isOOS = inventoryStatus === 'out_of_stock';
 
   function handleAddToCart() {
     if (isOOS) return;
-    onAddToCart?.(variantId, quantity);
+    onAddToCart?.(variantId, quantityRef.current);
   }
 
   return (
-    <div className={cn('flex flex-col gap-4', className)}>
+    <div className={cn('flex flex-col items-start gap-4', className)}>
       <QuantityStepper
-        value={quantity}
+        value={1}
         min={1}
         disabled={isOOS}
-        onChange={setQuantity}
+        onChange={(qty) => {
+          quantityRef.current = qty;
+        }}
       />
 
       <button
