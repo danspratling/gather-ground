@@ -9,7 +9,7 @@
 
 import { jwtDecode } from '@commercelayer/js-auth';
 import type { Address, Customer, Order, OrderSummary } from '../types';
-import { getCustomerClient, getIntegrationClient } from './client';
+import { getCustomerClient } from './client';
 import {
   mapAddress,
   mapCustomer,
@@ -38,13 +38,9 @@ export async function getCustomer(token: string): Promise<Customer> {
     throw new Error('Could not determine customer ID from access token');
   }
 
-  const client = await getIntegrationClient();
+  const client = getCustomerClient(token);
   const profile = (await client.customers.retrieve(customerId, {
-    include: [
-      'customer_addresses.address',
-      'default_shipping_address',
-      'default_billing_address',
-    ],
+    include: ['customer_addresses.address'],
   })) as unknown as CLCustomerLike;
 
   if (!profile) {
@@ -170,21 +166,20 @@ export async function setDefaultAddress(
 ): Promise<void> {
   if (!token) throw new Error('Token required to set default address');
   const customerId = extractCustomerId(token);
-  // Customer-scoped tokens cannot patch default address relationships —
-  // use the integration client which has the required permissions.
-  const client = await getIntegrationClient();
+  // CL has no first-class "default address" concept on the customer resource.
+  // Store the preference in customer metadata alongside first_name/last_name/phone.
+  const client = getCustomerClient(token);
   const types = Array.isArray(type) ? type : [type];
-  const fields: Record<string, unknown> = { id: customerId };
-  for (const t of types) {
-    fields[
-      t === 'shipping' ? 'default_shipping_address' : 'default_billing_address'
-    ] = { type: 'addresses', id: addressId };
-  }
+  const metadata: Record<string, string> = {};
+  if (types.includes('shipping'))
+    metadata.default_shipping_address_id = addressId;
+  if (types.includes('billing'))
+    metadata.default_billing_address_id = addressId;
   await (
     client.customers as unknown as {
       update: (attrs: Record<string, unknown>) => Promise<unknown>;
     }
-  ).update(fields);
+  ).update({ id: customerId, metadata });
 }
 
 // ---------------------------------------------------------------------------
