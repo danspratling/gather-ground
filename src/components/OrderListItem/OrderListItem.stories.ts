@@ -20,7 +20,7 @@ export const Default = {
   args: {
     id: 'ord-001',
     orderNumber: '#1234',
-    placedAt: new Date('2026-07-15'),
+    placedAt: '2026-07-15T00:00:00.000Z',
     status: 'fulfilled',
     itemCount: 3,
     totalFormatted: '£48.00',
@@ -31,7 +31,7 @@ export const Cancelled = {
   args: {
     id: 'ord-002',
     orderNumber: '#1235',
-    placedAt: new Date('2026-07-20'),
+    placedAt: '2026-07-20T00:00:00.000Z',
     status: 'cancelled',
     itemCount: 1,
     totalFormatted: '£12.00',
@@ -42,7 +42,7 @@ export const LongOrderNumber = {
   args: {
     id: 'ord-003',
     orderNumber: '#GG-2026-00099999',
-    placedAt: new Date('2026-06-01'),
+    placedAt: '2026-06-01T00:00:00.000Z',
     status: 'placed',
     itemCount: 10,
     totalFormatted: '£249.99',
