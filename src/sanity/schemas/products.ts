@@ -73,6 +73,24 @@ export const products = defineType({
       group: 'seo',
     }),
     defineField({
+      name: 'featuredImage',
+      title: 'Featured image',
+      type: 'image',
+      description:
+        'Used everywhere this product is shown as a card — the shop listing, any Products sections, and social sharing previews. Set this first before building page sections.',
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+          description:
+            'Describe the image for screen readers and search engines.',
+        }),
+      ],
+      group: 'content',
+    }),
+    defineField({
       name: 'body',
       title: 'Page sections',
       type: 'array',
