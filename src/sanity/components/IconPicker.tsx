@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { FC, SVGProps } from 'react';
-import { PatchEvent, set, unset } from 'sanity';
+import { set, unset } from 'sanity';
 import type { StringInputProps } from 'sanity';
 import { Badge, Box, Card, Flex, Text, TextInput } from '@sanity/ui';
 import * as icons from '@untitledui-pro/icons/line';
@@ -16,7 +16,7 @@ const ICON_NAMES = Object.keys(icons).filter(
 const MAX_VISIBLE = 60;
 
 export function IconPicker(props: StringInputProps) {
-  const { value, onChange } = props;
+  const { value, onChange, readOnly } = props;
   const [query, setQuery] = useState('');
 
   const filtered = useMemo(() => {
@@ -29,7 +29,7 @@ export function IconPicker(props: StringInputProps) {
   const visible = filtered.slice(0, MAX_VISIBLE);
 
   function handleSelect(name: string) {
-    onChange(PatchEvent.from(value === name ? unset() : set(name)));
+    onChange(value === name ? unset() : set(name));
   }
 
   const SelectedIcon = value
@@ -57,16 +57,18 @@ export function IconPicker(props: StringInputProps) {
             <Box flex={1} />
             <button
               type="button"
-              onClick={() => onChange(PatchEvent.from(unset()))}
+              disabled={readOnly}
+              onClick={() => onChange(unset())}
               style={{
                 background: 'transparent',
                 border: 'none',
-                cursor: 'pointer',
+                cursor: readOnly ? 'default' : 'pointer',
                 fontSize: 11,
                 padding: '2px 8px',
                 borderRadius: 4,
                 color: 'inherit',
                 textDecoration: 'underline',
+                opacity: readOnly ? 0.5 : 1,
               }}
             >
               Clear
@@ -97,6 +99,7 @@ export function IconPicker(props: StringInputProps) {
                 key={name}
                 type="button"
                 title={name}
+                disabled={readOnly}
                 onClick={() => handleSelect(name)}
                 style={{
                   display: 'flex',
@@ -110,7 +113,7 @@ export function IconPicker(props: StringInputProps) {
                   background: isSelected
                     ? 'var(--card-focus-ring-color, #0070f3)1a'
                     : 'transparent',
-                  cursor: 'pointer',
+                  cursor: readOnly ? 'default' : 'pointer',
                   color: 'inherit',
                   width: '100%',
                   aspectRatio: '1',
