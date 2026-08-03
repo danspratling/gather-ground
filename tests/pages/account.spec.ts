@@ -50,3 +50,14 @@ test.describe('account/orders/[id] page — unauthenticated', () => {
     expect(redirectedToLogin || commerceOff).toBe(true);
   });
 });
+
+test.describe('account/orders page — unauthenticated', () => {
+  test('redirects to login when not signed in', async ({ page }) => {
+    const response = await page.goto('/account/orders');
+    // Commerce enabled + no session → middleware redirects to /account/login
+    // Commerce disabled → middleware rewrites to 404 (URL stays at /account/orders)
+    const redirectedToLogin = page.url().includes('/account/login');
+    const commerceOff = response?.status() === 404;
+    expect(redirectedToLogin || commerceOff).toBe(true);
+  });
+});
