@@ -5,8 +5,8 @@ export interface OrderListItemProps {
   id: string;
   /** Human-readable order number e.g. "#1234" */
   orderNumber: string;
-  /** Order placement date */
-  placedAt: Date;
+  /** Order placement date — accepts Date or ISO string (Storybook serialises Date args as strings) */
+  placedAt: Date | string;
   /** CL order status */
   status: CLOrderStatus;
   /** Number of line items in the order */

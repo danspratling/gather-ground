@@ -6,7 +6,7 @@ type Props = OrderListItemProps;
 const { id, orderNumber, placedAt, status, itemCount, totalFormatted } =
   Astro.props;
 
-const formattedDate = placedAt.toLocaleDateString('en-GB', {
+const formattedDate = new Date(placedAt).toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'short',
   year: 'numeric',
