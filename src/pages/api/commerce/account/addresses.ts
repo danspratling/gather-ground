@@ -65,31 +65,45 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     });
   }
 
-  const newAddress = await commerce.createAddress(session.accessToken, {
-    firstName,
-    lastName,
-    line1,
-    line2: typeof line2 === 'string' ? line2 : undefined,
-    city,
-    state: typeof state === 'string' ? state : undefined,
-    postalCode,
-    country,
-    phone: typeof phone === 'string' ? phone : undefined,
-  });
-
-  if (isDefaultShipping && newAddress.id) {
-    await commerce.setDefaultAddress(
-      session.accessToken,
-      newAddress.id,
-      'shipping'
-    );
+  let newAddress;
+  try {
+    newAddress = await commerce.createAddress(session.accessToken, {
+      firstName,
+      lastName,
+      line1,
+      line2: typeof line2 === 'string' ? line2 : undefined,
+      city,
+      state: typeof state === 'string' ? state : undefined,
+      postalCode,
+      country,
+      phone: typeof phone === 'string' ? phone : undefined,
+    });
+  } catch (err) {
+    console.error('createAddress failed:', err);
+    return jsonResponse(500, {
+      success: false,
+      error: 'Failed to save address. Please check your details and try again.',
+    });
   }
-  if (isDefaultBilling && newAddress.id) {
-    await commerce.setDefaultAddress(
-      session.accessToken,
-      newAddress.id,
-      'billing'
-    );
+
+  try {
+    if (isDefaultShipping && newAddress.id) {
+      await commerce.setDefaultAddress(
+        session.accessToken,
+        newAddress.id,
+        'shipping'
+      );
+    }
+    if (isDefaultBilling && newAddress.id) {
+      await commerce.setDefaultAddress(
+        session.accessToken,
+        newAddress.id,
+        'billing'
+      );
+    }
+  } catch (err) {
+    console.error('setDefaultAddress failed:', err);
+    // Address was created successfully; default-setting is best-effort
   }
 
   return jsonResponse(201, { success: true, address: newAddress });
