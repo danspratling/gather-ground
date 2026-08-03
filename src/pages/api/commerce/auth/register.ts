@@ -1,5 +1,7 @@
 import type { APIRoute } from 'astro';
 import { commerce, setSession, type SessionData } from '@/lib/commerce';
+import { getCartId, setCartId } from '@/lib/commerce/cart/cookies';
+import { mergeCart } from '@/lib/commerce/cart/merge';
 import { checkRateLimit } from '@/lib/commerce/rateLimit';
 import {
   clientKey,
@@ -79,6 +81,17 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
     expiresAt: result.expiresAt,
   };
   await setSession(cookies, session);
+
+  // Merge guest cart into customer cart if one exists
+  const guestCartId = getCartId(cookies);
+  if (guestCartId) {
+    try {
+      const merged = await mergeCart(guestCartId, result.customer.id);
+      setCartId(cookies, merged.id);
+    } catch {
+      // Non-fatal — registration succeeds even if cart merge fails
+    }
+  }
 
   return jsonResponse(201, {
     success: true,
