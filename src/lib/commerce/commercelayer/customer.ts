@@ -162,20 +162,23 @@ export async function deleteAddress(
 export async function setDefaultAddress(
   token: string,
   addressId: string,
-  type: 'shipping' | 'billing'
+  type: 'shipping' | 'billing' | Array<'shipping' | 'billing'>
 ): Promise<void> {
   if (!token) throw new Error('Token required to set default address');
   const customerId = extractCustomerId(token);
   const client = getCustomerClient(token);
-  const field =
-    type === 'shipping'
-      ? 'default_shipping_address'
-      : 'default_billing_address';
+  const types = Array.isArray(type) ? type : [type];
+  const fields: Record<string, unknown> = { id: customerId };
+  for (const t of types) {
+    fields[
+      t === 'shipping' ? 'default_shipping_address' : 'default_billing_address'
+    ] = { type: 'addresses', id: addressId };
+  }
   await (
     client.customers as unknown as {
       update: (attrs: Record<string, unknown>) => Promise<unknown>;
     }
-  ).update({ id: customerId, [field]: { type: 'addresses', id: addressId } });
+  ).update(fields);
 }
 
 // ---------------------------------------------------------------------------
