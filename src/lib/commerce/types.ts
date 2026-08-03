@@ -152,6 +152,18 @@ export type OrderStatus =
   | 'refunded';
 
 /**
+ * OrderSummary is the lightweight shape returned from the orders list endpoint.
+ */
+export interface OrderSummary {
+  id: string;
+  number: string;
+  status: OrderStatus;
+  placedAt: Date;
+  total: Money;
+  lineItemCount: number;
+}
+
+/**
  * Order represents a completed purchase
  */
 export interface Order {

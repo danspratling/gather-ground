@@ -7,6 +7,7 @@ export default function VariantPicker({
   options,
   variants,
   selectedVariantId,
+  onVariantChange,
   class: className,
 }: VariantPickerProps) {
   const initialVariant =
@@ -48,6 +49,7 @@ export default function VariantPicker({
         detail: { variantId: matched.id, price: matched.price, oos },
       });
       window.dispatchEvent(event);
+      onVariantChange?.(matched);
     }
   }
 

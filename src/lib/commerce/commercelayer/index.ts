@@ -76,13 +76,9 @@ export const commerceLayerAdapter: CommerceAdapter = {
 
   setDefaultAddress: customer.setDefaultAddress,
 
-  listOrders: async () => {
-    throw new Error('Not yet implemented (GG-E32-API-01)');
-  },
+  listOrders: customer.listOrders,
 
-  getOrder: async () => {
-    throw new Error('Not yet implemented (GG-E32-API-01)');
-  },
+  getOrder: customer.getOrder,
 
   // CHECKOUT ===============================================================
   // Implemented in GG-E40-API-01

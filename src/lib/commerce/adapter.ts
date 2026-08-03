@@ -18,6 +18,7 @@ import type {
   ShippingMethod,
   PaymentMethod,
   Order,
+  OrderSummary,
   Customer,
 } from './types';
 
@@ -182,14 +183,18 @@ export interface CommerceAdapter {
   ): Promise<void>;
 
   /**
-   * List all orders for the customer
+   * List all orders for the customer (paginated)
    */
-  listOrders(token: string): Promise<Order[]>;
+  listOrders(
+    token: string,
+    page?: number
+  ): Promise<{ orders: OrderSummary[]; total: number; page: number }>;
 
   /**
-   * Get a specific order
+   * Get a specific order. Returns null when the order doesn't exist or
+   * belongs to a different customer.
    */
-  getOrder(token: string, orderId: string): Promise<Order>;
+  getOrder(token: string, orderId: string): Promise<Order | null>;
 
   /**
    * CHECKOUT
