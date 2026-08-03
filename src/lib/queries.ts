@@ -28,7 +28,7 @@ export const bodySectionsProjection = `body[]{
     primaryCtaHref ${linkProjection},
     secondaryCtaLabel,
     secondaryCtaHref ${linkProjection},
-    image { asset->, alt }
+    image { asset->, alt, hotspot, crop }
   },
 
   // productsSection
@@ -39,7 +39,7 @@ export const bodySectionsProjection = `body[]{
     subCopy,
     products[]{
       _key,
-      image { asset->, alt },
+      image { asset->, alt, hotspot, crop },
       title,
       description,
       href ${linkProjection}
@@ -54,7 +54,7 @@ export const bodySectionsProjection = `body[]{
       _id,
       quote,
       platform,
-      authorImage { asset->, alt },
+      authorImage { asset->, alt, hotspot, crop },
       authorName,
       authorSecondary,
       authorSecondaryIsHandle
@@ -93,12 +93,12 @@ export const bodySectionsProjection = `body[]{
       _id,
       title,
       "slug": slug.current,
-      image { asset->, alt },
+      image { asset->, alt, hotspot, crop },
       excerpt,
       publishedAt,
       author->{
         name,
-        avatar { asset-> }
+        avatar { asset->, hotspot, crop }
       }
     }
   },
@@ -112,7 +112,7 @@ export const bodySectionsProjection = `body[]{
     primaryCtaHref ${linkProjection},
     secondaryCtaLabel,
     secondaryCtaHref ${linkProjection},
-    image { asset->, alt }
+    image { asset->, alt, hotspot, crop }
   },
 
   // instagramFeedSection
@@ -141,7 +141,7 @@ export const bodySectionsProjection = `body[]{
     features[]{ _key, heading, body },
     iconFeatures[]{ _key, icon, heading, body },
     checklistItems,
-    image { asset->, alt },
+    image { asset->, alt, hotspot, crop },
     imagePosition,
     align,
     dark
@@ -235,13 +235,13 @@ export const allBlogPostsQuery = `*[_type == "blogPosts"] | order(publishedAt de
   _id,
   title,
   "slug": slug.current,
-  image { asset->, alt },
+  image { asset->, alt, hotspot, crop },
   excerpt,
   categories,
   publishedAt,
   author->{
     name,
-    avatar { asset-> }
+    avatar { asset->, hotspot, crop }
   }
 }`;
 
@@ -256,7 +256,7 @@ export const blogPostBySlugQuery = `*[_type == "blogPosts" && slug.current == $s
   "_originalId": _originalId,
   title,
   "slug": slug.current,
-  image { asset->, alt },
+  image { asset->, alt, hotspot, crop },
   excerpt,
   categories,
   publishedAt,
@@ -265,7 +265,7 @@ export const blogPostBySlugQuery = `*[_type == "blogPosts" && slug.current == $s
   metaDescription,
   author->{
     name,
-    avatar { asset-> },
+    avatar { asset->, hotspot, crop },
     role
   }
 }`;
@@ -275,12 +275,12 @@ export const relatedBlogPostsQuery = `*[_type == "blogPosts" && slug.current != 
   _id,
   title,
   "slug": slug.current,
-  image { asset->, alt },
+  image { asset->, alt, hotspot, crop },
   excerpt,
   publishedAt,
   author->{
     name,
-    avatar { asset-> }
+    avatar { asset->, hotspot, crop }
   }
 }`;
 
