@@ -142,9 +142,9 @@ export default function CartDrawer({
                     item={item}
                     isUpdating={isLoading}
                     onQuantityChange={(lineItemId, qty) =>
-                      updateCartItem(lineItemId, qty)
+                      handleQuantityChange(lineItemId, qty)
                     }
-                    onRemove={(lineItemId) => removeCartItem(lineItemId)}
+                    onRemove={(lineItemId) => handleRemove(lineItemId)}
                   />
                 </li>
               ))}

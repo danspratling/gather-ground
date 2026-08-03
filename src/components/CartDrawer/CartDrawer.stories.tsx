@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import CartDrawer from '@/components/CartDrawer/CartDrawer';
 import type { LineItem } from '@/lib/commerce/types';
@@ -67,14 +68,52 @@ export const Empty: Story = {
 };
 
 /**
- * Drawer open with two items in cart.
- * Uses `_items` prop override to supply mock data without a live cart store.
+ * Drawer open with two items.
+ * Uses a stateful wrapper so quantity changes and removals update the subtotal.
  */
 export const WithItems: Story = {
-  args: {
-    _isOpen: true,
-    _items: mockItems,
+  args: { _isOpen: true },
+  render: (args) => {
+    function WithItemsWrapper() {
+      const [items, setItems] = useState<LineItem[]>(mockItems);
+
+      function handleQuantityChange(lineItemId: string, qty: number) {
+        setItems((current) =>
+          current.map((item) =>
+            item.id === lineItemId
+              ? {
+                  ...item,
+                  quantity: qty,
+                  subtotal: {
+                    ...item.subtotal,
+                    amount: item.price.amount * qty,
+                    formatted: new Intl.NumberFormat('en-GB', {
+                      style: 'currency',
+                      currency: item.price.currency,
+                    }).format((item.price.amount * qty) / 100),
+                  },
+                }
+              : item
+          )
+        );
+      }
+
+      function handleRemove(lineItemId: string) {
+        setItems((current) => current.filter((item) => item.id !== lineItemId));
+      }
+
+      return (
+        <CartDrawer
+          {...args}
+          _items={items}
+          _onQuantityChange={handleQuantityChange}
+          _onRemove={handleRemove}
+        />
+      );
+    }
+    return <WithItemsWrapper />;
   },
+};
   play: async () => {
     window.dispatchEvent(new CustomEvent('cart:open'));
     await new Promise((r) => setTimeout(r, 300));
