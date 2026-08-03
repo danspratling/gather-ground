@@ -19,7 +19,12 @@ export const GET: APIRoute = async ({ cookies }) => {
   }
 
   const addresses = await commerce.listAddresses(session.accessToken);
-  return jsonResponse(200, { success: true, addresses });
+  return jsonResponse(200, {
+    success: true,
+    addresses,
+    defaultShippingAddressId: customer.defaultShippingAddressId ?? null,
+    defaultBillingAddressId: customer.defaultBillingAddressId ?? null,
+  });
 };
 
 export const POST: APIRoute = async ({ cookies, request }) => {
@@ -65,31 +70,42 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     });
   }
 
-  const newAddress = await commerce.createAddress(session.accessToken, {
-    firstName,
-    lastName,
-    line1,
-    line2: typeof line2 === 'string' ? line2 : undefined,
-    city,
-    state: typeof state === 'string' ? state : undefined,
-    postalCode,
-    country,
-    phone: typeof phone === 'string' ? phone : undefined,
-  });
-
-  if (isDefaultShipping && newAddress.id) {
-    await commerce.setDefaultAddress(
-      session.accessToken,
-      newAddress.id,
-      'shipping'
-    );
+  let newAddress;
+  try {
+    newAddress = await commerce.createAddress(session.accessToken, {
+      firstName,
+      lastName,
+      line1,
+      line2: typeof line2 === 'string' ? line2 : undefined,
+      city,
+      state: typeof state === 'string' ? state : undefined,
+      postalCode,
+      country,
+      phone: typeof phone === 'string' ? phone : undefined,
+    });
+  } catch (err) {
+    console.error('createAddress failed:', err);
+    return jsonResponse(500, {
+      success: false,
+      error: 'Failed to save address. Please check your details and try again.',
+    });
   }
-  if (isDefaultBilling && newAddress.id) {
-    await commerce.setDefaultAddress(
-      session.accessToken,
-      newAddress.id,
-      'billing'
-    );
+
+  const defaultTypes: Array<'shipping' | 'billing'> = [
+    ...(isDefaultShipping ? (['shipping'] as const) : []),
+    ...(isDefaultBilling ? (['billing'] as const) : []),
+  ];
+  if (defaultTypes.length > 0 && newAddress.id) {
+    try {
+      await commerce.setDefaultAddress(
+        session.accessToken,
+        newAddress.id,
+        defaultTypes.length === 1 ? defaultTypes[0] : defaultTypes
+      );
+    } catch (err) {
+      console.error('setDefaultAddress failed:', err);
+      // best-effort — address was created successfully
+    }
   }
 
   return jsonResponse(201, { success: true, address: newAddress });

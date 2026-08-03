@@ -326,20 +326,37 @@ export default function AddressForm({
             *
           </span>
         </label>
-        <input
+        <select
           id="address-country"
           name="country"
-          type="text"
-          autoComplete="country-name"
+          autoComplete="country"
           required
           defaultValue={initialValues?.country ?? ''}
-          placeholder="United Kingdom"
           aria-invalid={fieldErrors.country ? 'true' : undefined}
           aria-describedby={
             fieldErrors.country ? 'address-country-error' : undefined
           }
           className={`${inputClasses} ${fieldErrors.country ? inputErrorClasses : ''}`}
-        />
+        >
+          <option value="" disabled>
+            Select a country
+          </option>
+          <option value="GB">United Kingdom</option>
+          <option value="US">United States</option>
+          <option value="CA">Canada</option>
+          <option value="AU">Australia</option>
+          <option value="NZ">New Zealand</option>
+          <option value="IE">Ireland</option>
+          <option value="FR">France</option>
+          <option value="DE">Germany</option>
+          <option value="ES">Spain</option>
+          <option value="IT">Italy</option>
+          <option value="NL">Netherlands</option>
+          <option value="BE">Belgium</option>
+          <option value="SE">Sweden</option>
+          <option value="NO">Norway</option>
+          <option value="DK">Denmark</option>
+        </select>
         {fieldErrors.country && (
           <p
             id="address-country-error"

@@ -189,6 +189,15 @@ export const productPageQuery = `*[_type == "productPage"][0]{
 /** Fetch all product slugs for static path generation. */
 export const allProductSlugsQuery = `*[_type == "products" && defined(slug.current)]{ "slug": slug.current }`;
 
+/** Fetch all published products for the PLP grid. */
+export const allProductsQuery = `*[_type == "products" && defined(slug.current)] | order(_createdAt asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  "image": coalesce(featuredImage { asset->, alt }, body[_type == "heroSection"][0].image { asset->, alt }),
+  metaDescription
+}`;
+
 /** Fetch a single product by slug. */
 export const productBySlugQuery = `*[_type == "products" && slug.current == $slug][0]{
   _id,

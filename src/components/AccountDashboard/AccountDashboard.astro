@@ -13,7 +13,7 @@ const { customerName, defaultAddress } = Astro.props;
     <h1
       class="text-display-md font-semibold tracking-display-md text-brand-900"
     >
-      Welcome back, {customerName}
+      Welcome back{customerName ? `, ${customerName}` : ''}
     </h1>
   </div>
 

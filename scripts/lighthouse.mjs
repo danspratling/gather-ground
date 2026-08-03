@@ -65,21 +65,28 @@ const PAGES = [
     ? [{ path: `/products/${productSlug}`, name: 'product-detail' }]
     : []),
 
-  // Account pages: noindex by design — skip is-crawlable so the SEO score
-  // reflects real issues rather than the intentional robots tag.
+  // Account pages all set noindex — skip is-crawlable so the audit doesn't
+  // fail on the intentional SEO exclusion. Dashboard and profile require auth;
+  // Lighthouse will follow the redirect to /account/login and audit that.
   {
     path: '/account/login',
-    name: 'account-login',
+    name: 'account/login',
     skipAudits: ['is-crawlable'],
   },
   {
     path: '/account/register',
-    name: 'account-register',
+    name: 'account/register',
     skipAudits: ['is-crawlable'],
   },
   {
     path: '/account/forgot-password',
-    name: 'account-forgot-password',
+    name: 'account/forgot-password',
+    skipAudits: ['is-crawlable'],
+  },
+  { path: '/account', name: 'account/dashboard', skipAudits: ['is-crawlable'] },
+  {
+    path: '/account/profile',
+    name: 'account/profile',
     skipAudits: ['is-crawlable'],
   },
 ];
@@ -103,9 +110,6 @@ const CHROME_FLAGS = [
   '--disable-dev-shm-usage',
 ];
 
-// ---------------------------------------------------------------------------
-// Audit runner
-// ---------------------------------------------------------------------------
 async function auditPage({ path, name, skipAudits: pageSkipAudits = [] }) {
   const url = `${BASE_URL}${path}`;
   const chrome = await chromeLauncher.launch({ chromeFlags: CHROME_FLAGS });

@@ -8,13 +8,17 @@
  */
 
 import { jwtDecode } from '@commercelayer/js-auth';
-import type { Address, Customer } from '../types';
+import type { Address, Customer, Order, OrderSummary } from '../types';
 import { getCustomerClient } from './client';
 import {
   mapAddress,
   mapCustomer,
+  mapOrderDetail,
+  mapOrderSummary,
   type CLAddressLike,
   type CLCustomerLike,
+  type CLOrderDetailLike,
+  type CLOrderLike,
 } from './customerMappers';
 
 /**
@@ -158,20 +162,24 @@ export async function deleteAddress(
 export async function setDefaultAddress(
   token: string,
   addressId: string,
-  type: 'shipping' | 'billing'
+  type: 'shipping' | 'billing' | Array<'shipping' | 'billing'>
 ): Promise<void> {
   if (!token) throw new Error('Token required to set default address');
   const customerId = extractCustomerId(token);
+  // CL has no first-class "default address" concept on the customer resource.
+  // Store the preference in customer metadata alongside first_name/last_name/phone.
   const client = getCustomerClient(token);
-  const field =
-    type === 'shipping'
-      ? 'default_shipping_address'
-      : 'default_billing_address';
+  const types = Array.isArray(type) ? type : [type];
+  const metadata: Record<string, string> = {};
+  if (types.includes('shipping'))
+    metadata.default_shipping_address_id = addressId;
+  if (types.includes('billing'))
+    metadata.default_billing_address_id = addressId;
   await (
     client.customers as unknown as {
       update: (attrs: Record<string, unknown>) => Promise<unknown>;
     }
-  ).update({ id: customerId, [field]: { type: 'addresses', id: addressId } });
+  ).update({ id: customerId, metadata });
 }
 
 // ---------------------------------------------------------------------------
@@ -232,6 +240,80 @@ export async function changePassword(
     }
     throw err;
   }
+}
+
+// ---------------------------------------------------------------------------
+// Orders
+// ---------------------------------------------------------------------------
+
+export async function listOrders(
+  token: string,
+  page: number = 1
+): Promise<{ orders: OrderSummary[]; total: number; page: number }> {
+  if (!token) throw new Error('Token required to list orders');
+
+  const decoded = jwtDecode(token);
+  const customerId =
+    decoded.payload &&
+    'owner' in decoded.payload &&
+    (decoded.payload as { owner?: { id?: string } }).owner?.id;
+  if (!customerId)
+    throw new Error('Could not determine customer ID from access token');
+
+  const client = getCustomerClient(token);
+  const PAGE_SIZE = 10;
+  const result = await client.orders.list({
+    filters: { customer_id_eq: customerId, status_not_in: 'pending,draft' },
+    sort: { placed_at: 'desc' },
+    pageNumber: page,
+    pageSize: PAGE_SIZE,
+  });
+
+  return {
+    orders: [...result].map((o) =>
+      mapOrderSummary(o as unknown as CLOrderLike)
+    ),
+    total: result.recordCount,
+    page,
+  };
+}
+
+export async function getOrder(
+  token: string,
+  orderId: string
+): Promise<Order | null> {
+  if (!token) throw new Error('Token required to get order');
+
+  const decoded = jwtDecode(token);
+  const customerId =
+    decoded.payload &&
+    'owner' in decoded.payload &&
+    (decoded.payload as { owner?: { id?: string } }).owner?.id;
+  if (!customerId)
+    throw new Error('Could not determine customer ID from access token');
+
+  const client = getCustomerClient(token);
+  let raw: unknown;
+  try {
+    raw = await client.orders.retrieve(orderId, {
+      include: ['line_items', 'shipping_address', 'billing_address'],
+    });
+  } catch (err: unknown) {
+    if (
+      err &&
+      typeof err === 'object' &&
+      'status' in err &&
+      (err as { status: number }).status === 404
+    ) {
+      return null;
+    }
+    throw err;
+  }
+
+  const order = raw as CLOrderDetailLike & { customer_id?: string };
+  if (order.customer_id && order.customer_id !== customerId) return null;
+
+  return mapOrderDetail(order);
 }
 
 export default null;

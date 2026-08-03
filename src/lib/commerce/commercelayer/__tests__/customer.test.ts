@@ -120,6 +120,139 @@ describe('Commerce Layer customer.getCustomer', () => {
     );
   });
 });
+
+// ---------------------------------------------------------------------------
+// Helpers for order tests
+// ---------------------------------------------------------------------------
+
+function orderAttributes(overrides: Record<string, unknown> = {}) {
+  return {
+    number: '12345',
+    status: 'approved',
+    placed_at: '2026-01-15T10:00:00.000Z',
+    currency_code: 'GBP',
+    total_amount_with_taxes_float: 29.99,
+    formatted_total_amount: '£29.99',
+    skus_count: 2,
+    subtotal_amount_float: 24.99,
+    formatted_subtotal_amount: '£24.99',
+    shipping_amount_float: 5.0,
+    formatted_shipping_amount: '£5.00',
+    ...overrides,
+  };
+}
+
+function orderResource(overrides: Record<string, unknown> = {}) {
+  return {
+    id: 'ord-1',
+    type: 'orders',
+    attributes: orderAttributes(overrides),
+    relationships: {
+      line_items: { data: [] },
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// listOrders
+// ---------------------------------------------------------------------------
+
+describe('Commerce Layer customer.listOrders', () => {
+  it('throws when no token is provided', async () => {
+    await expect(customerAdapter.listOrders('')).rejects.toThrow(
+      /Token required/
+    );
+  });
+
+  it('returns an empty list when there are no orders', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/orders`, () =>
+        HttpResponse.json({
+          data: [],
+          meta: { record_count: 0, page_count: 0 },
+        })
+      )
+    );
+
+    const result = await customerAdapter.listOrders('cust-token');
+
+    expect(result.orders).toHaveLength(0);
+    expect(result.total).toBe(0);
+    expect(result.page).toBe(1);
+  });
+
+  it('returns mapped order summaries with correct shape', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/orders`, () =>
+        HttpResponse.json({
+          data: [orderResource()],
+          meta: { record_count: 1, page_count: 1 },
+        })
+      )
+    );
+
+    const result = await customerAdapter.listOrders('cust-token');
+
+    expect(result.orders).toHaveLength(1);
+    expect(result.total).toBe(1);
+    expect(result.page).toBe(1);
+
+    const order = result.orders[0];
+    expect(order.id).toBe('ord-1');
+    expect(order.number).toBe('12345');
+    expect(order.status).toBe('confirmed');
+    expect(order.total.amount).toBe(29.99);
+    expect(order.total.currency).toBe('GBP');
+    expect(order.lineItemCount).toBe(2);
+    expect(order.placedAt).toBeInstanceOf(Date);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getOrder
+// ---------------------------------------------------------------------------
+
+describe('Commerce Layer customer.getOrder', () => {
+  it('throws when no token is provided', async () => {
+    await expect(customerAdapter.getOrder('', 'ord-1')).rejects.toThrow(
+      /Token required/
+    );
+  });
+
+  it('returns null when the order is not found (404)', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/orders/ord-missing`, () =>
+        HttpResponse.json(
+          { errors: [{ code: 'NOT_FOUND', detail: 'Order not found' }] },
+          { status: 404 }
+        )
+      )
+    );
+
+    const result = await customerAdapter.getOrder('cust-token', 'ord-missing');
+    expect(result).toBeNull();
+  });
+
+  it('returns a mapped Order for a valid order ID', async () => {
+    server.use(
+      http.get(`${mockApiUrl}/orders/ord-1`, () =>
+        HttpResponse.json({ data: orderResource() })
+      )
+    );
+
+    const order = await customerAdapter.getOrder('cust-token', 'ord-1');
+
+    expect(order).not.toBeNull();
+    expect(order!.id).toBe('ord-1');
+    expect(order!.number).toBe('12345');
+    expect(order!.status).toBe('confirmed');
+    expect(order!.total.amount).toBe(29.99);
+    expect(order!.subtotal.amount).toBe(24.99);
+    expect(order!.shippingCost?.amount).toBe(5.0);
+    expect(order!.lineItems).toHaveLength(0);
+  });
+});
+
 // ---------------------------------------------------------------------------
 // Address CRUD tests
 // ---------------------------------------------------------------------------
@@ -311,6 +444,33 @@ describe('Commerce Layer customer.setDefaultAddress', () => {
     await expect(
       customerAdapter.setDefaultAddress('cust-token', 'addr-1', 'billing')
     ).resolves.toBeUndefined();
+  });
+
+  it('stores both default address ids in metadata in one update', async () => {
+    let capturedBody: unknown = null;
+    server.use(
+      http.patch(`${mockApiUrl}/customers/cust-me`, async ({ request }) => {
+        capturedBody = await request.json();
+        return HttpResponse.json({ data: { id: 'cust-me', type: 'customers' } });
+      })
+    );
+
+    await expect(
+      customerAdapter.setDefaultAddress('cust-token', 'addr-1', [
+        'shipping',
+        'billing',
+      ])
+    ).resolves.toBeUndefined();
+
+    const body = capturedBody as {
+      data: { attributes: { metadata: Record<string, string> } };
+    };
+    expect(body?.data?.attributes?.metadata?.default_shipping_address_id).toBe(
+      'addr-1'
+    );
+    expect(body?.data?.attributes?.metadata?.default_billing_address_id).toBe(
+      'addr-1'
+    );
   });
 });
 
