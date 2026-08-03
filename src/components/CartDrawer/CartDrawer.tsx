@@ -47,6 +47,7 @@ export default function CartDrawer({
   class: className,
   _items,
   _isLoading,
+  _isOpen,
 }: CartDrawerProps) {
   const {
     items: storeItems,
@@ -60,7 +61,7 @@ export default function CartDrawer({
   const items = _items ?? storeItems;
   const isLoading = _isLoading ?? storeIsLoading;
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(_isOpen ?? false);
 
   useEffect(() => {
     const handleOpen = () => setIsOpen(true);

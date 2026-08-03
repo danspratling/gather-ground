@@ -63,11 +63,7 @@ type Story = StoryObj<typeof meta>;
 
 /** Drawer open showing empty cart state */
 export const Empty: Story = {
-  args: {},
-  play: async () => {
-    window.dispatchEvent(new CustomEvent('cart:open'));
-    await new Promise((r) => setTimeout(r, 300));
-  },
+  args: { _isOpen: true },
 };
 
 /**
@@ -76,6 +72,7 @@ export const Empty: Story = {
  */
 export const WithItems: Story = {
   args: {
+    _isOpen: true,
     _items: mockItems,
   },
   play: async () => {
@@ -87,11 +84,8 @@ export const WithItems: Story = {
 /** Drawer open with a loading overlay — e.g. quantity update in progress */
 export const Loading: Story = {
   args: {
+    _isOpen: true,
     _items: mockItems,
     _isLoading: true,
-  },
-  play: async () => {
-    window.dispatchEvent(new CustomEvent('cart:open'));
-    await new Promise((r) => setTimeout(r, 300));
   },
 };
