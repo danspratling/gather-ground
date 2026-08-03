@@ -1,0 +1,68 @@
+---
+export const prerender = false;
+import Layout from '@/layouts/Layout.astro';
+import AccountLayout from '@/components/AccountLayout/AccountLayout.astro';
+import OrderDetail from '@/components/OrderDetail/OrderDetail.astro';
+import type { CLOrderStatus } from '@/components/OrderStatusBadge/OrderStatusBadge.types';
+import type { OrderDetailLineItem } from '@/components/OrderDetail/OrderDetail.types';
+import type { Order } from '@/lib/commerce/types';
+
+const { id } = Astro.params;
+
+const apiUrl = new URL(`/api/commerce/account/orders/${id}`, Astro.url).href;
+const response = await fetch(apiUrl, {
+  headers: { cookie: Astro.request.headers.get('cookie') ?? '' },
+});
+
+if (!response.ok || response.status === 404) {
+  return Astro.rewrite('/404');
+}
+
+const data = await response.json();
+if (!data.success || !data.order) {
+  return Astro.rewrite('/404');
+}
+
+const order: Order = data.order;
+
+function mapStatus(status: string): CLOrderStatus {
+  switch (status) {
+    case 'delivered':
+      return 'fulfilled';
+    case 'cancelled':
+      return 'cancelled';
+    default:
+      return 'placed';
+  }
+}
+
+const lineItems: OrderDetailLineItem[] = order.lineItems.map((item) => ({
+  id: item.id,
+  name: item.variantId,
+  unitPriceFormatted: item.price.formatted,
+  quantity: item.quantity,
+  lineTotalFormatted: item.subtotal.formatted,
+}));
+
+const customer = Astro.locals.customer!;
+---
+
+<Layout title={`Order ${order.number}`} description="Order details">
+  <meta name="robots" content="noindex" slot="head-extras" />
+  <AccountLayout
+    customerName={customer.firstName}
+    pathname={Astro.url.pathname}
+  >
+    <OrderDetail
+      orderNumber={order.number}
+      status={mapStatus(order.status)}
+      placedAt={order.createdAt.toString()}
+      shippingAddress={order.shippingAddress}
+      billingAddress={order.billingAddress}
+      lineItems={lineItems}
+      subtotalFormatted={order.subtotal.formatted}
+      shippingCostFormatted={order.shippingCost?.formatted ?? '£0.00'}
+      totalFormatted={order.total.formatted}
+    />
+  </AccountLayout>
+</Layout>
