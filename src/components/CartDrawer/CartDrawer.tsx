@@ -101,18 +101,7 @@ export default function CartDrawer({
           className
         )}
       >
-        {/* Loading overlay */}
-        {isLoading && (
-          <div
-            aria-live="polite"
-            aria-label="Updating cart"
-            className="absolute inset-0 z-10 flex items-center justify-center bg-off-white/60"
-          >
-            <span className="size-6 animate-spin rounded-full border-2 border-brand-700 border-t-transparent" />
-          </div>
-        )}
-
-        {/* Header */}
+        {/* Header */}}
         <header className="flex items-center justify-between border-b border-gray-200 px-4 py-4">
           <h2 className="text-lg font-semibold text-brand-700">Cart</h2>
           <button
@@ -135,6 +124,7 @@ export default function CartDrawer({
                 <li key={item.id}>
                   <CartItemRow
                     item={item}
+                    isUpdating={isLoading}
                     onQuantityChange={(lineItemId, qty) =>
                       updateCartItem(lineItemId, qty)
                     }
