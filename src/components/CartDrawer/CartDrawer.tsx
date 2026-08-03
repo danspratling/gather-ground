@@ -49,6 +49,8 @@ export default function CartDrawer({
   _items,
   _isLoading,
   _isOpen,
+  _onQuantityChange,
+  _onRemove,
 }: CartDrawerProps) {
   const {
     items: storeItems,
@@ -61,6 +63,8 @@ export default function CartDrawer({
   // Allow test/story overrides via underscore props
   const items: LineItem[] = _items ?? storeItems;
   const isLoading = _isLoading ?? storeIsLoading;
+  const handleQuantityChange = _onQuantityChange ?? updateCartItem;
+  const handleRemove = _onRemove ?? removeCartItem;
 
   // Always derive subtotal from the items we're actually displaying so _items
   // overrides (stories) and live store items both show the correct total.
