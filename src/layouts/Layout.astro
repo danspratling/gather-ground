@@ -1,7 +1,7 @@
 ---
 import AnnouncementBanner from '@/components/AnnouncementBanner/AnnouncementBanner.astro';
 import AccountCartPanel from '@/components/AccountCartPanel/AccountCartPanel';
-import CartTriggerPlaceholder from '@/components/CartTrigger/CartTriggerPlaceholder';
+import CartTrigger from '@/components/CartTrigger/CartTrigger';
 import CookieBanner from '@/components/CookieBanner/CookieBanner';
 import Clarity from '@/components/Analytics/Clarity.astro';
 import Footer from '@/components/Layout/Footer/Footer.astro';
@@ -257,11 +257,7 @@ const footerProps = {
           />
         )
       }
-      {
-        commerceEnabled && (
-          <CartTriggerPlaceholder slot="commerce-cart" client:visible />
-        )
-      }
+      {commerceEnabled && <CartTrigger slot="commerce-cart" client:visible />}
     </Header>
     <slot />
     <Footer {...footerProps} />

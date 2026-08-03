@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { User01 } from '@untitledui-pro/icons/line';
 import { cn } from '@/lib/utils';
 import {
   Popover,
@@ -16,23 +16,6 @@ export default function AccountCartPanel({
       ? `${customer.firstName} ${customer.lastName}`
       : customer.email;
 
-  const initial = (customer.firstName || customer.email)
-    .charAt(0)
-    .toUpperCase();
-
-  const [cartCount, setCartCount] = React.useState(0);
-
-  React.useEffect(() => {
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent<{ count?: number }>).detail;
-      if (typeof detail?.count === 'number') {
-        setCartCount(detail.count);
-      }
-    };
-    window.addEventListener('cart:updated', handler);
-    return () => window.removeEventListener('cart:updated', handler);
-  }, []);
-
   const handleSignOut = async () => {
     await fetch('/api/commerce/auth/logout', { method: 'POST' });
     window.location.href = '/';
@@ -42,26 +25,12 @@ export default function AccountCartPanel({
     <Popover>
       <PopoverTrigger
         className={cn(
-          'relative flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-brand-800 hover:bg-brand-25 hover:text-brand-900',
+          'relative inline-flex cursor-pointer items-center justify-center rounded p-2 text-brand-700 transition-colors hover:bg-brand-50',
           className
         )}
         aria-label={`Account menu for ${displayName}`}
       >
-        <span
-          className="flex size-7 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700"
-          aria-hidden="true"
-        >
-          {initial}
-        </span>
-        <span className="hidden lg:block">{displayName}</span>
-        {cartCount > 0 && (
-          <span
-            className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-brand-900 text-[10px] font-semibold text-white"
-            aria-label={`${cartCount} items in cart`}
-          >
-            {cartCount}
-          </span>
-        )}
+        <User01 className="size-6" aria-hidden="true" />
       </PopoverTrigger>
       <PopoverContent
         className="w-48 p-1"
