@@ -6,16 +6,14 @@ import OrdersList from '@/components/OrdersList/OrdersList.astro';
 import type { CLOrderStatus } from '@/components/OrderStatusBadge/OrderStatusBadge.types';
 import type { OrderListItemProps } from '@/components/OrderListItem/OrderListItem.types';
 
+// `page` is the highest page loaded so far. Visiting ?page=2 shows pages 1+2
+// combined (20 orders), giving a server-rendered "load more" experience.
 const page = Math.max(
   1,
   parseInt(Astro.url.searchParams.get('page') ?? '1', 10)
 );
 
-const apiUrl = new URL(`/api/commerce/account/orders?page=${page}`, Astro.url)
-  .href;
-const response = await fetch(apiUrl, {
-  headers: { cookie: Astro.request.headers.get('cookie') ?? '' },
-});
+const headers = { cookie: Astro.request.headers.get('cookie') ?? '' };
 
 function mapStatus(status: string): CLOrderStatus {
   switch (status) {
@@ -28,27 +26,63 @@ function mapStatus(status: string): CLOrderStatus {
   }
 }
 
+type ApiOrder = {
+  id: string;
+  number: string;
+  status: string;
+  placedAt: string;
+  total: { formatted: string };
+  lineItemCount: number;
+};
+
+function mapOrder(o: ApiOrder): OrderListItemProps {
+  return {
+    id: o.id,
+    orderNumber: o.number,
+    placedAt: o.placedAt,
+    status: mapStatus(o.status),
+    itemCount: o.lineItemCount,
+    totalFormatted: o.total.formatted,
+  };
+}
+
+// Fetch all pages 1..page in parallel and concatenate
+const pageNumbers = Array.from({ length: page }, (_, i) => i + 1);
+const responses = await Promise.all(
+  pageNumbers.map((p) =>
+    fetch(new URL(`/api/commerce/account/orders?page=${p}`, Astro.url).href, {
+      headers,
+    })
+  )
+);
+
 let orders: OrderListItemProps[] = [];
-if (response.ok) {
-  const data = await response.json();
-  if (data.success && Array.isArray(data.orders)) {
-    orders = data.orders.map(
-      (o: {
-        id: string;
-        number: string;
-        status: string;
-        placedAt: string;
-        total: { formatted: string };
-        lineItemCount: number;
-      }) => ({
-        id: o.id,
-        orderNumber: o.number,
-        placedAt: o.placedAt,
-        status: mapStatus(o.status),
-        itemCount: o.lineItemCount,
-        totalFormatted: o.total.formatted,
-      })
-    );
+let hasMore = false;
+
+for (const res of responses) {
+  if (!res.ok) continue;
+  const data = await res.json();
+  if (!data.success || !Array.isArray(data.orders)) continue;
+  orders = orders.concat(data.orders.map(mapOrder));
+  // If any page returned a full 10 rows there may be more
+  if (data.orders.length === 10) hasMore = true;
+}
+
+// Confirm there actually is a next page (avoid a spurious "Load more" on
+// the last batch that happened to be exactly 10 items)
+if (hasMore) {
+  const nextCheck = await fetch(
+    new URL(`/api/commerce/account/orders?page=${page + 1}`, Astro.url).href,
+    { headers }
+  );
+  if (nextCheck.ok) {
+    const nextData = await nextCheck.json();
+    hasMore =
+      nextData.success &&
+      Array.isArray(nextData.orders) &&
+      nextData.orders.length > 0;
+  } else {
+    hasMore = false;
   }
 }
 
@@ -64,6 +98,18 @@ const customer = Astro.locals.customer!;
     <div class="space-y-6">
       <h1 class="text-2xl font-semibold text-brand-900">Orders</h1>
       <OrdersList orders={orders} />
+      {
+        hasMore && (
+          <div class="text-center">
+            <a
+              href={`/account/orders?page=${page + 1}`}
+              class="inline-block rounded-lg border border-gray-200 bg-white px-6 py-2 text-sm font-medium text-brand-900 transition-colors hover:bg-gray-50"
+            >
+              Load more
+            </a>
+          </div>
+        )
+      }
     </div>
   </AccountLayout>
 </Layout>
