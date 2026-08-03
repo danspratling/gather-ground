@@ -35,7 +35,14 @@ export type SanitySection = Record<string, unknown> & {
 };
 
 type Dict = Record<string, unknown>;
-type SanityImage = { asset?: { _ref: string }; alt?: string } | undefined;
+type SanityImage =
+  | {
+      asset?: { _ref: string };
+      alt?: string;
+      hotspot?: unknown;
+      crop?: unknown;
+    }
+  | undefined;
 
 function arr(value: unknown): Dict[] {
   return (Array.isArray(value) ? value : []) as Dict[];
@@ -48,8 +55,8 @@ function img(
 ) {
   return {
     src: sanityImageSrc(
-      image as { asset?: { _ref: string } },
-      options ?? { width: 800, quality: 80 }
+      image as { asset?: { _ref: string }; hotspot?: unknown; crop?: unknown },
+      options ?? { width: 800, height: 600, quality: 80 }
     ),
     alt: sanityImageAlt(image as { alt?: string }, fallbackAlt),
   };
@@ -80,7 +87,7 @@ export function heroSectionProps(s: Dict) {
     },
     secondaryCta: cta(s.secondaryCtaLabel, s.secondaryCtaHref),
     image: s.image
-      ? img(s.image, undefined, { width: 1216, quality: 80 })
+      ? img(s.image, undefined, { width: 1216, height: 516, quality: 80 })
       : undefined,
   };
 }
@@ -93,10 +100,18 @@ export function productsSectionProps(s: Dict) {
     heading: s.heading as string,
     subCopy: s.subCopy as string | undefined,
     products: arr(s.products).map((p) => ({
-      image: sanityImageSrc(p.image as { asset?: { _ref: string } }, {
-        width: 600,
-        quality: 80,
-      }),
+      image: sanityImageSrc(
+        p.image as {
+          asset?: { _ref: string };
+          hotspot?: unknown;
+          crop?: unknown;
+        },
+        {
+          width: 600,
+          height: 192,
+          quality: 80,
+        }
+      ),
       imageAlt: sanityImageAlt(p.image as { alt?: string }),
       title: p.title as string,
       description:
@@ -122,10 +137,18 @@ export function testimonialsSectionProps(s: Dict) {
           undefined,
         author: {
           src:
-            sanityImageSrc(t.authorImage as { asset?: { _ref: string } }, {
-              width: 96,
-              quality: 80,
-            }) || undefined,
+            sanityImageSrc(
+              t.authorImage as {
+                asset?: { _ref: string };
+                hotspot?: unknown;
+                crop?: unknown;
+              },
+              {
+                width: 96,
+                height: 96,
+                quality: 80,
+              }
+            ) || undefined,
           alt: sanityImageAlt(t.authorImage as { alt?: string }) || undefined,
           name: t.authorName as string,
           secondary: (t.authorSecondary as string) || undefined,
@@ -187,10 +210,18 @@ export function blogSectionProps(s: Dict) {
     posts: arr(s.posts).map((p) => {
       const author = p.author as Dict | undefined;
       return {
-        image: sanityImageSrc(p.image as { asset?: { _ref: string } }, {
-          width: 600,
-          quality: 80,
-        }),
+        image: sanityImageSrc(
+          p.image as {
+            asset?: { _ref: string };
+            hotspot?: unknown;
+            crop?: unknown;
+          },
+          {
+            width: 600,
+            height: 224,
+            quality: 80,
+          }
+        ),
         imageAlt: sanityImageAlt(
           p.image as { alt?: string },
           p.title as string
@@ -200,10 +231,18 @@ export function blogSectionProps(s: Dict) {
         date: formatDate(p.publishedAt as string),
         authorName: (author?.name as string) ?? '',
         authorImage: author?.avatar
-          ? sanityImageSrc(author.avatar as { asset?: { _ref: string } }, {
-              width: 96,
-              quality: 80,
-            })
+          ? sanityImageSrc(
+              author.avatar as {
+                asset?: { _ref: string };
+                hotspot?: unknown;
+                crop?: unknown;
+              },
+              {
+                width: 96,
+                height: 96,
+                quality: 80,
+              }
+            )
           : '',
         authorImageAlt: (author?.name as string) ?? '',
         href: '/blog/' + (p.slug as string),
@@ -225,7 +264,11 @@ export function callToActionProps(s: Dict): CallToActionProps {
     secondaryCta: cta(s.secondaryCtaLabel, s.secondaryCtaHref),
   };
   if (variant === 'split-image') {
-    return { variant, ...base, image: img(s.image) };
+    return {
+      variant,
+      ...base,
+      image: img(s.image, undefined, { width: 600, height: 600, quality: 80 }),
+    };
   }
   return { variant, ...base };
 }
@@ -247,7 +290,7 @@ export function contentSectionProps(
       dark,
       icon: enumClean(s.icon as string | undefined),
       checklistItems: s.checklistItems as string | undefined,
-      image: img(s.image),
+      image: img(s.image, undefined, { width: 800, height: 600, quality: 80 }),
       // Position is resolved at the page level by
       // resolveAlternatingPositions() so consecutive alternating sections
       // auto-flip. Fall back to the raw value (or 'right') for callers
@@ -275,7 +318,7 @@ export function contentSectionProps(
       body,
       dark,
       eyebrow: (s.eyebrow as string) ?? '',
-      image: img(s.image),
+      image: img(s.image, undefined, { width: 1216, height: 480, quality: 80 }),
       features: arr(s.iconFeatures).map((f) => ({
         icon: enumClean(f.icon as string) ?? '',
         heading: f.heading as string,
