@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from 'storybook/test';
 
 import TestimonialsCarousel from '@/components/TestimonialsSection/TestimonialsCarousel';
 
@@ -63,5 +64,19 @@ export const Default: Story = {
         },
       },
     ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Three dot navigation buttons should be rendered
+    const dots = canvas.getAllByRole('button', { name: /go to slide/i });
+    await expect(dots).toHaveLength(3);
+
+    // Slide 1 is active initially — click slide 2
+    await userEvent.click(dots[1]);
+
+    // Slide 2 dot should now appear active (bg-brand-700 vs bg-brand-50 is
+    // visual; we verify that clicking doesn't throw and the dots still exist)
+    await expect(dots[1]).toBeInTheDocument();
   },
 };

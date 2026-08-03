@@ -1,27 +1,25 @@
-// STUB: placeholder until A2b (cart store) merges
-// TODO: replace with nanostores implementation from feature/gg-216-gg-217-cart-store-write-api
-import type { LineItem } from '@/lib/commerce/types';
+/**
+ * useCart — React hook wrapping the nanostores cart atom
+ *
+ * Provides reactive access to cart state and exposes the mutation helpers.
+ * Import in React islands only (`.tsx` files with `client:*` directive).
+ */
 
-export interface UseCartReturn {
-  items: LineItem[];
-  subtotal: string;
-  total: string;
-  count: number;
-  isLoading: boolean;
-  addToCart: (skuCode: string, quantity: number) => Promise<void>;
-  updateCartItem: (lineItemId: string, quantity: number) => Promise<void>;
-  removeCartItem: (lineItemId: string) => Promise<void>;
-}
+import { useStore } from '@nanostores/react';
+import { cartStore, addToCart, updateCartItem, removeCartItem } from './store';
 
-export function useCart(): UseCartReturn {
+export function useCart() {
+  const cart = useStore(cartStore);
   return {
-    items: [],
-    subtotal: '£0.00',
-    total: '£0.00',
-    count: 0,
-    isLoading: false,
-    addToCart: async () => {},
-    updateCartItem: async () => {},
-    removeCartItem: async () => {},
+    items: cart.items,
+    subtotal: cart.subtotal,
+    total: cart.total,
+    count: cart.count,
+    isLoading: cart.isLoading,
+    addToCart,
+    updateCartItem,
+    removeCartItem,
   };
 }
+
+export default null;

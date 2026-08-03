@@ -1,0 +1,61 @@
+---
+export const prerender = false;
+import Layout from '@/layouts/Layout.astro';
+import AccountLayout from '@/components/AccountLayout/AccountLayout.astro';
+import Heading from '@/components/Typography/Heading/Heading.astro';
+import ProfileForm from '@/components/Forms/ProfileForm/ProfileForm';
+import ChangePasswordForm from '@/components/Forms/ChangePasswordForm/ChangePasswordForm';
+
+const customer = Astro.locals.customer!;
+let profileData = {
+  firstName: customer.firstName,
+  lastName: customer.lastName,
+  email: customer.email,
+};
+
+try {
+  const origin = new URL(Astro.request.url).origin;
+  const resp = await fetch(`${origin}/api/commerce/account/profile`, {
+    headers: { cookie: Astro.request.headers.get('cookie') ?? '' },
+  });
+  if (resp.ok) {
+    const data = (await resp.json()) as {
+      firstName: string;
+      lastName: string;
+      email: string;
+    };
+    profileData = data;
+  }
+} catch {
+  // fall back to locals data
+}
+---
+
+<Layout title="Profile" description="Update your Gather Ground profile.">
+  <meta name="robots" content="noindex" slot="head-extras" />
+  <AccountLayout
+    customerName={customer.firstName}
+    pathname={Astro.url.pathname}
+  >
+    <div class="flex flex-col gap-8">
+      <section class="flex flex-col gap-6">
+        <Heading as="h1" size="text-xl" text="Profile" />
+        <ProfileForm
+          client:visible
+          initialValues={{
+            firstName: profileData.firstName,
+            lastName: profileData.lastName,
+            email: profileData.email,
+          }}
+        />
+      </section>
+
+      <hr class="border-brand-100" />
+
+      <section class="flex flex-col gap-6">
+        <Heading as="h2" size="text-xl" text="Change password" />
+        <ChangePasswordForm client:visible />
+      </section>
+    </div>
+  </AccountLayout>
+</Layout>

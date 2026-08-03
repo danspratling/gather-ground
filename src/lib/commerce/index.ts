@@ -60,3 +60,7 @@ export {
   clearSession,
   type SessionData,
 } from './session';
+export type { OrderSummary } from './types';
+// Token-based order helpers — CL-specific paginated shape, exported here so
+// API routes can import from @/lib/commerce without reaching into the adapter.
+export { listOrders, getOrder } from './commercelayer/customer';

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 import QuantityStepper from '@/components/QuantityStepper/QuantityStepper';
 
 const meta = {
@@ -28,6 +28,28 @@ export const Default: Story = {
     max: 99,
     onChange: fn(),
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText('Quantity');
+    const increment = canvas.getByLabelText('Increase quantity');
+    const decrement = canvas.getByLabelText('Decrease quantity');
+
+    // Decrement is disabled at min
+    await expect(decrement).toBeDisabled();
+    await expect(input).toHaveValue(1);
+
+    // Increment once → 2
+    await userEvent.click(increment);
+    await expect(input).toHaveValue(2);
+
+    // Increment again → 3 (catches the stuck-at-2 regression)
+    await userEvent.click(increment);
+    await expect(input).toHaveValue(3);
+
+    // Decrement → 2
+    await userEvent.click(decrement);
+    await expect(input).toHaveValue(2);
+  },
 };
 
 export const AtMin: Story = {
@@ -36,6 +58,15 @@ export const AtMin: Story = {
     min: 1,
     max: 99,
     onChange: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const decrement = canvas.getByRole('button', {
+      name: /decrease quantity/i,
+    });
+
+    // Decrement button must be disabled at minimum
+    await expect(decrement).toBeDisabled();
   },
 };
 
@@ -46,6 +77,15 @@ export const AtMax: Story = {
     max: 99,
     onChange: fn(),
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const increment = canvas.getByRole('button', {
+      name: /increase quantity/i,
+    });
+
+    // Increment button must be disabled at maximum
+    await expect(increment).toBeDisabled();
+  },
 };
 
 export const Disabled: Story = {
@@ -55,5 +95,17 @@ export const Disabled: Story = {
     max: 99,
     disabled: true,
     onChange: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const increment = canvas.getByRole('button', {
+      name: /increase quantity/i,
+    });
+    const decrement = canvas.getByRole('button', {
+      name: /decrease quantity/i,
+    });
+
+    await expect(increment).toBeDisabled();
+    await expect(decrement).toBeDisabled();
   },
 };
