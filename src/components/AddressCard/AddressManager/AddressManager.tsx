@@ -95,9 +95,19 @@ export default function AddressManager({
       const data = (await resp.json()) as {
         success: boolean;
         addresses?: CommerceAddress[];
+        defaultShippingAddressId?: string | null;
+        defaultBillingAddressId?: string | null;
       };
       if (data.success && data.addresses) {
-        setAddresses(data.addresses.map((a) => toCardAddress(a)));
+        setAddresses(
+          data.addresses.map((a) =>
+            toCardAddress(
+              a,
+              data.defaultShippingAddressId ?? undefined,
+              data.defaultBillingAddressId ?? undefined
+            )
+          )
+        );
       }
     } catch {
       // silently ignore network errors — stale data is acceptable

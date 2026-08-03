@@ -40,7 +40,11 @@ export async function getCustomer(token: string): Promise<Customer> {
 
   const client = getCustomerClient(token);
   const profile = (await client.customers.retrieve(customerId, {
-    include: ['customer_addresses.address'],
+    include: [
+      'customer_addresses.address',
+      'default_shipping_address',
+      'default_billing_address',
+    ],
   })) as unknown as CLCustomerLike;
 
   if (!profile) {

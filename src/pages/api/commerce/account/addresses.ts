@@ -19,7 +19,12 @@ export const GET: APIRoute = async ({ cookies }) => {
   }
 
   const addresses = await commerce.listAddresses(session.accessToken);
-  return jsonResponse(200, { success: true, addresses });
+  return jsonResponse(200, {
+    success: true,
+    addresses,
+    defaultShippingAddressId: customer.defaultShippingAddressId ?? null,
+    defaultBillingAddressId: customer.defaultBillingAddressId ?? null,
+  });
 };
 
 export const POST: APIRoute = async ({ cookies, request }) => {
