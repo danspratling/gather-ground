@@ -10,7 +10,12 @@ const { data: rawProducts } = await loadQuery<
     _id: string;
     title: string;
     slug: string;
-    image?: { asset?: { _ref?: string; _id?: string }; alt?: string };
+    image?: {
+      asset?: { _ref?: string; _id?: string };
+      alt?: string;
+      hotspot?: unknown;
+      crop?: unknown;
+    };
     metaDescription?: string;
   }>
 >({ query: allProductsQuery });
@@ -19,8 +24,12 @@ const products = (rawProducts ?? []).map((product) => ({
   title: product.title,
   href: `/products/${product.slug}`,
   image: sanityImageSrc(
-    product.image as { asset?: { _ref?: string; _id?: string } },
-    { width: 600, quality: 80 }
+    product.image as {
+      asset?: { _ref?: string; _id?: string };
+      hotspot?: unknown;
+      crop?: unknown;
+    },
+    { width: 600, height: 256, quality: 80 }
   ),
   imageAlt: sanityImageAlt(product.image, product.title),
   description: product.metaDescription,
