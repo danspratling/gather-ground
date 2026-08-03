@@ -54,7 +54,7 @@ export const Default = {
   args: {
     orderNumber: '#1234',
     status: 'fulfilled',
-    placedAt: new Date('2026-07-15'),
+    placedAt: '2026-07-15T00:00:00.000Z',
     shippingAddress: address,
     billingAddress: address,
     lineItems,
@@ -68,7 +68,7 @@ export const Cancelled = {
   args: {
     orderNumber: '#1235',
     status: 'cancelled',
-    placedAt: new Date('2026-07-20'),
+    placedAt: '2026-07-20T00:00:00.000Z',
     shippingAddress: address,
     billingAddress: address,
     lineItems: [lineItems[0]!],
@@ -82,7 +82,7 @@ export const LargeOrder = {
   args: {
     orderNumber: '#1236',
     status: 'approved',
-    placedAt: new Date('2026-07-25'),
+    placedAt: '2026-07-25T00:00:00.000Z',
     shippingAddress: address,
     billingAddress: { ...address, line2: 'Flat 4B' },
     lineItems: Array.from({ length: 10 }, (_, i) => ({
