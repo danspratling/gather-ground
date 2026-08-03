@@ -2,16 +2,7 @@ import { useMemo, useState } from 'react';
 import type { FC, SVGProps } from 'react';
 import { PatchEvent, set, unset } from 'sanity';
 import type { StringInputProps } from 'sanity';
-import {
-  Badge,
-  Box,
-  Card,
-  Flex,
-  Grid,
-  Text,
-  TextInput,
-  Tooltip,
-} from '@sanity/ui';
+import { Badge, Box, Card, Flex, Text, TextInput } from '@sanity/ui';
 import * as icons from '@untitledui-pro/icons/line';
 
 type IconComponent = FC<
@@ -91,39 +82,45 @@ export function IconPicker(props: StringInputProps) {
         padding={2}
         style={{ maxHeight: 320, overflowY: 'auto' }}
       >
-        <Grid columns={[6, 6, 8]} gap={1}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(8, 1fr)',
+            gap: 4,
+          }}
+        >
           {visible.map((name) => {
             const Icon = icons[name] as IconComponent;
             const isSelected = value === name;
             return (
-              <Tooltip
+              <button
                 key={name}
-                content={
-                  <Box padding={2}>
-                    <Text size={0}>{name}</Text>
-                  </Box>
-                }
-                placement="top"
-                portal
+                type="button"
+                title={name}
+                onClick={() => handleSelect(name)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 8,
+                  borderRadius: 4,
+                  border: isSelected
+                    ? '2px solid var(--card-focus-ring-color, #0070f3)'
+                    : '2px solid transparent',
+                  background: isSelected
+                    ? 'var(--card-focus-ring-color, #0070f3)1a'
+                    : 'transparent',
+                  cursor: 'pointer',
+                  color: 'inherit',
+                  width: '100%',
+                  aspectRatio: '1',
+                }}
               >
-                <Card
-                  as="button"
-                  type="button"
-                  padding={2}
-                  radius={2}
-                  tone={isSelected ? 'primary' : 'default'}
-                  onClick={() => handleSelect(name)}
-                  style={{ cursor: 'pointer', border: 'none', width: '100%' }}
-                  selected={isSelected}
-                >
-                  <Flex align="center" justify="center">
-                    <Icon size={20} />
-                  </Flex>
-                </Card>
-              </Tooltip>
+                <Icon size={18} />
+              </button>
             );
           })}
-        </Grid>
+        </div>
       </Card>
 
       {/* Overflow hint */}
