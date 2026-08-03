@@ -1,14 +1,14 @@
-// @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
-// See: https://storybook-astro.org/writing-stories/
-import { expect, within } from 'storybook/test';
+import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from 'storybook/test';
 
-import ProductDetail from '@/components/ProductDetail/ProductDetail.astro';
+import ProductDetail from '@/components/ProductDetail/ProductDetail';
 
 const meta = {
   title: 'Commerce/Product Detail',
   component: ProductDetail,
   tags: ['autodocs'],
   parameters: {
+    renderer: 'react',
     layout: 'padded',
     a11y: { disable: false },
     chromatic: { viewports: [375, 1440] },
@@ -17,9 +17,10 @@ const meta = {
       url: 'https://www.figma.com/design/zsTOcot4CKA5nq2ihg0ZLi/Gather-Ground-Website?node-id=0-1',
     },
   },
-};
+} satisfies Meta<typeof ProductDetail>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 // --- Shared mock data ---
 
@@ -96,7 +97,7 @@ const oosVariants = allVariants.map((v) => ({
 
 // --- Stories ---
 
-export const Default = {
+export const Default: Story = {
   args: {
     title: 'Free-Range Pork Belly',
     description:
@@ -106,42 +107,53 @@ export const Default = {
     variants: allVariants,
     selectedVariantId: 'var-500g-belly',
   },
-  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Product title and price render
-    await expect(canvas.getByRole('heading', { level: 1 })).toBeInTheDocument();
-    await expect(canvas.getByText(/£8\.99/)).toBeInTheDocument();
+    // Static content
+    await expect(
+      canvas.getByRole('heading', { name: 'Free-Range Pork Belly', level: 1 })
+    ).toBeInTheDocument();
+    await expect(canvas.getByText('£8.99')).toBeInTheDocument();
 
-    // Variant option buttons are present in the DOM (VariantPicker island HTML)
-    await expect(canvas.getByText('Size')).toBeInTheDocument();
-    await expect(canvas.getByText('500g')).toBeInTheDocument();
+    // Variant picker — select a different size, price should update
+    const oneKgButton = canvas.getByRole('button', { name: '1kg' });
+    await userEvent.click(oneKgButton);
+    await expect(canvas.getByText('£15.99')).toBeInTheDocument();
 
-    // Add to cart button is present
+    // Stepper works inside the composite
+    const increment = canvas.getByLabelText('Increase quantity');
+    const input = canvas.getByLabelText('Quantity');
+    await userEvent.click(increment);
+    await expect(input).toHaveValue(2);
+    await userEvent.click(increment);
+    await expect(input).toHaveValue(3);
+
+    // Add to cart button present and enabled
     await expect(
       canvas.getByRole('button', { name: /add to cart/i })
-    ).toBeInTheDocument();
-
-    // Stepper buttons are present (static HTML from AddToCartButton island)
-    await expect(
-      canvas.getByLabelText('Increase quantity')
-    ).toBeInTheDocument();
+    ).not.toBeDisabled();
   },
 };
 
-export const OutOfStock = {
+export const OutOfStock: Story = {
   args: {
     title: 'Free-Range Pork Belly',
-    description:
-      'Currently out of season — check back soon for our next batch.',
+    description: 'Currently out of season — check back soon.',
     images: mockImages,
     options: [sizeOption, cutOption],
     variants: oosVariants,
     selectedVariantId: 'var-500g-belly',
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('button', { name: /out of stock/i })
+    ).toBeDisabled();
+  },
 };
 
-export const SingleVariant = {
+export const SingleVariant: Story = {
   args: {
     title: 'Heritage Beef Tallow',
     description: 'Traditional rendered beef fat, great for high-heat cooking.',
@@ -160,27 +172,18 @@ export const SingleVariant = {
   },
 };
 
-export const NoImage = {
+export const NoImage: Story = {
   args: {
-    title: 'Seasonal Lamb Box',
-    description: 'A curated selection of our best lamb cuts.',
+    title: 'Test Product',
     images: [],
-    options: [sizeOption],
+    options: [],
     variants: [
       {
-        id: 'var-lamb-small',
-        name: 'Small Box',
-        sku: 'LAMB-BOX-SM',
-        price: gbpPrice(3499, '34.99'),
-        selectedOptions: { Size: '500g' },
-        inventoryStatus: 'in_stock' as const,
-      },
-      {
-        id: 'var-lamb-large',
-        name: 'Large Box',
-        sku: 'LAMB-BOX-LG',
-        price: gbpPrice(5999, '59.99'),
-        selectedOptions: { Size: '1kg' },
+        id: 'var-test',
+        name: 'Test',
+        sku: 'TEST-001',
+        price: gbpPrice(100, '1.00'),
+        selectedOptions: {},
         inventoryStatus: 'in_stock' as const,
       },
     ],
