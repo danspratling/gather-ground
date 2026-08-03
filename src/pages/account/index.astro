@@ -3,10 +3,28 @@ export const prerender = false;
 import Layout from '@/layouts/Layout.astro';
 import AccountLayout from '@/components/AccountLayout/AccountLayout.astro';
 import AccountDashboard from '@/components/AccountDashboard/AccountDashboard.astro';
+import type { Address as CommerceAddress } from '@/lib/commerce/types';
+import type { Address } from '@/components/AddressCard/AddressCard.types';
 
 const customer = Astro.locals.customer!;
-// TODO: fetch defaultAddress from commerce adapter (GG-E33-API-01)
-const defaultAddress = undefined;
+
+const defaultShipping = customer.defaultShippingAddressId
+  ? customer.addresses.find((a) => a.id === customer.defaultShippingAddressId)
+  : undefined;
+
+const defaultAddress: Address | undefined = defaultShipping
+  ? {
+      id: defaultShipping.id,
+      firstName: defaultShipping.firstName,
+      lastName: defaultShipping.lastName,
+      line1: defaultShipping.line1,
+      line2: defaultShipping.line2,
+      city: defaultShipping.city,
+      postcode: (defaultShipping as CommerceAddress).postalCode,
+      country: defaultShipping.country,
+      isDefaultShipping: true,
+    }
+  : undefined;
 ---
 
 <Layout title="My Account" description="Manage your Gather Ground account.">
