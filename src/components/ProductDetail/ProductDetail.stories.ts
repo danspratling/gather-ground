@@ -1,5 +1,6 @@
 // @storybook-astro/framework does not export Meta/StoryObj — Astro stories are untyped by design.
 // See: https://storybook-astro.org/writing-stories/
+import { expect, userEvent, within } from 'storybook/test';
 
 import ProductDetail from '@/components/ProductDetail/ProductDetail.astro';
 
@@ -104,6 +105,30 @@ export const Default = {
     options: [sizeOption, cutOption],
     variants: allVariants,
     selectedVariantId: 'var-500g-belly',
+  },
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement);
+
+    // Product title renders
+    await expect(canvas.getByRole('heading', { level: 1 })).toBeInTheDocument();
+
+    // Stepper is present and functional inside the AddToCartButton island
+    const input = canvas.getByLabelText('Quantity');
+    const increment = canvas.getByLabelText('Increase quantity');
+
+    await expect(input).toHaveValue(1);
+
+    // Step up twice — catches the state-fighting regression
+    await userEvent.click(increment);
+    await expect(input).toHaveValue(2);
+
+    await userEvent.click(increment);
+    await expect(input).toHaveValue(3);
+
+    // Add to cart is reachable and enabled
+    await expect(
+      canvas.getByRole('button', { name: /add to cart/i })
+    ).not.toBeDisabled();
   },
 };
 
