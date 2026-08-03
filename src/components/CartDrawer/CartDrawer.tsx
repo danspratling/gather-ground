@@ -3,6 +3,7 @@ import { X } from '@untitledui-pro/icons/line';
 import { cn } from '@/lib/utils';
 import CartItemRow from '@/components/CartItemRow/CartItemRow';
 import { useCart } from '@/lib/commerce/cart/useCart';
+import type { LineItem } from '@/lib/commerce/types';
 import type { CartDrawerProps } from '@/components/CartDrawer/CartDrawer.types';
 
 /** Inline empty-cart state — CartEmptyState.astro cannot be imported in React */
@@ -58,7 +59,7 @@ export default function CartDrawer({
   } = useCart();
 
   // Allow test/story overrides via underscore props
-  const items = _items ?? storeItems;
+  const items: LineItem[] = _items ?? storeItems;
   const isLoading = _isLoading ?? storeIsLoading;
 
   // Always derive subtotal from the items we're actually displaying so _items
@@ -69,7 +70,10 @@ export default function CartDrawer({
           style: 'currency',
           currency: items[0].subtotal.currency || 'GBP',
         }).format(
-          items.reduce((sum, item) => sum + item.subtotal.amount, 0) / 100
+          items.reduce(
+            (sum: number, item: LineItem) => sum + item.subtotal.amount,
+            0
+          ) / 100
         )
       : subtotal;
 
@@ -153,7 +157,9 @@ export default function CartDrawer({
           <footer className="border-t border-gray-200 px-4 py-4">
             <div className="mb-4 flex items-center justify-between">
               <p className="text-sm text-brand-600">Subtotal</p>
-              <p className="text-sm font-semibold text-brand-700">{displaySubtotal}</p>
+              <p className="text-sm font-semibold text-brand-700">
+                {displaySubtotal}
+              </p>
             </div>
             <a
               href="/checkout"
