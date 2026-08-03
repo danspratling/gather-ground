@@ -60,7 +60,6 @@ const posts = (rawPosts ?? []).map((post) => {
   return {
     image: sanityImageSrc(post.image as { asset?: { _ref: string } }, {
       width: 824,
-      height: 412,
       quality: 80,
     }),
     imageAlt: sanityImageAlt(post.image, post.title),
@@ -71,7 +70,6 @@ const posts = (rawPosts ?? []).map((post) => {
     authorImage: post.author?.avatar
       ? sanityImageSrc(post.author.avatar as { asset?: { _ref: string } }, {
           width: 96,
-          height: 96,
           quality: 80,
         })
       : '',
