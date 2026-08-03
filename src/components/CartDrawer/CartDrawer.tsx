@@ -61,6 +61,18 @@ export default function CartDrawer({
   const items = _items ?? storeItems;
   const isLoading = _isLoading ?? storeIsLoading;
 
+  // Always derive subtotal from the items we're actually displaying so _items
+  // overrides (stories) and live store items both show the correct total.
+  const displaySubtotal =
+    items.length > 0
+      ? new Intl.NumberFormat('en-GB', {
+          style: 'currency',
+          currency: items[0].subtotal.currency || 'GBP',
+        }).format(
+          items.reduce((sum, item) => sum + item.subtotal.amount, 0) / 100
+        )
+      : subtotal;
+
   const [isOpen, setIsOpen] = useState(_isOpen ?? false);
 
   useEffect(() => {
@@ -141,7 +153,7 @@ export default function CartDrawer({
           <footer className="border-t border-gray-200 px-4 py-4">
             <div className="mb-4 flex items-center justify-between">
               <p className="text-sm text-brand-600">Subtotal</p>
-              <p className="text-sm font-semibold text-brand-700">{subtotal}</p>
+              <p className="text-sm font-semibold text-brand-700">{displaySubtotal}</p>
             </div>
             <a
               href="/checkout"
