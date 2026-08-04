@@ -157,6 +157,10 @@ const headerProps: HeaderProps = {
         return href ? [{ label: item.label, href }] : [];
       }) as HeaderProps['navLinks'])
     : [],
+  ctaLabel: siteSettings?.headerCtaLabel,
+  ctaHref: siteSettings?.headerCtaLink
+    ? resolveSanityLink(siteSettings.headerCtaLink)
+    : undefined,
   footerLinks: siteSettings?.footerLegalLinks
     ? siteSettings.footerLegalLinks
         .map((l) => ({
