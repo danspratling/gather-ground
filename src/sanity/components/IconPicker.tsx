@@ -39,117 +39,127 @@ export function IconPicker(props: StringInputProps) {
 
   return (
     <Box>
-      {/* Search */}
-      <TextInput
-        placeholder="Search icons…"
-        value={query}
-        onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
-        style={{ marginBottom: 8 }}
-        readOnly={readOnly}
-      />
-
-      {/* readOnly warning */}
-      {readOnly && (
-        <Box marginBottom={2}>
-          <Badge tone="caution">
-            Read-only — changes cannot be saved in this view
-          </Badge>
-        </Box>
-      )}
-
-      {/* Current selection */}
-      {SelectedIcon ? (
-        <Card padding={3} radius={2} tone="primary" style={{ marginBottom: 8 }}>
-          <Flex align="center" gap={3}>
+      {readOnly ? (
+        /* Read-only: show only icon + name, no picker */
+        SelectedIcon ? (
+          <Flex align="center" gap={3} padding={3}>
             <SelectedIcon size={20} />
-            <Text size={1} weight="semibold">
-              {value}
-            </Text>
-            <Box flex={1} />
-            {!readOnly && (
-              <button
-                type="button"
-                onClick={() => onChange(unset())}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: 11,
-                  padding: '2px 8px',
-                  borderRadius: 4,
-                  color: 'inherit',
-                  textDecoration: 'underline',
-                }}
-              >
-                Clear
-              </button>
-            )}
+            <Text size={1}>{value}</Text>
           </Flex>
-        </Card>
+        ) : (
+          <Box padding={3}>
+            <Text size={1} muted>
+              No icon set
+            </Text>
+          </Box>
+        )
       ) : (
-        <Box marginBottom={2}>
-          <Text size={1} muted>
-            No icon selected
-          </Text>
-        </Box>
-      )}
+        <>
+          {/* Search */}
+          <TextInput
+            placeholder="Search icons…"
+            value={query}
+            onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
+            style={{ marginBottom: 8 }}
+          />
 
-      {/* Icon grid */}
-      <Card
-        border
-        radius={2}
-        padding={2}
-        style={{ maxHeight: 320, overflowY: 'auto' }}
-      >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(8, 1fr)',
-            gap: 4,
-          }}
-        >
-          {visible.map((name) => {
-            const Icon = icons[name] as IconComponent;
-            const isSelected = value === name;
-            return (
-              <button
-                key={name}
-                type="button"
-                title={name}
-                onClick={() => handleSelect(name)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: 8,
-                  borderRadius: 4,
-                  border: isSelected
-                    ? '2px solid var(--card-focus-ring-color, #0070f3)'
-                    : '2px solid transparent',
-                  background: isSelected
-                    ? 'var(--card-focus-ring-color, #0070f3)1a'
-                    : 'transparent',
-                  cursor: readOnly ? 'not-allowed' : 'pointer',
-                  color: 'inherit',
-                  width: '100%',
-                  opacity: readOnly ? 0.5 : 1,
-                  aspectRatio: '1',
-                }}
-              >
-                <Icon size={18} />
-              </button>
-            );
-          })}
-        </div>
-      </Card>
+          {/* Current selection */}
+          {SelectedIcon ? (
+            <Card
+              padding={3}
+              radius={2}
+              tone="primary"
+              style={{ marginBottom: 8 }}
+            >
+              <Flex align="center" gap={3}>
+                <SelectedIcon size={20} />
+                <Text size={1} weight="semibold">
+                  {value}
+                </Text>
+                <Box flex={1} />
+                <button
+                  type="button"
+                  onClick={() => onChange(unset())}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: 11,
+                    padding: '2px 8px',
+                    borderRadius: 4,
+                    color: 'inherit',
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Clear
+                </button>
+              </Flex>
+            </Card>
+          ) : (
+            <Box marginBottom={2}>
+              <Text size={1} muted>
+                No icon selected
+              </Text>
+            </Box>
+          )}
 
-      {/* Overflow hint */}
-      {filtered.length > MAX_VISIBLE && (
-        <Box marginTop={2}>
-          <Badge tone="caution">
-            Showing {MAX_VISIBLE} of {filtered.length} — refine your search
-          </Badge>
-        </Box>
+          {/* Icon grid */}
+          <Card
+            border
+            radius={2}
+            padding={2}
+            style={{ maxHeight: 320, overflowY: 'auto' }}
+          >
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(8, 1fr)',
+                gap: 4,
+              }}
+            >
+              {visible.map((name) => {
+                const Icon = icons[name] as IconComponent;
+                const isSelected = value === name;
+                return (
+                  <button
+                    key={name}
+                    type="button"
+                    title={name}
+                    onClick={() => handleSelect(name)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: 8,
+                      borderRadius: 4,
+                      border: isSelected
+                        ? '2px solid var(--card-focus-ring-color, #0070f3)'
+                        : '2px solid transparent',
+                      background: isSelected
+                        ? 'var(--card-focus-ring-color, #0070f3)1a'
+                        : 'transparent',
+                      cursor: 'pointer',
+                      color: 'inherit',
+                      width: '100%',
+                      aspectRatio: '1',
+                    }}
+                  >
+                    <Icon size={18} />
+                  </button>
+                );
+              })}
+            </div>
+          </Card>
+
+          {/* Overflow hint */}
+          {filtered.length > MAX_VISIBLE && (
+            <Box marginTop={2}>
+              <Badge tone="caution">
+                Showing {MAX_VISIBLE} of {filtered.length} — refine your search
+              </Badge>
+            </Box>
+          )}
+        </>
       )}
     </Box>
   );
