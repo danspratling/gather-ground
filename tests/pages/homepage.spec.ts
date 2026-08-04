@@ -70,15 +70,14 @@ test.describe('homepage structure', () => {
     const errors: string[] = [];
     const failedRequests: string[] = [];
 
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
     page.on('response', (response) => {
       if (response.status() >= 400) {
         failedRequests.push(`HTTP ${response.status()} — ${response.url()}`);
       }
     });
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') errors.push(msg.text());
-    });
-
     await page.goto('/');
 
     // Only fail on errors from our own server — third-party services (Instagram

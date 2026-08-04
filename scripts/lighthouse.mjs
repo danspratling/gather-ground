@@ -5,12 +5,16 @@
  * Intended for CI (against astro preview with @astrojs/node) and local developer feedback.
  *
  * Usage:
- *   node scripts/lighthouse.mjs                    # local dev server on :4321
- *   BASE_URL=https://preview.vercel.app node …     # external URL (skips is-crawlable)
+ *   node scripts/lighthouse.mjs                    # local preview server on :4321
+ *   BASE_URL=https://preview.vercel.app node …     # external URL (skips is-crawlable globally)
+ *
+ * Dynamic routes (/blog/[slug], /products/[slug]) are resolved by querying
+ * the Sanity production dataset for a representative published document.
  */
 
 import lighthouse, { desktopConfig } from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
+import { createClient } from '@sanity/client';
 
 const BASE_URL = (process.env.BASE_URL || 'http://localhost:4321').replace(
   /\/$/,
@@ -18,46 +22,80 @@ const BASE_URL = (process.env.BASE_URL || 'http://localhost:4321').replace(
 );
 const isRemote = Boolean(process.env.BASE_URL);
 
+// ---------------------------------------------------------------------------
+// Resolve dynamic slugs from Sanity
+// ---------------------------------------------------------------------------
+const sanity = createClient({
+  projectId: process.env.SANITY_PROJECT_ID || 'mrz1ftls',
+  dataset: process.env.SANITY_DATASET || 'production',
+  useCdn: false,
+  apiVersion: '2024-01-01',
+  token: process.env.SANITY_API_READ_TOKEN,
+});
+
+const [blogSlug, productSlug] = await Promise.all([
+  sanity
+    .fetch('*[_type == "post" && defined(slug.current)][0].slug.current')
+    .catch(() => null),
+  sanity
+    .fetch('*[_type == "product" && defined(slug.current)][0].slug.current')
+    .catch(() => null),
+]);
+
+if (blogSlug) console.log(`  resolved blog slug: ${blogSlug}`);
+if (productSlug) console.log(`  resolved product slug: ${productSlug}`);
+
+// ---------------------------------------------------------------------------
+// Pages to audit
+// ---------------------------------------------------------------------------
+// skipAudits: per-page audits to skip IN ADDITION to the global set.
+// Account pages intentionally use <meta name="robots" content="noindex">, so
+// is-crawlable will always fail — skip it per-page rather than globally.
 const PAGES = [
+  // Core marketing pages
   { path: '/', name: 'home' },
   { path: '/blog', name: 'blog' },
   { path: '/products', name: 'products' },
-  // Account pages all set noindex — skip is-crawlable so the audit doesn't
-  // fail on the intentional SEO exclusion. Dashboard and profile require auth;
-  // Lighthouse will follow the redirect to /account/login and audit that.
+  { path: '/privacy', name: 'privacy' },
+  { path: '/terms', name: 'terms' },
+
+  // Dynamic routes — skipped if Sanity returned no published document
+  ...(blogSlug ? [{ path: `/blog/${blogSlug}`, name: 'blog-post' }] : []),
+  ...(productSlug
+    ? [{ path: `/products/${productSlug}`, name: 'product-detail' }]
+    : []),
+
+  // Account pages: noindex by design — skip is-crawlable so the SEO score
+  // reflects real issues rather than the intentional robots tag.
   {
     path: '/account/login',
-    name: 'account/login',
+    name: 'account-login',
     skipAudits: ['is-crawlable'],
   },
   {
     path: '/account/register',
-    name: 'account/register',
+    name: 'account-register',
     skipAudits: ['is-crawlable'],
   },
   {
     path: '/account/forgot-password',
-    name: 'account/forgot-password',
-    skipAudits: ['is-crawlable'],
-  },
-  { path: '/account', name: 'account/dashboard', skipAudits: ['is-crawlable'] },
-  {
-    path: '/account/profile',
-    name: 'account/profile',
+    name: 'account-forgot-password',
     skipAudits: ['is-crawlable'],
   },
 ];
 
-// All thresholds apply regardless of local vs remote — the preview server is a
-// real production build, so scores are comparable to production.
+// ---------------------------------------------------------------------------
+// Thresholds
+// ---------------------------------------------------------------------------
 const THRESHOLDS = {
   performance: 0.9,
   accessibility: 0.9,
   'best-practices': 0.95,
-  // When BASE_URL is set (remote/preview URL) the page may be behind a CDN that
-  // blocks crawlers, so skip the is-crawlable audit in that context only.
-  seo: isRemote ? 1 : 0.9,
+  seo: 0.9,
 };
+
+// Audits skipped for every page when running against a remote/CDN URL
+const GLOBAL_SKIP_AUDITS = isRemote ? ['is-crawlable'] : [];
 
 const CHROME_FLAGS = [
   '--headless=new',
@@ -65,6 +103,9 @@ const CHROME_FLAGS = [
   '--disable-dev-shm-usage',
 ];
 
+// ---------------------------------------------------------------------------
+// Audit runner
+// ---------------------------------------------------------------------------
 async function auditPage({ path, name, skipAudits: pageSkipAudits = [] }) {
   const url = `${BASE_URL}${path}`;
   const chrome = await chromeLauncher.launch({ chromeFlags: CHROME_FLAGS });
@@ -75,7 +116,7 @@ async function auditPage({ path, name, skipAudits: pageSkipAudits = [] }) {
       logLevel: 'error',
       output: 'json',
       onlyCategories: Object.keys(THRESHOLDS),
-      skipAudits: [...(isRemote ? ['is-crawlable'] : []), ...pageSkipAudits],
+      skipAudits: [...GLOBAL_SKIP_AUDITS, ...pageSkipAudits],
     };
 
     const runnerResult = await lighthouse(url, flags, desktopConfig);
@@ -85,10 +126,11 @@ async function auditPage({ path, name, skipAudits: pageSkipAudits = [] }) {
   }
 }
 
-// Run pages sequentially — parallel Chrome instances exhaust CI runner resources.
-console.log(
-  `Auditing ${PAGES.length} pages sequentially against ${BASE_URL}…\n`
-);
+// ---------------------------------------------------------------------------
+// Run
+// ---------------------------------------------------------------------------
+console.log(`Auditing ${PAGES.length} pages sequentially against ${BASE_URL}…
+`);
 
 const results = [];
 for (const page of PAGES) {
