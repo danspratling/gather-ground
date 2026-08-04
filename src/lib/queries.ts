@@ -28,7 +28,7 @@ export const bodySectionsProjection = `body[]{
     primaryCtaHref ${linkProjection},
     secondaryCtaLabel,
     secondaryCtaHref ${linkProjection},
-    image { asset->, alt }
+    image { asset->, alt, hotspot, crop }
   },
 
   // productsSection
@@ -39,7 +39,7 @@ export const bodySectionsProjection = `body[]{
     subCopy,
     products[]{
       _key,
-      image { asset->, alt },
+      image { asset->, alt, hotspot, crop },
       title,
       description,
       href ${linkProjection}
@@ -54,7 +54,7 @@ export const bodySectionsProjection = `body[]{
       _id,
       quote,
       platform,
-      authorImage { asset->, alt },
+      authorImage { asset->, alt, hotspot, crop },
       authorName,
       authorSecondary,
       authorSecondaryIsHandle
@@ -93,12 +93,12 @@ export const bodySectionsProjection = `body[]{
       _id,
       title,
       "slug": slug.current,
-      image { asset->, alt },
+      image { asset->, alt, hotspot, crop },
       excerpt,
       publishedAt,
       author->{
         name,
-        avatar { asset-> }
+        avatar { asset->, hotspot, crop }
       }
     }
   },
@@ -112,7 +112,7 @@ export const bodySectionsProjection = `body[]{
     primaryCtaHref ${linkProjection},
     secondaryCtaLabel,
     secondaryCtaHref ${linkProjection},
-    image { asset->, alt }
+    image { asset->, alt, hotspot, crop }
   },
 
   // instagramFeedSection
@@ -141,7 +141,7 @@ export const bodySectionsProjection = `body[]{
     features[]{ _key, heading, body },
     iconFeatures[]{ _key, icon, heading, body },
     checklistItems,
-    image { asset->, alt },
+    image { asset->, alt, hotspot, crop },
     imagePosition,
     align,
     dark
@@ -194,7 +194,7 @@ export const allProductsQuery = `*[_type == "products" && defined(slug.current)]
   _id,
   title,
   "slug": slug.current,
-  "image": coalesce(featuredImage { asset->, alt }, body[_type == "heroSection"][0].image { asset->, alt }),
+  "image": coalesce(featuredImage { asset->, alt, hotspot, crop }, body[_type == "heroSection"][0].image { asset->, alt, hotspot, crop }),
   metaDescription
 }`;
 
@@ -209,8 +209,9 @@ export const productBySlugQuery = `*[_type == "products" && slug.current == $slu
   metaTitle,
   metaDescription,
   "ogImage": ogImage.asset->url,
-  "autoDescription": body[_type == "heroSection"][0].subCopy,
-  "autoOgImage": body[_type == "heroSection"][0].image.asset->url,
+  "autoDescription": metaDescription,
+  "autoOgImage": featuredImage.asset->url,
+  featuredImage { asset->, alt },
   ${bodySectionsProjection}
 }`;
 
@@ -235,13 +236,13 @@ export const allBlogPostsQuery = `*[_type == "blogPosts"] | order(publishedAt de
   _id,
   title,
   "slug": slug.current,
-  image { asset->, alt },
+  image { asset->, alt, hotspot, crop },
   excerpt,
   categories,
   publishedAt,
   author->{
     name,
-    avatar { asset-> }
+    avatar { asset->, hotspot, crop }
   }
 }`;
 
@@ -256,7 +257,7 @@ export const blogPostBySlugQuery = `*[_type == "blogPosts" && slug.current == $s
   "_originalId": _originalId,
   title,
   "slug": slug.current,
-  image { asset->, alt },
+  image { asset->, alt, hotspot, crop },
   excerpt,
   categories,
   publishedAt,
@@ -265,7 +266,7 @@ export const blogPostBySlugQuery = `*[_type == "blogPosts" && slug.current == $s
   metaDescription,
   author->{
     name,
-    avatar { asset-> },
+    avatar { asset->, hotspot, crop },
     role
   }
 }`;
@@ -275,12 +276,12 @@ export const relatedBlogPostsQuery = `*[_type == "blogPosts" && slug.current != 
   _id,
   title,
   "slug": slug.current,
-  image { asset->, alt },
+  image { asset->, alt, hotspot, crop },
   excerpt,
   publishedAt,
   author->{
     name,
-    avatar { asset-> }
+    avatar { asset->, hotspot, crop }
   }
 }`;
 

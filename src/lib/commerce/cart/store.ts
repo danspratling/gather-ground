@@ -58,6 +58,27 @@ export function setCartLoading(loading: boolean): void {
   cartStore.set({ ...cartStore.get(), isLoading: loading });
 }
 
+/**
+ * Initialise the cart store from the server.
+ * Calls GET /api/commerce/cart once on mount (called by CartDrawer or CartTrigger).
+ * No-op if the store already has a cart ID (prevents double-init).
+ */
+export async function initCart(): Promise<void> {
+  if (cartStore.get().id !== null) return; // already initialised
+
+  setCartLoading(true);
+  try {
+    const res = await fetch('/api/commerce/cart');
+    if (!res.ok) return;
+    const cart = (await res.json()) as Cart;
+    setCartFromResponse(cart);
+  } catch {
+    // Silently fail — cart will initialise on next mutation
+  } finally {
+    setCartLoading(false);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Mutations — call write API routes then update the store
 // ---------------------------------------------------------------------------

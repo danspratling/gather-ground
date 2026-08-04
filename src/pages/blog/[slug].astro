@@ -77,20 +77,24 @@ const { data: relatedRaw } = await loadQuery<BlogPost[]>({
 });
 
 const relatedPosts = (relatedRaw ?? []).map((p) => ({
-  image: sanityImageSrc(p.image, { width: 600, quality: 80 }),
+  image: sanityImageSrc(p.image, { width: 600, height: 192, quality: 80 }),
   imageAlt: sanityImageAlt(p.image, p.title),
   title: p.title,
   excerpt: p.excerpt,
   date: formatDate(p.publishedAt),
   authorName: p.author?.name ?? '',
   authorImage: p.author?.avatar
-    ? sanityImageSrc(p.author.avatar, { width: 96, quality: 80 })
+    ? sanityImageSrc(p.author.avatar, { width: 96, height: 96, quality: 80 })
     : '',
   authorImageAlt: p.author?.name ?? '',
   href: `/blog/${p.slug}`,
 }));
 
-const heroImage = sanityImageSrc(post.image, { width: 1216, quality: 80 });
+const heroImage = sanityImageSrc(post.image, {
+  width: 1216,
+  height: 640,
+  quality: 80,
+});
 const heroImageAlt = sanityImageAlt(post.image, post.title);
 
 const siteUrl = (Astro.site ?? new URL(Astro.url.origin))
@@ -135,7 +139,11 @@ const blogPostingSD = buildBlogPosting(
       body={post.body ?? []}
       authorName={post.author?.name ?? ''}
       authorAvatar={post.author?.avatar
-        ? sanityImageSrc(post.author.avatar, { width: 96, quality: 80 })
+        ? sanityImageSrc(post.author.avatar, {
+            width: 96,
+            height: 96,
+            quality: 80,
+          })
         : ''}
       authorAvatarAlt={post.author?.name ?? ''}
       authorRole={post.author?.role ?? ''}
