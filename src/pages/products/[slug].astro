@@ -1,12 +1,15 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import SectionMapper from '@/templates/SectionMapper.astro';
+import ProductDetail from '@/components/ProductDetail/ProductDetail';
+import SectionDivider from '@/components/SectionDivider/SectionDivider.astro';
 import { loadQuery } from '@/lib/sanity';
 import {
   allProductSlugsQuery,
   productBySlugQuery,
   instagramWidgetQuery,
 } from '@/lib/queries';
+import { sanityImageSrc, sanityImageAlt } from '@/lib/sanityImage';
 
 export async function getStaticPaths() {
   const { data: products } = await loadQuery<Array<{ slug: string }>>({
@@ -33,6 +36,10 @@ const [{ data: page }, { data: widgets }] = await Promise.all([
     ogImage?: string;
     autoDescription?: string;
     autoOgImage?: string;
+    featuredImage?: {
+      asset?: { _ref?: string; _id?: string; url?: string };
+      alt?: string;
+    };
     body: Array<Record<string, unknown> & { _type: string; _key: string }>;
   } | null>({
     query: productBySlugQuery,
@@ -46,6 +53,18 @@ const [{ data: page }, { data: widgets }] = await Promise.all([
 if (!page) {
   return Astro.redirect('/products');
 }
+
+const productImages = page.featuredImage
+  ? [
+      {
+        url: sanityImageSrc(
+          page.featuredImage as { asset?: { _ref?: string; _id?: string } },
+          { width: 800, quality: 85 }
+        ),
+        altText: sanityImageAlt(page.featuredImage, page.title),
+      },
+    ]
+  : [];
 ---
 
 <Layout
@@ -61,10 +80,28 @@ if (!page) {
   }}
 >
   <main>
-    <SectionMapper
-      sections={page.body ?? []}
-      instagramHandle={widgets?.instagramHandle}
-      beholdFeedId={widgets?.beholdFeedId}
-    />
+    <section class="container py-12 lg:py-16">
+      <ProductDetail
+        title={page.title}
+        description={page.metaDescription}
+        images={productImages}
+        options={[]}
+        variants={[]}
+        client:load
+      />
+    </section>
+
+    {
+      page.body && page.body.length > 0 && (
+        <>
+          <SectionDivider />
+          <SectionMapper
+            sections={page.body}
+            instagramHandle={widgets?.instagramHandle}
+            beholdFeedId={widgets?.beholdFeedId}
+          />
+        </>
+      )
+    }
   </main>
 </Layout>
