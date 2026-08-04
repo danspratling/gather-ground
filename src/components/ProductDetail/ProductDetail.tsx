@@ -76,7 +76,7 @@ export default function ProductDetail({
         )}
 
         <AddToCartButton
-          variantId={displayVariant?.id ?? ''}
+          skuCode={displayVariant?.sku ?? ''}
           inventoryStatus={displayVariant?.inventoryStatus ?? 'out_of_stock'}
         />
       </div>

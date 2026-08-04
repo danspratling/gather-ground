@@ -1,20 +1,32 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import QuantityStepper from '@/components/QuantityStepper/QuantityStepper';
-import type { AddToCartButtonProps } from '@/components/Forms/AddToCartButton/AddToCartButton.types';
+import { useCart } from '@/lib/commerce/cart/useCart';
+import type { AddToCartButtonProps } from './AddToCartButton.types';
 
 export default function AddToCartButton({
-  variantId,
+  skuCode,
   inventoryStatus,
-  onAddToCart,
   class: className,
 }: AddToCartButtonProps) {
+  const { addToCart, isLoading: cartIsLoading } = useCart();
   const quantityRef = useRef(1);
+  const [isAdding, setIsAdding] = useState(false);
   const isOOS = inventoryStatus === 'out_of_stock';
+  const isDisabled = isOOS || isAdding || cartIsLoading;
 
-  function handleAddToCart() {
-    if (isOOS) return;
-    onAddToCart?.(variantId, quantityRef.current);
+  async function handleAddToCart() {
+    if (isDisabled) return;
+    setIsAdding(true);
+    try {
+      await addToCart(skuCode, quantityRef.current);
+      // Open the CartDrawer after a successful add
+      window.dispatchEvent(new CustomEvent('cart:open', { bubbles: true }));
+    } catch {
+      // Silently fail — cart store already logs the error
+    } finally {
+      setIsAdding(false);
+    }
   }
 
   return (
@@ -22,7 +34,7 @@ export default function AddToCartButton({
       <QuantityStepper
         value={1}
         min={1}
-        disabled={isOOS}
+        disabled={isDisabled}
         onChange={(qty) => {
           quantityRef.current = qty;
         }}
@@ -30,16 +42,16 @@ export default function AddToCartButton({
 
       <button
         type="button"
-        disabled={isOOS}
+        disabled={isDisabled}
         onClick={handleAddToCart}
         className={cn(
           'w-full rounded-md border px-6 py-3 text-sm font-semibold transition-colors',
-          isOOS
+          isDisabled
             ? 'cursor-not-allowed border-brand-50 bg-brand-50 text-brand-300'
             : 'border-brand-600 bg-brand-700 text-brand-25 hover:bg-brand-600'
         )}
       >
-        {isOOS ? 'Out of stock' : 'Add to cart'}
+        {isOOS ? 'Out of stock' : isAdding ? 'Adding…' : 'Add to cart'}
       </button>
     </div>
   );

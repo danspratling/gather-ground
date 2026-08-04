@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import AddToCartButton from '@/components/Forms/AddToCartButton/AddToCartButton';
 
@@ -24,9 +24,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    variantId: 'var-1',
+    skuCode: 'COFFEE-250G-BLEND',
     inventoryStatus: 'in_stock',
-    onAddToCart: fn(),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -48,17 +47,18 @@ export const Default: Story = {
     await userEvent.click(decrement);
     await expect(input).toHaveValue(2);
 
-    // Add to cart button is enabled
-    const addBtn = canvas.getByRole('button', { name: /add to cart/i });
-    await expect(addBtn).not.toBeDisabled();
+    // Add to cart button is present and not disabled initially
+    await expect(
+      canvas.getByRole('button', { name: /add to cart/i })
+    ).not.toBeDisabled();
+    // Note: clicking would trigger a real API call (no server in Storybook)
   },
 };
 
 export const OutOfStock: Story = {
   args: {
-    variantId: 'var-1',
+    skuCode: 'COFFEE-250G-BLEND',
     inventoryStatus: 'out_of_stock',
-    onAddToCart: fn(),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -75,9 +75,8 @@ export const OutOfStock: Story = {
 
 export const LowStock: Story = {
   args: {
-    variantId: 'var-1',
+    skuCode: 'COFFEE-250G-BLEND',
     inventoryStatus: 'low_stock',
-    onAddToCart: fn(),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
