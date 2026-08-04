@@ -29,6 +29,7 @@ export function IconPicker(props: StringInputProps) {
   const visible = filtered.slice(0, MAX_VISIBLE);
 
   function handleSelect(name: string) {
+    if (readOnly) return;
     onChange(value === name ? unset() : set(name));
   }
 
@@ -44,10 +45,20 @@ export function IconPicker(props: StringInputProps) {
         value={query}
         onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
         style={{ marginBottom: 8 }}
+        readOnly={readOnly}
       />
 
+      {/* readOnly warning */}
+      {readOnly && (
+        <Box marginBottom={2}>
+          <Badge tone="caution">
+            Read-only — changes cannot be saved in this view
+          </Badge>
+        </Box>
+      )}
+
       {/* Current selection */}
-      {SelectedIcon && (
+      {SelectedIcon ? (
         <Card padding={3} radius={2} tone="primary" style={{ marginBottom: 8 }}>
           <Flex align="center" gap={3}>
             <SelectedIcon size={20} />
@@ -55,26 +66,32 @@ export function IconPicker(props: StringInputProps) {
               {value}
             </Text>
             <Box flex={1} />
-            <button
-              type="button"
-              disabled={readOnly}
-              onClick={() => onChange(unset())}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                cursor: readOnly ? 'default' : 'pointer',
-                fontSize: 11,
-                padding: '2px 8px',
-                borderRadius: 4,
-                color: 'inherit',
-                textDecoration: 'underline',
-                opacity: readOnly ? 0.5 : 1,
-              }}
-            >
-              Clear
-            </button>
+            {!readOnly && (
+              <button
+                type="button"
+                onClick={() => onChange(unset())}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: 11,
+                  padding: '2px 8px',
+                  borderRadius: 4,
+                  color: 'inherit',
+                  textDecoration: 'underline',
+                }}
+              >
+                Clear
+              </button>
+            )}
           </Flex>
         </Card>
+      ) : (
+        <Box marginBottom={2}>
+          <Text size={1} muted>
+            No icon selected
+          </Text>
+        </Box>
       )}
 
       {/* Icon grid */}
@@ -99,7 +116,6 @@ export function IconPicker(props: StringInputProps) {
                 key={name}
                 type="button"
                 title={name}
-                disabled={readOnly}
                 onClick={() => handleSelect(name)}
                 style={{
                   display: 'flex',
@@ -113,9 +129,10 @@ export function IconPicker(props: StringInputProps) {
                   background: isSelected
                     ? 'var(--card-focus-ring-color, #0070f3)1a'
                     : 'transparent',
-                  cursor: readOnly ? 'default' : 'pointer',
+                  cursor: readOnly ? 'not-allowed' : 'pointer',
                   color: 'inherit',
                   width: '100%',
+                  opacity: readOnly ? 0.5 : 1,
                   aspectRatio: '1',
                 }}
               >
