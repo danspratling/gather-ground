@@ -2,6 +2,7 @@
 import AnnouncementBanner from '@/components/AnnouncementBanner/AnnouncementBanner.astro';
 import AccountCartPanel from '@/components/AccountCartPanel/AccountCartPanel';
 import CartTrigger from '@/components/CartTrigger/CartTrigger';
+import CartDrawer from '@/components/CartDrawer/CartDrawer';
 import CookieBanner from '@/components/CookieBanner/CookieBanner';
 import Clarity from '@/components/Analytics/Clarity.astro';
 import Footer from '@/components/Layout/Footer/Footer.astro';
@@ -259,6 +260,7 @@ const footerProps = {
       }
       {commerceEnabled && <CartTrigger slot="commerce-cart" client:idle />}
     </Header>
+    {commerceEnabled && <CartDrawer client:idle />}
     <slot />
     <Footer {...footerProps} />
     {/* body-end: cookie banner, analytics */}
