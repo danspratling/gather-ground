@@ -68,12 +68,22 @@ test.describe('homepage structure', () => {
 
   test('no console errors on load', async ({ page }) => {
     const errors: string[] = [];
+    const failedRequests: string[] = [];
+
     page.on('console', (msg) => {
       if (msg.type() === 'error') errors.push(msg.text());
     });
+    page.on('response', (response) => {
+      if (response.status() >= 400) {
+        failedRequests.push(`HTTP ${response.status()} — ${response.url()}`);
+      }
+    });
 
     await page.goto('/');
-    expect(errors).toHaveLength(0);
+    expect(
+      errors,
+      `Console errors: ${errors.join('\n')}\nFailed requests: ${failedRequests.join('\n')}`
+    ).toHaveLength(0);
   });
 });
 

@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from 'sanity';
+import { IconPicker } from '../components/IconPicker';
 
 /** Feature item — nested in contentSection (simple variant). */
 export const contentFeatureItem = defineType({
@@ -33,10 +34,11 @@ export const contentIconFeature = defineType({
   fields: [
     defineField({
       name: 'icon',
-      title: 'Icon name',
+      title: 'Icon',
       type: 'string',
       description:
-        'The name of an Untitled UI icon (e.g. "MessageChatCircle"). Ask a developer for the list of available names.',
+        'Optional. Search and select an icon to display above the heading.',
+      components: { input: IconPicker },
     }),
     defineField({
       name: 'heading',
@@ -115,13 +117,14 @@ export const contentSection = defineType({
     }),
     defineField({
       name: 'icon',
-      title: 'Icon name',
+      title: 'Icon',
       type: 'string',
       description:
-        'The name of an Untitled UI icon (e.g. "ZapFast"). Ask a developer for the list of available names. Optional.',
+        'Optional. Search and select an icon to display above the heading.',
       group: 'content',
       hidden: ({ parent }) =>
         parent?.variant !== 'simple' && parent?.variant !== 'alternating',
+      components: { input: IconPicker },
     }),
     defineField({
       name: 'heading',
