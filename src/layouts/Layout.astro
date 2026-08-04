@@ -252,12 +252,12 @@ const footerProps = {
         commerceEnabled && customer && (
           <AccountCartPanel
             slot="commerce-account"
-            client:visible
+            client:idle
             customer={customer}
           />
         )
       }
-      {commerceEnabled && <CartTrigger slot="commerce-cart" client:visible />}
+      {commerceEnabled && <CartTrigger slot="commerce-cart" client:idle />}
     </Header>
     <slot />
     <Footer {...footerProps} />
