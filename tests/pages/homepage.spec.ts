@@ -70,19 +70,35 @@ test.describe('homepage structure', () => {
     const errors: string[] = [];
     const failedRequests: string[] = [];
 
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') errors.push(msg.text());
-    });
     page.on('response', (response) => {
       if (response.status() >= 400) {
         failedRequests.push(`HTTP ${response.status()} — ${response.url()}`);
       }
     });
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
 
     await page.goto('/');
+
+    // Only fail on errors from our own server — third-party services (Instagram
+    // feeds, analytics) legitimately return 4xx in CI and must not block tests.
+    const ownServerFailures = failedRequests.filter((r) =>
+      r.includes('localhost')
+    );
     expect(
-      errors,
-      `Console errors: ${errors.join('\n')}\nFailed requests: ${failedRequests.join('\n')}`
+      ownServerFailures,
+      `Our server failures: ${ownServerFailures.join('\n')}`
+    ).toHaveLength(0);
+
+    // "Failed to load resource" messages come from external services returning
+    // 4xx/5xx — not from our own JavaScript. Only fail on real app errors.
+    const appErrors = errors.filter(
+      (e) => !e.startsWith('Failed to load resource')
+    );
+    expect(
+      appErrors,
+      `App console errors: ${appErrors.join('\n')}`
     ).toHaveLength(0);
   });
 });
