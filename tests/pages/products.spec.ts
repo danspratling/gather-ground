@@ -115,7 +115,8 @@ test.describe('/products/[slug] page', () => {
     await expect(page.getByRole('main')).toBeVisible();
   });
 
-  test('shows ProductDetail heading structure', async ({ page }) => {
+  // Skipped: ProductDetail section is temporarily hidden — restore when the component is re-enabled
+  test.skip('shows ProductDetail heading structure', async ({ page }) => {
     await page.goto('/products');
     const cards = page.locator('a[href^="/products/"]');
     const count = await cards.count();
@@ -129,7 +130,8 @@ test.describe('/products/[slug] page', () => {
     await expect(page.locator('h1').first()).toBeVisible();
   });
 
-  test('shows add to cart button', async ({ page }) => {
+  // Skipped: ProductDetail section is temporarily hidden — restore when the component is re-enabled
+  test.skip('shows add to cart button', async ({ page }) => {
     await page.goto('/products');
     const cards = page.locator('a[href^="/products/"]');
     const count = await cards.count();
