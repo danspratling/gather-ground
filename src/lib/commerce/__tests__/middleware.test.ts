@@ -122,6 +122,30 @@ describe('middleware — feature flag gating', () => {
     expect(passthrough).not.toHaveBeenCalled();
   });
 
+  it('returns 404 for /products when commerce is disabled', async () => {
+    isCommerceEnabledMock.mockReturnValue(false);
+    const { ctx, rewrite } = makeCtx({ url: 'https://example.com/products' });
+
+    const response = await run(ctx);
+
+    expect(response.status).toBe(404);
+    expect(rewrite).toHaveBeenCalledWith('/404');
+    expect(passthrough).not.toHaveBeenCalled();
+  });
+
+  it('returns 404 for /products/[slug] when commerce is disabled', async () => {
+    isCommerceEnabledMock.mockReturnValue(false);
+    const { ctx, rewrite } = makeCtx({
+      url: 'https://example.com/products/beef',
+    });
+
+    const response = await run(ctx);
+
+    expect(response.status).toBe(404);
+    expect(rewrite).toHaveBeenCalledWith('/404');
+    expect(passthrough).not.toHaveBeenCalled();
+  });
+
   it('passes through non-gated routes when commerce is disabled and sets locals to null', async () => {
     isCommerceEnabledMock.mockReturnValue(false);
     passthrough.mockClear();
