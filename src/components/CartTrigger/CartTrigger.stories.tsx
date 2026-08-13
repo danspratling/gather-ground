@@ -59,6 +59,10 @@ export const LiveUpdate: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
+    // Wait for the component to mount and register its cart:updated listener
+    // before dispatching — useEffect runs after paint in real-browser mode.
+    await canvas.findByRole('button', { name: /open cart/i });
+
     // Initially no badge
     await expect(canvas.queryByText('5')).not.toBeInTheDocument();
 
