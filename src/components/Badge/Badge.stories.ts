@@ -50,7 +50,7 @@ export const Default = {
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText('Label')).toBeInTheDocument();
+    await expect(await canvas.findByText('Label')).toBeInTheDocument();
     await expect(canvas.queryByRole('button')).toBeNull();
     await expect(canvas.queryByRole('link')).toBeNull();
   },

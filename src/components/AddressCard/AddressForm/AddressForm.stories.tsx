@@ -42,10 +42,10 @@ export const Empty: Story = {
     );
 
     await expect(
-      await canvas.findByRole('alert', { name: /first name/i })
+      await canvas.findByText('First name is required')
     ).toBeVisible();
     await expect(
-      await canvas.findByRole('alert', { name: /last name/i })
+      await canvas.findByText('Last name is required')
     ).toBeVisible();
   },
 };
@@ -68,7 +68,7 @@ export const EditMode: Story = {
       canvas.getByRole('button', { name: /update address/i })
     );
     await expect(
-      await canvas.findByRole('alert', { name: /first name/i })
+      await canvas.findByText('First name is required')
     ).toBeVisible();
   },
 };

@@ -39,14 +39,14 @@ export const CategoryVariant = {
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText('Beef')).toBeInTheDocument();
+    await expect(await canvas.findByText('Beef')).toBeInTheDocument();
     await expect(
-      canvas.getByText(
+      await canvas.findByText(
         'Angus and Hereford cattle raised on pasture. Dry-aged for flavour.'
       )
     ).toBeInTheDocument();
     await expect(
-      canvas.getByRole('link', { name: /Beef/i })
+      await canvas.findByRole('link', { name: /Beef/i })
     ).toBeInTheDocument();
   },
 };

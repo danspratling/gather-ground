@@ -147,8 +147,11 @@ export const OutOfStock: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    // All variants are OOS — the add-to-cart button shows exactly "Out of stock".
+    // Using exact text avoids matching variant picker buttons whose aria-labels
+    // include "— out of stock" as a suffix.
     await expect(
-      canvas.getByRole('button', { name: /out of stock/i })
+      canvas.getByRole('button', { name: 'Out of stock' })
     ).toBeDisabled();
   },
 };

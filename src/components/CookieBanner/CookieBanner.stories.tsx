@@ -25,7 +25,9 @@ export const Default: Story = {
   args: {},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const banner = canvas.getByRole('region', { name: /cookie consent/i });
+    const banner = await canvas.findByRole('region', {
+      name: /cookie consent/i,
+    });
     await expect(banner).toBeVisible();
   },
 };
@@ -42,7 +44,9 @@ export const Accept: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const banner = canvas.getByRole('region', { name: /cookie consent/i });
+    const banner = await canvas.findByRole('region', {
+      name: /cookie consent/i,
+    });
 
     await userEvent.click(canvas.getByRole('button', { name: /accept/i }));
 
@@ -63,7 +67,9 @@ export const Decline: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const banner = canvas.getByRole('region', { name: /cookie consent/i });
+    const banner = await canvas.findByRole('region', {
+      name: /cookie consent/i,
+    });
 
     await userEvent.click(canvas.getByRole('button', { name: /decline/i }));
 
