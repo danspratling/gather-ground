@@ -95,21 +95,23 @@ export const Default = {
 
     // Heading is visible
     await expect(
-      canvas.getByRole('heading', { name: 'About Gather Ground' })
+      await canvas.findByRole('heading', { name: 'About Gather Ground' })
     ).toBeInTheDocument();
 
     // All FAQ questions are rendered
     await expect(
-      canvas.getByText('Where can I find your products?')
+      await canvas.findByText('Where can I find your products?')
     ).toBeInTheDocument();
-    await expect(canvas.getByText('Do you deliver?')).toBeInTheDocument();
+    await expect(
+      await canvas.findByText('Do you deliver?')
+    ).toBeInTheDocument();
 
     // CTA is visible
     await expect(
-      canvas.getByRole('heading', { name: 'Want to find out more?' })
+      await canvas.findByRole('heading', { name: 'Want to find out more?' })
     ).toBeInTheDocument();
     await expect(
-      canvas.getByRole('link', { name: 'Get in touch' })
+      await canvas.findByRole('link', { name: 'Get in touch' })
     ).toBeInTheDocument();
   },
 };

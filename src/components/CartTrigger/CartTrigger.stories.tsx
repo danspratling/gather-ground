@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 import CartTrigger from '@/components/CartTrigger/CartTrigger';
 
 const meta = {
@@ -62,13 +62,16 @@ export const LiveUpdate: Story = {
     // Initially no badge
     await expect(canvas.queryByText('5')).not.toBeInTheDocument();
 
-    // Simulate cart:updated event
-    window.dispatchEvent(
-      new CustomEvent('cart:updated', { detail: { itemCount: 5 } })
-    );
-
-    // Badge should now show the updated count
-    await expect(await canvas.findByText('5')).toBeVisible();
+    // Re-dispatch on every retry tick until the useEffect listener is
+    // registered and the state update re-renders the badge. In real-browser
+    // mode React's useEffect runs after paint, so the listener may not exist
+    // at the point of the first dispatch.
+    await waitFor(() => {
+      window.dispatchEvent(
+        new CustomEvent('cart:updated', { detail: { itemCount: 5 } })
+      );
+      expect(canvas.getByText('5')).toBeVisible();
+    });
   },
 };
 
