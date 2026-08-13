@@ -3,6 +3,7 @@ import Layout from '@/layouts/Layout.astro';
 import SectionMapper from '@/templates/SectionMapper.astro';
 import ProductDetail from '@/components/ProductDetail/ProductDetail';
 import SectionDivider from '@/components/SectionDivider/SectionDivider.astro';
+import { isCommerceEnabled } from '@/lib/commerce/featureFlag';
 import { loadQuery } from '@/lib/sanity';
 import {
   allProductSlugsQuery,
@@ -54,6 +55,8 @@ if (!page) {
   return Astro.redirect('/products');
 }
 
+const commerceEnabled = isCommerceEnabled();
+
 const productImages = page.featuredImage
   ? [
       {
@@ -81,18 +84,18 @@ const productImages = page.featuredImage
 >
   <main>
     {
-      /* TODO: ProductDetail (image, hero, stock section) hidden until ready — GG-XXX
-    <section class="container py-12 lg:py-16">
-      <ProductDetail
-        title={page.title}
-        description={page.metaDescription}
-        images={productImages}
-        options={[]}
-        variants={[]}
-        client:load
-      />
-    </section>
-    */
+      commerceEnabled && (
+        <section class="container py-12 lg:py-16">
+          <ProductDetail
+            title={page.title}
+            description={page.metaDescription}
+            images={productImages}
+            options={[]}
+            variants={[]}
+            client:load
+          />
+        </section>
+      )
     }
 
     {
