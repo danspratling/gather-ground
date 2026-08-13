@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import ProductGallery from '@/components/ProductGallery/ProductGallery';
 import VariantPicker from '@/components/VariantPicker/VariantPicker';
 import AddToCartButton from '@/components/Forms/AddToCartButton/AddToCartButton';
 import type { Variant } from '@/lib/commerce/types';
@@ -22,7 +23,6 @@ export default function ProductDetail({
   );
 
   const displayVariant = selectedVariant ?? defaultVariant;
-  const firstImage = images[0];
 
   return (
     <div
@@ -33,22 +33,11 @@ export default function ProductDetail({
     >
       {/* Image — full width mobile, 60% desktop */}
       <div className="lg:col-span-3">
-        {firstImage ? (
-          <img
-            src={firstImage.url}
-            alt={firstImage.altText ?? title}
-            className="aspect-square w-full rounded-2xl object-cover"
-            width={800}
-            height={800}
-            loading="eager"
-          />
-        ) : (
-          <div className="flex aspect-square w-full items-center justify-center rounded-2xl bg-secondary-100">
-            <span className="text-sm text-secondary-400">
-              No image available
-            </span>
-          </div>
-        )}
+        <ProductGallery
+          images={images}
+          productTitle={title}
+          selectedVariantImage={displayVariant?.image}
+        />
       </div>
 
       {/* Info — full width mobile, 40% desktop */}

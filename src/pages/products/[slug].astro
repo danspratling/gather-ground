@@ -41,6 +41,10 @@ const [{ data: page }, { data: widgets }] = await Promise.all([
       asset?: { _ref?: string; _id?: string; url?: string };
       alt?: string;
     };
+    gallery?: Array<{
+      url: string;
+      alt?: string;
+    }>;
     body: Array<Record<string, unknown> & { _type: string; _key: string }>;
   } | null>({
     query: productBySlugQuery,
@@ -57,17 +61,23 @@ if (!page) {
 
 const commerceEnabled = isCommerceEnabled();
 
-const productImages = page.featuredImage
-  ? [
-      {
-        url: sanityImageSrc(
-          page.featuredImage as { asset?: { _ref?: string; _id?: string } },
-          { width: 800, quality: 85 }
-        ),
-        altText: sanityImageAlt(page.featuredImage, page.title),
-      },
-    ]
-  : [];
+const productImages = [
+  ...(page.featuredImage
+    ? [
+        {
+          url: sanityImageSrc(
+            page.featuredImage as { asset?: { _ref?: string; _id?: string } },
+            { width: 800, quality: 85 }
+          ),
+          altText: sanityImageAlt(page.featuredImage, page.title),
+        },
+      ]
+    : []),
+  ...(page.gallery ?? []).map((img) => ({
+    url: img.url,
+    altText: img.alt ?? page.title,
+  })),
+];
 ---
 
 <Layout
