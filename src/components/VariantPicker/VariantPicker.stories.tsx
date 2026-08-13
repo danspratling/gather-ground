@@ -172,17 +172,29 @@ export const WithOOSVariant: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Select L so the L/Red combo becomes relevant
-    await userEvent.click(canvas.getByRole('button', { name: 'L' }));
-
-    // L/Red is OOS — button is disabled
-    const redButton = canvas.getByRole('button', {
-      name: /red — out of stock/i,
+    // Initial selection is M/Red. L/Red is OOS, so the "L" button carries
+    // an OOS aria-label and is disabled — you cannot select it directly.
+    const lOOSButton = canvas.getByRole('button', {
+      name: 'L — out of stock',
     });
-    await expect(redButton).toBeDisabled();
+    await expect(lOOSButton).toBeDisabled();
 
-    // L/Blue is still in stock — button is enabled
-    const blueButton = canvas.getByRole('button', { name: 'Blue' });
-    await expect(blueButton).not.toBeDisabled();
+    // Switch colour to Blue — L/Blue is in stock, so the "L" button
+    // becomes enabled and loses the OOS label.
+    await userEvent.click(canvas.getByRole('button', { name: 'Blue' }));
+
+    // Now clicking L selects the L/Blue variant.
+    const lButton = canvas.getByRole('button', { name: 'L' });
+    await userEvent.click(lButton);
+
+    // With L/Blue selected, Red still shows as OOS (L/Red is OOS).
+    await expect(
+      canvas.getByRole('button', { name: /red — out of stock/i })
+    ).toBeDisabled();
+
+    // Blue remains in stock.
+    await expect(
+      canvas.getByRole('button', { name: 'Blue' })
+    ).not.toBeDisabled();
   },
 };

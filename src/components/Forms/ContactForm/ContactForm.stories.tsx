@@ -21,7 +21,9 @@ export const Default: Story = {
     // All required fields should be present
     await expect(canvas.getByLabelText(/first name/i)).toBeInTheDocument();
     await expect(canvas.getByLabelText(/last name/i)).toBeInTheDocument();
-    await expect(canvas.getByLabelText(/email/i)).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('textbox', { name: /email/i })
+    ).toBeInTheDocument();
     await expect(canvas.getByLabelText(/message/i)).toBeInTheDocument();
     await expect(
       canvas.getByRole('button', { name: /send message/i })
@@ -48,7 +50,10 @@ export const SubmitSuccess: Story = {
     try {
       await userEvent.type(canvas.getByLabelText(/first name/i), 'Jane');
       await userEvent.type(canvas.getByLabelText(/last name/i), 'Smith');
-      await userEvent.type(canvas.getByLabelText(/email/i), 'jane@example.com');
+      await userEvent.type(
+        canvas.getByRole('textbox', { name: /email/i }),
+        'jane@example.com'
+      );
       await userEvent.type(canvas.getByLabelText(/message/i), 'Hello there!');
       await userEvent.click(canvas.getByLabelText(/i agree/i));
 
@@ -87,7 +92,10 @@ export const SubmitError: Story = {
     try {
       await userEvent.type(canvas.getByLabelText(/first name/i), 'Jane');
       await userEvent.type(canvas.getByLabelText(/last name/i), 'Smith');
-      await userEvent.type(canvas.getByLabelText(/email/i), 'jane@example.com');
+      await userEvent.type(
+        canvas.getByRole('textbox', { name: /email/i }),
+        'jane@example.com'
+      );
       await userEvent.type(canvas.getByLabelText(/message/i), 'Hello there!');
       await userEvent.click(canvas.getByLabelText(/i agree/i));
 
