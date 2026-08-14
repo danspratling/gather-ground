@@ -113,7 +113,8 @@ export default function CartDrawer({
       {/* Drawer panel */}
       <div
         role="dialog"
-        aria-modal="true"
+        aria-modal={isOpen}
+        aria-hidden={!isOpen}
         aria-label="Shopping cart"
         className={cn(
           'fixed right-0 top-0 z-50 flex h-full w-full max-w-sm flex-col bg-off-white shadow-xl transition-transform duration-300 ease-in-out',
