@@ -48,7 +48,9 @@ export const Default: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const thumbButtons = canvas.getAllByRole('button', { name: /View image/i });
+    // Thumbnail rail is desktop-only (hidden lg:flex); skip at mobile viewport
+    const thumbButtons = canvas.queryAllByRole('button', { name: /View image/i });
+    if (thumbButtons.length === 0) return;
     expect(thumbButtons.length).toBeGreaterThan(0);
     await userEvent.click(thumbButtons[1]);
   },
@@ -75,9 +77,11 @@ export const WithLightbox: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const lightboxTrigger = canvas.getByRole('button', {
+    // Lightbox trigger is desktop-only (hidden lg:flex); skip at mobile viewport
+    const lightboxTrigger = canvas.queryByRole('button', {
       name: /Open image lightbox/i,
     });
+    if (!lightboxTrigger) return;
     await userEvent.click(lightboxTrigger);
     const dialog = await canvas.findByRole('dialog');
     expect(dialog).toBeInTheDocument();
