@@ -13,6 +13,7 @@ export { blogPage } from './blogPage';
 export { blogPosts } from './blogPosts';
 export { productPage } from './productPage';
 export { products } from './products';
+export { productOption } from './productOption';
 export { productVariant } from './productVariant';
 export { authors } from './authors';
 export { faqs } from './faqs';

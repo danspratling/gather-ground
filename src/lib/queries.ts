@@ -216,11 +216,15 @@ export const productBySlugQuery = `*[_type == "products" && slug.current == $slu
     alt,
     "url": asset->url
   },
-  "options": options[]{ name, values },
+  "optionOrder": options[]->{ _id, name },
   "variants": variants[]->{
     _id,
     sku,
-    optionValues[]{ optionName, value },
+    optionValues[]{
+      "optionName": option->name,
+      "optionId": option->_id,
+      value
+    },
     price{ amount, currency },
     compareAtPrice{ amount, currency },
     taxCategory,
@@ -241,14 +245,17 @@ export const productListQuery = `*[_type == "products" && defined(slug.current) 
   "slug": slug.current,
   featuredImage { asset->, alt },
   "defaultVariantPrice": defaultVariant->price,
-  "options": options[]{ name }
+  "optionOrder": options[]->{ _id, name }
 }`;
 
 /** Fetch a single variant by SKU for cart line-item enrichment. */
 export const variantBySkuQuery = `*[_type == "productVariant" && sku == $sku][0]{
   _id,
   sku,
-  optionValues[]{ optionName, value },
+  optionValues[]{
+    "optionName": option->name,
+    value
+  },
   price{ amount, currency },
   compareAtPrice{ amount, currency },
   "parentProduct": parentProduct->{ _id, title, "slug": slug.current, featuredImage { asset->, alt } },

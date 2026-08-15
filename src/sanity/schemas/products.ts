@@ -126,31 +126,16 @@ export const products = defineType({
     }),
     defineField({
       name: 'options',
-      title: 'Product options',
+      title: 'Option display order',
       type: 'array',
       description:
-        'Variant dimensions (e.g. Size, Flavour). Define before creating variants.',
+        'Controls the order options appear in the variant picker. Values are derived automatically from linked variants — no need to enter them here.',
       hidden: commerceFieldHidden(),
       group: 'commerce',
       of: [
         defineArrayMember({
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'name',
-              title: 'Option name',
-              type: 'string',
-              description: 'e.g. Size, Flavour, Colour',
-            }),
-            defineField({
-              name: 'values',
-              title: 'Option values',
-              type: 'array',
-              of: [defineArrayMember({ type: 'string' })],
-              description: 'e.g. 250g, 500g, Original',
-            }),
-          ],
-          preview: { select: { title: 'name' } },
+          type: 'reference',
+          to: [{ type: 'productOption' }],
         }),
       ],
     }),

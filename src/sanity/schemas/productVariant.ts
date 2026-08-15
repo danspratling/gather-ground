@@ -40,14 +40,24 @@ export const productVariant = defineType({
           type: 'object',
           fields: [
             defineField({
-              name: 'optionName',
-              title: 'Option name',
-              type: 'string',
+              name: 'option',
+              title: 'Option',
+              type: 'reference',
+              to: [{ type: 'productOption' }],
+              description:
+                'Select an existing option or type to create a new one.',
+              validation: (Rule) => Rule.required(),
             }),
-            defineField({ name: 'value', title: 'Value', type: 'string' }),
+            defineField({
+              name: 'value',
+              title: 'Value',
+              type: 'string',
+              description: 'e.g. 250g, Smoked, Red',
+              validation: (Rule) => Rule.required(),
+            }),
           ],
           preview: {
-            select: { title: 'optionName', subtitle: 'value' },
+            select: { title: 'option.name', subtitle: 'value' },
           },
         }),
       ],

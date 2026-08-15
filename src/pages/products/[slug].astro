@@ -46,11 +46,15 @@ const [{ data: page }, { data: widgets }] = await Promise.all([
       url: string;
       alt?: string;
     }>;
-    options?: Array<{ name: string; values: string[] }>;
+    options?: Array<{ _id: string; name: string }>;
     variants?: Array<{
       _id: string;
       sku: string;
-      optionValues: Array<{ optionName: string; value: string }>;
+      optionValues: Array<{
+        optionName: string;
+        optionId: string;
+        value: string;
+      }>;
       price: { amount: number; currency: string };
       compareAtPrice?: { amount: number; currency: string };
       weight?: number;
@@ -105,11 +109,26 @@ function clean(str: string): string {
   return str.replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '');
 }
 
-const productOptions: Option[] = (page.options ?? []).map((opt) => ({
-  id: clean(opt.name),
-  name: clean(opt.name),
-  values: opt.values.map((v) => ({ id: clean(v), name: clean(v) })),
-}));
+// Build the options list from optionOrder + variant optionValues.
+// Match by optionId (the productOption document _id) — immune to stega and typos.
+// Values are the unique set of values variants have for each option.
+const productOptions: Option[] = (page.options ?? [])
+  .map((opt) => {
+    const values = [
+      ...new Set(
+        (page.variants ?? [])
+          .flatMap((v) => v.optionValues ?? [])
+          .filter((ov) => ov.optionId === opt._id)
+          .map((ov) => clean(ov.value))
+      ),
+    ];
+    return {
+      id: opt._id,
+      name: clean(opt.name),
+      values: values.map((v) => ({ id: v, name: v })),
+    };
+  })
+  .filter((opt) => opt.values.length > 0);
 
 const productVariants: Variant[] = (page.variants ?? []).map((v) => ({
   id: v._id,
