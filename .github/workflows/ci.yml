@@ -104,6 +104,7 @@ jobs:
           SANITY_PROJECT_ID: mrz1ftls
           SANITY_DATASET: production
           SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+          PUBLIC_COMMERCE_ENABLED: 'true'
 
   component-tests:
     name: Component Tests (Storybook)
