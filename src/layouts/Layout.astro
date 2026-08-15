@@ -257,55 +257,46 @@ const footerProps = {
       {commerceEnabled && <CartTrigger slot="commerce-cart" client:idle />}
     </Header>
     {
-      commerceEnabled && (
-        <>
-          {/*
-            Buffer cart:open events that fire before CartDrawer's useEffect
-            has registered its window listener. The script also intercepts
-            clicks on the CartTrigger button natively so the drawer opens
-            even if React hasn't hydrated CartTrigger yet (concurrent-mode
-            hydration race condition in Playwright e2e tests).
-            CartDrawer reads __pendingCartOpen on mount and opens immediately.
-          */}
-          <script is:inline>
-            window.__pendingCartOpen = false;
-            // Buffer any cart:open events that arrive before CartDrawer mounts.
-            window.addEventListener('cart:open', function () {
-              window.__pendingCartOpen = true;
-            });
-            // Intercept native clicks on the CartTrigger button so the cart
-            // opens even before React attaches its onClick handler.
-            (function () {
-              function setup() {
-                document.addEventListener('click', function (e) {
-                  var el = e.target;
-                  while (el && el.tagName) {
-                    if (
-                      el.tagName === 'BUTTON' &&
-                      typeof el.getAttribute === 'function' &&
-                      (el.getAttribute('aria-label') || '').indexOf(
-                        'Open cart'
-                      ) === 0
-                    ) {
-                      window.__pendingCartOpen = true;
-                      window.dispatchEvent(new CustomEvent('cart:open'));
-                      return;
-                    }
-                    el = el.parentElement;
-                  }
-                });
-              }
-              if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', setup);
-              } else {
-                setup();
-              }
-            })();
-          </script>
-          <CartDrawer client:idle />
-        </>
-      )
+      /*
+      Buffer cart:open events that fire before CartDrawer's useEffect registers
+      its listener, and intercept CartTrigger button clicks natively before
+      React hydrates (concurrent-mode hydration race condition in Playwright).
+      CartDrawer reads __pendingCartOpen on mount and opens immediately.
+      Rendered unconditionally — CartDrawer simply won't mount when commerce
+      is disabled so the globals are harmless.
+    */
     }
+    <script is:inline>
+      window.__pendingCartOpen = false;
+      window.addEventListener('cart:open', function () {
+        window.__pendingCartOpen = true;
+      });
+      (function () {
+        function setup() {
+          document.addEventListener('click', function (e) {
+            var el = e.target;
+            while (el && el.tagName) {
+              if (
+                el.tagName === 'BUTTON' &&
+                typeof el.getAttribute === 'function' &&
+                (el.getAttribute('aria-label') || '').indexOf('Open cart') === 0
+              ) {
+                window.__pendingCartOpen = true;
+                window.dispatchEvent(new CustomEvent('cart:open'));
+                return;
+              }
+              el = el.parentElement;
+            }
+          });
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setup);
+        } else {
+          setup();
+        }
+      })();
+    </script>
+    {commerceEnabled && <CartDrawer client:idle />}
     <slot />
     <Footer {...footerProps} />
     {/* body-end: cookie banner, analytics */}
