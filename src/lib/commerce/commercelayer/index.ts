@@ -13,6 +13,7 @@
 
 import type { CommerceAdapter } from '../adapter';
 import * as auth from './auth';
+import * as catalog from './catalog';
 import * as cart from './cart';
 import * as customer from './customer';
 
@@ -33,13 +34,9 @@ export const commerceLayerAdapter: CommerceAdapter = {
   // CATALOG ================================================================
   // Implemented in GG-E10-E
 
-  getVariantInventory: async () => {
-    throw new Error('Not yet implemented (GG-E10-E)');
-  },
+  getVariantInventory: catalog.getVariantInventory,
 
-  getVariantPrice: async () => {
-    throw new Error('Not yet implemented (GG-E10-E)');
-  },
+  getVariantPrice: catalog.getVariantPrice,
 
   // CART ===================================================================
   // Implemented in GG-E20-A
