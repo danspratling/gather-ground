@@ -96,12 +96,10 @@ export const commerceLayerAdapter: CommerceAdapter = {
 
   setShippingMethod: checkout.setShippingMethod,
 
-  createPaymentSource: async () => {
-    throw new Error('Not yet implemented (GG-E40-API-01)');
-  },
+  createPaymentSource: checkout.createPaymentSource,
 
   placeOrder: async () => {
-    throw new Error('Not yet implemented (GG-E40-API-01)');
+    throw new Error('Not yet implemented (GG-272)');
   },
 
   // SYNC ===================================================================
