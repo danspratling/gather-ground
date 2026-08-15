@@ -1,5 +1,6 @@
 import { defineType, defineField, defineArrayMember } from 'sanity';
 import { commerceFieldHidden } from '../../lib/commerce/featureFlag';
+import { OptionValueInput } from '../components/OptionValueInput';
 
 export const productVariant = defineType({
   name: 'productVariant',
@@ -53,6 +54,7 @@ export const productVariant = defineType({
               title: 'Value',
               type: 'string',
               description: 'e.g. 250g, Smoked, Red',
+              components: { input: OptionValueInput },
               validation: (Rule) => Rule.required(),
             }),
           ],
