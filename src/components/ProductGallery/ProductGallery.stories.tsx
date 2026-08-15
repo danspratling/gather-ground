@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, screen, userEvent, within } from 'storybook/test';
 
 import ProductGallery from '@/components/ProductGallery/ProductGallery';
 
@@ -85,7 +85,8 @@ export const WithLightbox: Story = {
     });
     if (!lightboxTrigger) return;
     await userEvent.click(lightboxTrigger);
-    const dialog = await canvas.findByRole('dialog');
+    // Dialog portal renders to document.body — use screen (full-document) not canvas
+    const dialog = await screen.findByRole('dialog');
     expect(dialog).toBeInTheDocument();
   },
 };
