@@ -28,10 +28,19 @@ export default function VariantPicker({
   }
 
   function getOptionValueState(
+    optionIndex: number,
     optionName: string,
     valueName: string
   ): { unavailable: boolean; oos: boolean } {
-    const hypothetical = { ...selections, [optionName]: valueName };
+    // Only use selections from options that precede this one so that a later
+    // option's current value doesn't incorrectly rule out earlier options.
+    const precedingSelections = Object.fromEntries(
+      options
+        .slice(0, optionIndex)
+        .filter((o) => selections[o.name] !== undefined)
+        .map((o) => [o.name, selections[o.name]])
+    );
+    const hypothetical = { ...precedingSelections, [optionName]: valueName };
     const match = findMatchingVariant(hypothetical);
     if (!match) return { unavailable: true, oos: false };
     return {
@@ -62,7 +71,7 @@ export default function VariantPicker({
 
   return (
     <div className={cn('flex flex-col gap-6', className)}>
-      {options.map((option) => (
+      {options.map((option, optionIndex) => (
         <div key={option.id} className="flex flex-col gap-2">
           <span className="text-sm font-semibold text-gray-900">
             {option.name}
@@ -71,6 +80,7 @@ export default function VariantPicker({
             {option.values.map((value) => {
               const isSelected = selections[option.name] === value.name;
               const { unavailable, oos } = getOptionValueState(
+                optionIndex,
                 option.name,
                 value.name
               );
