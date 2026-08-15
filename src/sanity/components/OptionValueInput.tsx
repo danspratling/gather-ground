@@ -2,11 +2,11 @@
  * Custom input for productVariant.optionValues[].value
  *
  * When an option is selected (e.g. "Size"), queries all existing values used
- * for that option across other variants and offers them as datalist suggestions.
- * Free-text entry is always allowed — this is non-blocking autocomplete.
+ * for that option across other variants and offers them as suggestions in a
+ * themed dropdown. Free-text entry is always allowed.
  */
-import { useEffect, useId, useState } from 'react';
-import { TextInput } from '@sanity/ui';
+import { useEffect, useRef, useState } from 'react';
+import { Box, Card, Stack, Text, TextInput } from '@sanity/ui';
 import { set, unset, useClient, useFormValue } from 'sanity';
 import type { StringInputProps } from 'sanity';
 
@@ -14,7 +14,8 @@ export function OptionValueInput(props: StringInputProps) {
   const { onChange, value, elementProps } = props;
   const client = useClient({ apiVersion: '2024-01-01' });
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const uid = useId();
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Derive the path to the sibling 'option' reference field in the same array item.
   // props.path for 'value' looks like: ['optionValues', {_key: 'xyz'}, 'value']
@@ -57,27 +58,62 @@ export function OptionValueInput(props: StringInputProps) {
     };
   }, [optionRef?._ref, client]);
 
-  const listId = `option-value-suggestions-${uid.replace(/[^a-z0-9]/gi, '')}`;
+  const filtered = suggestions.filter(
+    (s) => !value || s.toLowerCase().includes((value as string).toLowerCase())
+  );
 
   return (
-    <>
+    <Box ref={containerRef} style={{ position: 'relative' }}>
       <TextInput
         {...elementProps}
-        list={suggestions.length > 0 ? listId : undefined}
-        value={value ?? ''}
+        value={(value as string) ?? ''}
         onChange={(e) => {
           const next = e.currentTarget.value;
           onChange(next ? set(next) : unset());
+          setOpen(true);
         }}
+        onFocus={() => setOpen(true)}
+        // delay hiding so onMouseDown on a suggestion fires first
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
       />
-      {suggestions.length > 0 && (
-        <datalist id={listId}>
-          {suggestions.map((s) => (
-            <option key={s} value={s} />
-          ))}
-        </datalist>
+      {open && filtered.length > 0 && (
+        <Card
+          shadow={2}
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 4px)',
+            left: 0,
+            right: 0,
+            zIndex: 200,
+            maxHeight: 200,
+            overflowY: 'auto',
+          }}
+        >
+          <Stack>
+            {filtered.map((s) => (
+              <Box
+                key={s}
+                as="button"
+                padding={3}
+                style={{
+                  cursor: 'pointer',
+                  width: '100%',
+                  textAlign: 'left',
+                  background: 'none',
+                  border: 'none',
+                }}
+                onMouseDown={() => {
+                  onChange(set(s));
+                  setOpen(false);
+                }}
+              >
+                <Text size={1}>{s}</Text>
+              </Box>
+            ))}
+          </Stack>
+        </Card>
       )}
-    </>
+    </Box>
   );
 }
 
