@@ -93,6 +93,29 @@ export const products = defineType({
       group: 'content',
     }),
     defineField({
+      name: 'gallery',
+      title: 'Image gallery',
+      type: 'array',
+      description:
+        'Additional product images for the gallery on the product detail page. Add multiple angles, lifestyle shots, or detail views.',
+      group: 'content',
+      of: [
+        defineArrayMember({
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: 'alt',
+              title: 'Alt text',
+              type: 'string',
+              description:
+                'Describe the image for screen readers and search engines.',
+            }),
+          ],
+        }),
+      ],
+    }),
+    defineField({
       name: 'commerceEnabled',
       title: 'Commerce enabled',
       type: 'boolean',

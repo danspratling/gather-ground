@@ -212,6 +212,10 @@ export const productBySlugQuery = `*[_type == "products" && slug.current == $slu
   "autoDescription": metaDescription,
   "autoOgImage": featuredImage.asset->url,
   featuredImage { asset->, alt },
+  "gallery": gallery[]{
+    alt,
+    "url": asset->url
+  },
   "options": options[]{ name, values },
   "variants": variants[]->{
     _id,
