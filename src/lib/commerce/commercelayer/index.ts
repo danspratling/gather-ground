@@ -15,6 +15,7 @@ import type { CommerceAdapter } from '../adapter';
 import * as auth from './auth';
 import * as cart from './cart';
 import * as customer from './customer';
+import * as checkout from './checkout';
 
 /**
  * Commerce Layer adapter implementation
@@ -83,29 +84,17 @@ export const commerceLayerAdapter: CommerceAdapter = {
   // CHECKOUT ===============================================================
   // Implemented in GG-E40-API-01
 
-  attachCustomerToOrder: async () => {
-    throw new Error('Not yet implemented (GG-E40-API-01)');
-  },
+  attachCustomerToOrder: checkout.attachCustomerToOrder,
 
-  setOrderEmail: async () => {
-    throw new Error('Not yet implemented (GG-E40-API-01)');
-  },
+  setOrderEmail: checkout.setOrderEmail,
 
-  setShippingAddress: async () => {
-    throw new Error('Not yet implemented (GG-E40-API-01)');
-  },
+  setShippingAddress: checkout.setShippingAddress,
 
-  setBillingAddress: async () => {
-    throw new Error('Not yet implemented (GG-E40-API-01)');
-  },
+  setBillingAddress: checkout.setBillingAddress,
 
-  listShippingMethods: async () => {
-    throw new Error('Not yet implemented (GG-E40-API-01)');
-  },
+  listShippingMethods: checkout.listShippingMethods,
 
-  setShippingMethod: async () => {
-    throw new Error('Not yet implemented (GG-E40-API-01)');
-  },
+  setShippingMethod: checkout.setShippingMethod,
 
   createPaymentSource: async () => {
     throw new Error('Not yet implemented (GG-E40-API-01)');

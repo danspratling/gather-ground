@@ -137,6 +137,7 @@ export interface PaymentMethod {
   type: 'card' | 'apple_pay' | 'google_pay' | 'link';
   displayName: string;
   last4?: string; // Last 4 digits for cards
+  clientSecret?: string; // Stripe: PaymentIntent client_secret for Elements mounting
 }
 
 /**
