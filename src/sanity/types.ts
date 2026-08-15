@@ -20,11 +20,20 @@ export interface SanityPriceObject {
   currency: string; // ISO 4217 (e.g. 'GBP')
 }
 
+/**
+ * The specific option selection for one dimension of a single variant.
+ * e.g. { optionName: 'Size', value: '250g' } — not all available values,
+ * just the one value that applies to this SKU.
+ */
 export interface SanityOptionValue {
   optionName: string;
   value: string;
 }
 
+/**
+ * A product-level option with all available values across all variants.
+ * e.g. { name: 'Size', values: ['250g', '500g', '1kg'] }
+ */
 export interface SanityProductOption {
   name: string;
   values: string[];
@@ -42,8 +51,13 @@ export interface SanityProductVariant {
     slug: string;
     featuredImage?: SanityImageAsset;
   };
+  /** The specific values selected for this SKU across each option dimension.
+   * e.g. [{ optionName: 'Size', value: '250g' }, { optionName: 'Flavour', value: 'Original' }]
+   * Use SanityProduct.options to get all available values per option. */
   optionValues: SanityOptionValue[];
   price: SanityPriceObject;
+  /** Original/reference price shown alongside a sale price (the "was" price).
+   * Only present when the variant is discounted. Rendered struck-through in the UI. */
   compareAtPrice?: SanityPriceObject;
   taxCategory: 'vat-uk-20' | 'vat-uk-0';
   weight?: number; // grams
