@@ -27,10 +27,17 @@ export default function VariantPicker({
     );
   }
 
-  function isOptionValueOOS(optionName: string, valueName: string): boolean {
+  function getOptionValueState(
+    optionName: string,
+    valueName: string
+  ): { unavailable: boolean; oos: boolean } {
     const hypothetical = { ...selections, [optionName]: valueName };
     const match = findMatchingVariant(hypothetical);
-    return match ? match.inventoryStatus === 'out_of_stock' : true;
+    if (!match) return { unavailable: true, oos: false };
+    return {
+      unavailable: false,
+      oos: match.inventoryStatus === 'out_of_stock',
+    };
   }
 
   function handleSelect(optionName: string, valueName: string) {
@@ -63,24 +70,32 @@ export default function VariantPicker({
           <div className="flex flex-wrap gap-2">
             {option.values.map((value) => {
               const isSelected = selections[option.name] === value.name;
-              const isOOS = isOptionValueOOS(option.name, value.name);
+              const { unavailable, oos } = getOptionValueState(
+                option.name,
+                value.name
+              );
 
               return (
                 <button
                   key={value.id}
                   type="button"
-                  disabled={isOOS}
+                  disabled={unavailable}
                   onClick={() => handleSelect(option.name, value.name)}
                   aria-pressed={isSelected}
                   aria-label={
-                    isOOS ? `${value.name} — out of stock` : value.name
+                    unavailable
+                      ? `${value.name} — unavailable`
+                      : oos
+                        ? `${value.name} — out of stock`
+                        : value.name
                   }
                   className={cn(
                     'rounded-md border px-3 py-1.5 text-sm font-medium transition-colors',
                     isSelected
                       ? 'border-brand-700 bg-brand-700 text-brand-25'
                       : 'border-secondary-400 bg-secondary-50 text-brand-700 hover:border-brand-700 hover:bg-secondary-100',
-                    isOOS && 'cursor-not-allowed opacity-40 line-through'
+                    unavailable && 'cursor-not-allowed opacity-40 line-through',
+                    !unavailable && oos && 'opacity-60'
                   )}
                 >
                   {value.name}
