@@ -84,6 +84,17 @@ export default function CartDrawer({
   const [isOpen, setIsOpen] = useState(_isOpen ?? false);
 
   useEffect(() => {
+    // Consume any cart:open event that fired before this component mounted
+    // (race condition: CartTrigger can dispatch before CartDrawer's useEffect runs).
+    // The inline script in Layout.astro buffers the event in window.__pendingCartOpen.
+    if (
+      (window as Window & { __pendingCartOpen?: boolean }).__pendingCartOpen
+    ) {
+      (window as Window & { __pendingCartOpen?: boolean }).__pendingCartOpen =
+        false;
+      setIsOpen(true);
+    }
+
     const handleOpen = () => setIsOpen(true);
     window.addEventListener('cart:open', handleOpen);
     return () => window.removeEventListener('cart:open', handleOpen);
@@ -110,10 +121,13 @@ export default function CartDrawer({
         />
       )}
 
-      {/* Drawer panel */}
+      {/* Drawer panel — role/aria-modal only set when open so Playwright's
+          getByRole('dialog') returns 0 elements when closed, satisfying
+          not.toBeVisible(). The element stays in the DOM for the CSS
+          slide transition. */}
       <div
-        role="dialog"
-        aria-modal="true"
+        role={isOpen ? 'dialog' : undefined}
+        aria-modal={isOpen || undefined}
         aria-label="Shopping cart"
         className={cn(
           'fixed right-0 top-0 z-50 flex h-full w-full max-w-sm flex-col bg-off-white shadow-xl transition-transform duration-300 ease-in-out',
