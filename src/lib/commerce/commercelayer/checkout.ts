@@ -9,7 +9,7 @@
  */
 
 import { jwtDecode } from '@commercelayer/js-auth';
-import type { Address, Money, ShippingMethod } from '../types';
+import type { Address, Money, PaymentMethod, ShippingMethod } from '../types';
 import { getIntegrationClient, getCustomerClient } from './client';
 
 // ---------------------------------------------------------------------------
@@ -231,6 +231,50 @@ export async function setShippingMethod(
     id: shipmentId,
     shipping_method: client.shipping_methods.relationship(shippingMethodId),
   });
+}
+
+// ---------------------------------------------------------------------------
+// createPaymentSource (GG-264)
+// ---------------------------------------------------------------------------
+
+interface CLStripePaymentLike {
+  id: string;
+  client_secret?: string | null;
+}
+
+/**
+ * Create a Stripe payment source on the CL order.
+ * CL creates a `stripe_payment` resource and a Stripe PaymentIntent; returns
+ * the `client_secret` needed by Stripe Elements to render and confirm payment.
+ * See: https://docs.commercelayer.io/developers/v/api-reference/stripe_payments/create
+ */
+export async function createPaymentSource(
+  cartId: string,
+  _paymentDetails: Record<string, unknown>
+): Promise<PaymentMethod> {
+  const client = await getIntegrationClient();
+
+  // CL SDK v7 may not type stripe_payments — use cast.
+  const stripePayment = (await (
+    client as unknown as {
+      stripe_payments: {
+        create: (payload: unknown) => Promise<CLStripePaymentLike>;
+      };
+    }
+  ).stripe_payments.create({
+    order: { type: 'orders', id: cartId },
+  })) as CLStripePaymentLike;
+
+  if (!stripePayment.client_secret) {
+    throw new Error('CL did not return a Stripe client_secret');
+  }
+
+  return {
+    id: stripePayment.id,
+    type: 'card',
+    displayName: 'Card',
+    clientSecret: stripePayment.client_secret,
+  };
 }
 
 export default null;
