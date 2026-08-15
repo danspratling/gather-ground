@@ -106,7 +106,10 @@ const CHROME_FLAGS = [
 // ---------------------------------------------------------------------------
 // Audit runner
 // ---------------------------------------------------------------------------
-async function auditPage({ path, name, skipAudits: pageSkipAudits = [] }) {
+async function auditPage(
+  { path, name, skipAudits: pageSkipAudits = [] },
+  retries = 2
+) {
   const url = `${BASE_URL}${path}`;
   const chrome = await chromeLauncher.launch({ chromeFlags: CHROME_FLAGS });
 
@@ -121,8 +124,23 @@ async function auditPage({ path, name, skipAudits: pageSkipAudits = [] }) {
 
     const runnerResult = await lighthouse(url, flags, desktopConfig);
     return { name, url, lhr: runnerResult.lhr };
+  } catch (err) {
+    try {
+      await chrome.kill();
+    } catch {
+      /* already killed */
+    }
+    if (retries > 0) {
+      console.warn(`  retrying ${name} after error: ${err.message}`);
+      return auditPage({ path, name, skipAudits: pageSkipAudits }, retries - 1);
+    }
+    throw err;
   } finally {
-    await chrome.kill();
+    try {
+      await chrome.kill();
+    } catch {
+      /* already killed */
+    }
   }
 }
 
