@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from 'sanity';
+import { commerceFieldHidden } from '../../lib/commerce/featureFlag';
 
 /**
  * Products document — individual product detail page.
@@ -16,6 +17,7 @@ export const products = defineType({
   groups: [
     { name: 'content', title: 'Content', default: true },
     { name: 'seo', title: 'SEO' },
+    { name: 'commerce', title: 'Commerce' },
   ],
   fields: [
     defineField({
@@ -89,6 +91,70 @@ export const products = defineType({
         }),
       ],
       group: 'content',
+    }),
+    defineField({
+      name: 'commerceEnabled',
+      title: 'Commerce enabled',
+      type: 'boolean',
+      description: 'Enable to sync this product with Commerce Layer.',
+      initialValue: false,
+      hidden: commerceFieldHidden(),
+      group: 'commerce',
+    }),
+    defineField({
+      name: 'options',
+      title: 'Product options',
+      type: 'array',
+      description:
+        'Variant dimensions (e.g. Size, Flavour). Define before creating variants.',
+      hidden: commerceFieldHidden(),
+      group: 'commerce',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'name',
+              title: 'Option name',
+              type: 'string',
+              description: 'e.g. Size, Flavour, Colour',
+            }),
+            defineField({
+              name: 'values',
+              title: 'Option values',
+              type: 'array',
+              of: [defineArrayMember({ type: 'string' })],
+              description: 'e.g. 250g, 500g, Original',
+            }),
+          ],
+          preview: { select: { title: 'name' } },
+        }),
+      ],
+    }),
+    defineField({
+      name: 'variants',
+      title: 'Variants',
+      type: 'array',
+      description:
+        'References to Product Variant documents. Create variant documents first, then reference them here.',
+      hidden: commerceFieldHidden(),
+      group: 'commerce',
+      of: [
+        defineArrayMember({
+          type: 'reference',
+          to: [{ type: 'productVariant' }],
+        }),
+      ],
+    }),
+    defineField({
+      name: 'defaultVariant',
+      title: 'Default variant',
+      type: 'reference',
+      to: [{ type: 'productVariant' }],
+      description:
+        'The variant shown by default on the product page and in listing cards.',
+      hidden: commerceFieldHidden(),
+      group: 'commerce',
     }),
     defineField({
       name: 'body',
