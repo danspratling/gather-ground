@@ -80,7 +80,7 @@ export interface SanityProduct {
   slug: string;
   commerceEnabled: boolean;
   /** Ordered list of option dimensions for the picker. Values come from variant optionValues. */
-  optionOrder?: SanityProductOption[];
+  options?: SanityProductOption[];
   variants?: SanityProductVariant[];
   defaultVariant?: SanityProductVariant;
   // Editorial fields

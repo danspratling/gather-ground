@@ -109,7 +109,7 @@ function clean(str: string): string {
   return str.replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '');
 }
 
-// Build the options list from optionOrder + variant optionValues.
+// Build the options list from options (ordered productOption refs) + variant optionValues.
 // Match by optionId (the productOption document _id) — immune to stega and typos.
 // Values are the unique set of values variants have for each option.
 const productOptions: Option[] = (page.options ?? [])

@@ -216,7 +216,7 @@ export const productBySlugQuery = `*[_type == "products" && slug.current == $slu
     alt,
     "url": asset->url
   },
-  "optionOrder": options[]->{ _id, name },
+  "options": options[]->{ _id, name },
   "variants": variants[]->{
     _id,
     sku,
@@ -245,7 +245,7 @@ export const productListQuery = `*[_type == "products" && defined(slug.current) 
   "slug": slug.current,
   featuredImage { asset->, alt },
   "defaultVariantPrice": defaultVariant->price,
-  "optionOrder": options[]->{ _id, name }
+  "options": options[]->{ _id, name }
 }`;
 
 /** Fetch a single variant by SKU for cart line-item enrichment. */
