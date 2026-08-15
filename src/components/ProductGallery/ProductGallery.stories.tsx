@@ -49,7 +49,9 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     // Thumbnail rail is desktop-only (hidden lg:flex); skip at mobile viewport
-    const thumbButtons = canvas.queryAllByRole('button', { name: /View image/i });
+    const thumbButtons = canvas.queryAllByRole('button', {
+      name: /View image/i,
+    });
     if (thumbButtons.length === 0) return;
     expect(thumbButtons.length).toBeGreaterThan(0);
     await userEvent.click(thumbButtons[1]);
