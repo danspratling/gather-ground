@@ -6,11 +6,12 @@
  * Free-text entry is always allowed — this is non-blocking autocomplete.
  */
 import { useEffect, useId, useState } from 'react';
+import { TextInput } from '@sanity/ui';
 import { set, unset, useClient, useFormValue } from 'sanity';
 import type { StringInputProps } from 'sanity';
 
 export function OptionValueInput(props: StringInputProps) {
-  const { onChange, elementProps } = props;
+  const { onChange, value, elementProps } = props;
   const client = useClient({ apiVersion: '2024-01-01' });
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const uid = useId();
@@ -60,9 +61,10 @@ export function OptionValueInput(props: StringInputProps) {
 
   return (
     <>
-      <input
+      <TextInput
         {...elementProps}
         list={suggestions.length > 0 ? listId : undefined}
+        value={value ?? ''}
         onChange={(e) => {
           const next = e.currentTarget.value;
           onChange(next ? set(next) : unset());
