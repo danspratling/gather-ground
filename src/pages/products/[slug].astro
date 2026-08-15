@@ -99,15 +99,21 @@ function formatMoney(amountPence: number, currency: string): string {
   }).format(amountPence / 100);
 }
 
+// Strip Sanity stega zero-width encoding chars so string comparisons work
+// correctly in VariantPicker when Visual Editing is enabled.
+function clean(str: string): string {
+  return str.replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '');
+}
+
 const productOptions: Option[] = (page.options ?? []).map((opt) => ({
-  id: opt.name,
-  name: opt.name,
-  values: opt.values.map((v) => ({ id: v, name: v })),
+  id: clean(opt.name),
+  name: clean(opt.name),
+  values: opt.values.map((v) => ({ id: clean(v), name: clean(v) })),
 }));
 
 const productVariants: Variant[] = (page.variants ?? []).map((v) => ({
   id: v._id,
-  name: v.optionValues.map((ov) => ov.value).join(' / '),
+  name: v.optionValues.map((ov) => clean(ov.value)).join(' / '),
   sku: v.sku,
   price: {
     amount: v.price.amount,
@@ -125,7 +131,10 @@ const productVariants: Variant[] = (page.variants ?? []).map((v) => ({
       }
     : undefined,
   selectedOptions: Object.fromEntries(
-    v.optionValues.map((ov): [string, string] => [ov.optionName, ov.value])
+    v.optionValues.map((ov): [string, string] => [
+      clean(ov.optionName),
+      clean(ov.value),
+    ])
   ),
   inventoryStatus: v.inventoryStatus ?? 'out_of_stock',
   weight: v.weight,
