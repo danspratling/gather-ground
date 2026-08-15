@@ -64,6 +64,7 @@ interface ImportMetaEnv {
   readonly COMMERCELAYER_WEBHOOK_SECRET: string;
   readonly COMMERCELAYER_MARKET_ID: string;
   readonly SESSION_SECRET: string;
+  readonly PUBLIC_STRIPE_PUBLISHABLE_KEY: string;
 }
 
 declare namespace App {
