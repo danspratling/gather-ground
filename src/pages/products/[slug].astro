@@ -111,25 +111,51 @@ function clean(str: string): string {
 
 // Build the options list from options (ordered productOption refs) + variant optionValues.
 // Match by optionId (the productOption document _id) — immune to stega and typos.
-// Values are the unique set of values variants have for each option.
-const productOptions: Option[] = (page.options ?? [])
-  .filter((opt): opt is NonNullable<typeof opt> => opt !== null)
-  .map((opt) => {
-    const values = [
-      ...new Set(
-        (page.variants ?? [])
-          .flatMap((v) => v.optionValues ?? [])
-          .filter((ov) => ov !== null && ov.optionId === opt._id)
-          .map((ov) => clean(ov.value))
-      ),
-    ];
-    return {
-      id: opt._id,
-      name: clean(opt.name),
-      values: values.map((v) => ({ id: v, name: v })),
-    };
-  })
-  .filter((opt) => opt.values.length > 0);
+// Falls back to deriving options directly from variant optionValues when no order is set.
+const orderedOptions = (page.options ?? []).filter(
+  (opt): opt is NonNullable<typeof opt> => opt !== null
+);
+
+const productOptions: Option[] = (() => {
+  if (orderedOptions.length > 0) {
+    // Explicit order is set — derive values from variants matching each option id.
+    return orderedOptions
+      .map((opt) => {
+        const values = [
+          ...new Set(
+            (page.variants ?? [])
+              .flatMap((v) => v.optionValues ?? [])
+              .filter((ov) => ov !== null && ov.optionId === opt._id)
+              .map((ov) => clean(ov.value))
+          ),
+        ];
+        return {
+          id: opt._id,
+          name: clean(opt.name),
+          values: values.map((v) => ({ id: v, name: v })),
+        };
+      })
+      .filter((opt) => opt.values.length > 0);
+  }
+
+  // Fallback — no order set yet. Derive options from variant optionValues directly.
+  const optionMap = new Map<string, { name: string; values: Set<string> }>();
+  (page.variants ?? []).forEach((v) => {
+    (v.optionValues ?? [])
+      .filter((ov): ov is NonNullable<typeof ov> => ov !== null)
+      .forEach((ov) => {
+        if (!optionMap.has(ov.optionId)) {
+          optionMap.set(ov.optionId, { name: clean(ov.optionName), values: new Set() });
+        }
+        optionMap.get(ov.optionId)!.values.add(clean(ov.value));
+      });
+  });
+  return [...optionMap.entries()].map(([id, { name, values }]) => ({
+    id,
+    name,
+    values: [...values].sort().map((v) => ({ id: v, name: v })),
+  }));
+})();
 
 const productVariants: Variant[] = (page.variants ?? []).map((v) => ({
   id: v._id,
