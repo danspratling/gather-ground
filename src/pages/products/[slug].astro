@@ -113,12 +113,13 @@ function clean(str: string): string {
 // Match by optionId (the productOption document _id) — immune to stega and typos.
 // Values are the unique set of values variants have for each option.
 const productOptions: Option[] = (page.options ?? [])
+  .filter((opt): opt is NonNullable<typeof opt> => opt !== null)
   .map((opt) => {
     const values = [
       ...new Set(
         (page.variants ?? [])
           .flatMap((v) => v.optionValues ?? [])
-          .filter((ov) => ov.optionId === opt._id)
+          .filter((ov) => ov !== null && ov.optionId === opt._id)
           .map((ov) => clean(ov.value))
       ),
     ];
