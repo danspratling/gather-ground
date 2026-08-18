@@ -115,6 +115,12 @@ export default function VariantPicker({
                   value.name
                 );
 
+                // For options after the first, hide values that don't exist
+                // for the current preceding selections (e.g. hide 500g/1kg when
+                // Bacon is selected). The first option always shows all values
+                // so the user can see what cuts exist.
+                if (optionIndex > 0 && unavailable) return null;
+
                 return (
                   <button
                     key={value.id}
