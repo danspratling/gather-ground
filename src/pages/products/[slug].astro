@@ -1,4 +1,5 @@
 ---
+import type { Option, Variant, InventoryStatus } from '@/lib/commerce/types';
 import Layout from '@/layouts/Layout.astro';
 import SectionMapper from '@/templates/SectionMapper.astro';
 import ProductDetail from '@/components/ProductDetail/ProductDetail';
@@ -45,6 +46,22 @@ const [{ data: page }, { data: widgets }] = await Promise.all([
       url: string;
       alt?: string;
     }>;
+    options?: Array<{ _id: string; name: string }>;
+    variants?: Array<{
+      _id: string;
+      sku: string;
+      optionValues: Array<{
+        optionName: string;
+        optionId: string;
+        value: string;
+      }>;
+      price: { amount: number; currency: string };
+      compareAtPrice?: { amount: number; currency: string };
+      weight?: number;
+      inventoryStatus?: InventoryStatus;
+    }>;
+    defaultVariant?: { _id: string; sku: string };
+    commerceEnabled?: boolean;
     body: Array<Record<string, unknown> & { _type: string; _key: string }>;
   } | null>({
     query: productBySlugQuery,
@@ -78,6 +95,99 @@ const productImages = [
     altText: img.alt ?? page.title,
   })),
 ];
+
+function formatMoney(amountPence: number, currency: string): string {
+  return new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency,
+  }).format(amountPence / 100);
+}
+
+// Strip Sanity stega zero-width encoding chars so string comparisons work
+// correctly in VariantPicker when Visual Editing is enabled.
+function clean(str: string): string {
+  return str.replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '');
+}
+
+// Build the options list from options (ordered productOption refs) + variant optionValues.
+// Match by optionId (the productOption document _id) — immune to stega and typos.
+// Falls back to deriving options directly from variant optionValues when no order is set.
+const orderedOptions = (page.options ?? []).filter(
+  (opt): opt is NonNullable<typeof opt> => opt !== null
+);
+
+const productOptions: Option[] = (() => {
+  if (orderedOptions.length > 0) {
+    // Explicit order is set — derive values from variants matching each option id.
+    return orderedOptions
+      .map((opt) => {
+        const values = [
+          ...new Set(
+            (page.variants ?? [])
+              .flatMap((v) => v.optionValues ?? [])
+              .filter((ov) => ov !== null && ov.optionId === opt._id)
+              .map((ov) => clean(ov.value))
+          ),
+        ];
+        return {
+          id: opt._id,
+          name: clean(opt.name),
+          values: values.map((v) => ({ id: v, name: v })),
+        };
+      })
+      .filter((opt) => opt.values.length > 0);
+  }
+
+  // Fallback — no order set yet. Derive options from variant optionValues directly.
+  const optionMap = new Map<string, { name: string; values: Set<string> }>();
+  (page.variants ?? []).forEach((v) => {
+    (v.optionValues ?? [])
+      .filter((ov): ov is NonNullable<typeof ov> => ov !== null)
+      .forEach((ov) => {
+        if (!optionMap.has(ov.optionId)) {
+          optionMap.set(ov.optionId, {
+            name: clean(ov.optionName),
+            values: new Set(),
+          });
+        }
+        optionMap.get(ov.optionId)!.values.add(clean(ov.value));
+      });
+  });
+  return [...optionMap.entries()].map(([id, { name, values }]) => ({
+    id,
+    name,
+    values: [...values].sort().map((v) => ({ id: v, name: v })),
+  }));
+})();
+
+const productVariants: Variant[] = (page.variants ?? []).map((v) => ({
+  id: v._id,
+  name: v.optionValues.map((ov) => clean(ov.value)).join(' / '),
+  sku: v.sku,
+  price: {
+    amount: v.price.amount,
+    currency: v.price.currency,
+    formatted: formatMoney(v.price.amount, v.price.currency),
+  },
+  compareAtPrice: v.compareAtPrice
+    ? {
+        amount: v.compareAtPrice.amount,
+        currency: v.compareAtPrice.currency,
+        formatted: formatMoney(
+          v.compareAtPrice.amount,
+          v.compareAtPrice.currency
+        ),
+      }
+    : undefined,
+  selectedOptions: Object.fromEntries(
+    v.optionValues.map((ov): [string, string] => [
+      clean(ov.optionName),
+      clean(ov.value),
+    ])
+  ),
+  inventoryStatus: v.inventoryStatus ?? 'out_of_stock',
+  weight: v.weight,
+}));
 ---
 
 <Layout
@@ -100,8 +210,9 @@ const productImages = [
             title={page.title}
             description={page.metaDescription}
             images={productImages}
-            options={[]}
-            variants={[]}
+            options={productOptions}
+            variants={productVariants}
+            selectedVariantId={page.defaultVariant?._id}
             client:load
           />
         </section>
