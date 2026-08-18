@@ -10,10 +10,13 @@ export default defineConfig({
   retries: isCI ? 2 : 0,
   workers: isCI ? 1 : undefined,
   reporter: 'html',
+  timeout: 30_000,
   use: {
     baseURL,
     ignoreHTTPSErrors: true,
     trace: 'on-first-retry',
+    actionTimeout: 10_000,
+    navigationTimeout: 30_000,
   },
   projects: [
     {
