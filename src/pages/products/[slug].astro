@@ -145,7 +145,10 @@ const productOptions: Option[] = (() => {
       .filter((ov): ov is NonNullable<typeof ov> => ov !== null)
       .forEach((ov) => {
         if (!optionMap.has(ov.optionId)) {
-          optionMap.set(ov.optionId, { name: clean(ov.optionName), values: new Set() });
+          optionMap.set(ov.optionId, {
+            name: clean(ov.optionName),
+            values: new Set(),
+          });
         }
         optionMap.get(ov.optionId)!.values.add(clean(ov.value));
       });
