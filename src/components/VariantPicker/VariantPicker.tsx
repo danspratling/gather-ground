@@ -50,7 +50,19 @@ export default function VariantPicker({
   }
 
   function handleSelect(optionName: string, valueName: string) {
-    const newSelections = { ...selections, [optionName]: valueName };
+    const optionIndex = options.findIndex((o) => o.name === optionName);
+    const newSelections: Record<string, string> = {
+      ...selections,
+      [optionName]: valueName,
+    };
+
+    // Reset all downstream options so stale selections don't block later rows.
+    // e.g. switching Cut from Belly (with Size=1kg) to Bacon clears Size so
+    // Smoked can appear correctly.
+    for (const opt of options.slice(optionIndex + 1)) {
+      delete newSelections[opt.name];
+    }
+
     setSelections(newSelections);
 
     const matched = findMatchingVariant(newSelections);
