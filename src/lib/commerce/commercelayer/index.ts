@@ -95,9 +95,7 @@ export const commerceLayerAdapter: CommerceAdapter = {
 
   createPaymentSource: checkout.createPaymentSource,
 
-  placeOrder: async () => {
-    throw new Error('Not yet implemented (GG-272)');
-  },
+  placeOrder: checkout.placeOrder,
 
   // SYNC ===================================================================
   // Implemented in GG-E11-A

@@ -9,8 +9,19 @@
  */
 
 import { jwtDecode } from '@commercelayer/js-auth';
-import type { Address, Money, PaymentMethod, ShippingMethod } from '../types';
+import type {
+  Address,
+  Money,
+  Order,
+  PaymentMethod,
+  ShippingMethod,
+} from '../types';
 import { getIntegrationClient, getCustomerClient } from './client';
+import {
+  mapOrderDetail,
+  type CLOrderDetailLike,
+  type CLOrderLike,
+} from './customerMappers';
 
 // ---------------------------------------------------------------------------
 // CL-shape types (internal — never exported outside this file)
@@ -275,6 +286,52 @@ export async function createPaymentSource(
     displayName: 'Card',
     clientSecret: stripePayment.client_secret,
   };
+}
+
+// ---------------------------------------------------------------------------
+// placeOrder (GG-272)
+// ---------------------------------------------------------------------------
+
+/**
+ * Transition a CL order from 'pending' to 'placed', triggering Stripe capture.
+ * Idempotent: if the order is already placed/approved/fulfilled, returns the
+ * existing order without calling CL again.
+ *
+ * @param cartId       CL order ID (same as cart ID in this project)
+ * @param _paymentMethodId  Stripe PaymentIntent ID; used by the caller as an
+ *                     idempotency key — not forwarded to CL (CL handles capture
+ *                     via its own Stripe integration).
+ *
+ * See: https://docs.commercelayer.io/developers/v/api-reference/orders/place
+ */
+export async function placeOrder(
+  cartId: string,
+  _paymentMethodId: string
+): Promise<Order> {
+  const client = await getIntegrationClient();
+
+  // Idempotency: if the order is already in a terminal state, skip _place().
+  const existing = (await client.orders.retrieve(
+    cartId
+  )) as unknown as CLOrderLike;
+  const alreadyPlaced =
+    existing.status === 'placed' ||
+    existing.status === 'approved' ||
+    existing.status === 'fulfilled';
+
+  if (!alreadyPlaced) {
+    // CL SDK v7 exposes _place() as a custom action on the orders resource.
+    // It sends PATCH /api/orders/:id with { _place: true } and transitions
+    // the order to 'placed', triggering Stripe capture via CL.
+    await client.orders._place(cartId);
+  }
+
+  // Fetch the full order for mapping — same includes used by getOrder() in customer.ts
+  const fullOrder = (await client.orders.retrieve(cartId, {
+    include: ['line_items', 'shipping_address', 'billing_address'],
+  })) as unknown as CLOrderDetailLike;
+
+  return mapOrderDetail(fullOrder);
 }
 
 export default null;
