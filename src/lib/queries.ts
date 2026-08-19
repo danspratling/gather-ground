@@ -216,7 +216,50 @@ export const productBySlugQuery = `*[_type == "products" && slug.current == $slu
     alt,
     "url": asset->url
   },
+  "options": options[]->{ _id, name },
+  "variants": variants[]->{
+    _id,
+    sku,
+    optionValues[]{
+      "optionName": option->name,
+      "optionId": option->_id,
+      value
+    },
+    price{ amount, currency },
+    compareAtPrice{ amount, currency },
+    taxCategory,
+    weight,
+    dimensions,
+    inventoryStatus,
+    "images": images[]{ "url": asset->url, alt }
+  },
+  "defaultVariant": defaultVariant->{ _id, sku },
+  commerceEnabled,
   ${bodySectionsProjection}
+}`;
+
+/** Fetch commerce-enabled products for the PLP grid (requires commerceEnabled flag). */
+export const productListQuery = `*[_type == "products" && defined(slug.current) && commerceEnabled == true] | order(_createdAt asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  featuredImage { asset->, alt },
+  "defaultVariantPrice": defaultVariant->price,
+  "options": options[]->{ _id, name }
+}`;
+
+/** Fetch a single variant by SKU for cart line-item enrichment. */
+export const variantBySkuQuery = `*[_type == "productVariant" && sku == $sku][0]{
+  _id,
+  sku,
+  optionValues[]{
+    "optionName": option->name,
+    value
+  },
+  price{ amount, currency },
+  compareAtPrice{ amount, currency },
+  "parentProduct": parentProduct->{ _id, title, "slug": slug.current, featuredImage { asset->, alt } },
+  "images": images[]{ "url": asset->url, alt }
 }`;
 
 // ─── Blog queries ───────────────────────────────────────────────────
