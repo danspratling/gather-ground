@@ -1,5 +1,4 @@
 import { defineType, defineField, defineArrayMember } from 'sanity';
-import { commerceFieldHidden } from '../../lib/commerce/featureFlag';
 import { OptionValueInput } from '../components/OptionValueInput';
 
 export const productVariant = defineType({
@@ -68,7 +67,6 @@ export const productVariant = defineType({
       name: 'price',
       title: 'Price',
       type: 'object',
-      hidden: commerceFieldHidden(),
       fields: [
         defineField({
           name: 'amount',
@@ -88,7 +86,6 @@ export const productVariant = defineType({
       name: 'compareAtPrice',
       title: 'Compare-at price (optional)',
       type: 'object',
-      hidden: commerceFieldHidden(),
       fields: [
         defineField({
           name: 'amount',
@@ -107,7 +104,6 @@ export const productVariant = defineType({
       name: 'taxCategory',
       title: 'Tax category',
       type: 'string',
-      hidden: commerceFieldHidden(),
       options: {
         list: [
           { title: 'UK Standard 20%', value: 'vat-uk-20' },
@@ -121,14 +117,12 @@ export const productVariant = defineType({
       name: 'weight',
       title: 'Weight (grams)',
       type: 'number',
-      hidden: commerceFieldHidden(),
       description: 'Used for shipping calculation.',
     }),
     defineField({
       name: 'dimensions',
       title: 'Dimensions',
       type: 'object',
-      hidden: commerceFieldHidden(),
       fields: [
         defineField({ name: 'length', title: 'Length (cm)', type: 'number' }),
         defineField({ name: 'width', title: 'Width (cm)', type: 'number' }),
