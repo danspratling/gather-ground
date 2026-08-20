@@ -17,6 +17,7 @@ import * as catalog from './catalog';
 import * as cart from './cart';
 import * as customer from './customer';
 import * as checkout from './checkout';
+import * as sync from './sync';
 
 /**
  * Commerce Layer adapter implementation
@@ -98,15 +99,11 @@ export const commerceLayerAdapter: CommerceAdapter = {
   placeOrder: checkout.placeOrder,
 
   // SYNC ===================================================================
-  // Implemented in GG-E11-A
+  // Implemented in GG-196
 
-  upsertVariant: async () => {
-    throw new Error('Not yet implemented (GG-E11-A)');
-  },
+  upsertVariant: sync.upsertVariant,
 
-  deleteVariant: async () => {
-    throw new Error('Not yet implemented (GG-E11-A)');
-  },
+  deleteVariant: sync.deleteVariant,
 };
 
 export default null;
