@@ -6,7 +6,10 @@
 
 import { createHmac } from 'node:crypto';
 import { describe, it, expect } from 'vitest';
-import { verifyCLSignature, verifySanitySignature } from '../../webhookSignature';
+import {
+  verifyCLSignature,
+  verifySanitySignature,
+} from '../../webhookSignature';
 
 // ---------------------------------------------------------------------------
 // Helpers
