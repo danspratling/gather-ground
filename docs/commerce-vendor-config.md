@@ -20,6 +20,7 @@ Reference values for Commerce Layer + Stripe sandbox/production environments.
 | Shipping zone   | gb-zone          | `PORGztBVpK` |
 | Shipping method | standard-uk      | `VDkvFDmzLN` |
 | Stripe gateway  | Stripe (test)    | `jqbrsaLgwk` |
+| Shipping category | default        | TBD — find at CL dashboard → Shipping → Shipping categories |
 
 **Tax categories:**
 
