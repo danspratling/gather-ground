@@ -83,16 +83,18 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
     await commerce.deleteVariant(sku);
-    return new Response(
-      JSON.stringify({ ok: true, action: 'deleted', sku }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ ok: true, action: 'deleted', sku }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   // 5b. Create / update event
   if (!sku || !payload.price?.amount || !payload.price?.currency) {
     return new Response(
-      JSON.stringify({ error: 'Missing required fields: sku, price.amount, price.currency' }),
+      JSON.stringify({
+        error: 'Missing required fields: sku, price.amount, price.currency',
+      }),
       { status: 422, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -117,8 +119,8 @@ export const POST: APIRoute = async ({ request }) => {
     inventoryStatus: payload.inventoryStatus ?? 'out_of_stock',
   });
 
-  return new Response(
-    JSON.stringify({ ok: true, action: 'upserted', sku }),
-    { status: 200, headers: { 'Content-Type': 'application/json' } }
-  );
+  return new Response(JSON.stringify({ ok: true, action: 'upserted', sku }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
 };

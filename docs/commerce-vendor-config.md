@@ -11,16 +11,16 @@ Reference values for Commerce Layer + Stripe sandbox/production environments.
 - **Organization slug:** `gather-ground`
 - **Dashboard:** https://dashboard.commercelayer.io/organizations/gather-ground
 
-| Resource        | Name             | ID           |
-| --------------- | ---------------- | ------------ |
-| Market          | Gather Ground UK | `lqxGhxxGGg` |
-| Price list      | uk-retail-gbp    | `lRKvCwXrYL` |
-| Stock location  | Manor Farm       | `GzAouwKqwn` |
-| Inventory model | UK Default       | `WdJRSlnkwZ` |
-| Shipping zone   | gb-zone          | `PORGztBVpK` |
-| Shipping method | standard-uk      | `VDkvFDmzLN` |
-| Stripe gateway  | Stripe (test)    | `jqbrsaLgwk` |
-| Shipping category | default        | TBD — find at CL dashboard → Shipping → Shipping categories |
+| Resource          | Name             | ID                                                          |
+| ----------------- | ---------------- | ----------------------------------------------------------- |
+| Market            | Gather Ground UK | `lqxGhxxGGg`                                                |
+| Price list        | uk-retail-gbp    | `lRKvCwXrYL`                                                |
+| Stock location    | Manor Farm       | `GzAouwKqwn`                                                |
+| Inventory model   | UK Default       | `WdJRSlnkwZ`                                                |
+| Shipping zone     | gb-zone          | `PORGztBVpK`                                                |
+| Shipping method   | standard-uk      | `VDkvFDmzLN`                                                |
+| Stripe gateway    | Stripe (test)    | `jqbrsaLgwk`                                                |
+| Shipping category | default          | TBD — find at CL dashboard → Shipping → Shipping categories |
 
 **Tax categories:**
 
