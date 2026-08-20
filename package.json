@@ -22,6 +22,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
+    "backfill": "tsx scripts/backfill-cl-from-sanity.ts",
     "sync-schemas": "tsx scripts/push-schemas.ts",
     "migrate:rename-types": "tsx scripts/rename-collection-types.ts",
     "lighthouse": "node scripts/lighthouse.mjs"
