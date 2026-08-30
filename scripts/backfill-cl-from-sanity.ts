@@ -138,7 +138,6 @@ async function upsertPrice(
 
   const payload: Record<string, unknown> = {
     amount_cents: amount,
-    currency_code: currency,
   };
   if (variant.compareAtPrice?.amount) {
     payload.compare_at_amount_cents = variant.compareAtPrice.amount;
@@ -225,7 +224,16 @@ async function main(): Promise<void> {
       succeeded++;
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
+      // Print full error detail if available (CL SDK wraps API errors)
+      const detail =
+        err != null &&
+        typeof err === 'object' &&
+        'errors' in err &&
+        Array.isArray((err as Record<string, unknown>).errors)
+          ? JSON.stringify((err as Record<string, unknown>).errors, null, 2)
+          : null;
       console.error(`  ❌  ${variant.sku} — ${msg}`);
+      if (detail) console.error(`      CL errors: ${detail}`);
       failed++;
     }
   }
