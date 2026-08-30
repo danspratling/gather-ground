@@ -1,0 +1,37 @@
+name: Nightly Integration Tests
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # 02:00 UTC daily
+  workflow_dispatch: # allow manual trigger
+
+jobs:
+  integration:
+    name: Integration Tests (stock sync)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          UNTITLEDUI_TOKEN: ${{ secrets.UNTITLEDUI_TOKEN }}
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run integration tests
+        run: npx playwright test tests/integration/ --project=chromium
+        env:
+          RUN_INTEGRATION: 'true'
+          INTEGRATION_BASE_URL: ${{ secrets.INTEGRATION_BASE_URL }}
+          INTEGRATION_TEST_SKU: ${{ secrets.INTEGRATION_TEST_SKU }}
+          COMMERCELAYER_WEBHOOK_SECRET: ${{ secrets.COMMERCELAYER_WEBHOOK_SECRET }}
+          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
