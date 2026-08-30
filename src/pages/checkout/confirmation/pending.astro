@@ -1,0 +1,21 @@
+---
+export const prerender = false;
+
+// Stripe appends: ?payment_intent=pi_xxx&payment_intent_client_secret=...&redirect_status=succeeded
+const paymentIntentId = Astro.url.searchParams.get('payment_intent');
+const redirectStatus = Astro.url.searchParams.get('redirect_status');
+
+if (!paymentIntentId || redirectStatus !== 'succeeded') {
+  return Astro.redirect('/cart', 302);
+}
+
+// The place-order API route sets the gg_guest_order cookie before Stripe redirects
+const guestOrderCookie = Astro.cookies.get('gg_guest_order');
+const orderId = guestOrderCookie?.value;
+
+if (!orderId) {
+  return Astro.redirect('/cart', 302);
+}
+
+return Astro.redirect(`/checkout/confirmation/${orderId}`, 302);
+---
