@@ -1,0 +1,22 @@
+---
+export const prerender = false;
+
+import Layout from '@/layouts/Layout.astro';
+import { CheckoutFlow } from '@/components/CheckoutFlow/CheckoutFlow';
+
+// Middleware handles: commerceEnabled=false → 404
+// Server-side guard: no cart cookie → redirect to /cart
+const cartCookie = Astro.cookies.get('gg_cart');
+if (!cartCookie?.value) {
+  return Astro.redirect('/cart', 302);
+}
+
+const customer = Astro.locals.customer ?? null;
+---
+
+<Layout title="Checkout">
+  <meta name="robots" content="noindex" slot="head-extras" />
+  <main>
+    <CheckoutFlow customer={customer} client:load />
+  </main>
+</Layout>
