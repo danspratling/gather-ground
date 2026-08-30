@@ -82,7 +82,18 @@ export const POST: APIRoute = async ({ request }) => {
         { status: 422, headers: { 'Content-Type': 'application/json' } }
       );
     }
-    await commerce.deleteVariant(sku);
+    try {
+      await commerce.deleteVariant(sku);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return new Response(
+        JSON.stringify({ error: 'CL delete failed', detail: message }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
     return new Response(JSON.stringify({ ok: true, action: 'deleted', sku }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -99,25 +110,36 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  await commerce.upsertVariant({
-    id: payload._id ?? sku,
-    name: sku, // SKU code as display name — sufficient for CL catalog
-    sku,
-    price: {
-      amount: payload.price.amount,
-      currency: payload.price.currency,
-      formatted: '', // display-only; not used by CL sync
-    },
-    compareAtPrice: payload.compareAtPrice?.amount
-      ? {
-          amount: payload.compareAtPrice.amount,
-          currency: payload.compareAtPrice.currency ?? payload.price.currency,
-          formatted: '',
-        }
-      : undefined,
-    selectedOptions: {},
-    inventoryStatus: payload.inventoryStatus ?? 'out_of_stock',
-  });
+  try {
+    await commerce.upsertVariant({
+      id: payload._id ?? sku,
+      name: sku, // SKU code as display name — sufficient for CL catalog
+      sku,
+      price: {
+        amount: payload.price.amount,
+        currency: payload.price.currency,
+        formatted: '', // display-only; not used by CL sync
+      },
+      compareAtPrice: payload.compareAtPrice?.amount
+        ? {
+            amount: payload.compareAtPrice.amount,
+            currency: payload.compareAtPrice.currency ?? payload.price.currency,
+            formatted: '',
+          }
+        : undefined,
+      selectedOptions: {},
+      inventoryStatus: payload.inventoryStatus ?? 'out_of_stock',
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return new Response(
+      JSON.stringify({ error: 'CL upsert failed', detail: message }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
 
   return new Response(JSON.stringify({ ok: true, action: 'upserted', sku }), {
     status: 200,
