@@ -7,7 +7,7 @@ on:
 
 jobs:
   integration:
-    name: Integration Tests (stock sync)
+    name: Integration Tests (catalog sync)
     runs-on: ubuntu-latest
 
     steps:
@@ -33,5 +33,4 @@ jobs:
           RUN_INTEGRATION: 'true'
           INTEGRATION_BASE_URL: ${{ secrets.INTEGRATION_BASE_URL }}
           INTEGRATION_TEST_SKU: ${{ secrets.INTEGRATION_TEST_SKU }}
-          COMMERCELAYER_WEBHOOK_SECRET: ${{ secrets.COMMERCELAYER_WEBHOOK_SECRET }}
-          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+          SANITY_WEBHOOK_SECRET: ${{ secrets.SANITY_WEBHOOK_SECRET }}

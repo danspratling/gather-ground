@@ -133,11 +133,13 @@ export const productVariant = defineType({
       name: 'inventoryStatus',
       title: 'Inventory status',
       type: 'string',
-      // RF-06: readOnly + hidden so editors cannot manually set this
+      // CL does not expose a stock_items.update webhook — inventory status is
+      // fetched live from CL at render time via getVariantInventory.
+      // Reserved for future order-event-driven caching (Wave 4+).
       readOnly: true,
       hidden: true,
       description:
-        'Synced automatically from Commerce Layer. Do not edit manually.',
+        'Reserved — not actively synced. Inventory is fetched live from Commerce Layer at render time.',
       options: {
         list: [
           { title: 'In stock', value: 'in_stock' },
