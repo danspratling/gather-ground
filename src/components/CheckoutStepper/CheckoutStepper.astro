@@ -1,0 +1,50 @@
+---
+import type {
+  CheckoutStepperProps,
+  CheckoutStep,
+} from './CheckoutStepper.types';
+const { activeStep, stepStatuses } = Astro.props as CheckoutStepperProps;
+
+const steps: Array<{ key: CheckoutStep; label: string }> = [
+  { key: 'email', label: 'Email' },
+  { key: 'shipping', label: 'Shipping' },
+  { key: 'payment', label: 'Payment' },
+];
+---
+
+<nav aria-label="Checkout steps">
+  <ol class="flex items-center gap-4">
+    {
+      steps.map((step, i) => (
+        <li class="flex items-center gap-2">
+          <span
+            class:list={[
+              'flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium',
+              stepStatuses[step.key] === 'complete' &&
+                'bg-primary text-primary-foreground',
+              stepStatuses[step.key] === 'active' &&
+                'bg-primary text-primary-foreground ring-2 ring-primary ring-offset-2',
+              stepStatuses[step.key] === 'pending' &&
+                'bg-muted text-muted-foreground',
+            ]}
+          >
+            {stepStatuses[step.key] === 'complete' ? '✓' : i + 1}
+          </span>
+          <span
+            class:list={[
+              'text-sm font-medium',
+              stepStatuses[step.key] === 'active'
+                ? 'text-foreground'
+                : 'text-muted-foreground',
+            ]}
+          >
+            {step.label}
+          </span>
+          {i < steps.length - 1 && (
+            <span class="mx-2 h-px w-8 bg-border" aria-hidden="true" />
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
