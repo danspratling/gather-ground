@@ -1,0 +1,29 @@
+---
+export const prerender = false;
+
+import Layout from '@/layouts/Layout.astro';
+import OrderConfirmation from '@/components/OrderConfirmation/OrderConfirmation.astro';
+
+const { id } = Astro.params;
+const customer = Astro.locals.customer;
+
+// Guest access: validate via gg_guest_order cookie
+const guestOrderCookie = Astro.cookies.get('gg_guest_order');
+const isGuestAccess = guestOrderCookie?.value === id;
+
+// Reject access if neither authenticated nor valid guest cookie
+if (!customer && !isGuestAccess) {
+  return Astro.redirect(`/login?next=/checkout/confirmation/${id}`, 302);
+}
+---
+
+<Layout title="Order Confirmed — Gather Ground">
+  <meta name="robots" content="noindex" slot="head-extras" />
+  <main class="mx-auto max-w-2xl px-4 py-16">
+    <OrderConfirmation
+      orderId={id!}
+      customerEmail={customer?.email}
+      isAuthenticated={!!customer}
+    />
+  </main>
+</Layout>
