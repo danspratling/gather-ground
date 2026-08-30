@@ -86,10 +86,13 @@ export const POST: APIRoute = async ({ request }) => {
       await commerce.deleteVariant(sku);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      return new Response(JSON.stringify({ error: 'CL delete failed', detail: message }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({ error: 'CL delete failed', detail: message }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
     return new Response(JSON.stringify({ ok: true, action: 'deleted', sku }), {
       status: 200,
@@ -129,10 +132,13 @@ export const POST: APIRoute = async ({ request }) => {
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    return new Response(JSON.stringify({ error: 'CL upsert failed', detail: message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ error: 'CL upsert failed', detail: message }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 
   return new Response(JSON.stringify({ ok: true, action: 'upserted', sku }), {
