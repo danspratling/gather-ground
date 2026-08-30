@@ -82,7 +82,6 @@ export async function upsertVariant(variant: Variant): Promise<void> {
     const updateData: Record<string, unknown> = {
       id: existingPrices[0].id,
       amount_cents: variant.price.amount,
-      currency_code: variant.price.currency,
     };
     if (variant.compareAtPrice) {
       updateData.compare_at_amount_cents = variant.compareAtPrice.amount;
@@ -93,7 +92,6 @@ export async function upsertVariant(variant: Variant): Promise<void> {
   } else {
     const createData: Record<string, unknown> = {
       amount_cents: variant.price.amount,
-      currency_code: variant.price.currency,
       price_list: client.price_lists.relationship(PRICE_LIST_ID),
       sku: client.skus.relationship(skuId),
     };
