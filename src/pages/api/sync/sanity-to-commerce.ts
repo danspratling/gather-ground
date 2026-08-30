@@ -39,6 +39,19 @@ interface SanityWebhookPayload {
 // ---------------------------------------------------------------------------
 
 export const POST: APIRoute = async ({ request }) => {
+  try {
+    return await handlePost(request);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    const stack = err instanceof Error ? err.stack : undefined;
+    return new Response(
+      JSON.stringify({ error: 'Unhandled error', detail: message, stack }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+};
+
+async function handlePost(request: Request): Promise<Response> {
   // 1. Read raw body — must happen before parsing for HMAC verification
   const rawBody = await request.text();
 
@@ -145,4 +158,4 @@ export const POST: APIRoute = async ({ request }) => {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });
-};
+}
