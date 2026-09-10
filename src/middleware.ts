@@ -6,7 +6,6 @@ const GATED_ROUTE_PATTERNS = [
   /^\/checkout(?:\/.*)?$/,
   /^\/account(?:\/.*)?$/,
   /^\/api\/commerce(?:\/.*)?$/,
-  /^\/products(?:\/.*)?$/,
 ];
 
 const isGatedPath = (pathname: string): boolean =>

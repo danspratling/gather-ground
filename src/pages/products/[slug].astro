@@ -203,21 +203,18 @@ const productVariants: Variant[] = (page.variants ?? []).map((v) => ({
   }}
 >
   <main>
-    {
-      commerceEnabled && (
-        <section class="container py-12 lg:py-16">
-          <ProductDetail
-            title={page.title}
-            description={page.metaDescription}
-            images={productImages}
-            options={productOptions}
-            variants={productVariants}
-            selectedVariantId={page.defaultVariant?._id}
-            client:load
-          />
-        </section>
-      )
-    }
+    <section class="container py-12 lg:py-16">
+      <ProductDetail
+        title={page.title}
+        description={page.metaDescription}
+        images={productImages}
+        options={productOptions}
+        variants={productVariants}
+        selectedVariantId={page.defaultVariant?._id}
+        commerceEnabled={commerceEnabled}
+        client:load
+      />
+    </section>
 
     {
       page.body && page.body.length > 0 && (

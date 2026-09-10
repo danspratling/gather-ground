@@ -13,6 +13,7 @@ export default function ProductDetail({
   options,
   variants,
   selectedVariantId,
+  commerceEnabled = true,
   class: className,
 }: ProductDetailProps) {
   const defaultVariant =
@@ -51,23 +52,29 @@ export default function ProductDetail({
           )}
         </div>
 
-        <p className="text-display-xs font-semibold text-brand-900">
-          {displayVariant?.price.formatted ?? ''}
-        </p>
+        {commerceEnabled && (
+          <>
+            <p className="text-display-xs font-semibold text-brand-900">
+              {displayVariant?.price.formatted ?? ''}
+            </p>
 
-        {options.length > 0 && (
-          <VariantPicker
-            options={options}
-            variants={variants}
-            selectedVariantId={displayVariant?.id}
-            onVariantChange={setSelectedVariant}
-          />
+            {options.length > 0 && (
+              <VariantPicker
+                options={options}
+                variants={variants}
+                selectedVariantId={displayVariant?.id}
+                onVariantChange={setSelectedVariant}
+              />
+            )}
+
+            <AddToCartButton
+              skuCode={displayVariant?.sku ?? ''}
+              inventoryStatus={
+                displayVariant?.inventoryStatus ?? 'out_of_stock'
+              }
+            />
+          </>
         )}
-
-        <AddToCartButton
-          skuCode={displayVariant?.sku ?? ''}
-          inventoryStatus={displayVariant?.inventoryStatus ?? 'out_of_stock'}
-        />
       </div>
     </div>
   );
