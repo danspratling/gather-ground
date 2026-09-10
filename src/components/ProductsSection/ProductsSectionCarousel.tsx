@@ -81,7 +81,7 @@ export default function ProductsSectionCarousel({
   }, [api]);
 
   return (
-    <section className="overflow-hidden py-12 lg:py-24">
+    <section className="overflow-clip py-12 lg:py-24">
       <div className="container mb-10 lg:mb-16">
         <div className="flex items-end justify-between gap-8">
           <div className="flex flex-col gap-5">
