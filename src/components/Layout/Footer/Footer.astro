@@ -40,7 +40,7 @@ const SOCIAL_ICONS: Record<SocialPlatform, typeof InstagramIcon> = {
       data-testid="footer-content"
     >
       <!-- Logo, description, social links -->
-      <div class="flex min-w-80 max-w-80 flex-col gap-8">
+      <div class="flex min-w-0 max-w-80 flex-col gap-8 sm:min-w-80">
         <a href="/" class="block w-fit" aria-label="Gather Ground home">
           <img
             src={logoSrc}
@@ -104,7 +104,7 @@ const SOCIAL_ICONS: Record<SocialPlatform, typeof InstagramIcon> = {
         </div>
 
         <!-- Newsletter form -->
-        <div class="w-90">
+        <div class="w-full sm:w-90">
           <NewsletterForm heading={newsletterHeading} client:visible />
         </div>
       </div>
