@@ -16,7 +16,6 @@ import FaqSection from '@/components/FaqSection/FaqSection.astro';
 import BlogSection from '@/components/BlogSection/BlogSection.astro';
 import CallToAction from '@/components/CallToAction/CallToAction.astro';
 import Content from '@/components/Content/Content.astro';
-import { isCommerceEnabled } from '@/lib/commerce/featureFlag';
 import {
   blogSectionProps,
   callToActionProps,
@@ -40,7 +39,6 @@ interface Props {
 }
 
 const { sections, instagramHandle, beholdFeedId } = Astro.props;
-const commerceEnabled = isCommerceEnabled();
 
 // Pre-compute resolved left/right placement for every alternating
 // contentSection on the page so they auto-flip across the layout.
@@ -62,9 +60,7 @@ const needsBeholdScript =
       case 'heroSection':
         return <HeroSection {...heroSectionProps(section)} />;
       case 'productsSection':
-        return commerceEnabled ? (
-          <ProductsSection {...productsSectionProps(section)} />
-        ) : null;
+        return <ProductsSection {...productsSectionProps(section)} />;
       case 'testimonialsSection':
         return <TestimonialsSection {...testimonialsSectionProps(section)} />;
       case 'faqSection':
