@@ -122,28 +122,32 @@ describe('middleware — feature flag gating', () => {
     expect(passthrough).not.toHaveBeenCalled();
   });
 
-  it('returns 404 for /products when commerce is disabled', async () => {
+  it('passes through /products when commerce is disabled', async () => {
     isCommerceEnabledMock.mockReturnValue(false);
+    passthrough.mockClear();
     const { ctx, rewrite } = makeCtx({ url: 'https://example.com/products' });
 
     const response = await run(ctx);
 
-    expect(response.status).toBe(404);
-    expect(rewrite).toHaveBeenCalledWith('/404');
-    expect(passthrough).not.toHaveBeenCalled();
+    // Product listing is informational Sanity content — stays reachable.
+    // Commerce elements are gated at the component level, not the route.
+    expect(response.status).toBe(200);
+    expect(rewrite).not.toHaveBeenCalledWith('/404');
+    expect(passthrough).toHaveBeenCalled();
   });
 
-  it('returns 404 for /products/[slug] when commerce is disabled', async () => {
+  it('passes through /products/[slug] when commerce is disabled', async () => {
     isCommerceEnabledMock.mockReturnValue(false);
+    passthrough.mockClear();
     const { ctx, rewrite } = makeCtx({
       url: 'https://example.com/products/beef',
     });
 
     const response = await run(ctx);
 
-    expect(response.status).toBe(404);
-    expect(rewrite).toHaveBeenCalledWith('/404');
-    expect(passthrough).not.toHaveBeenCalled();
+    expect(response.status).toBe(200);
+    expect(rewrite).not.toHaveBeenCalledWith('/404');
+    expect(passthrough).toHaveBeenCalled();
   });
 
   it('passes through non-gated routes when commerce is disabled and sets locals to null', async () => {
