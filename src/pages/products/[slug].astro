@@ -203,23 +203,26 @@ const productVariants: Variant[] = (page.variants ?? []).map((v) => ({
   }}
 >
   <main>
-    <section class="container py-12 lg:py-16">
-      <ProductDetail
-        title={page.title}
-        description={page.metaDescription}
-        images={productImages}
-        options={productOptions}
-        variants={productVariants}
-        selectedVariantId={page.defaultVariant?._id}
-        commerceEnabled={commerceEnabled}
-        client:load
-      />
-    </section>
+    {
+      commerceEnabled && (
+        <section class="container py-12 lg:py-16">
+          <ProductDetail
+            title={page.title}
+            description={page.metaDescription}
+            images={productImages}
+            options={productOptions}
+            variants={productVariants}
+            selectedVariantId={page.defaultVariant?._id}
+            client:load
+          />
+        </section>
+      )
+    }
 
     {
       page.body && page.body.length > 0 && (
         <>
-          <SectionDivider />
+          {commerceEnabled && <SectionDivider />}
           <SectionMapper
             sections={page.body}
             instagramHandle={widgets?.instagramHandle}

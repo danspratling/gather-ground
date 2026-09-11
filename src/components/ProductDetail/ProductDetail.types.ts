@@ -11,13 +11,6 @@ export interface ProductDetailProps {
   variants: Variant[]; // all variants with price/inventory
   selectedVariantId?: string; // pre-select a variant (optional)
 
-  /**
-   * When false, the ecommerce buy-box (price, variant picker, add-to-cart)
-   * is hidden and only the Sanity content (gallery, title, description) shows.
-   * Defaults to true.
-   */
-  commerceEnabled?: boolean;
-
   class?: string;
 }
 

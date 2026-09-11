@@ -136,36 +136,6 @@ export const Default: Story = {
   },
 };
 
-export const CommerceDisabled: Story = {
-  args: {
-    title: 'Free-Range Pork Belly',
-    description:
-      'Pasture-raised on our family farm in the Cotswolds. Rich flavour, natural fat marbling, and exceptional tenderness — perfect for slow roasting or braising.',
-    images: mockImages,
-    options: [sizeOption, cutOption],
-    variants: allVariants,
-    selectedVariantId: 'var-500g-belly',
-    commerceEnabled: false,
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Sanity content remains visible
-    await expect(
-      canvas.getByRole('heading', { name: 'Free-Range Pork Belly', level: 1 })
-    ).toBeInTheDocument();
-
-    // Ecommerce elements are hidden behind the feature flag
-    await expect(canvas.queryByText('£8.99')).not.toBeInTheDocument();
-    await expect(
-      canvas.queryByRole('button', { name: /add to cart/i })
-    ).not.toBeInTheDocument();
-    await expect(
-      canvas.queryByRole('button', { name: '1kg' })
-    ).not.toBeInTheDocument();
-  },
-};
-
 export const OutOfStock: Story = {
   args: {
     title: 'Free-Range Pork Belly',
